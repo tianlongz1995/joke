@@ -117,7 +117,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
 					<td>
-						<div class="table-item" style="height:50px">
+						<div class="table-item" style="height:60px">
 							<c:if test="${!empty joke.title}">
 								<p><h5>${joke.title}</h5></p>
 							</c:if>
@@ -195,7 +195,11 @@ $('#table_list img').hover(function(){
 	}
 });
 
-
+$('.table-item').hover(function(){
+	$(this).removeAttr("style");
+}, function(){
+	$(this).attr("style","height:60px");
+});
 
 $('#allcheck').on('click', function(){
 	if ($(this).prop("checked")) {
