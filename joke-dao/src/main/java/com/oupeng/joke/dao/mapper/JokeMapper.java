@@ -2,11 +2,8 @@ package com.oupeng.joke.dao.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
+import com.oupeng.joke.domain.Feedback;
+import org.apache.ibatis.annotations.*;
 
 import com.oupeng.joke.dao.sqlprovider.JokeSqlProvider;
 import com.oupeng.joke.domain.Joke;
@@ -31,4 +28,25 @@ public interface JokeMapper {
 	@Select(value="select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
 			+ " and status = 1 and verify_user =#{user} group by type ")
 	public List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);
+
+	/**
+	 * 更新段子被踩数
+	 * @param id
+	 */
+	@Update(value="update joke set bad = bad + 1 where id = #{id}")
+	void updateJokeStepCount(@Param(value = "id")Integer id);
+
+	/**
+	 * 更新段子点赞数
+	 * @param id
+	 */
+	@Update(value="update joke set good = good + 1 where id = #{id}")
+	void updatejokeLikeCount(@Param(value = "id")Integer id);
+
+	/**
+	 * 保存反馈信息
+	 * @param feedback
+	 */
+	@Insert("INSERT INTO feedback (d_id, c_id, type, content, create_time) VALUES (#{distributorId}, #{channelId}, #{type}, #{content}, now())")
+	void insertJokeFeedback(Feedback feedback);
 }
