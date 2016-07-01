@@ -11,37 +11,16 @@
                 	</a>
                 </li>
                 <li>
-                	<a class="ajax-link" href="#">
+                	<a class="ajax-link" href="user">
                 		<i class="glyphicon glyphicon-user"></i>
                 		<span> 用户管理</span>
                 	</a>
                 </li>
 				<li class="accordion">
-					<a href="#"><i class="glyphicon glyphicon-plus"></i><span> 配置管理</span></a>
+					<a href="#"><i class="glyphicon glyphicon-plus"></i><span> 内容管理</span></a>
 					<ul class="nav nav-pills nav-stacked">
-						<li><a href="#"><span> 渠道管理</span></a></li>
-						<li><a href="#"><span> 频道管理</span></a></li>
-						<li><a href="#"><span> 标签管理</span></a></li>
-						<li><a href="#"><span> 渠道-频道管理</span></a></li>
-						<li><a href="#"><span> 渠道-标签管理</span></a></li>
-						<li><a href="#"><span> 数据源管理</span></a></li>
-					</ul>
-				</li>
-				<li>
-					<a class="ajax-link" href="gallery/list">
-                		<i class="glyphicon glyphicon-user"></i>
-                		<span> 图片管理</span>
-                	</a>
-				</li>
-				<li class="accordion">
-					<a href="#"><i class="glyphicon glyphicon-plus"></i><span> 数据统计</span></a>
-					<ul class="nav nav-pills nav-stacked">
-						<li><a href="#"><span> 总日报</span></a></li>
-						<li><a href="#"><span> 渠道日报</span></a></li>
-						<li><a href="#"><span> 总周报</span></a></li>
-						<li><a href="#"><span> 渠道周报</span></a></li>
-						<li><a href="#"><span> 总月报</span></a></li>
-						<li><a href="#"><span> 渠道月报</span></a></li>
+						<li><a href="#"><span> 快捷查找</span></a></li>
+						<li><a href="joke/list"><span> 内容审核</span></a></li>
 					</ul>
 				</li>
 			</ul>

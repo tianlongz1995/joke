@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>美图</title>
+	<title>段子</title>
 	<base href="<%=basePath%>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link id="bs-css" href="ui/charisma/css/bootstrap-cerulean.min.css" rel="stylesheet">
@@ -27,7 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<div class="row">
 		<div class="col-md-12 center login-header">
-			<h2>欢迎使用美图后台</h2>
+			<h2>欢迎使用段子后台</h2>
 		</div>
 		<!--/span-->
 	</div><!--/row-->
