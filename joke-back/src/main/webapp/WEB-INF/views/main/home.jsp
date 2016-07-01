@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>美图</title>
+	<title>段子</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -60,8 +60,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div class="box-content row">
 				<div class="col-lg-7 col-md-12">
-					<h1>美图后台<br>
-						<small>这是美图</small>
+					<h1>段子后台<br>
+						<small>这是段子</small>
 					</h1>
 					<hr/>
 				</div>

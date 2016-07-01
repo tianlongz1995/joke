@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="index.html"> <img alt="Charisma Logo" src="ui/charisma/img/logo20.png" class="hidden-xs" />
-            <span>美图</span>
+            <span>段子</span>
         </a>
 
         <!-- user dropdown starts -->
