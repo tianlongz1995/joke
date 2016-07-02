@@ -3,14 +3,22 @@ package com.oupeng.joke.back.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
+import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
 
