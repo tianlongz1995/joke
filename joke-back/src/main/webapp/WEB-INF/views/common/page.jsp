@@ -18,7 +18,7 @@
 	      <option value="50" <c:if test="${pageSize == 50}">selected</c:if>>50</option>
 	      <option value="100" <c:if test="${pageSize == 100}">selected</c:if>>100</option>
 	      <option value="200" <c:if test="${pageSize == 200}">selected</c:if>>200</option>		      
-	      <option value="200" <c:if test="${pageSize == 500}">selected</c:if>>500</option>		      
+	      <option value="500" <c:if test="${pageSize == 500}">selected</c:if>>500</option>		      
 	    </select>	
 		记录
 		</div>

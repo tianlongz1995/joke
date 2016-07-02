@@ -20,7 +20,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<base href="<%=basePath%>">
 	<%@ include file="../common/css.html"%>
 	<script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
-
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
@@ -50,6 +49,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="box col-md-12">
 
 <div class="box-inner">
+	<div class="box-header well" data-original-title="">
+		<h2><i class="glyphicon glyphicon-user"></i> 内容编辑</h2>
+	</div>
 	<div class="box-content">
 		<table class="table table-hover">
 			<thead>
@@ -78,12 +80,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 		  			<th>内容</th>
 			  		<td>
-			  			<c:if test="${empty joke.content}">
-							<input id="content2" type="text" class="form-control" value=""/>
-						</c:if>
-						<c:if test="${!empty joke.content}">
-							<input id="content2" type="text" class="form-control" value="${joke.content}"/>
-						</c:if>
+						<textarea id="content2" type="text" class="form-control" ROWS="10"  COLS="10"><c:out value="${joke.content}"/></textarea>
 			  		</td>
 			  	</tr>
 			</thead>

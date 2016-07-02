@@ -19,8 +19,8 @@
 				<li class="accordion">
 					<a href="#"><i class="glyphicon glyphicon-plus"></i><span> 内容管理</span></a>
 					<ul class="nav nav-pills nav-stacked">
-						<li><a href="#"><span> 快捷查找</span></a></li>
-						<li><a href="joke/list"><span> 内容审核</span></a></li>
+						<li><a href="joke/search"><span> 快捷查找</span></a></li>
+						<li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
 					</ul>
 				</li>
 			</ul>

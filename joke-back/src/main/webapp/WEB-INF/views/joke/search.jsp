@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>内容审核</title>
+	<title>快捷查找</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -48,7 +48,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div id="content" class="col-lg-10 col-sm-10">
 <div>
 	<ul class="breadcrumb">
-		<li><a href="distributor/list">内容审核</a></li>
+		<li><a href="distributor/list">快捷查找</a></li>
 	</ul>
 </div>
 
@@ -61,51 +61,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
-			<label style="padding-right:30px;">
-				<span>已审核量</span>
-			</label>
-			<label style="padding-right:30px;">
-				<span>文字:<c:out value="${type0}"></c:out></span>
-			</label>
-			<label style="padding-right:30px;">
-				<span>图片:<c:out value="${type1}"></c:out></span>
-			</label>
-			<label style="padding-right:30px;">
-				<span>动图:<c:out value="${type2}"></c:out></span>
-			</label>
-				
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 				<label style="padding-right:30px;">
-					<span >内容格式</span>
-					<select id="type">
-						<option value="">全部</option>
-						<option value="0" <c:if test="${!empty type && type == 0}">selected</c:if> >文字</option>
-						<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >图片</option>
-						<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >动图</option>
-					</select>
+					<span >ID</span>
+					<c:if test="${empty jokeid}">
+						<input id="jokeid" type="text" />
+					</c:if>
+					<c:if test="${!empty jokeid}">
+						<input id="jokeid" type="text" value="${jokeid}"/>
+					</c:if>
 				</label>
 				<label style="padding-right:30px;">
-					<span >状态</span>
-					<select id="status">
-						<option value="">全部</option>
-						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >未审核</option>
-						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
-						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
-					</select>
+					<span >关键字</span>
+					<c:if test="${empty content}">
+						<input id="content2" type="text" style="width:500px;" maxlength="30" />
+					</c:if>
+					<c:if test="${!empty content}">
+						<input id="content2" type="text" style="width:500px;" maxlength="30"   value="${content}"/>
+					</c:if>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-info" href="#" id="selectVerifyJokeList">
-						<span class="glyphicon glyphicon-search icon-white" >查询</span>
+					<a class="btn btn-info" href="#" id="searchJoke">
+						<span class="glyphicon glyphicon-search icon-white" >搜索</span>
 					</a>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-success" href="#" onclick="verifyJoke(1,'batch')">
-			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量通过
-			        </a>
-			        <a class="btn btn-danger" href="#" onclick="verifyJoke(2,'batch')">
-			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量不通过
+			        <a class="btn btn-danger" href="#" onclick="deleteJoke('batch')">
+			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
 			        </a>
 				</label>
 			</div>
@@ -113,9 +97,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<thead>
 				<tr>
 					<th>全选<input type="checkbox" id="allcheck" /></th>
+					<th>ID</th>
 					<th>内容</th>
 					<th>格式</th>
-					<th>抓取时间</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -124,6 +108,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:forEach items="${list}" var="joke">
 				<tr>
 					<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
+					<td><c:out value="${joke.id}"/></td>
 					<td>
 						<div class="table-item" style="height:60px">
 							<c:if test="${!empty joke.title}">
@@ -146,33 +131,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.type == 2}">动图</c:if>
 					</td>
 					<td>
-						<fmt:formatDate value="${joke.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-					</td>
-					<td>
-						<c:if test="${joke.status == 0}">
-							<a class="btn btn-success" href="#" onclick="verifyJoke(1,${joke.id})">
-					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
-					        </a>
-							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
-					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
-					        </a>
-					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
-					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a>
-						</c:if>
-						<c:if test="${joke.status == 1}">
-							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
-					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
-					        </a>
-						</c:if>
-						<c:if test="${joke.status == 2}">
-							<a class="btn btn-success" href="#" onclick="verifyJoke(1,${joke.id})">
-					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
-					        </a>
-					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
-					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a>
-						</c:if>
+						<a class="btn btn-danger" href="#" onclick="deleteJoke(${joke.id})">
+				        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
+				        </a>
 				    </td>
 				</tr>
 				</c:forEach>
@@ -211,7 +172,7 @@ $('#allcheck').on('click', function(){
     }
 });
 
-function verifyJoke(status,id) {
+function deleteJoke(id) {
 	if("batch" == id){
 		var ids = [];
 		$('input[name="jokeid"]:checked').each(function(){
@@ -225,10 +186,10 @@ function verifyJoke(status,id) {
 	}
 	
 	post('joke/verify',
-			'ids='+id+'&status='+status, 
+			'ids='+id+'&status=2', 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>joke/list?type='+$("#type").val()+'&status='+$("#status").val();
+					location.href = '<%=basePath%>joke/search?jokeid='+$("#jokeid").val()+'&content='+$("#content2").val();
 				}
 				else {
 					alert('审核失败. info:'+data['info']);
@@ -239,8 +200,8 @@ function verifyJoke(status,id) {
 			});
 }
 
-$('#selectVerifyJokeList').click(function(event) {
-	location.href = '<%=basePath%>joke/list?type='+$("#type").val()+'&status='+$("#status").val();
+$('#searchJoke').click(function(event) {
+	location.href = '<%=basePath%>joke/search?jokeid='+$("#jokeid").val()+'&content='+$("#content2").val();
 });
 
 function post(url, data, success, error) {

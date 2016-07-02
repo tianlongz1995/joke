@@ -8,9 +8,11 @@ import com.oupeng.joke.domain.Joke;
 
 public class JokeSqlProvider {
 
-	public static String getJokeListForVerify(Map<String,Object> map){
+	public static String getJokeList(Map<String,Object> map){
 		Object type = map.get("type");
 		Object status = map.get("status");
+		Object id = map.get("id");
+		Object content = map.get("content");
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select id,title,content,img,gif,type,status,source_id as sourceId,");
 		sql.append(" verify_user as verifyUser,verify_time as verifyTime,create_time as createTime,");
@@ -20,6 +22,12 @@ public class JokeSqlProvider {
 		}
 		if(status != null){
 			sql.append(" and status = ").append(status).append(" ");
+		}
+		if(id != null){
+			sql.append(" and id = ").append(id).append(" ");
+		}
+		if(content != null){
+			sql.append(" and content like '%").append(content).append("%' ");
 		}
 		sql.append(" order by create_time limit 12 ");
 		return sql.toString();

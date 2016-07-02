@@ -14,8 +14,9 @@ import com.oupeng.joke.domain.JokeVerifyInfo;
 
 public interface JokeMapper {
 	
-	@SelectProvider(method="getJokeListForVerify",type=JokeSqlProvider.class)
-	public List<Joke> getJokeListForVerify(@Param(value="type")Integer type,@Param(value="status")Integer status);
+	@SelectProvider(method="getJokeList",type=JokeSqlProvider.class)
+	public List<Joke> getJokeList(@Param(value="type")Integer type,@Param(value="status")Integer status,
+			@Param(value="id")Integer id,@Param(value="content")String content);
 	
 	@UpdateProvider(method="verifyJoke",type=JokeSqlProvider.class)
 	public void verifyJoke(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
@@ -31,4 +32,26 @@ public interface JokeMapper {
 	@Select(value="select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
 			+ " and status = 1 and verify_user =#{user} group by type ")
 	public List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);
+	
+
+	/**
+	 * 更新段子被踩数
+	 * @param id
+	 */
+	@Update(value="update joke set bad = bad + 1 where id = #{id}")
+	void updateJokeStepCount(@Param(value = "id")Integer id);
+
+	/**
+	 * 更新段子点赞数
+	 * @param id
+	 */
+	@Update(value="update joke set good = good + 1 where id = #{id}")
+	void updatejokeLikeCount(@Param(value = "id")Integer id);
+
+	/**
+	 * 保存反馈信息
+	 * @param feedback
+	 */
+	@Insert("INSERT INTO feedback (d_id, c_id, type, content, create_time) VALUES (#{distributorId}, #{channelId}, #{type}, #{content}, now())")
+	void insertJokeFeedback(Feedback feedback);
 }

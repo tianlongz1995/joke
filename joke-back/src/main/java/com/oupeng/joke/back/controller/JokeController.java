@@ -59,4 +59,14 @@ public class JokeController {
 		jokeService.updateJoke(id, title, img, gif, content, username);
 		return new Success();
 	} 
+	
+	@RequestMapping(value="/search")
+	public String searchJokeList(@RequestParam(value="jokeid",required=false)Integer jokeid,
+			@RequestParam(value="content",required=false)String content,
+			Model model){
+		model.addAttribute("list", jokeService.getJokeListForSearch(jokeid, content));
+		model.addAttribute("jokeid", jokeid);
+		model.addAttribute("content", content);
+		return "/joke/search";
+	} 
 }
