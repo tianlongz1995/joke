@@ -1,10 +1,14 @@
 package com.oupeng.joke.front.service;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.response.DistributorConfigResult;
+import com.oupeng.joke.domain.response.Failed;
+import com.oupeng.joke.domain.response.Result;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +16,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayDeque;
 import java.util.List;
 
 @Service
@@ -21,21 +24,27 @@ public class JokeService {
 
     @Autowired
     private JedisCache jedisCache;
-    /**     */
-    private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();
-//    private static ArrayDeque
-
-    /**     */
+    /** 赞信息列表    */
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
+    /** 踩信息列表    */
+    private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();
+    /** 反馈信息列表    */
+    private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();
 
     /**
      * 获取渠道配置
      * @param did
      * @return
      */
-    public DistributorConfigResult getDistributorConfig(Integer did) {
-
-        return null;
+    public Result getDistributorConfig(String did) {
+        if(StringUtils.isNumeric(did)){
+            String result = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, did);
+            DistributorConfigResult dcr = JSON.parseObject(result, DistributorConfigResult.class);
+            if(dcr != null){
+                return new Result(200, "success", dcr);
+            }
+        }
+        return new Failed();
     }
 
     /**
@@ -51,6 +60,9 @@ public class JokeService {
         }
     }
 
+    /**
+     * 定时将赞列表中数据存储到缓存中
+     */
     @Scheduled(fixedRate = 1000 * 60 * 30, initialDelay = 1000 * 60 * 5)
     public void addLikeQueue(){
         try{
@@ -63,7 +75,9 @@ public class JokeService {
             logger.error("增加点赞数失败",e);
         }
     }
-
+    /**
+     * 定时将踩列表中数据存储到缓存中
+     */
     @Scheduled(fixedRate = 1000 * 60 * 30, initialDelay = 1000 * 60 * 5)
     public void addStepQueue(){
         try{
@@ -81,6 +95,24 @@ public class JokeService {
      * @param feedback
      */
     public void feedback(Feedback feedback) {
-//        jedisCache.lpush(feedback);
+        String feedbackJson = JSON.toJSONString(feedback);
+            if(feedbackJson != null){
+                feedbackList.add(feedbackJson);
+            }
+    }
+    /**
+     * 定时将反馈信息列表中数据存储到缓存中
+     */
+    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 1000 * 60 * 5)
+    public void addFeedbackCache(){
+        try{
+            if(!CollectionUtils.isEmpty(feedbackList)){
+                logger.info("增加反馈数记录" + feedbackList.size() + "条");
+                jedisCache.lpush(JedisKey.JOKE_LIST_FEEDBACK, feedbackList.toArray(new String[]{}));
+                feedbackList.clear();
+            }
+        }catch(Exception e){
+            logger.error("增加反馈数失败",e);
+        }
     }
 }

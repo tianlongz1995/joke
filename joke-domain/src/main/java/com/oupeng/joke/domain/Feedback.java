@@ -10,15 +10,13 @@ public class Feedback {
     /** 反馈编号    */
     private Integer id;
     /** 渠道编号    */
+    private Integer distributorId;
+    /** 频道编号    */
     private Integer channelId;
     /** 反馈问题类型    */
     private Integer type;
-    /** 联系方式    */
-    private String links;
     /** 反馈内容    */
     private String content;
-    /** 创建时间    */
-    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -26,6 +24,14 @@ public class Feedback {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getDistributorId() {
+        return distributorId;
+    }
+
+    public void setDistributorId(Integer distributorId) {
+        this.distributorId = distributorId;
     }
 
     public Integer getChannelId() {
@@ -44,14 +50,6 @@ public class Feedback {
         this.type = type;
     }
 
-    public String getLinks() {
-        return links;
-    }
-
-    public void setLinks(String links) {
-        this.links = links;
-    }
-
     public String getContent() {
         return content;
     }
@@ -59,12 +57,15 @@ public class Feedback {
     public void setContent(String content) {
         this.content = content;
     }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Feedback{");
+        sb.append("id=").append(id);
+        sb.append(", distributorId=").append(distributorId);
+        sb.append(", channelId=").append(channelId);
+        sb.append(", type=").append(type);
+        sb.append(", content='").append(content).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

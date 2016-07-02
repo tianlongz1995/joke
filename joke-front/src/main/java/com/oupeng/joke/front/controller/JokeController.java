@@ -24,8 +24,8 @@ public class JokeController {
      */
     @RequestMapping(value = "/joke/getDistributorConfig")
     @ResponseBody
-    public DistributorConfigResult getDistributorConfig(@RequestParam(value="did",required=true)Integer did){
-        return jokeService.getDistributorConfig(did);
+    public Result getDistributorConfig(@RequestParam(value="did",required=true)Integer did){
+        return jokeService.getDistributorConfig(String.valueOf(did));
     }
     /**
      * 踩赞接口

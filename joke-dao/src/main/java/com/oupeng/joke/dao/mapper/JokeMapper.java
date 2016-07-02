@@ -35,7 +35,6 @@ public interface JokeMapper {
 	@Select(value="select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
 			+ " and status = 1 and verify_user =#{user} group by type ")
 	public List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);
-	
 
 	/**
 	 * 更新段子被踩数

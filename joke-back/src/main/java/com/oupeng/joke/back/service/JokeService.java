@@ -2,9 +2,12 @@ package com.oupeng.joke.back.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
+import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.domain.Feedback;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +25,15 @@ import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
 
+import javax.annotation.PostConstruct;
+
 @Service
 public class JokeService {
 	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
-	
+
 	@Autowired
 	private JokeMapper jokeMapper;
-	
+
 	@Autowired
 	private JedisCache jedisCache;
 	
@@ -43,7 +48,6 @@ public class JokeService {
 	public Joke getJokeById(Integer id){
 		return jokeMapper.getJokeById(id);
 	}
-	
 
 	/**
 	 * 更新段子点赞数
@@ -115,7 +119,7 @@ public class JokeService {
 			}
 		}.start();
 	}
-	
+
 	public void updateJoke(Integer id,String title,String img,String gif,String content,String user){
 		Joke joke = new Joke();
 		joke.setId(id);
