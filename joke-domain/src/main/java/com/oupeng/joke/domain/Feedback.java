@@ -1,7 +1,5 @@
 package com.oupeng.joke.domain;
 
-import java.util.Date;
-
 /**
  * 反馈
  * Created by hushuang on 16/7/1.

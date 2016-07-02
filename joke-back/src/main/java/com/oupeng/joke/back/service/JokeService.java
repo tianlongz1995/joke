@@ -2,7 +2,6 @@ package com.oupeng.joke.back.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.cache.JedisCache;
@@ -15,13 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.cache.JedisCache;
-import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
-import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
 
@@ -162,6 +157,6 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForSearch(Integer id,String content){
-		return jokeMapper.getJokeList(null,null,id,content);
+		return jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content);
 	}
 }

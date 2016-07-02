@@ -1,7 +1,6 @@
 package com.oupeng.joke.front.controller;
 
 import com.oupeng.joke.domain.Feedback;
-import com.oupeng.joke.domain.response.DistributorConfigResult;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import com.oupeng.joke.front.service.JokeService;
