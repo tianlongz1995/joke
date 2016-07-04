@@ -21,6 +21,7 @@
 					<ul class="nav nav-pills nav-stacked">
 						<li><a href="joke/search"><span> 快捷查找</span></a></li>
 						<li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
+						<li><a href="channel/list?status=0"><span> 频道管理</span></a></li>
 					</ul>
 				</li>
 			</ul>

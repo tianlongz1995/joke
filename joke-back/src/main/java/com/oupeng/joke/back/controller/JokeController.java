@@ -34,8 +34,7 @@ public class JokeController {
 	@RequestMapping(value="/verify")
 	@ResponseBody
 	public Result verify(@RequestParam(value="ids")String ids,
-			@RequestParam(value="status")Integer status,
-			Model model){
+			@RequestParam(value="status")Integer status){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		jokeService.verifyJoke(status, ids, username);
 		return new Success();
@@ -53,8 +52,7 @@ public class JokeController {
 			@RequestParam(value="title",required=false)String title,
 			@RequestParam(value="content",required=false)String content,
 			@RequestParam(value="img",required=false)String img,
-			@RequestParam(value="gif",required=false)String gif,
-			Model model){
+			@RequestParam(value="gif",required=false)String gif){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		jokeService.updateJoke(id, title, img, gif, content, username);
 		return new Success();
