@@ -1,9 +1,11 @@
 package com.oupeng.joke.domain.log;
 
+import com.alibaba.fastjson.JSON;
+
 public class ClickLog {
 	private Integer jid;//进入详情页的段子id
 	private String uid;//进入详情页的段子id
-	private Integer type;//类型  1:进入详情页 2:赞 3:踩
+	private Integer type;//类型  1:赞 2:踩 3:进入详情页 
 	private Long timestamp;//时间戳
 	
 	public ClickLog(){
@@ -40,5 +42,8 @@ public class ClickLog {
 	}
 	public void setType(Integer type) {
 		this.type = type;
+	}
+	public String toString() {
+		return JSON.toJSONString(this);
 	}
 }

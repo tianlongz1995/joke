@@ -1,5 +1,7 @@
 package com.oupeng.joke.domain.log;
 
+import com.alibaba.fastjson.JSON;
+
 public class ImprLog {
 	private Integer did;//渠道id
 	private Integer cid;//频道id
@@ -49,5 +51,8 @@ public class ImprLog {
 	}
 	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String toString() {
+		return JSON.toJSONString(this);
 	}
 }
