@@ -1,8 +1,8 @@
 package com.oupeng.joke.back.controller;
 
-import com.oupeng.joke.back.service.AdService;
+import com.oupeng.joke.back.service.SourceService;
 import com.oupeng.joke.back.service.DistributorService;
-import com.oupeng.joke.domain.Ad;
+import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.slf4j.Logger;
@@ -11,53 +11,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 /**
- * 广告管理
+ * 内容源管理
  */
 @Controller
-@RequestMapping(value="/ad")
-public class AdController {
-	private static final Logger logger = LoggerFactory.getLogger(AdController.class);
+@RequestMapping(value="/source")
+public class SourceController {
+	private static final Logger logger = LoggerFactory.getLogger(SourceController.class);
 	@Autowired
-	private AdService adService;
+	private SourceService sourceService;
 	@Autowired
 	private DistributorService distributorService;
 
 	/**
-	 * 广告列表
-	 * @param distributorId 渠道编号
-	 * @param pos		广告位置
-	 * @param status	广告状态
-	 * @param slotId	广告位ID
+	 * 内容源列表
+	 * @param name 		名称
+	 * @param url		URL
+	 * @param status	内容源状态
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value="/list")
-	public String getAdList(@RequestParam(value="distributorId",required=false)Integer distributorId,
-							@RequestParam(value="pos",required=false)Integer pos,
+	public String getSourceList(@RequestParam(value="name",required=false)String name,
+							@RequestParam(value="url",required=false)String url,
 							@RequestParam(value="status",required=false)Integer status,
-							@RequestParam(value="slotId",required=false)Integer slotId,
 							@RequestParam(value="pageNumber",required=false)Integer pageNumber,
 							@RequestParam(value="pageSize",required=false)Integer pageSize,
 							Model model){
 		try {
 			pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
 			pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
-			Ad ad = new Ad();
-			ad.setStatus(status);
-			ad.setDid(distributorId);
-			ad.setPos(pos);
-			ad.setSlotId(slotId);
-			List<Ad> list = null;
+			Source source = new Source();
+			source.setStatus(status);
+			source.setName(name);
+			source.setUrl(url);
+			List<Source> list = null;
 			int pageCount = 0;//总页数
 			int offset = 0 ;//开始条数index
-			int count = adService.getAdListCount(ad);//总条数
+			int count = sourceService.getSourceListCount(source);//总条数
 			if(count > 0){
 				if (count % pageSize == 0) {
 					pageCount = count / pageSize;
@@ -72,9 +68,9 @@ public class AdController {
 					pageNumber = 1;
 				}
 				offset = (pageNumber - 1) * pageSize;
-				ad.setOffset(offset);
-				ad.setPageSize(pageSize);
-				list = adService.getAdList(ad);
+				source.setOffset(offset);
+				source.setPageSize(pageSize);
+				list = sourceService.getSourceList(source);
 			}
 
 			model.addAttribute("count", count);
@@ -82,33 +78,29 @@ public class AdController {
 			model.addAttribute("pageSize", pageSize);
 			model.addAttribute("pageCount", pageCount);
 			model.addAttribute("list", list);
-			model.addAttribute("dList", distributorService.getDistributorList(1));
 			model.addAttribute("status", status);
-			model.addAttribute("pos", pos);
-			model.addAttribute("slotId", slotId);
-			model.addAttribute("distributorId", distributorId);
-		}catch (Exception e){
+			model.addAttribute("name", name);
+			model.addAttribute("url", url);
+		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}
-		return "/ad/list";
+		return "/source/list";
 	}
 
 	/**
-	 *	修改状态
+	 *	删除（逻辑删除）
 	 * @param id
-	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/modifyStatus")
+	@RequestMapping(value="/del")
 	@ResponseBody
-	public Result modifyStatus(@RequestParam(value="id")Integer id,
-			@RequestParam(value="status")Integer status){
-		adService.updateAdStatus(id, status);
+	public Result del(@RequestParam(value="id", required = true)Integer id){
+		sourceService.del(id);
 		return new Success();
 	}
 
 	/**
-	 * 获取广告信息并进入修改页面
+	 * 获取内容源信息并进入修改页面
 	 * @param id
 	 * @param model
 	 * @return
@@ -116,47 +108,43 @@ public class AdController {
 	@RequestMapping(value="/modify")
 	public String modify(@RequestParam(value="id",required=true)Integer id,Model model){
 		try{
-			model.addAttribute("ad", adService.getAdById(id));
+			model.addAttribute("source", sourceService.getSourceById(id));
 			model.addAttribute("dList", distributorService.getDistributorList(1));
-		}catch (Exception e){
+		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}
-		return "/ad/edit";
+		return "/source/edit";
 	}
 
 	/**
-	 * 更新广告信息
+	 * 更新内容源信息
 	 * @param id
-	 * @param slotId
-	 * @param pos
-	 * @param slide
-	 * @param did
+	 * @param name
+	 * @param url
 	 * @param status
 	 * @return
 	 */
 	@RequestMapping(value="/update")
 	@ResponseBody
 	public Result update(@RequestParam(value="id",required=true)Integer id,
-						 @RequestParam(value="slotId",required=false)Integer slotId,
-						 @RequestParam(value="pos",required=false)Integer pos,
-						 @RequestParam(value="slide",required=true)Integer slide,
-						 @RequestParam(value="did",required=false)Integer did,
+						 @RequestParam(value="name",required=false)String name,
+						 @RequestParam(value="url",required=false)String url,
 						 @RequestParam(value="status",required=true)Integer status){
-		adService.updateAd(id, slotId, pos, slide, did,status);
+		sourceService.updateSource(id, name, url, status);
 		return new Success();
 	}
 
 	/**
-	 * 新增广告
-	 * @param ad
+	 * 新增内容源
+	 * @param source
 	 * @return
 	 */
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Result add(Ad ad){
+	public Result add(Source source){
 		try {
-			adService.insertAd(ad);
-		}catch (Exception e){
+			sourceService.insertSource(source);
+		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}
 			return new Success();

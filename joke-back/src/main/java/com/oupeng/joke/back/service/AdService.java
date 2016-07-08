@@ -20,12 +20,20 @@ public class AdService {
     private AdMapper adMapper;
 
     /**
-     * 获取广告列表
-     * @param distributorId 广告编号
+     * 获取广告列表记录总数
+     * @param ad
      * @return
      */
-    public List<Ad> getAdList(Integer distributorId){
-        return adMapper.getAdList(distributorId);
+    public int getAdListCount(Ad ad) {
+        return adMapper.getAdListCount(ad);
+    }
+    /**
+     * 获取广告列表
+     * @param ad        广告
+     * @return
+     */
+    public List<Ad> getAdList(Ad ad){
+        return adMapper.getAdList(ad);
     }
 
     /**
@@ -48,25 +56,30 @@ public class AdService {
 
     /**
      * 新增广告
-     * @param name
-     * @param status
+     * @param ad
      */
-    public void insertAd(String name,Integer status){
-        Ad ad = new Ad();
-        ad.setStatus(status);
+    public void insertAd(Ad ad){
         adMapper.insertAd(ad);
     }
 
-    /**
+    /**i
      * 更新广告信息
      * @param id
-     * @param name
+     * @param slotId
+     * @param pos
+     * @param slide
+     * @param did
      * @param status
      */
-    public void updateAd(Integer id ,String name,Integer status){
+    public void updateAd(Integer id, Integer slotId, Integer pos, Integer slide, Integer did, Integer status){
         Ad ad = new Ad();
         ad.setId(id);
+        ad.setSlotId(slotId);
+        ad.setPos(pos);
+        ad.setSlide(slide);
+        ad.setDid(did);
         ad.setStatus(status);
         adMapper.updateAd(ad);
     }
+
 }

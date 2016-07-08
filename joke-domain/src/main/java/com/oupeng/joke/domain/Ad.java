@@ -13,12 +13,19 @@ public class Ad {
 	private Integer slide;
 	/**	渠道id	*/
 	private Integer did;
+	/**	渠道名称	*/
+	private String dName;
 	/**	状态 0:下线 1:上线	*/
 	private Integer status;
 	/**	创建时间	*/
 	private Date createTime;
 	/**	更新时间	*/
 	private Date updateTime;
+	/**	分页开始条数Index	*/
+	private Integer offset;
+	/**	当前页数	*/
+	private Integer pageSize;
+
 
 	public Integer getId() {
 		return id;
@@ -44,6 +51,15 @@ public class Ad {
 	public void setSlide(Integer slide) {
 		this.slide = slide;
 	}
+
+	public String getdName() {
+		return dName;
+	}
+
+	public void setdName(String dName) {
+		this.dName = dName;
+	}
+
 	public Integer getDid() {
 		return did;
 	}
@@ -68,4 +84,20 @@ public class Ad {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+
 }

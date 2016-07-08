@@ -3,19 +3,53 @@ package com.oupeng.joke.dao.sqlprovider;
 import com.oupeng.joke.domain.Ad;
 import org.apache.commons.lang3.StringUtils;
 
-public class AdSqlProvider {
+import java.util.ArrayDeque;
 
+public class AdSqlProvider {
 	/**
-	 * 获取广告列表
-	 * @param distributorId 渠道编号
+	 * 获取广告列表记录总数
+	 * @param ad		广告
 	 * @return
 	 */
-	public static String getAdList(Integer distributorId){
+	public String getAdListCount(Ad ad){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select id,slot_id as slotId,pos,slide,d_id as did,status,create_time as createTime,update_time as updateTime from ad where 1 = 1 ");
-		if(distributorId != null){
-			sql.append(" and d_id = ").append(distributorId);
+		sql.append("select count(a.id) from ad a left join distributor d on a.d_id = d.id where 1=1 ");
+		if(ad.getDid() != null){
+			sql.append(" and a.d_id = ").append(ad.getDid());
 		}
+		if(ad.getPos() != null){
+			sql.append(" and a.pos = ").append(ad.getPos());
+		}
+		if(ad.getStatus() != null){
+			sql.append(" and a.status = ").append(ad.getStatus());
+		}
+		if(ad.getSlotId() != null){
+			sql.append(" and a.slot_id = ").append(ad.getSlotId());
+		}
+		return sql.toString();
+	}
+	/**
+	 * 获取广告列表
+	 * @param ad		广告
+	 * @return
+	 */
+	public String getAdList(Ad ad){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select a.id,a.slot_id as slotId,a.pos,a.slide,d.name as dName,a.status,a.create_time as createTime,a.update_time as updateTime from ad a left join distributor d on a.d_id = d.id where 1=1 ");
+		if(ad.getDid() != null){
+			sql.append(" and a.d_id = ").append(ad.getDid());
+		}
+		if(ad.getPos() != null){
+			sql.append(" and a.pos = ").append(ad.getPos());
+		}
+		if(ad.getStatus() != null){
+			sql.append(" and a.status = ").append(ad.getStatus());
+		}
+		if(ad.getSlotId() != null){
+			sql.append(" and a.slot_id = ").append(ad.getSlotId());
+		}
+		sql.append(" order by a.create_time desc ");
+		sql.append(" limit ").append(ad.getOffset()).append(",").append(ad.getPageSize());
 		return sql.toString();
 	}
 
@@ -24,7 +58,7 @@ public class AdSqlProvider {
 	 * @param ad
 	 * @return
 	 */
-	public static String insertAd(Ad ad){
+	public String insertAd(Ad ad){
 		StringBuffer sql = new StringBuffer();
 		sql.append(" insert into ad(slot_id,pos,slide,d_id,status,create_time,update_time) value (");
 		if(ad.getSlotId() != null){
@@ -63,20 +97,20 @@ public class AdSqlProvider {
 	 */
 	public String updateAd(Ad ad){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" update ad set update_time=now(),slot_id = ");
+		sql.append(" update ad set update_time=now() ");
 		if(ad.getSlotId() != null){
-			sql.append(ad.getSlotId()).append("',");
+			sql.append(",slot_id = ").append(ad.getSlotId());
 		}
 		if(ad.getPos() != null){
-			sql.append(",pos=").append(ad.getPos()).append(",");
+			sql.append(",pos=").append(ad.getPos());
 		}
 		if(ad.getSlide() != null){
-			sql.append(",slide=").append(ad.getSlide()).append(",");
+			sql.append(",slide=").append(ad.getSlide());
 		}
 		if(ad.getDid() != null){
-			sql.append(",d_id=").append(ad.getDid()).append(",");
+			sql.append(",d_id=").append(ad.getDid());
 		}
-		sql.append("status=").append(ad.getStatus());
+		sql.append(",status=").append(ad.getStatus());
 		sql.append(" where id = ").append(ad.getId());
 		return sql.toString();
 	}
