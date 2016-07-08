@@ -159,4 +159,12 @@ public class JokeService {
 	public List<Joke> getJokeListForSearch(Integer id,String content){
 		return jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content);
 	}
+	
+	public int getJokeCountForChannel(String contentType){
+		return jokeMapper.getJokeCountForChannel(contentType);
+	}
+	
+	public List<Joke> getJokeListForChannel(String contentType,Integer start,Integer size){
+		return jokeMapper.getJokeListForChannel(contentType,start,size);
+	}
 }

@@ -1,13 +1,16 @@
 package com.oupeng.joke.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Topic {
 	private Integer id;
 	private String title;
 	private String content;
 	private String img;
-	private String gif;
 	private String dids;
 	private Integer status;
 	private Date publishTime;
@@ -37,12 +40,6 @@ public class Topic {
 	}
 	public void setImg(String img) {
 		this.img = img;
-	}
-	public String getGif() {
-		return gif;
-	}
-	public void setGif(String gif) {
-		this.gif = gif;
 	}
 	public String getDids() {
 		return dids;
@@ -74,5 +71,20 @@ public class Topic {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+	public String getPublishTimeString() {
+		String result = null;
+		if(publishTime != null){
+			result = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(publishTime);
+		}
+		return result;
+	}
+	public void setPublishTimeString(String publishTime){
+		if(StringUtils.isNotBlank(publishTime)){
+			try {
+				this.publishTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(publishTime);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -51,7 +51,7 @@ public class JokeSqlProvider {
 		sql.append(" status=1,type=").append(joke.getType()).append(",");
 		sql.append(" verify_user='").append(joke.getVerifyUser()).append("',");
 		if(StringUtils.isNotBlank(joke.getTitle())){
-			sql.append(" title='").append(joke.getTitle()).append("',");
+			sql.append(" title='").append(joke.getTitle().trim()).append("',");
 		}else{
 			sql.append(" title=null,");
 		}
@@ -66,11 +66,33 @@ public class JokeSqlProvider {
 			sql.append(" gif=null,");
 		}
 		if(StringUtils.isNotBlank(joke.getContent())){
-			sql.append(" content='").append(joke.getContent()).append("' ");
+			sql.append(" content='").append(joke.getContent().trim()).append("' ");
 		}else{
 			sql.append(" content=null ");
 		}
 		sql.append(" where id =").append(joke.getId());
+		return sql.toString();
+	}
+	
+	public static String getJokeCountForChannel(String contentType){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(1) from joke where status = 1 ");
+		if(StringUtils.isNotBlank(contentType)){
+			sql.append(" and type in (").append(contentType).append(") ");
+		}
+		return sql.toString();
+	}
+	
+	public static String getJokeListForChannel(Map<String,Object> map){
+		Object contentType = map.get("contentType");
+		Integer start = Integer.valueOf(map.get("start").toString());
+		Integer size = Integer.valueOf(map.get("size").toString());
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select id,title,content,img,gif,type,verify_time as verifyTime from joke where status = 1 ");
+		if(contentType != null && !"".equals(contentType)){
+			sql.append(" and type in (").append(contentType).append(") ");
+		}
+		sql.append(" order by verify_time desc limit ").append(start).append(",").append(size);
 		return sql.toString();
 	}
 }
