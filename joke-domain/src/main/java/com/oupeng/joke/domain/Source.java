@@ -9,6 +9,10 @@ public class Source {
 	private Integer status;
 	private Date createTime;
 	private Date updateTime;
+	/**	分页开始条数Index	*/
+	private Integer offset;
+	/**	当前页数	*/
+	private Integer pageSize;
 	public Integer getId() {
 		return id;
 	}
@@ -42,6 +46,23 @@ public class Source {
 	public Date getUpdateTime() {
 		return updateTime;
 	}
+
+	public Integer getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}

@@ -47,50 +47,8 @@
                     <li><a href="ad/list">广告管理</a></li>
                 </ul>
             </div>
-            <div class="row">
-                <div class="col-md-1" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
-                    <p style="padding: 8px 0px;">投放渠道：</p>
-                </div>
-                <div class="col-md-11" style="margin-left: 0px;">
-                    <div style="padding: 8px 0px;">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox11" value="option1"> 全部
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox12" value="option2"> 公共
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox13" value="option3"> VIVO
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox14" value="option1"> OPPO
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox15" value="option2"> 金立
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox16" value="option3"> 魅族
-                        </label>
-                    </div>
 
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
-                    <p style="padding: 8px 0px;">广告位置：</p>
-                </div>
-                <div class="col-md-11" style="margin-left: 0px;">
-                    <p style="padding: 8px 0px;">页面位置类型</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
-                    <p style="padding: 8px 0px;">广告位置ID：</p>
-                </div>
-                <div class="col-md-11" style="margin-left: 0px;">
-                    <input id="adlinkid1" type="text" style="padding: 8px 12px;" class="form-control" placeholder="输入广告链接ID"/>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="box col-md-12">
                     <div class="box-inner">
@@ -98,38 +56,84 @@
                             <h2><i class="glyphicon glyphicon-user"></i> 广告列表</h2>
                         </div>
                         <div class="box-content">
-                            <div class="alert alert-info">
-                                <a href="#" data-toggle="modal" data-target="#newad">添加新广告</a>
-
-                                <label class="checkbox-inline" style="float: right;">
-                                    <input type="checkbox" id="onlyViewOnline" value="option2"> 只显示上线
-                                </label>
-                                <label class="checkbox-inline" style="float: right;margin-left: 5px;">
-                                    <input type="checkbox" id="onlyViewOffline" value="option1"> 只显示下线
-                                </label>
-
+                            <div class="alert alert-info" >
+                                需要添加新的广告点击:  <a href="#" data-toggle="modal" data-target="#newad"><i class="glyphicon glyphicon-plus"></i> 新增广告</a>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
-                                <div class="dataTables_filter" id="DataTables_Table_0_filter">
-                                    <label style="padding-right:30px;">
-                                        <span>状态</span>
-                                        <select id="status">
-                                            <option value="">全部</option>
-                                            <option value="0"
-                                                    <c:if test="${!empty status && status == 0}">selected</c:if> >下线
+                                <div class="row" style="padding: 0px 5px;">
+                                    <div class="col-md-2" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
+                                        <p style="padding: 8px 0px;margin: 0px;">投放渠道：</p>
+                                    </div>
+                                    <div class="col-md-10" style="margin-left: 0px;">
+                                        <div style="padding: 8px 0px;">
+                                            <select id="distributors" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                                <c:if test="${empty distributorId}">
+                                                    <option value="" selected>全部</option>
+                                                </c:if>
+                                                <c:if test="${not empty distributorId}">
+                                                    <option value="">全部</option>
+                                                </c:if>
+                                                <c:forEach items="${dList}" var="distributor" varStatus="status">
+                                                    <option value='<c:out value="${distributor.id}"/>' <c:if test="${!empty distributorId && distributorId == distributor.id}">selected</c:if> ><c:out value="${distributor.name}"/></option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding:  0px 5px;">
+                                    <div class="col-md-2" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
+                                        <p style="padding: 8px 0px;margin: 0px;">广告位置 ：</p>
+                                    </div>
+                                    <div class="col-md-10" style="margin-left: 0px;">
+                                        <select id="pagePos" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                            <c:if test="${empty pos}">
+                                                <option value="" selected>全部</option>
+                                            </c:if>
+                                            <c:if test="${not empty pos}">
+                                                <option value="">全部</option>
+                                            </c:if>
+                                            <option value="1" <c:if test="${!empty pos && pos == 1}">selected</c:if> >列表页中间</option>
+                                            <option value="2" <c:if test="${!empty pos && pos == 2}">selected</c:if> >列表页底部</option>
+                                            <option value="3" <c:if test="${!empty pos && pos == 3}">selected</c:if> >详情页上方</option>
+                                            <option value="4" <c:if test="${!empty pos && pos == 4}">selected</c:if> >详情页中部</option>
+                                            <option value="5" <c:if test="${!empty pos && pos == 5}">selected</c:if> >详情页底部</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="row" style="padding:  0px 5px;">
+                                    <div class="col-md-2" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
+                                        <p style="padding: 8px 0px;margin: 0px;">广告状态 ：</p>
+                                    </div>
+                                    <div class="col-md-10" style="margin-left: 0px;">
+                                        <select id="status" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                            <c:if test="${empty status}">
+                                                <option value="" selected>全部</option>
+                                            </c:if>
+                                            <c:if test="${not empty status}">
+                                                <option value="">全部</option>
+                                            </c:if>
+                                            <option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >下线
                                             </option>
-                                            <option value="1"
-                                                    <c:if test="${!empty status && status == 1}">selected</c:if> >上线
+                                            <option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >上线
                                             </option>
                                         </select>
-                                    </label>
-                                    <label style="padding-right:30px;">
-                                        <a class="btn btn-primary" href="#" id="selectadList">
+
+                                    </div>
+                                </div>
+                                <div class="row" style="padding: 0px 5px;margin-bottom: 15px;">
+                                    <div class="col-md-2" style="text-align: left;height: 38px;margin-right: 0px;padding-right: 0px;">
+                                        <p style="padding: 8px 0px;margin: 0px;">广告位ID ：</p>
+                                    </div>
+                                    <div class="col-md-3" style="margin-left: 0px;line-height: 38px;">
+                                        <input id="myslotId" type="text" style="padding: 8px 0px;margin:5px;width: 100%;" class=" input-sm col-xs-4" placeholder="输入广告链接ID" value="${slotId}"/>
+                                    </div>
+                                    <div class="col-md-7" style="text-align: left;line-height: 38px;">
+                                        <a class="btn btn-primary btn-sm" href="#" id="selectadList" style="text-align: center;">
                                             <span class="glyphicon glyphicon-search icon-white">查询</span>
                                         </a>
-                                    </label>
+                                    </div>
                                 </div>
-
                                 <thead>
                                 <tr>
                                     <th>ID</th>
@@ -143,12 +147,20 @@
                                     <th>操作</th>
                                 </tr>
                                 </thead>
-
                                 <tbody>
                                 <c:forEach items="${list}" var="ad">
                                     <tr>
                                         <td><c:out value="${ad.id}"/></td>
-                                        <td><c:out value="${ad.name}"/></td>
+                                        <td><c:out value="${ad.slotId}"/></td>
+                                        <td>
+                                            <c:if test="${ad.pos == 1}">列表页中间</c:if>
+                                            <c:if test="${ad.pos == 2}">列表页底部</c:if>
+                                            <c:if test="${ad.pos == 3}">详情页上方</c:if>
+                                            <c:if test="${ad.pos == 4}">详情页中部</c:if>
+                                            <c:if test="${ad.pos == 5}">详情页底部</c:if>
+                                        </td>
+                                        <td><c:out value="${ad.slide}"/></td>
+                                        <td><c:out value="${ad.dName}"/></td>
                                         <td>
                                             <c:if test="${ad.status == 0}">
                                                 下线
@@ -158,31 +170,38 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                            <c:if test="${ad.status == 0}">
-                                                <a class="btn btn-success" href="#" onclick="modifyStatus(1,${ad.id})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i>上线
-                                                </a>
-                                            </c:if>
-                                            <c:if test="${ad.status == 1}">
-                                                <a class="btn btn-danger" href="#" onclick="modifyStatus(0,${ad.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                </a>
-                                            </c:if>
-                                            <a class="btn btn-info" href="ad/edit?id=${ad.id}">
-                                                <i class="glyphicon glyphicon-edit icon-white"></i>编辑
-                                            </a>
-                                        </td>
-                                        <td>
                                             <fmt:formatDate value="${ad.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
                                         <td>
                                             <fmt:formatDate value="${ad.updateTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
+                                        <td>
+                                            <c:if test="${ad.status == 0}">
+                                                <a class="btn btn-success btn-xs" href="#" onclick="modifyStatus(1,${ad.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>上线
+                                                </a>
+                                            </c:if>
+                                            <c:if test="${ad.status == 1}">
+                                                <a class="btn btn-danger btn-xs" href="#" onclick="modifyStatus(0,${ad.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                            </c:if>
+                                            <a class="btn btn-info btn-xs" href="ad/modify?id=${ad.id}">
+                                                <i class="glyphicon glyphicon-edit icon-white"></i>编辑
+                                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
                             </table>
 
+                            <div class="row">
+                                <div class="col-md-12 center-block">
+                                    <div class="dataTables_paginate paging_bootstrap pagination">
+                                        <jsp:include page="../common/page.jsp" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,59 +221,45 @@
                                 <tr>
                                     <th>投放渠道</th>
                                     <td>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox1" value="option1"> 全部
-                                        </label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox2" value="option2"> 公共
-                                        </label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox3" value="option3"> VIVO
-                                        </label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox4" value="option1"> OPPO
-                                        </label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox5" value="option2"> 金立
-                                        </label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" id="inlineCheckbox6" value="option3"> 魅族
-                                        </label>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>广告链接ID</th>
-                                    <td><input id="adLinkId" type="text" class="form-control" placeholder="输入广告链接ID"/></td>
-                                </tr>
-                                <tr>
-                                    <th>投放页面</th>
-                                    <td>
-                                        <select id="advertisingPage" class="form-control">
-                                            <option value="0">频道首页</option>
-                                            <option value="1">中间页</option>
+                                        <select id="did" style="font-size: 16px;width: 150px;margin: 2px;" class="form-control">
+                                            <c:forEach items="${dList}" var="distributor" varStatus="status">
+                                                <option value='<c:out value="${distributor.id}"/>'><c:out value="${distributor.name}"/></option>
+                                            </c:forEach>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>投放方式</th>
+                                    <th>广告位置ID</th>
+                                    <td><input id="slotId" type="text" class="form-control" placeholder="输入广告链接ID"/></td>
+                                </tr>
+                                <tr>
+                                    <th>投放位置</th>
                                     <td>
-                                        <select id="advertisingPos" class="form-control">
-                                            <option value="0">页尾浮动</option>
-                                            <option value="1">Banner</option>
+                                        <select id="pos" class="form-control">
+                                            <option value="1" selected>列表页中间</option>
+                                            <option value="2">列表页底部</option>
+                                            <option value="3">详情页上方</option>
+                                            <option value="4">详情页中部</option>
+                                            <option value="5">详情页底部</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>位置ID</th>
-                                    <td><input id="posId" type="text" class="form-control" />DPH18976471</td>
+                                    <th>广告状态</th>
+                                    <td>
+                                        <select id="addstatus" class="form-control">
+                                            <option value="0">下线</option>
+                                            <option value="1" selected>上线</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>投放频率</th>
-                                    <td><input id="sloied" type="text" class="form-control" />（内容）+（广告）</td>
+                                    <td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+
+                                        <input id="adSlide" type="text" class="input-sm" style="width:50px;" value="1" />（广告）</td>
                                 </tr>
                             </table>
+
                         </div>
                         <div class="modal-footer" style="text-align: center;vertical-align: middle;">
                             <button id="addNewad" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
@@ -266,10 +271,22 @@
             <script type="text/javascript">
                 $('#addNewad').click(function (event) {
                     post('ad/add',
-                            'name=' + $("#addname").val() + '&status=' + $('#addstatus').val(),
+                            'did=' + $("#did").val()
+                            + '&pos=' + $('#pos').val()
+                            + '&slide=' + $('#slide').val()
+                            + '&status=' + $('#addstatus').val()
+                            + '&slotId=' + $('#slotId').val(),
                             function (data) {
                                 if (data['status']) {
-                                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val();
+                                    var slotId = $("#myslotId").val();
+                                    var param = '';
+                                    if($.isNumeric(slotId)){
+                                        param += "&slotId="+slotId;
+                                    }
+                                    var did = $('#distributors').val();
+                                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
+                                    + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
+                                    + '&pos=' + $("#pagePos").val() + param;
                                 } else {
                                     alert('添加失败. info:' + data['info']);
                                 }
@@ -284,7 +301,15 @@
                             'id=' + id + '&status=' + status,
                             function (data) {
                                 if (data['status']) {
-                                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val();
+                                    var slotId = $("#myslotId").val();
+                                    var param = '';
+                                    if($.isNumeric(slotId)){
+                                        param += "&slotId="+slotId;
+                                    }
+                                    var did = $('#distributors').val();
+                                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
+                                    + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
+                                    + '&pos=' + $("#pagePos").val() + param;
                                 }
                                 else {
                                     alert('操作失败. info:' + data['info']);
@@ -296,7 +321,15 @@
                 }
 
                 $('#selectadList').click(function (event) {
-                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val();
+                    var slotId = $("#myslotId").val();
+                    var param = '';
+                    if($.isNumeric(slotId)){
+                        param += "&slotId="+slotId;
+                    }
+                    var did = $('#distributors').val();
+                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
+                        + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
+                        + '&pos=' + $("#pagePos").val() + param;
                 });
 
                 function post(url, data, success, error) {
@@ -306,6 +339,15 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
+                };
+                function turnPage(){
+                    var slotId = $("#myslotId").val();
+                    var param = '';
+                    if($.isNumeric(slotId)){
+                        param += "&slotId="+slotId;
+                    }
+                    location.href = '<%=basePath%>ad/list?status='+$("#status").val()+'&distributorId='+$("#distributors").val()+'&pos='+$("#pagePos").val()
+                    +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val() + param;
                 }
             </script>
 

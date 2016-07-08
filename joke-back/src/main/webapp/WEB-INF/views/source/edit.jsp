@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>广告编辑</title>
+	<title>内容源编辑</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -42,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div id="content" class="col-lg-10 col-sm-10">
 <div>
 	<ul class="breadcrumb">
-		<li><a href="ad/list">广告管理</a></li>
+		<li><a href="source/list">内容源管理</a></li>
 	</ul>
 </div>
 
@@ -51,52 +51,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 广告编辑</h2>
+		<h2><i class="glyphicon glyphicon-user"></i> 内容源编辑</h2>
 	</div>
 	<div class="box-content">
 		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th>ID</th>
-					<td><input id="adid" type="text" class="form-control" disabled="disabled" value="${ad.id}"/></td>
+					<td><input id="sourceid" type="text" class="form-control" disabled="disabled" value="${source.id}"/></td>
 				</tr>
 				<tr>
-					<th>广告位ID</th>
-					<td><input id="slotId" type="text" class="form-control" value="${ad.slotId}"/></td>
+					<th>名称</th>
+					<td><input id="name" type="text" class="form-control" value="${source.name}"/></td>
 				</tr>
 				<tr>
-		  			<th>广告位位置</th>
-			  		<td>
-			  			<select id="pos" class="form-control" >
-							<option value="1" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 1}">selected</c:if> >列表页中间</option>
-							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >列表页底部</option>
-							<option value="3" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 3}">selected</c:if> >详情页上方</option>
-							<option value="4" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 4}">selected</c:if> >详情页中部</option>
-							<option value="5" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 5}">selected</c:if> >详情页底部</option>
-			  			</select>
-			  		</td>
-			  	</tr>
-				<tr>
-					<th>广告频率</th>
-					<td><input id="slide" type="text" class="form-control" value="${ad.slide}"/></td>
+					<th>URL</th>
+					<td><input id="url" type="text" class="form-control" value="${source.url}"/></td>
 				</tr>
 				<tr>
-					<th>发布渠道</th>
-					<td>
-						<%--<input id="dName" type="text" class="form-control" value="${ad.dName}"/>--%>
-						<select id="distributors" class="form-control" style="font-size: 16px;width: 300px;margin: 3px;" >
-							<c:forEach items="${dList}" var="distributor" varStatus="status">
-								<option value='<c:out value="${distributor.id}"/>' <c:if test="${!empty ad.did && ad.did == distributor.id}">selected</c:if> ><c:out value="${distributor.name}"/></option>
-							</c:forEach>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<th>广告状态</th>
+					<th>状态</th>
 					<td>
 						<select id="status" class="form-control" >
-							<option value="0" <c:if test="${!empty ad && !empty ad.status && ad.status == 0}">selected</c:if> >下线</option>
-							<option value="1" <c:if test="${!empty ad && !empty ad.status && ad.status == 1}">selected</c:if> >上线</option>
+							<option value="0" <c:if test="${!empty source && !empty source.status && source.status == 0}">selected</c:if> >下线</option>
+							<option value="1" <c:if test="${!empty source && !empty source.status && source.status == 1}">selected</c:if> >上线</option>
 						</select>
 					</td>
 				</tr>
@@ -112,11 +89,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 $('#updateAd').click(function(event) {
-	post('ad/update',
-			'id='+$("#adid").val()+'&slotId='+$("#slotId").val()+'&pos='+$('#pos').val()+'&slide='+$("#slide").val()+'&did='+$('#distributors').val()+'&status='+$('#status').val(),
+	post('source/update',
+			'id='+$("#sourceid").val()+'&name='+$("#name").val()+'&url='+$('#url').val()+'&status='+$('#status').val(),
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>ad/list';
+					location.href = '<%=basePath%>source/list';
 				}
 				else {
 					alert('更新失败. info:'+data['info']);

@@ -7,14 +7,20 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 public interface AdMapper {
-
+	/**
+	 * 获取广告列表总数
+	 * @param ad
+	 * @return
+	 */
+	@SelectProvider(method="getAdListCount",type=AdSqlProvider.class)
+	int getAdListCount(Ad ad);
 	/**
 	 * 获取广告列表
-	 * @param distributorId 渠道编号
+	 * @param ad        广告
 	 * @return
 	 */
 	@SelectProvider(method="getAdList",type=AdSqlProvider.class)
-	List<Ad> getAdList(Integer distributorId);
+	List<Ad> getAdList(Ad ad);
 
 	/**
 	 * 获取广告信息
@@ -46,4 +52,5 @@ public interface AdMapper {
 	 */
 	@UpdateProvider(method="updateAd",type=AdSqlProvider.class)
 	void updateAd(Ad ad);
+
 }
