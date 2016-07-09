@@ -28,10 +28,6 @@
 						<li><a href="ad/list"><span> 广告管理</span></a></li>
 						<li><a href="source/list"><span> 内容源管理</span></a></li>
 						<li><a href="feedback/list?status=0"><span> 用户反馈</span></a></li>
-						<li><a href="distributor/list?status=0"><span> 渠道管理</span></a></li>
-						<li><a href="ad/list"><span> 广告管理</span></a></li>
-						<li><a href="source/list"><span> 内容源管理</span></a></li>
-						<li><a href="feedback/list?status=0"><span> 用户反馈</span></a></li>
 					</ul>
 				</li>
 			</ul>
