@@ -60,22 +60,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 				<label style="padding-right:30px;">
-					<span >频道</span>
-					<select id="channelId">
-						<option value="">全部频道</option>
-						<c:forEach items="${channelList}" var="channel">
-							<option value="${channel.id}" <c:if test="${!empty channelId && channelId == channel.id}">selected</c:if> >${channel.name}</option>
-						</c:forEach>
+					<span >类型</span>
+					<select id="type">
+						<option value="">全部</option>
+						<option value="0" <c:if test="${!empty type && type == 0}">selected</c:if> >文字</option>
+						<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >图片</option>
+						<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >动图</option>
 					</select>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" onclick="turnPage()" >
+					<a class="btn btn-primary" href="#" id="selectJokeList" >
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>
 			    <label style="padding-right:30px;">
-			        <a class="btn btn-danger" href="#" onclick="verifyJoke('batch')">
-			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
+			        <a class="btn btn-success" href="#" onclick="verifyJoke('batch')">
+			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量添加
 			        </a>
 				</label>
 			</div>
@@ -87,7 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th>全选<input type="checkbox" id="allcheck" /></th>
 					<th>内容</th>
 					<th>类型</th>
-					<th>发布时间</th>
+					<th>审核通过时间</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -121,8 +121,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
 						<td>
-							<a class="btn btn-danger" href="#" onclick="verifyJoke(${joke.id})">
-					        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
+							<a class="btn btn-success" href="#" onclick="verifyJoke(${joke.id})">
+					        	 <i class="glyphicon glyphicon-ok icon-white"></i>添加
 					        </a>
 					    </td>
 					</tr>
@@ -130,11 +130,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tbody>
 		</table>
 		<div class="row">
-			<div class="col-md-12 center-block">
-				<div class="dataTables_paginate paging_bootstrap pagination">
-					<jsp:include page="../common/page.jsp" />
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
@@ -181,14 +176,14 @@ function verifyJoke(id) {
 		id = ids.toString();
 	}
 	
-	post('joke/verify',
-			'ids='+id+'&status=2', 
+	post('topic/addJoke',
+			'topicId=${topicId}&ids='+id, 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>channel/joke?channelId='+$("#channelId").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
+					location.href = '<%=basePath%>topic/joke?topicId=${topicId}&type='+$("#type").val();
 				}
 				else {
-					alert('删除失败. info:'+data['info']);
+					alert('添加失败. info:'+data['info']);
 				}
 			},
 			function () {
@@ -196,9 +191,9 @@ function verifyJoke(id) {
 			});
 }
 
-function turnPage(){
-	location.href = '<%=basePath%>channel/joke?channelId='+$("#channelId").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
-}
+$('#selectJokeList').click(function(event) {
+	location.href = '<%=basePath%>topic/joke?topicId=${topicId}&type='+$("#type").val();
+});
 
 function post(url, data, success, error) {
 	var csrfHeader = $("meta[name='_csrf_header']").attr("content");

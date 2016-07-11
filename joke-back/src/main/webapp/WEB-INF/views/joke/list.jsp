@@ -118,6 +118,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th>内容</th>
 					<th>格式</th>
 					<th>抓取时间</th>
+					<th>状态</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -151,6 +152,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<fmt:formatDate value="${joke.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					</td>
 					<td>
+						<c:if test="${joke.status == 0}">未审核</c:if>
+						<c:if test="${joke.status == 1}">通过</c:if>
+						<c:if test="${joke.status == 2}">不通过</c:if>
+					</td>
+					<td>
 						<c:if test="${joke.status == 0}">
 							<a class="btn btn-success" href="#" onclick="verifyJoke(1,${joke.id})">
 					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
@@ -158,9 +164,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
 					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
 					        </a>
-					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
+					        <%-- <a class="btn btn-info" href="joke/edit?id=${joke.id}">
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a>
+					        </a> --%>
 						</c:if>
 						<c:if test="${joke.status == 1}">
 							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
@@ -171,9 +177,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<a class="btn btn-success" href="#" onclick="verifyJoke(1,${joke.id})">
 					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
 					        </a>
-					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
+					        <%-- <a class="btn btn-info" href="joke/edit?id=${joke.id}">
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a>
+					        </a> --%>
 						</c:if>
 				    </td>
 				</tr>

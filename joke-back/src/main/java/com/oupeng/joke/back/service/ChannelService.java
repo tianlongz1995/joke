@@ -1,12 +1,16 @@
 package com.oupeng.joke.back.service;
 
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChannelMapper;
 import com.oupeng.joke.domain.Channel;
 
@@ -15,6 +19,8 @@ public class ChannelService {
 
 	@Autowired
 	private ChannelMapper channelMapper;
+	@Autowired
+	private JedisCache jedisCache;
 	
 	public List<Channel> getChannelList(Integer status){
 		return channelMapper.getChannelList(status);
@@ -25,17 +31,31 @@ public class ChannelService {
 	}
 	
 	public String updateChannelStatus(Integer id,Integer status){
+		Channel channel = channelMapper.getChannelById(id);
 		String result = null;
-		Integer good = 0;
-		Integer bad = 0;
 		if(status == Constants.CHANNEL_STATUS_VALID ){
-			Integer type = channelMapper.getChannelById(id).getType();
-			if(type != Constants.CHANNEL_TYPE_COMMON
-					&& !CollectionUtils.isEmpty(channelMapper.getChannelByType(type))){
+			if(StringUtils.isBlank(channel.getContentType())){
+				result = "专题内容属性不能为空";
+			}else if(channel.getType() != Constants.CHANNEL_TYPE_COMMON
+					&& !CollectionUtils.isEmpty(channelMapper.getChannelByType(channel.getType()))){
 				result = "专题频道、推荐频道同时只能存在一个";
 			}
+				
 		}else{
-			channelMapper.updateChannelStatus(id, status, good, bad);
+			if(channel.getType() == Constants.CHANNEL_TYPE_RECOMMEND){
+				jedisCache.del(JedisKey.SORTEDSET_RECOMMEND_CHANNEL);
+			}else if(channel.getType() == Constants.CHANNEL_TYPE_COMMON){
+				jedisCache.del(JedisKey.SORTEDSET_COMMON_CHANNEL+id);
+			}else if(channel.getType() == Constants.CHANNEL_TYPE_TOPIC){
+				Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_TOPIC_ALL);
+				if(!CollectionUtils.isEmpty(keys)){
+					jedisCache.del(keys.toArray(new String[]{}));
+				}
+			}
+		}
+		
+		if(result == null){
+			channelMapper.updateChannelStatus(id, status);
 		}
 		return result;
 	}

@@ -19,7 +19,7 @@ public interface JokeMapper {
 	
 	@SelectProvider(method="getJokeList",type=JokeSqlProvider.class)
 	public List<Joke> getJokeList(@Param(value="type")Integer type,@Param(value="status")Integer status,
-			@Param(value="id")Integer id,@Param(value="content")String content);
+			@Param(value="id")Integer id,@Param(value="content")String content,@Param(value="isTopic")boolean isTopic);
 	
 	@UpdateProvider(method="verifyJoke",type=JokeSqlProvider.class)
 	public void verifyJoke(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
@@ -63,4 +63,19 @@ public interface JokeMapper {
 	
 	@SelectProvider(method="getJokeCountForChannel",type=JokeSqlProvider.class)
 	public int getJokeCountForChannel(String contentType);
+	
+	@Select(value="select j_id from topic_joke where `status` = 0 and t_id = #{topicId}")
+	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
+	
+	@Select(value="select t.id from joke t where t.`status` = 1 and DATE_FORMAT(t.verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) and "
+			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
+	public List<Integer> getJokeForPublishChannel(@Param(value="contentType")String contentType);
+	
+	@Select(value="select  id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
+			+ "create_time as createTime,update_time as updateTime,good,bad from joke where `status` = 1 and "
+			+ "DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ")
+	public List<Joke> getJokeListForPublish();
+	
+	@Select(value="select id,good FROM joke where `status` = 1 ORDER BY good desc limit 100 ")
+	public List<Joke> getJokeListForPublishRecommend();
 }

@@ -9,4 +9,12 @@ public class JedisKey {
     public static final String JOKE_LIST_FEEDBACK = "list.joke.feedback";
     /** 渠道配置信息Hash表key    */
     public static final String JOKE_HASH_DISTRIBUTOR_CONFIG = "hash.joke.distributor.config";
+    
+    public static final String SORTEDSET_DISTRIBUTOR_TOPIC = "sortedset.distributor.topic.";
+    public static final String SORTEDSET_TOPIC_CHANNEL = "sortedset.topic.channel.";
+    public static final String SORTEDSET_COMMON_CHANNEL = "sortedset.common.channel.";
+    public static final String SORTEDSET_RECOMMEND_CHANNEL = "sortedset.recommend.channel";
+    public static final String STRING_JOKE = "string.joke.";
+    public static final String SORTEDSET_ALL = "sortedset.*";
+    public static final String SORTEDSET_TOPIC_ALL = "sortedset*topic*";
 }
