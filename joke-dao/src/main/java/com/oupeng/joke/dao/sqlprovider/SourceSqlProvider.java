@@ -3,6 +3,8 @@ package com.oupeng.joke.dao.sqlprovider;
 import com.oupeng.joke.domain.Source;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 public class SourceSqlProvider {
 	/**
 	 * 获取内容源列表记录总数
@@ -90,4 +92,22 @@ public class SourceSqlProvider {
 		sql.append(" where id = ").append(source.getId());
 		return sql.toString();
 	}
+
+	/**
+	 * 获取数据源抓取信息列表查询SQL语句
+	 * @param map
+	 * @return
+	 */
+	public String getSourceMonitorList(Map<String, Object> map){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select id, source_id as sourceId,day,grab_count as grabCount,verify_rate as verifyRate,last_grab_time as lastGrabTime,create_time createTime,update_time as updateTime from source_monitor where 1=1");
+		if(map.get("date") != null){
+			sql.append(" and day = ").append(map.get("date"));
+		}
+//		if(map.get("status") != null){
+//			sql.append(" and status = ").append(map.get("status"));
+//		}
+		return sql.toString();
+	}
+
 }

@@ -2,11 +2,15 @@ package com.oupeng.joke.back.service;
 
 import com.oupeng.joke.dao.mapper.SourceMapper;
 import com.oupeng.joke.domain.Source;
+import com.oupeng.joke.domain.SourceCrawl;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -77,4 +81,22 @@ public class SourceService {
         sourceMapper.updateSource(source);
     }
 
+    /**
+     * 获取数据源抓取信息列表
+     * @param monitorDate
+     * @param status
+     * @return
+     */
+    public List<SourceCrawl> getSourceMonitorList(String monitorDate, Integer status) {
+        Integer date = null;
+        if(monitorDate != null && monitorDate.length() >0){
+            monitorDate = monitorDate.replaceAll("-", "");
+        }
+        if(StringUtils.isNumeric(monitorDate)){
+            date = Integer.valueOf(monitorDate);
+        } else {
+            date = Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        }
+        return sourceMapper.getSourceMonitorList(date, status);
+    }
 }

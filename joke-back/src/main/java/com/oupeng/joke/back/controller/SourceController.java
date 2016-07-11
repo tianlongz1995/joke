@@ -148,5 +148,21 @@ public class SourceController {
 			logger.error(e.getMessage(), e);
 		}
 			return new Success();
-	} 
+	}
+
+	/**
+	 * 查看内容源抓取信息列表
+	 * @param crawlDate 抓取日期 yyyy-MM-dd
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/monitor")
+	public String monitor(@RequestParam(value="crawlDate",required=false)String crawlDate,
+						  @RequestParam(value="status",required=false)Integer status,
+						  Model model){
+			model.addAttribute("list", sourceService.getSourceMonitorList(crawlDate, status));
+			model.addAttribute("crawlDate", crawlDate);
+			model.addAttribute("status", status);
+		return "/source/monitor";
+	}
 }

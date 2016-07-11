@@ -1,5 +1,7 @@
 package com.oupeng.joke.domain;
 
+import java.util.Date;
+
 /**
  * 反馈
  * Created by hushuang on 16/7/1.
@@ -15,6 +17,8 @@ public class Feedback {
     private Integer type;
     /** 反馈内容    */
     private String content;
+    /** 反馈时间    */
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -55,6 +59,15 @@ public class Feedback {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Feedback{");
@@ -63,6 +76,7 @@ public class Feedback {
         sb.append(", channelId=").append(channelId);
         sb.append(", type=").append(type);
         sb.append(", content='").append(content).append('\'');
+        sb.append(", createTime=").append(createTime);
         sb.append('}');
         return sb.toString();
     }

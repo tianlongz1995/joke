@@ -1,8 +1,9 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.SourceSqlProvider;
+import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.Source;
-import com.oupeng.joke.domain.Source;
+import com.oupeng.joke.domain.SourceCrawl;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -52,5 +53,14 @@ public interface SourceMapper {
 	 */
 	@UpdateProvider(method="updateSource",type=SourceSqlProvider.class)
 	void updateSource(Source source);
+
+	/**
+	 * 获取数据源抓取信息列表
+	 * @param date
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method="getSourceMonitorList",type=SourceSqlProvider.class)
+	List<SourceCrawl> getSourceMonitorList(@Param(value = "date") Integer date, @Param(value = "status") Integer status);
 
 }
