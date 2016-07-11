@@ -88,10 +88,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</thead>
 	
 			<tbody>
-				<c:forEach items="${list}" var="channle">
+				<c:forEach items="${list}" var="channel">
 					<tr>
-						<td><c:out value="${channle.id}"/> </td>
-						<td><c:out value="${channel.contentType}"/></td>
+						<td><c:out value="${channel.id}"/> </td>
+						<td><c:out value="${channel.name}"/></td>
 						<td>
 							<c:forTokens items="${channel.contentType}" delims="," var="contentType">
 								<c:if test="${contentType == 0}">文字/</c:if>
@@ -100,21 +100,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</c:forTokens>
 						</td>
 						<td>
-							<c:if test="${channle.type == 0}">普通</c:if>
-							<c:if test="${channle.type == 1}">专题</c:if>
-							<c:if test="${channle.type == 2}">推荐</c:if>
+							<c:if test="${channel.type == 0}">普通</c:if>
+							<c:if test="${channel.type == 1}">专题</c:if>
+							<c:if test="${channel.type == 2}">推荐</c:if>
 						</td>
 						<td>
-							<c:out value="${channle.good}"/><span>/</span><c:out value="${channle.bad}"/>
+							<c:out value="${channel.good}"/><span>/</span><c:out value="${channel.bad}"/>
 						</td>
 						<td>
-							<c:if test="${channle.status == 0}">
-								<a class="btn btn-success" href="#" onclick="verifyChannel(1,${channle.id})">
+							<c:if test="${channel.status == 0}">
+								<a class="btn btn-success" href="#" onclick="verifyChannel(1,${channel.id})">
 						        	 <i class="glyphicon glyphicon-ok icon-white"></i>上线
 						        </a>
 							</c:if>
-							<c:if test="${channle.status == 1}">
-								<a class="btn btn-danger" href="#" onclick="verifyChannel(0,${channle.id})">
+							<c:if test="${channel.status == 1}">
+								<a class="btn btn-danger" href="#" onclick="verifyChannel(0,${channel.id})">
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
@@ -135,45 +135,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="modal fade" id="newChannel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			<h4 class="modal-title" id="myModalLabel">新建频道</h4>
-		</div>
-		<div class="modal-body">
-			<table id="orders-table" class="table table-hover">
-				<tr>
-					<th>名称</th>
-					<td><input id="addname" type="text" class="form-control" placeholder="频道名称"/></td>
-				</tr>
-				<tr>
-					<th>类型</th>
-					<td>
-			  			<select id="addtype"  class="form-control">
-			  				<option value="0">普通频道</option>
-			  				<option value="1">专题频道</option>
-			  				<option value="2">推荐频道</option>
-			  			</select>
-			  		</td>
-				</tr>
-				<tr>
-					<th>内容属性</th>
-					<td>
-						<label style="padding-right:30px;">
-							文字<span></span><input name="addcontentType" type="checkbox" value="0"/></span>
-						</label>
-						<label style="padding-right:30px;">
-							图片<span></span><input name="addcontentType" type="checkbox" value="1"/></span>
-						</label>
-						<label style="padding-right:30px;">
-							动图<span></span><input name="addcontentType" type="checkbox" value="2"/></span>
-						</label>
-					</td>
-				</tr>
-	  		</table>
-		</div>
-		<div class="modal-footer">
-			<button id="addNewChannel" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
-		</div>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">新建频道</h4>
+			</div>
+			<div class="modal-body">
+				<table id="orders-table" class="table table-hover">
+					<tr>
+						<th>名称</th>
+						<td><input id="addname" type="text" class="form-control" placeholder="频道名称"/></td>
+					</tr>
+					<tr>
+						<th>类型</th>
+						<td>
+				  			<select id="addtype"  class="form-control">
+				  				<option value="0">普通频道</option>
+				  				<option value="1">专题频道</option>
+				  				<option value="2">推荐频道</option>
+				  			</select>
+				  		</td>
+					</tr>
+					<tr>
+						<th>内容属性</th>
+						<td>
+							<label style="padding-right:30px;">
+								文字<span></span><input name="addcontentType" type="checkbox" value="0"/></span>
+							</label>
+							<label style="padding-right:30px;">
+								图片<span></span><input name="addcontentType" type="checkbox" value="1"/></span>
+							</label>
+							<label style="padding-right:30px;">
+								动图<span></span><input name="addcontentType" type="checkbox" value="2"/></span>
+							</label>
+						</td>
+					</tr>
+		  		</table>
+			</div>
+			<div class="modal-footer">
+				<button id="addNewChannel" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -194,7 +194,7 @@ $('#addNewChannel').click(function(event) {
 			if(data['status']) {
 				location.href = '<%=basePath%>channel/list?status='+$("#status").val();
 			}else {
-				alert('添加VIP失败. info:'+data['info']);
+				alert('添加频道失败. info:'+data['info']);
 			}
 		},
 		function () {
@@ -208,8 +208,7 @@ function verifyChannel(status,id) {
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>channel/list?status='+$("#status").val();
-				}
-				else {
+				}else {
 					alert('操作失败. info:'+data['info']);
 				}
 			},

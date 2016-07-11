@@ -104,6 +104,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<a class="btn btn-success" href="#" onclick="verifyJoke(1,'batch')">
 			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量通过
 			        </a>
+			    </label>
+			    <label style="padding-right:30px;">
 			        <a class="btn btn-danger" href="#" onclick="verifyJoke(2,'batch')">
 			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量不通过
 			        </a>

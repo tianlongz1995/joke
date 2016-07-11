@@ -56,4 +56,11 @@ public interface JokeMapper {
 	 */
 	@Insert("INSERT INTO feedback (d_id, c_id, type, content, create_time) VALUES (#{distributorId}, #{channelId}, #{type}, #{content}, now())")
 	void insertJokeFeedback(Feedback feedback);
+	
+	@SelectProvider(method="getJokeListForChannel",type=JokeSqlProvider.class)
+	public List<Joke> getJokeListForChannel(@Param(value="contentType")String contentType,@Param(value="start")Integer start,
+			@Param(value="size")Integer size);
+	
+	@SelectProvider(method="getJokeCountForChannel",type=JokeSqlProvider.class)
+	public int getJokeCountForChannel(String contentType);
 }

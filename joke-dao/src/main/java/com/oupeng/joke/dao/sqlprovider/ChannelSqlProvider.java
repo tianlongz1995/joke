@@ -19,7 +19,7 @@ public class ChannelSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" insert into channel(name,type,status,content_type,good,bad,create_time,update_time) value (");
 		if(StringUtils.isNotBlank(channel.getName())){
-			sql.append("'").append(channel.getName()).append("',");
+			sql.append("'").append(channel.getName().trim()).append("',");
 		}else{
 			sql.append("null,");
 		}
@@ -37,14 +37,14 @@ public class ChannelSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update channel set update_time=now(),name = ");
 		if(StringUtils.isNotBlank(channel.getName())){
-			sql.append("'").append(channel.getName()).append("',");
+			sql.append("'").append(channel.getName().trim()).append("',");
 		}else{
 			sql.append("null,");
 		}
 		sql.append("type=").append(channel.getType());
-		sql.append("content_type=");
+		sql.append(",content_type=");
 		if(StringUtils.isNotBlank(channel.getContentType())){
-			sql.append("'").append(channel.getContentType()).append("',");
+			sql.append("'").append(channel.getContentType()).append("'");
 		}else{
 			sql.append("null");
 		}

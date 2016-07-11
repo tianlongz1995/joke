@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.dao.mapper.ChannelMapper;
 import com.oupeng.joke.domain.Channel;
 
@@ -22,14 +24,20 @@ public class ChannelService {
 		return channelMapper.getChannelById(id);
 	}
 	
-	public void updateChannelStatus(Integer id,Integer status){
+	public String updateChannelStatus(Integer id,Integer status){
+		String result = null;
 		Integer good = 0;
 		Integer bad = 0;
-		channelMapper.updateChannelStatus(id, status, good, bad);
-	}
-	
-	public Channel getChannelByType(Integer type){
-		return channelMapper.getChannelByType(type);
+		if(status == Constants.CHANNEL_STATUS_VALID ){
+			Integer type = channelMapper.getChannelById(id).getType();
+			if(type != Constants.CHANNEL_TYPE_COMMON
+					&& !CollectionUtils.isEmpty(channelMapper.getChannelByType(type))){
+				result = "专题频道、推荐频道同时只能存在一个";
+			}
+		}else{
+			channelMapper.updateChannelStatus(id, status, good, bad);
+		}
+		return result;
 	}
 	
 	public void insertChannel(String name,Integer type,String contentType){
