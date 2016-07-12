@@ -108,16 +108,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${distributor.status == 0}">
-								<a class="btn btn-success btn-sm" href="#" onclick="modifyStatus(1,${distributor.id})">
+								<a class="btn btn-success btn-xs" href="#" onclick="modifyStatus(1,${distributor.id})">
 									<i class="glyphicon glyphicon-ok icon-white"></i>上线
 								</a>
 							</c:if>
 							<c:if test="${distributor.status == 1}">
-								<a class="btn btn-danger btn-sm" href="#" onclick="modifyStatus(0,${distributor.id})">
+								<a class="btn btn-danger btn-xs" href="#" onclick="modifyStatus(0,${distributor.id})">
 									<i class="glyphicon glyphicon-remove icon-white"></i>下线
 								</a>
 							</c:if>
-							<a class="btn btn-info btn-sm" href="distributor/edit?id=${distributor.id}">
+							<a class="btn btn-info btn-xs" href="distributor/edit?id=${distributor.id}">
 								<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 							</a>
 						</td>
@@ -138,7 +138,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 
 <div class="modal fade bs-example-modal-lg" id="newDistributor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<form id="addForm" action="<%=basePath%>distributor/add" method="post" enctype="application/x-www-form-urlencoded">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 			<div class="modal-header">
@@ -195,29 +194,50 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</table>
 			</div>
 			<div class="modal-footer" style="text-align: center;">
-				<button  type="button" class="btn btn-default" data-dismiss="modal" onclick="submitBatch()">提交</button>
+				<button id="add" type="button" class="btn btn-default" data-dismiss="modal" >提交</button>
 			</div>
 			</div>
 		</div>
-	</form>
 </div>
 
 <script type="text/javascript">
+$('#add').click(function(event) {
+	var contentType = [];
+	$('input[name="channelIds"]:checked').each(function(){
+		contentType.push($(this).val());
+	});
+	if(contentType.length == 0){
+		alert("未选中任何频道");
+		return false;
+	}
+	post('distributor/add',
+			'addName='+$("#addName").val()+'&addStatus='+$('#addStatus').val()+'&channelIds='+contentType.toString(),
+			function (data) {
+				if(data['status']) {
+					location.href = '<%=basePath%>distributor/list?status='+$("#status").val();
+				}else {
+					alert('添加频道失败. info:'+data['info']);
+				}
+			},
+			function () {
+				alert('请求失败，请检查网络环境');
+			});
+});
+
 function modifyStatus(status,id) {
 	post('distributor/modifyStatus',
 			'id='+id+'&status='+status, 
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>distributor/list?status='+$("#status").val();
-				}
-				else {
+				}else {
 					alert('操作失败. info:'+data['info']);
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
 			});
-}
+};
 
 $('#selectDistributorList').click(function(event) {
 	location.href = '<%=basePath%>distributor/list?status='+$("#status").val();
@@ -245,16 +265,7 @@ function down(obj) {
 		nextTR.insertBefore(objParentTR);
 	}
 };
-function submitBatch() {
-	$(":checkbox").each(function(){
-		if(this.checked == false){
-			$(this).parent().parent().remove();
-		}
-	});
-	$("#addForm").ajaxSubmit(function(){
-		window.location.href = '<%=basePath%>distributor/list?status=' + $("#status").val();
-	});
-};
+
 function turnPage(){
 	location.href = '<%=basePath%>distributor/list?status=' + $("#status").val()
 	+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();

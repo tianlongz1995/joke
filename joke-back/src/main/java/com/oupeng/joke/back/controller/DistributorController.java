@@ -133,7 +133,7 @@ public class DistributorController {
 	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/add")
+	@RequestMapping(value="/add", produces = {"application/json"})
 	@ResponseBody
 	public Result add(@RequestParam(value="addName",required=false)String name,
 					  @RequestParam(value="addStatus",required=false)Integer status,

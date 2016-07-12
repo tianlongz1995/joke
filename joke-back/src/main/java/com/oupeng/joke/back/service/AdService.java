@@ -71,7 +71,7 @@ public class AdService {
      * @param did
      * @param status
      */
-    public void updateAd(Integer id, Integer slotId, Integer pos, Integer slide, Integer did, Integer status){
+    public void updateAd(Integer id, String slotId, Integer pos, Integer slide, Integer did, Integer status){
         Ad ad = new Ad();
         ad.setId(id);
         ad.setSlotId(slotId);

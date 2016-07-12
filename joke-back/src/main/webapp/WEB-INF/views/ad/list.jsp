@@ -272,7 +272,33 @@
             </div>
 
             <script type="text/javascript">
-                $('#addNewad').click(function (event) {
+                $('#addNewad').click(function(event) {
+                    /*var contentType = [];
+                    $('input[name="addcontentType"]:checked').each(function(){
+                        contentType.push($(this).val());
+                    });
+                    if(contentType.length == 0){
+                        alert("未选中任何内容属性");
+                        return false;
+                    }*/
+                    var slide = $('#slide').val();
+                    if(slide == null || slide == undefined){
+                        slide = '';
+                    }
+                    post('ad/add',
+                            'did=' + $("#did").val()+'&pos='+$('#pos').val()+'&slide='+slide+'&status='+$('#addstatus').val()+'&slotId='+$('#slotId').val(),
+                            function (data) {
+                                if(data['status']) {
+                                    location.href = '<%=basePath%>ad/list?status='+$("#status").val();
+                                }else {
+                                    alert('添加失败. info:'+data['info']);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
+                });
+                /*$('#addNewad').click(function (event) {
                     var slide = $('#slide').val();
                     if(slide == null || slide == undefined){
                         slide = '';
@@ -302,7 +328,7 @@
                             function () {
                                 alert('请求失败，请检查网络环境');
                             });
-                })
+                })*/
 
                 function modifyStatus(status, id) {
                     post('<%=basePath%>ad/modifyStatus',
@@ -326,7 +352,7 @@
                             function () {
                                 alert('请求失败，请检查网络环境');
                             });
-                }
+                };
 
                 $('#selectadList').click(function (event) {
                     var slotId = $("#myslotId").val();
@@ -338,7 +364,7 @@
                     location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
                         + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
                         + '&pos=' + $("#pagePos").val() + param;
-                })
+                });
 
                 function post(url, data, success, error) {
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -347,7 +373,7 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                }
+                };
                 function turnPage(){
                     var slotId = $("#myslotId").val();
                     var param = '';
@@ -356,7 +382,7 @@
                     }
                     location.href = '<%=basePath%>ad/list?status='+$("#status").val()+'&distributorId='+$("#distributors").val()+'&pos='+$("#pagePos").val()
                     +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val() + param;
-                }
+                };
                 $('#pos').change(function (event) {
                     var pos = $("#pos").val();
                     if(pos == 1){

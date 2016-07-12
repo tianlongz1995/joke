@@ -42,7 +42,7 @@ public class AdController {
 	public String getAdList(@RequestParam(value="distributorId",required=false)Integer distributorId,
 							@RequestParam(value="pos",required=false)Integer pos,
 							@RequestParam(value="status",required=false)Integer status,
-							@RequestParam(value="slotId",required=false)Integer slotId,
+							@RequestParam(value="slotId",required=false)String slotId,
 							@RequestParam(value="pageNumber",required=false)Integer pageNumber,
 							@RequestParam(value="pageSize",required=false)Integer pageSize,
 							Model model){
@@ -137,7 +137,7 @@ public class AdController {
 	@RequestMapping(value="/update")
 	@ResponseBody
 	public Result update(@RequestParam(value="id",required=true)Integer id,
-						 @RequestParam(value="slotId",required=false)Integer slotId,
+						 @RequestParam(value="slotId",required=false)String slotId,
 						 @RequestParam(value="pos",required=false)Integer pos,
 						 @RequestParam(value="slide",required=true)Integer slide,
 						 @RequestParam(value="did",required=false)Integer did,
