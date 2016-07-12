@@ -45,16 +45,6 @@
   		<artifactId>logback-access</artifactId>
   		<version>1.1.3</version>
 	</dependency>
-	  <dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>jcl-over-slf4j</artifactId>
-		  <version>1.7.13</version>
-	  </dependency>
-	  <dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>log4j-over-slf4j</artifactId>
-		  <version>1.7.13</version>
-	  </dependency>
 
 	<!-- test -->
 	<dependency>
@@ -68,13 +58,6 @@
 		<artifactId>commons-lang3</artifactId>
 		<version>3.3</version>
 	</dependency>
-
-	  <dependency>
-		  <groupId>com.taobao.api</groupId>
-		  <artifactId>taobao-sdk-java-auto</artifactId>
-		  <version>20160608</version>
-
-	  </dependency>
 
   </dependencies>
   

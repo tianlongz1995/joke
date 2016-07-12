@@ -24,6 +24,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Channel;
 import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.JokeVerifyRate;
 import com.oupeng.joke.domain.Topic;
 
 @Component
@@ -145,6 +146,19 @@ public class JokeTask {
 			logger.info("insertSourceMonitor ids size:[{}] success!", ids.size());
 		}else{
 			logger.error("insertSourceMonitor ids size:[{}] error! ids is empty!", ids);
+		}
+	}
+	
+	/**
+	 * 更新
+	 * */
+	@Scheduled(cron="0 20 0 * * ?")
+	public void updateSourceMonitor(){
+		List<JokeVerifyRate> jokeVerifyRateList = jokeService.getJokeVerifyRate();
+		if(!CollectionUtils.isEmpty(jokeVerifyRateList)){
+			for(JokeVerifyRate jokeVerifyRate : jokeVerifyRateList){
+				sourceService.updateSourceByVerify(jokeVerifyRate);
+			}
 		}
 	}
 }

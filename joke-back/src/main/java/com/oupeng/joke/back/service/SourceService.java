@@ -1,6 +1,8 @@
 package com.oupeng.joke.back.service;
 
+import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.dao.mapper.SourceMapper;
+import com.oupeng.joke.domain.JokeVerifyRate;
 import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.SourceCrawl;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -128,5 +131,14 @@ public class SourceService {
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }
+    }
+    
+    public void updateSourceByVerify(JokeVerifyRate jokeVerifyRate){
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.setTime(new Date());
+    	calendar.add(Calendar.DATE, -1);
+    	Integer day = Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(calendar.getTime()));
+    	Double rate = FormatUtil.getRoundHalfUp(jokeVerifyRate.getValidNum(), (jokeVerifyRate.getValidNum() + jokeVerifyRate.getInValidNum()));
+    	sourceMapper.updateSourceByVerify(jokeVerifyRate.getSoureId(), day, rate);
     }
 }

@@ -20,6 +20,7 @@ import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
+import com.oupeng.joke.domain.JokeVerifyRate;
 
 import javax.annotation.PostConstruct;
 
@@ -40,10 +41,8 @@ public class JokeService {
 	
 	/***/
 	public void verifyJoke(Integer status,String ids,String user){
-		String[] jokeIds = ids.split(",");
-		if(status == Constants.JOKE_STATUS_VALID){
-			//TODO 审核通过率
-		}else{
+		if(status != Constants.JOKE_STATUS_VALID){
+			String[] jokeIds = ids.split(",");
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
 				for(String key : keys){
@@ -54,7 +53,6 @@ public class JokeService {
 			for(String id : jokeIds){
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
-			//TODO 审核通过率
 		}
 		jokeMapper.verifyJoke(status, ids, user);
 	}
@@ -205,5 +203,9 @@ public class JokeService {
 	
 	public List<Joke> getJokeListForPublishRecommend(){
 		return jokeMapper.getJokeListForPublishRecommend();
+	}
+	
+	public List<JokeVerifyRate> getJokeVerifyRate(){
+		return jokeMapper.getJokeVerifyRate();
 	}
 }

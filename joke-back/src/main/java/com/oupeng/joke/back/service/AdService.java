@@ -2,8 +2,6 @@ package com.oupeng.joke.back.service;
 
 import com.oupeng.joke.dao.mapper.AdMapper;
 import com.oupeng.joke.domain.Ad;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,6 @@ import java.util.List;
  */
 @Service
 public class AdService {
-    private static final Logger logger = LoggerFactory.getLogger(AdService.class);
     @Autowired
     private AdMapper adMapper;
 
