@@ -114,7 +114,11 @@ public class SourceService {
      * @param ids
      * @param today
      */
-    public void insertSourceMonitors(List<Integer> ids, String today) {
-        sourceMapper.insertSourceMonitors(ids, today);
+    public void insertSourceMonitors(List<Integer> ids, Integer today) {
+        try{
+            sourceMapper.insertSourceMonitors(today, ids);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
     }
 }

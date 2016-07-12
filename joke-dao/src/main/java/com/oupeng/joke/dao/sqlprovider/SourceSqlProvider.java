@@ -3,6 +3,7 @@ package com.oupeng.joke.dao.sqlprovider;
 import com.oupeng.joke.domain.Source;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class SourceSqlProvider {
@@ -115,8 +116,8 @@ public class SourceSqlProvider {
 	 * @param map
 	 */
 	public String insertSourceMonitors(Map<String, Object> map){
-		Integer[] ids = (Integer[]) map.get("ids");
-		Object today = map.get("today");
+		List<Integer> ids = (List<Integer>) map.get("ids");
+		Integer today = (Integer) map.get("today");
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into source_monitor(day, source_id, create_time, update_time) values ");
 		if(today != null && ids != null){

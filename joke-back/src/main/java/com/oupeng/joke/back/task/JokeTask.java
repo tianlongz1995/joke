@@ -141,7 +141,7 @@ public class JokeTask {
 		List<Integer> ids = sourceService.getSourceMonitorIds(1);
 		if(!CollectionUtils.isEmpty(ids)){
 			String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
-			sourceService.insertSourceMonitors(ids, today);
+			sourceService.insertSourceMonitors(ids, Integer.valueOf(today));
 			logger.info("insertSourceMonitor ids size:[{}] success!", ids.size());
 		}else{
 			logger.error("insertSourceMonitor ids size:[{}] error! ids is empty!", ids);

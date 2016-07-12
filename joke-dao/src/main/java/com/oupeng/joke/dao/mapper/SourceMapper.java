@@ -29,14 +29,14 @@ public interface SourceMapper {
 	 * @param id 广告编号
 	 * @return
 	 */
-	@Select(value="select id, name, url, status,create_time as createTime,update_time as updateTime from source where id = ${id}")
+	@Select(value="select id, name, url, status,create_time as createTime,update_time as updateTime from source where id = #{id}")
 	Source getSourceById(@Param(value = "id") Integer id);
 
 	/**
 	 * 删除（逻辑删除）
 	 * @param id
 	 */
-	@Select(value="update source set update_time=now(),status = 2 where id = ${id}")
+	@Select(value="update source set update_time=now(),status = 2 where id = #{id}")
 	void del(@Param(value = "id") Integer id);
 
 
@@ -62,5 +62,18 @@ public interface SourceMapper {
 	 */
 	@SelectProvider(method="getSourceMonitorList",type=SourceSqlProvider.class)
 	List<SourceCrawl> getSourceMonitorList(@Param(value = "date") Integer date, @Param(value = "status") Integer status);
-
+	/**
+	 * 获取内容源编号列表
+	 * @param status
+	 * @return
+	 */
+	@Select(value="select id from source where status = #{status}")
+	List<Integer> getSourceMonitorIds(Integer status);
+	/**
+	 * 插入内容源监控记录
+	 * @param ids
+	 * @param today
+	 */
+	@InsertProvider(method="insertSourceMonitors",type=SourceSqlProvider.class)
+	void insertSourceMonitors(@Param(value = "today")Integer today, @Param(value = "ids")List<Integer> ids);
 }
