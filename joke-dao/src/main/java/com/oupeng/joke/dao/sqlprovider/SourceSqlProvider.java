@@ -110,4 +110,22 @@ public class SourceSqlProvider {
 		return sql.toString();
 	}
 
+	/**
+	 * 插入内容源监控记录
+	 * @param map
+	 */
+	public String insertSourceMonitors(Map<String, Object> map){
+		Integer[] ids = (Integer[]) map.get("ids");
+		Object today = map.get("today");
+		StringBuffer sql = new StringBuffer();
+		sql.append("insert into source_monitor(day, source_id, create_time, update_time) values ");
+		if(today != null && ids != null){
+			for(Integer id : ids){
+				sql.append("(").append(today).append(",");
+				sql.append(id).append(", now(), now()),");
+			}
+		}
+		return sql.substring(0, sql.length() - 1);
+	}
+
 }
