@@ -73,9 +73,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  			</select>
 			  		</td>
 			  	</tr>
+				<tr>
+					<th>频道</th>
+					<td>
+						<table>
+							<thead>
+							<tr>
+								<th>选中</th>
+								<th>频道名称</th>
+								<th>移动</th>
+							</tr>
+							</thead>
+							<tbody>
+							<c:forEach items="${channelList}" var="channel">
+								<tr>
+									<th>
+										<input type="checkbox"  name="channelIds"  value="${channel.id}" <c:if test="${!empty channel.status && 1 == channel.status}">checked="checked"</c:if> >
+									</th>
+									<th>
+										<c:out value="${channel.name}"/>
+									</th>
+									<th>
+										<button class="btn btn-default btn-xs" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
+										<button class="btn btn-default btn-xs" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
+									</th>
+								</tr>
+							</c:forEach>
+							</tbody>
+						</table>
+
+					</td>
+				</tr>
 			</thead>
 		</table>
-		<button id="updateDistributor" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+		<div style="width: 100%;text-align: center;">
+			<button id="updateDistributor" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+		</div>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
@@ -83,8 +116,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 $('#updateDistributor').click(function(event) {
+	/*$(":checkbox").each(function(){
+		if(this.checked == false){
+			$(this).parent().parent().remove();
+		}
+	});*/
+
+//	$("input[name='channelIds'][checked]").each(function(){
+//		if (true == $(this).attr("checked")) {
+//			alert( $(this).attr('value') );
+//		}
+//	});
+	var id = document.getElementsByName('channelIds');
+	var value = new Array();
+	for(var i = 0; i < id.length; i++){
+		if(id[i].checked)
+			value.push(id[i].value);
+	}
+//	alert(value.toString());
 	post('distributor/update',
-			'id='+$("#distributorid").val()+'&name='+$("#name").val()+'&status='+$('#status').val(),
+			'id='+$("#distributorid").val()+'&name='+$("#name").val()+'&status='+$('#status').val() + '&channelIds='+value.toString(),
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>distributor/list';
@@ -97,7 +148,20 @@ $('#updateDistributor').click(function(event) {
 				alert('请求失败，请检查网络环境');
 			});
 });
-
+function up(obj) {
+	var objParentTR = $(obj).parent().parent();
+	var prevTR = objParentTR.prev();
+	if (prevTR.length > 0) {
+		prevTR.insertAfter(objParentTR);
+	}
+};
+function down(obj) {
+	var objParentTR = $(obj).parent().parent();
+	var nextTR = objParentTR.next();
+	if (nextTR.length > 0) {
+		nextTR.insertBefore(objParentTR);
+	}
+};
 function post(url, data, success, error) {
 	var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 	var csrfToken = $("meta[name='_csrf']").attr("content");

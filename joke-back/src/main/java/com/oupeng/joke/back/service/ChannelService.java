@@ -25,7 +25,7 @@ public class ChannelService {
 	public List<Channel> getChannelList(Integer status){
 		return channelMapper.getChannelList(status);
 	}
-	
+
 	public Channel getChannelById(Integer id){
 		return channelMapper.getChannelById(id);
 	}
@@ -75,5 +75,13 @@ public class ChannelService {
 		channel.setType(type);
 		channel.setContentType(contentType);
 		channelMapper.updateChannel(channel);
+	}
+
+	/**
+	 *	获取频道状态列表
+	 * @return
+	 */
+	public List<Channel> getChannelStatusList(Integer id){
+		return channelMapper.getChannelStatusList(id);
 	}
 }

@@ -37,7 +37,7 @@ public class FeedbackController {
 	 */
 	@RequestMapping(value = "/monitor")
 	public String getFeedbackList(Model model) {
-		model.addAttribute("dList", distributorService.getDistributorList(1));
+		model.addAttribute("dList", distributorService.getAllDistributorList());
 		return "/feedback/monitor";
 	}
 
@@ -68,7 +68,7 @@ public class FeedbackController {
 		model.addAttribute("startDate", startDate);
 		model.addAttribute("endDate", endDate);
 		model.addAttribute("distributorId", distributorId);
-		model.addAttribute("dList", distributorService.getDistributorList(1));
+		model.addAttribute("dList", distributorService.getAllDistributorList());
 		return  list;
 	}
 
@@ -91,7 +91,7 @@ public class FeedbackController {
 		model.addAttribute("startDate", startDate);
 		model.addAttribute("endDate", endDate);
 		model.addAttribute("distributorId", distributorId);
-		model.addAttribute("dList", distributorService.getDistributorList(1));
+		model.addAttribute("dList", distributorService.getAllDistributorList());
 		return feedbackService.getDistributorFeedbackTypeList(startDate, endDate, distributorId);
 	}
 }

@@ -1,7 +1,10 @@
 package com.oupeng.joke.back.controller;
 
+import com.oupeng.joke.back.service.ChannelService;
 import com.oupeng.joke.back.service.DistributorService;
+import com.oupeng.joke.domain.Channel;
 import com.oupeng.joke.domain.Distributor;
+import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.slf4j.Logger;
@@ -24,6 +27,8 @@ public class DistributorController {
 	private static final Logger logger = LoggerFactory.getLogger(DistributorController.class);
 	@Autowired
 	private DistributorService distributorService;
+	@Autowired
+	private ChannelService channelService;
 
 	/**
 	 * 渠道列表
@@ -32,10 +37,45 @@ public class DistributorController {
 	 * @return
 	 */
 	@RequestMapping(value="/list")
-	public String getDistributorList(@RequestParam(value="status",required=false)Integer status,Model model){
+	public String getDistributorList(@RequestParam(value="status",required=false)Integer status,
+									 @RequestParam(value="pageNumber",required=false)Integer pageNumber,
+									 @RequestParam(value="pageSize",required=false)Integer pageSize,
+									 Model model){
 		try {
-			List<Distributor> list = distributorService.getDistributorList(status);
+			pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+			pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+			Distributor distributor = new Distributor();
+			distributor.setStatus(status);
+			List<Distributor> list = null;
+			int pageCount = 0;//总页数
+			int offset = 0 ;//开始条数index
+			int count = distributorService.getDistributorListCount(distributor);//总条数
+			if(count > 0){
+				if (count % pageSize == 0) {
+					pageCount = count / pageSize;
+				} else {
+					pageCount = count / pageSize + 1;
+				}
+
+				if (pageNumber > pageCount) {
+					pageNumber = pageCount;
+				}
+				if (pageNumber < 1) {
+					pageNumber = 1;
+				}
+				offset = (pageNumber - 1) * pageSize;
+				distributor.setOffset(offset);
+				distributor.setPageSize(pageSize);
+				list = distributorService.getDistributorList(distributor);
+			}
+			model.addAttribute("count", count);
+			model.addAttribute("pageNumber", pageNumber);
+			model.addAttribute("pageSize", pageSize);
+			model.addAttribute("pageCount", pageCount);
+
+//			List<Distributor> list = distributorService.getDistributorList(status);
 			model.addAttribute("list", list);
+			model.addAttribute("channelList", channelService.getChannelList(1));
 			model.addAttribute("status", status);
 		}catch (Exception e){
 			logger.error(e.getMessage(), e);
@@ -66,6 +106,7 @@ public class DistributorController {
 	@RequestMapping(value="/edit")
 	public String edit(@RequestParam(value="id")Integer id,Model model){
 		model.addAttribute("distributor", distributorService.getDistributorById(id));
+		model.addAttribute("channelList", channelService.getChannelStatusList(id));
 		return "/distributor/edit";
 	}
 
@@ -80,8 +121,9 @@ public class DistributorController {
 	@ResponseBody
 	public Result update(@RequestParam(value="id",required=true)Integer id,
 			@RequestParam(value="name",required=false)String name,
-			@RequestParam(value="status",required=true)Integer status){
-		distributorService.updateDistributor(id, name, status);
+			@RequestParam(value="status",required=true)Integer status,
+			@RequestParam(value="channelIds",required=false)Integer[] channelIds){
+		distributorService.updateDistributor(id, name, status, channelIds);
 		return new Success();
 	}
 
@@ -93,9 +135,10 @@ public class DistributorController {
 	 */
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Result searchJokeList(@RequestParam(value="name",required=false)String name,
-			@RequestParam(value="status",required=true)Integer status){
-		distributorService.insertDistributor(name, status);
+	public Result add(@RequestParam(value="addName",required=false)String name,
+					  @RequestParam(value="addStatus",required=false)Integer status,
+					  @RequestParam(value="channelIds",required=false)Integer[] channelIds){
+		distributorService.insertDistributor(name, status, channelIds);
 		return new Success();
 	} 
 }

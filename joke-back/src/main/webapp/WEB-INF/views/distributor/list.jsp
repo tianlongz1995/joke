@@ -21,7 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<base href="<%=basePath%>">
 	<%@ include file="../common/css.html"%>
 	<script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
-
+	<script src="ui/js/jquery.form.js"></script>
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
@@ -62,15 +62,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 				<label style="padding-right:30px;">
-					<span >状态</span>
-					<select id="status">
+					<span>状态：</span>
+					<select id="status" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >下线</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >上线</option>
 					</select>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="selectDistributorList">
+					<a class="btn btn-primary btn-sm" href="#" id="selectDistributorList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>
@@ -108,16 +108,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${distributor.status == 0}">
-								<a class="btn btn-success" href="#" onclick="modifyStatus(1,${distributor.id})">
+								<a class="btn btn-success btn-sm" href="#" onclick="modifyStatus(1,${distributor.id})">
 									<i class="glyphicon glyphicon-ok icon-white"></i>上线
 								</a>
 							</c:if>
 							<c:if test="${distributor.status == 1}">
-								<a class="btn btn-danger" href="#" onclick="modifyStatus(0,${distributor.id})">
+								<a class="btn btn-danger btn-sm" href="#" onclick="modifyStatus(0,${distributor.id})">
 									<i class="glyphicon glyphicon-remove icon-white"></i>下线
 								</a>
 							</c:if>
-							<a class="btn btn-info" href="distributor/edit?id=${distributor.id}">
+							<a class="btn btn-info btn-sm" href="distributor/edit?id=${distributor.id}">
 								<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 							</a>
 						</td>
@@ -125,59 +125,84 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</c:forEach>
 			</tbody>
 		</table>
-		
+		<div class="row">
+			<div class="col-md-12 center-block">
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<jsp:include page="../common/page.jsp" />
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
 </div><!-- row end -->
 
-<div class="modal fade" id="newDistributor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			<h4 class="modal-title" id="myModalLabel">新建渠道</h4>
+<div class="modal fade bs-example-modal-lg" id="newDistributor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<form id="addForm" action="<%=basePath%>distributor/add" method="post" enctype="application/x-www-form-urlencoded">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">新建渠道</h4>
+			</div>
+			<div class="modal-body">
+				<table id="orders-table" class="table table-hover">
+					<tr>
+						<th>名称</th>
+						<td><input id="addName" name="addName" type="text" class="form-control" placeholder="渠道名称"/>
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+						</td>
+					</tr>
+					<tr>
+						<th>状态</th>
+						<td>
+							<select id="addStatus" name="addStatus" class="form-control">
+								<option value="1">上线</option>
+								<option value="0">下线</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>频道</th>
+						<td colspan="1">
+							<table>
+								<thead>
+									<tr>
+										<th>选中</th>
+										<th>频道名称</th>
+										<th>移动</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${channelList}" var="channel">
+										<tr>
+											<th>
+												<input type="checkbox"  name="channelIds" value="${channel.id}">
+											</th>
+											<th>
+												<c:out value="${channel.name}"/>
+											</th>
+											<th>
+												<button class="btn btn-default btn-xs" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
+												<button class="btn btn-default btn-xs" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
+											</th>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="modal-footer" style="text-align: center;">
+				<button  type="button" class="btn btn-default" data-dismiss="modal" onclick="submitBatch()">提交</button>
+			</div>
+			</div>
 		</div>
-		<div class="modal-body">
-			<table id="orders-table" class="table table-hover">
-				<tr>
-					<th>名称</th>
-					<td><input id="addname" type="text" class="form-control" placeholder="渠道名称"/></td>
-				</tr>
-				<tr>
-					<th>状态</th>
-					<td>
-			  			<select id="addstatus"  class="form-control">
-			  				<option value="0">下线</option>
-			  				<option value="1">上线</option>
-			  			</select>
-			  		</td>
-				</tr>
-	  		</table>
-		</div>
-		<div class="modal-footer">
-			<button id="addNewDistributor" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
-		</div>
-		</div>
-	</div>
+	</form>
 </div>
 
 <script type="text/javascript">
-$('#addNewDistributor').click(function(event) {
-	post('distributor/add',
-		'name='+$("#addname").val()+'&status='+$('#addstatus').val(),
-		function (data) {
-			if(data['status']) {
-				location.href = '<%=basePath%>distributor/list?status='+$("#status").val();
-			}else {
-				alert('添加失败. info:'+data['info']);
-			}
-		},
-		function () {
-			alert('请求失败，请检查网络环境');
-		});
-});
-
 function modifyStatus(status,id) {
 	post('distributor/modifyStatus',
 			'id='+id+'&status='+status, 
@@ -205,6 +230,34 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
+};
+function up(obj) {
+	var objParentTR = $(obj).parent().parent();
+	var prevTR = objParentTR.prev();
+	if (prevTR.length > 0) {
+		prevTR.insertAfter(objParentTR);
+	}
+};
+function down(obj) {
+	var objParentTR = $(obj).parent().parent();
+	var nextTR = objParentTR.next();
+	if (nextTR.length > 0) {
+		nextTR.insertBefore(objParentTR);
+	}
+};
+function submitBatch() {
+	$(":checkbox").each(function(){
+		if(this.checked == false){
+			$(this).parent().parent().remove();
+		}
+	});
+	$("#addForm").ajaxSubmit(function(){
+		window.location.href = '<%=basePath%>distributor/list?status=' + $("#status").val();
+	});
+};
+function turnPage(){
+	location.href = '<%=basePath%>distributor/list?status=' + $("#status").val()
+	+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
 }
 </script>
 

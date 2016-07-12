@@ -33,7 +33,7 @@ public class TopicController {
 	@RequestMapping(value="/list")
 	public String getTopicList(@RequestParam(value="status",required=false)Integer status,Model model){
 		model.addAttribute("list", topicService.getTopicList(status));
-		model.addAttribute("distributorList", distributorService.getDistributorList(Constants.DISTRIBUTOR_STATUS_VALID));
+		model.addAttribute("distributorList", distributorService.getAllDistributorList());
 		model.addAttribute("status", status);
 		return "/topic/list";
 	} 
@@ -54,7 +54,7 @@ public class TopicController {
 	@RequestMapping(value="/edit")
 	public String edit(@RequestParam(value="id")Integer id,Model model){
 		model.addAttribute("topic", topicService.getTopicById(id));
-		model.addAttribute("distributorList", distributorService.getDistributorList(Constants.DISTRIBUTOR_STATUS_VALID));
+		model.addAttribute("distributorList", distributorService.getAllDistributorList());
 		return "/topic/edit";
 	} 
 	

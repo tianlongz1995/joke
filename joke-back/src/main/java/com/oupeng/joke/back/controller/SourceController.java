@@ -2,6 +2,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.SourceService;
 import com.oupeng.joke.back.service.DistributorService;
+import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -109,7 +110,9 @@ public class SourceController {
 	public String modify(@RequestParam(value="id",required=true)Integer id,Model model){
 		try{
 			model.addAttribute("source", sourceService.getSourceById(id));
-			model.addAttribute("dList", distributorService.getDistributorList(1));
+			Distributor distributor = new Distributor();
+			distributor.setStatus(1);
+			model.addAttribute("dList", distributorService.getAllDistributorList());
 		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}

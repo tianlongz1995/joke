@@ -255,8 +255,7 @@
                                 </tr>
                                 <tr>
                                     <th>投放频率</th>
-                                    <td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+
-                                        <input id="adSlide" type="text" class="input-sm" style="width:50px;" value="1" />（广告）</td>
+                                    <td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+ 1（广告）</td>
                                 </tr>
                             </table>
 

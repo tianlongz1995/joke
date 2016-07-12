@@ -82,7 +82,7 @@ public class AdController {
 			model.addAttribute("pageSize", pageSize);
 			model.addAttribute("pageCount", pageCount);
 			model.addAttribute("list", list);
-			model.addAttribute("dList", distributorService.getDistributorList(1));
+			model.addAttribute("dList", distributorService.getAllDistributorList());
 			model.addAttribute("status", status);
 			model.addAttribute("pos", pos);
 			model.addAttribute("slotId", slotId);
@@ -117,7 +117,7 @@ public class AdController {
 	public String modify(@RequestParam(value="id",required=true)Integer id,Model model){
 		try{
 			model.addAttribute("ad", adService.getAdById(id));
-			model.addAttribute("dList", distributorService.getDistributorList(1));
+			model.addAttribute("dList", distributorService.getAllDistributorList());
 		}catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}

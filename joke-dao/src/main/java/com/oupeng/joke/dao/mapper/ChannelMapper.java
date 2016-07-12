@@ -31,4 +31,11 @@ public interface ChannelMapper {
 	
 	@UpdateProvider(method="updateChannel",type=ChannelSqlProvider.class)
 	public void updateChannel(Channel channel);
+
+	/**
+	 * 获取频道状态列表
+	 * @return
+	 */
+	@Select(value="select id,name,sort,status from (select c.id,c.name,ifnull(b.sort,100) as sort,case b.id when b.id then 1 else 0 end as status from channel c left join (select id,c_id,sort from distributor_channel where d_id = #{id}) b on c.id=b.c_id where c.status = 1) a order by a.sort asc")
+	List<Channel> getChannelStatusList(@Param(value="id")Integer id);
 }
