@@ -99,4 +99,22 @@ public class SourceService {
         }
         return sourceMapper.getSourceMonitorList(date, status);
     }
+
+    /**
+     * 获取内容源编号列表
+     * @param status
+     * @return
+     */
+    public List<Integer> getSourceMonitorIds(Integer status) {
+        return sourceMapper.getSourceMonitorIds(status);
+    }
+
+    /**
+     * 插入内容源监控记录
+     * @param ids
+     * @param today
+     */
+    public void insertSourceMonitors(List<Integer> ids, String today) {
+        sourceMapper.insertSourceMonitors(ids, today);
+    }
 }
