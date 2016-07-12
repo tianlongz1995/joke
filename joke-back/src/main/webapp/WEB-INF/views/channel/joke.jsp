@@ -59,20 +59,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span >频道</span>
-					<select id="channelId">
-						<option value="">全部频道</option>
-						<c:forEach items="${channelList}" var="channel">
-							<option value="${channel.id}" <c:if test="${!empty channelId && channelId == channel.id}">selected</c:if> >${channel.name}</option>
-						</c:forEach>
-					</select>
-				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" onclick="turnPage()" >
-						<span class="glyphicon glyphicon-search icon-white" >查询</span>
-					</a>
-				</label>
 			    <label style="padding-right:30px;">
 			        <a class="btn btn-danger" href="#" onclick="verifyJoke('batch')">
 			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
@@ -185,7 +171,7 @@ function verifyJoke(id) {
 			'ids='+id+'&status=2', 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>channel/joke?channelId='+$("#channelId").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
+					location.href = '<%=basePath%>channel/joke?channelId=${channelId}&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
 				}
 				else {
 					alert('删除失败. info:'+data['info']);
@@ -197,7 +183,7 @@ function verifyJoke(id) {
 }
 
 function turnPage(){
-	location.href = '<%=basePath%>channel/joke?channelId='+$("#channelId").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
+	location.href = '<%=basePath%>channel/joke?channelId=${channelId}&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
 }
 
 function post(url, data, success, error) {

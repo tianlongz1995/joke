@@ -83,6 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th>内容属性</th>
 					<th>类型</th>
 					<th>有趣/吐槽</th>
+					<th>状态</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -108,6 +109,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<c:out value="${channel.good}"/><span>/</span><c:out value="${channel.bad}"/>
 						</td>
 						<td>
+							<c:if test="${channel.status == 0}">下线</c:if>
+							<c:if test="${channel.status == 1}">上线</c:if>
+						</td>
+						<td>
 							<c:if test="${channel.status == 0}">
 								<a class="btn btn-success" href="#" onclick="verifyChannel(1,${channel.id})">
 						        	 <i class="glyphicon glyphicon-ok icon-white"></i>上线
@@ -120,6 +125,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</c:if>
 							<a class="btn btn-info" href="channel/edit?id=${channel.id}">
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
+					        </a>
+					        <a class="btn btn-warning" href="channel/joke?channelId=${channel.id}">
+					        	<i class="glyphicon glyphicon-arrow-right"></i>删除内容
 					        </a>
 					    </td>
 					</tr>

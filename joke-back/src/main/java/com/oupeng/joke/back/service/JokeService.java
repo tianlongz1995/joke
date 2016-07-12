@@ -2,6 +2,7 @@ package com.oupeng.joke.back.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.cache.JedisCache;
@@ -33,10 +34,28 @@ public class JokeService {
 	private JedisCache jedisCache;
 	
 	public List<Joke> getJokeListForVerify(Integer type,Integer status){
-		return jokeMapper.getJokeList(type, status,null,null);
+		return jokeMapper.getJokeList(type, status,null,null,false);
 	}
 	
+	
+	/***/
 	public void verifyJoke(Integer status,String ids,String user){
+		String[] jokeIds = ids.split(",");
+		if(status == Constants.JOKE_STATUS_VALID){
+			//TODO 审核通过率
+		}else{
+			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
+			if(!CollectionUtils.isEmpty(keys)){
+				for(String key : keys){
+					jedisCache.zrem(key, jokeIds);
+				}
+			}
+			
+			for(String id : jokeIds){
+				jedisCache.del(JedisKey.STRING_JOKE + id);
+			}
+			//TODO 审核通过率
+		}
 		jokeMapper.verifyJoke(status, ids, user);
 	}
 	
@@ -157,7 +176,7 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForSearch(Integer id,String content){
-		return jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content);
+		return jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content,false);
 	}
 	
 	public int getJokeCountForChannel(String contentType){
@@ -166,5 +185,25 @@ public class JokeService {
 	
 	public List<Joke> getJokeListForChannel(String contentType,Integer start,Integer size){
 		return jokeMapper.getJokeListForChannel(contentType,start,size);
+	}
+	
+	public List<Joke> getJokeListForTopic(Integer type,Integer status){
+		return jokeMapper.getJokeList(type, status,null,null,true);
+	}
+	
+	public List<Integer> getJokeForPublishTopic(Integer topicId){
+		return jokeMapper.getJokeForPublishTopic(topicId);
+	}
+	
+	public List<Integer> getJokeForPublishChannel(String contentType){
+		return jokeMapper.getJokeForPublishChannel(contentType);
+	}
+	
+	public List<Joke> getJokeListForPublish(){
+		return jokeMapper.getJokeListForPublish();
+	}
+	
+	public List<Joke> getJokeListForPublishRecommend(){
+		return jokeMapper.getJokeListForPublishRecommend();
 	}
 }

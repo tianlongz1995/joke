@@ -1,5 +1,7 @@
 package com.oupeng.joke.back.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oupeng.joke.back.service.DistributorService;
+import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.back.service.TopicService;
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -22,6 +26,9 @@ public class TopicController {
 	private TopicService topicService;
 	@Autowired
 	private DistributorService distributorService;
+	@Autowired
+	private JokeService jokeService;
+	
 	
 	@RequestMapping(value="/list")
 	public String getTopicList(@RequestParam(value="status",required=false)Integer status,Model model){
@@ -71,6 +78,24 @@ public class TopicController {
 			@RequestParam(value="dids",required=false)String dids,
 			@RequestParam(value="publishTime",required=false)String publishTime){
 		topicService.insertTopic(title, img, content, dids, publishTime);;
+		return new Success();
+	} 
+	
+	@RequestMapping(value="/joke")
+	public String getJokeList(@RequestParam(value="topicId",required=true)Integer topicId,
+			@RequestParam(value="type",required=false)Integer type,
+			Model model){
+    	model.addAttribute("topicId", topicId);
+    	model.addAttribute("type", type);
+    	model.addAttribute("list", jokeService.getJokeListForTopic(type, Constants.JOKE_STATUS_VALID));
+		return "/topic/joke";
+	}
+	
+	@RequestMapping(value="/addJoke")
+	@ResponseBody
+	public Result add(@RequestParam(value="ids",required=false)String ids,
+			@RequestParam(value="topicId",required=true)Integer topicId){
+		topicService.addTopicJoke(ids, topicId);
 		return new Success();
 	} 
 }

@@ -13,23 +13,28 @@ public class JokeSqlProvider {
 		Object status = map.get("status");
 		Object id = map.get("id");
 		Object content = map.get("content");
+		boolean isTopic = Boolean.parseBoolean(map.get("isTopic").toString());
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select id,title,content,img,gif,type,status,source_id as sourceId,");
-		sql.append(" verify_user as verifyUser,verify_time as verifyTime,create_time as createTime,");
-		sql.append(" update_time as updateTime,good,bad from joke where 1 = 1 ");
+		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t1.source_id as sourceId,");
+		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
+		sql.append(" t1.update_time as updateTime,t1.good,t1.bad from joke t1 where 1 = 1 ");
 		if(type != null){
-			sql.append(" and type = ").append(type).append(" ");
+			sql.append(" and t1.type = ").append(type).append(" ");
 		}
 		if(status != null){
-			sql.append(" and status = ").append(status).append(" ");
+			sql.append(" and t1.status = ").append(status).append(" ");
 		}
 		if(id != null){
-			sql.append(" and id = ").append(id).append(" ");
+			sql.append(" and t1.id = ").append(id).append(" ");
 		}
 		if(content != null){
-			sql.append(" and content like '%").append(content).append("%' ");
+			sql.append(" and t1.content like '%").append(content).append("%' ");
 		}
-		sql.append(" order by create_time limit 12 ");
+		if(isTopic){
+			sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id)");
+		}
+		
+		sql.append(" order by t1.create_time limit 12 ");
 		return sql.toString();
 	}
 	

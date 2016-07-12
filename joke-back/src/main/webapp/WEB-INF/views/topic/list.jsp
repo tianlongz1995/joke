@@ -142,6 +142,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
+							<a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
+					        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
+					        </a>
 					    </td>
 					</tr>
 				</c:forEach>

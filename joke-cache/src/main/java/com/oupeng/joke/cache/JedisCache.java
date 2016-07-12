@@ -309,4 +309,28 @@ public class JedisCache {
 		}
 
 	}
+	
+	public Set<String> keys(String key) {
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.keys(key);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+	
+	public void del(String ... keys){
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			jedis.del(keys);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
 }
