@@ -115,6 +115,7 @@ public class SourceSqlProvider {
 	 * 插入内容源监控记录
 	 * @param map
 	 */
+	@SuppressWarnings("unchecked")
 	public String insertSourceMonitors(Map<String, Object> map){
 		List<Integer> ids = (List<Integer>) map.get("ids");
 		Integer today = (Integer) map.get("today");

@@ -1,7 +1,6 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.SourceSqlProvider;
-import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.SourceCrawl;
 import org.apache.ibatis.annotations.*;
@@ -76,4 +75,7 @@ public interface SourceMapper {
 	 */
 	@InsertProvider(method="insertSourceMonitors",type=SourceSqlProvider.class)
 	void insertSourceMonitors(@Param(value = "today")Integer today, @Param(value = "ids")List<Integer> ids);
+	
+	@Update(value="update source set update_time=now(),verify_rate = #{rate} where source_id = #{sourceId} and day = #{day}")
+	public void updateSourceByVerify(@Param(value = "sourceId")Integer sourceId,@Param(value = "day")Integer day,@Param(value = "rate")Double rate);
 }

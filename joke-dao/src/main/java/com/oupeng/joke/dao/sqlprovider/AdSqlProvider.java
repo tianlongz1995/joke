@@ -1,9 +1,6 @@
 package com.oupeng.joke.dao.sqlprovider;
 
 import com.oupeng.joke.domain.Ad;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayDeque;
 
 public class AdSqlProvider {
 	/**

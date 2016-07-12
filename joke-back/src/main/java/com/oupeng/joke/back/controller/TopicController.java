@@ -1,7 +1,5 @@
 package com.oupeng.joke.back.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +11,6 @@ import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.back.service.TopicService;
 import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;

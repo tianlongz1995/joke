@@ -4,8 +4,6 @@ import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.back.service.FeedbackService;
 import com.oupeng.joke.domain.PieGraph;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +21,6 @@ import java.util.List;
 @Controller
 @RequestMapping(value="/feedback")
 public class FeedbackController {
-	private static final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
 	@Autowired
 	private FeedbackService feedbackService;
 	@Autowired

@@ -14,6 +14,7 @@ import com.oupeng.joke.dao.sqlprovider.JokeSqlProvider;
 import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
+import com.oupeng.joke.domain.JokeVerifyRate;
 
 public interface JokeMapper {
 	
@@ -78,4 +79,17 @@ public interface JokeMapper {
 	
 	@Select(value="select id,good FROM joke where `status` = 1 ORDER BY good desc limit 100 ")
 	public List<Joke> getJokeListForPublishRecommend();
+	
+	@Select(value=" select t1.source_id as soureId,t1.validNum as validNum,case when t2.inValidNum is null then 0 else t2.inValidNum end as inValidNum from "
+			+ " (select source_id,count(1) as validNum,0 as inValidNum from joke where `status` = 1 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t1 "
+			+ " LEFT JOIN"
+			+ " (select source_id,0 as validNum,count(1) as inValidNum from joke where `status` = 2 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t2 "
+			+ " on t1.source_id = t2.source_id "
+			+ " union "
+			+ " select t2.source_id as soureId,case when t1.validNum is null then 0 else t1.validNum end  as validNum,t2.inValidNum  as inValidNum from "
+			+ " (select source_id,count(1) as validNum,0 as  inValidNum from joke where `status` = 1 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t1 "
+			+ " RIGHT JOIN "
+			+ " (select source_id,0 as validNum,count(1) as  inValidNum from joke where `status` = 2 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t2 "
+			+ " on t1.source_id = t2.source_id ")
+	public List<JokeVerifyRate> getJokeVerifyRate();
 }

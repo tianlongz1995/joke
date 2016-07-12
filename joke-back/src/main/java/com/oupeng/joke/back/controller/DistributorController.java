@@ -2,9 +2,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.ChannelService;
 import com.oupeng.joke.back.service.DistributorService;
-import com.oupeng.joke.domain.Channel;
 import com.oupeng.joke.domain.Distributor;
-import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.slf4j.Logger;
