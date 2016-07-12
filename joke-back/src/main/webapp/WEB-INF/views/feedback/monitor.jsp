@@ -126,7 +126,7 @@
                                 </tbody>
                             </table>
                             <div style="text-align: center;">
-                                <a class="btn btn-danger btn-sm" href="feedback/list">朕已阅</a>
+                               <%-- <a class="btn btn-danger btn-sm" href="<%=basePath%>feedback/monitor">朕已阅</a>--%>
                             </div>
                         </div>
                     </div>

@@ -159,7 +159,11 @@
                                             <c:if test="${ad.pos == 4}">详情页中部</c:if>
                                             <c:if test="${ad.pos == 5}">详情页底部</c:if>
                                         </td>
-                                        <td><c:out value="${ad.slide}"/></td>
+                                        <td>
+                                            <c:if test="${ad.pos == 1}">
+                                                <c:out value="${ad.slide}"/>
+                                            </c:if>
+                                        </td>
                                         <td><c:out value="${ad.dName}"/></td>
                                         <td>
                                             <c:if test="${ad.status == 0}">
@@ -233,6 +237,15 @@
                                     <td><input id="slotId" type="text" class="form-control" placeholder="输入广告链接ID"/></td>
                                 </tr>
                                 <tr>
+                                    <th>广告状态</th>
+                                    <td>
+                                        <select id="addstatus" class="form-control">
+                                            <option value="0">下线</option>
+                                            <option value="1" selected>上线</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="adStatusTr">
                                     <th>投放位置</th>
                                     <td>
                                         <select id="pos" class="form-control">
@@ -241,15 +254,6 @@
                                             <option value="3">详情页上方</option>
                                             <option value="4">详情页中部</option>
                                             <option value="5">详情页底部</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>广告状态</th>
-                                    <td>
-                                        <select id="addstatus" class="form-control">
-                                            <option value="0">下线</option>
-                                            <option value="1" selected>上线</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -269,10 +273,15 @@
 
             <script type="text/javascript">
                 $('#addNewad').click(function (event) {
-                    post('ad/add',
+                    var slide = $('#slide').val();
+                    if(slide == null || slide == undefined){
+                        slide = '';
+                    }
+
+                    post('<%=basePath%>ad/add',
                             'did=' + $("#did").val()
                             + '&pos=' + $('#pos').val()
-                            + '&slide=' + $('#slide').val()
+                            + '&slide=' + slide
                             + '&status=' + $('#addstatus').val()
                             + '&slotId=' + $('#slotId').val(),
                             function (data) {
@@ -293,10 +302,10 @@
                             function () {
                                 alert('请求失败，请检查网络环境');
                             });
-                });
+                })
 
                 function modifyStatus(status, id) {
-                    post('ad/modifyStatus',
+                    post('<%=basePath%>ad/modifyStatus',
                             'id=' + id + '&status=' + status,
                             function (data) {
                                 if (data['status']) {
@@ -329,7 +338,7 @@
                     location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
                         + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
                         + '&pos=' + $("#pagePos").val() + param;
-                });
+                })
 
                 function post(url, data, success, error) {
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -338,7 +347,7 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                };
+                }
                 function turnPage(){
                     var slotId = $("#myslotId").val();
                     var param = '';
@@ -348,6 +357,15 @@
                     location.href = '<%=basePath%>ad/list?status='+$("#status").val()+'&distributorId='+$("#distributors").val()+'&pos='+$("#pagePos").val()
                     +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val() + param;
                 }
+                $('#pos').change(function (event) {
+                    var pos = $("#pos").val();
+                    if(pos == 1){
+                        $("#adStatusTr").next().remove();
+                        $("#adStatusTr").after('<tr><th>投放频率</th><td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+ 1（广告）</td></tr>');
+                    }else{
+                        $("#adStatusTr").next().remove();
+                    }
+                });
             </script>
 
         </div>

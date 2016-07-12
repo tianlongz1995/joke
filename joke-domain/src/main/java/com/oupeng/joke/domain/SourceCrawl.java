@@ -8,9 +8,9 @@ public class SourceCrawl {
 	/**	内容源id	*/
 	private Integer sourceId;
 	/**	内容源名称 */
-	private Integer sourceName;
+	private String sourceName;
 	/**	内容源URL */
-	private Integer url;
+	private String url;
 	/**	抓取日期：yyyyMMdd	*/
 	private Integer day;
 	/**	当天爬虫抓取次数	*/
@@ -42,19 +42,19 @@ public class SourceCrawl {
 		this.sourceId = sourceId;
 	}
 
-	public Integer getSourceName() {
+	public String getSourceName() {
 		return sourceName;
 	}
 
-	public void setSourceName(Integer sourceName) {
+	public void setSourceName(String sourceName) {
 		this.sourceName = sourceName;
 	}
 
-	public Integer getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(Integer url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 

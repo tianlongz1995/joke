@@ -142,7 +142,7 @@ public class SourceController {
 	 * @param source
 	 * @return
 	 */
-	@RequestMapping(value="/add")
+	@RequestMapping(value="/add", produces = {"application/json"})
 	@ResponseBody
 	public Result add(Source source){
 		try {
@@ -150,7 +150,7 @@ public class SourceController {
 		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}
-			return new Success();
+		return new Success();
 	}
 
 	/**

@@ -65,22 +65,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td><input id="slotId" type="text" class="form-control" value="${ad.slotId}"/></td>
 				</tr>
 				<tr>
-		  			<th>广告位位置</th>
-			  		<td>
-			  			<select id="pos" class="form-control" >
-							<option value="1" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 1}">selected</c:if> >列表页中间</option>
-							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >列表页底部</option>
-							<option value="3" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 3}">selected</c:if> >详情页上方</option>
-							<option value="4" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 4}">selected</c:if> >详情页中部</option>
-							<option value="5" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 5}">selected</c:if> >详情页底部</option>
-			  			</select>
-			  		</td>
-			  	</tr>
-				<tr>
-					<th>广告频率</th>
-					<td><input id="slide" type="text" class="form-control" value="${ad.slide}"/></td>
-				</tr>
-				<tr>
 					<th>发布渠道</th>
 					<td>
 						<%--<input id="dName" type="text" class="form-control" value="${ad.dName}"/>--%>
@@ -100,6 +84,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</select>
 					</td>
 				</tr>
+				<tr id="adStatusTr">
+					<th>广告位位置</th>
+					<td>
+						<select id="pos" class="form-control" >
+							<option value="1" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 1}">selected</c:if> >列表页中间</option>
+							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >列表页底部</option>
+							<option value="3" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 3}">selected</c:if> >详情页上方</option>
+							<option value="4" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 4}">selected</c:if> >详情页中部</option>
+							<option value="5" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 5}">selected</c:if> >详情页底部</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>广告频率</th>
+					<td><input id="slide" type="text" class="form-control" value="${ad.slide}"/></td>
+				</tr>
 			</thead>
 		</table>
 		<div style="text-align: center;">
@@ -112,8 +112,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 $('#updateAd').click(function(event) {
+	var slide = $('#slide').val();
+	if(slide == null || slide == undefined){
+		slide = '';
+	}
 	post('ad/update',
-			'id='+$("#adid").val()+'&slotId='+$("#slotId").val()+'&pos='+$('#pos').val()+'&slide='+$("#slide").val()+'&did='+$('#distributors').val()+'&status='+$('#status').val(),
+			'id='+$("#adid").val()+'&slotId='+$("#slotId").val()+'&pos='+$('#pos').val()+'&slide='+slide+'&did='+$('#distributors').val()+'&status='+$('#status').val(),
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>ad/list';
@@ -135,6 +139,15 @@ function post(url, data, success, error) {
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
 }
+$('#pos').change(function (event) {
+	var pos = $("#pos").val();
+	if(pos == 1){
+		$("#adStatusTr").next().remove();
+		$("#adStatusTr").after('<tr><th>投放频率</th><td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+ 1（广告）</td></tr>');
+	}else{
+		$("#adStatusTr").next().remove();
+	}
+});
 </script>
 
 </div><!-- content end -->

@@ -159,6 +159,6 @@ public class AdController {
 		}catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}
-			return new Success();
+		return new Success();
 	} 
 }

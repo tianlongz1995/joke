@@ -88,16 +88,24 @@ public class SourceService {
      * @return
      */
     public List<SourceCrawl> getSourceMonitorList(String monitorDate, Integer status) {
-        Integer date = null;
-        if(monitorDate != null && monitorDate.length() >0){
-            monitorDate = monitorDate.replaceAll("-", "");
+        List<SourceCrawl> list = null;
+        try{
+            Integer date = null;
+            if(monitorDate != null && monitorDate.length() >0){
+                monitorDate = monitorDate.replaceAll("-", "");
+            }
+            if(StringUtils.isNumeric(monitorDate)){
+                date = Integer.valueOf(monitorDate);
+            } else {
+                date = Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+            }
+           list = sourceMapper.getSourceMonitorList(date, status);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
         }
-        if(StringUtils.isNumeric(monitorDate)){
-            date = Integer.valueOf(monitorDate);
-        } else {
-            date = Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-        }
-        return sourceMapper.getSourceMonitorList(date, status);
+
+
+        return list;
     }
 
     /**
