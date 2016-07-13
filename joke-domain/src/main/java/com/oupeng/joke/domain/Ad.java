@@ -6,7 +6,7 @@ public class Ad {
 	/**	编号	*/
 	private Integer id;
 	/**	广告位编号	*/
-	private String slotId;
+	private Integer slotId;
 	/**	位置 1:列表页中间 2:列表页底部 3:详情页上方 4:详情页中部 5:详情页底部	*/
 	private Integer pos;
 	/**	pos=1时，广告插入间隔	*/
@@ -33,10 +33,10 @@ public class Ad {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getSlotId() {
+	public Integer getSlotId() {
 		return slotId;
 	}
-	public void setSlotId(String slotId) {
+	public void setSlotId(Integer slotId) {
 		this.slotId = slotId;
 	}
 	public Integer getPos() {

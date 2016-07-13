@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Feedback;
-import com.oupeng.joke.domain.response.DistributorConfigResult;
+import com.oupeng.joke.domain.response.DistributorConfig;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ public class JokeService {
     public Result getDistributorConfig(String did) {
         if(StringUtils.isNumeric(did)){
             String result = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, did);
-            DistributorConfigResult dcr = JSON.parseObject(result, DistributorConfigResult.class);
+            DistributorConfig dcr = JSON.parseObject(result, DistributorConfig.class);
             if(dcr != null){
                 return new Result(200, "success", dcr);
             }

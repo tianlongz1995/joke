@@ -27,7 +27,7 @@ public interface AdMapper {
 	 * @param id 广告编号
 	 * @return
 	 */
-	@Select(value="select id,slot_id as slotId,pos,slide,d_id as did,status,create_time as createTime,update_time as updateTime from ad where id = ${id}")
+	@Select(value="select a.id,a.slot_id as slotId,a.pos,slide,a.d_id as did,d.name as dName, a.status,a.create_time as createTime,a.update_time as updateTime from ad a left join distributor d on a.d_id = d.id where a.id = #{id}")
 	Ad getAdById(@Param(value = "id") Integer id);
 
 	/**
@@ -53,4 +53,14 @@ public interface AdMapper {
 	@UpdateProvider(method="updateAd",type=AdSqlProvider.class)
 	void updateAd(Ad ad);
 
+	@Select(value="select slot_id as slotId, pos,slide from ad where d_id = #{id}")
+	List<Ad> getDistributorAdList(@Param(value = "id")Integer id);
+	/**
+	 * 获取广告数量
+	 * @param did
+	 * @param pos
+	 * @return
+	 */
+	@Select(value="select count(1) from ad where pos = #{pos} and d_id = #{did}")
+	Integer getAdCount(@Param(value = "did")Integer did, @Param(value = "pos")Integer pos);
 }

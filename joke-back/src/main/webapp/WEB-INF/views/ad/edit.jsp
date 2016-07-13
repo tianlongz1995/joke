@@ -65,17 +65,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td><input id="slotId" type="text" class="form-control" value="${ad.slotId}"/></td>
 				</tr>
 				<tr>
-					<th>发布渠道</th>
-					<td>
-						<%--<input id="dName" type="text" class="form-control" value="${ad.dName}"/>--%>
-						<select id="distributors" class="form-control" style="font-size: 16px;width: 300px;margin: 3px;" >
-							<c:forEach items="${dList}" var="distributor" varStatus="status">
-								<option value='<c:out value="${distributor.id}"/>' <c:if test="${!empty ad.did && ad.did == distributor.id}">selected</c:if> ><c:out value="${distributor.name}"/></option>
-							</c:forEach>
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<th>广告状态</th>
 					<td>
 						<select id="status" class="form-control" >
@@ -84,10 +73,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<th>发布渠道</th>
+					<td>
+						<input type="text" class="form-control" disabled="disabled" value="${ad.dName}"/>
+						<input type="hidden" id="distributors" value="${ad.did}"/>
+					</td>
+					<%--<td>
+						&lt;%&ndash;<input id="dName" type="text" class="form-control" value="${ad.dName}"/>&ndash;%&gt;
+						<select id="distributors" class="form-control" style="font-size: 16px;width: 300px;margin: 3px;" >
+							<c:forEach items="${dList}" var="distributor" varStatus="status">
+								<option value='<c:out value="${distributor.id}"/>' <c:if test="${!empty ad.did && ad.did == distributor.id}">selected</c:if> ><c:out value="${distributor.name}"/></option>
+							</c:forEach>
+						</select>
+					</td>--%>
+				</tr>
 				<tr id="adStatusTr">
 					<th>广告位位置</th>
 					<td>
-						<select id="pos" class="form-control" >
+						<select id="pos" class="form-control" disabled="disabled">
 							<option value="1" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 1}">selected</c:if> >列表页中间</option>
 							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >列表页底部</option>
 							<option value="3" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 3}">selected</c:if> >详情页上方</option>
@@ -96,10 +100,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</select>
 					</td>
 				</tr>
-				<tr>
-					<th>广告频率</th>
-					<td><input id="slide" type="text" class="form-control" value="${ad.slide}"/></td>
-				</tr>
+				<c:if test="${!empty ad.pos && ad.pos == 1}">
+					<tr>
+						<th>广告频率</th>
+						<td><input id="slide" type="text" class="form-control" value="${ad.slide}"/></td>
+					</tr>
+				</c:if>
 			</thead>
 		</table>
 		<div style="text-align: center;">
@@ -116,14 +122,27 @@ $('#updateAd').click(function(event) {
 	if(slide == null || slide == undefined){
 		slide = '';
 	}
+	var slotId = $('#slotId').val();
+
+	if(!isInteger(slotId) || slotId.length > 10){
+		alert("广告位置ID只能是整数");
+		return false;
+	}
+	var pos = $('#pos').val();
+	if(pos == 1){
+		if(!isInteger(slide) || slide < 1 || slide > 99){
+			alert("投放频率必须是大于0或者小于100的正整数");
+			return false;
+		}
+	}
 	post('ad/update',
-			'id='+$("#adid").val()+'&slotId='+$("#slotId").val()+'&pos='+$('#pos').val()+'&slide='+slide+'&did='+$('#distributors').val()+'&status='+$('#status').val(),
+			'id='+$("#adid").val()+'&slotId='+slotId+'&pos='+$('#pos').val()+'&slide='+slide+'&did='+$('#distributors').val()+'&status='+$('#status').val(),
 			function (data) {
-				if(data['status']) {
+				if(data.status == 1) {
 					location.href = '<%=basePath%>ad/list';
 				}
 				else {
-					alert('更新失败. info:'+data['info']);
+					alert('更新失败:'+data.info);
 				}
 			},
 			function () {
@@ -148,6 +167,10 @@ $('#pos').change(function (event) {
 		$("#adStatusTr").next().remove();
 	}
 });
+function isInteger(x) {
+	var ex = /^\d+$/;
+	return ex.test(x);
+}
 </script>
 
 </div><!-- content end -->

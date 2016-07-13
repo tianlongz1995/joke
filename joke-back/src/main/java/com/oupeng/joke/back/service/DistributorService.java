@@ -93,4 +93,7 @@ public class DistributorService {
 		}
 	}
 
+	public List<Integer> getDistributorIds() {
+		return distributorMapper.getDistributorIds();
+	}
 }

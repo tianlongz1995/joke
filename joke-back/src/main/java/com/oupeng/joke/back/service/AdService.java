@@ -68,7 +68,7 @@ public class AdService {
      * @param did
      * @param status
      */
-    public void updateAd(Integer id, String slotId, Integer pos, Integer slide, Integer did, Integer status){
+    public void updateAd(Integer id, Integer slotId, Integer pos, Integer slide, Integer did, Integer status){
         Ad ad = new Ad();
         ad.setId(id);
         ad.setSlotId(slotId);
@@ -79,4 +79,17 @@ public class AdService {
         adMapper.updateAd(ad);
     }
 
+    public List<Ad> getDistributorAdList(Integer id) {
+        return adMapper.getDistributorAdList(id);
+    }
+
+    /**
+     * 获取广告数量
+     * @param did
+     * @param pos
+     * @return
+     */
+    public Integer getAdCount(Integer did, Integer pos) {
+        return adMapper.getAdCount(did, pos);
+    }
 }

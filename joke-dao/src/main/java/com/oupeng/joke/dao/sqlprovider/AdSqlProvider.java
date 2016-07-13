@@ -21,7 +21,7 @@ public class AdSqlProvider {
 			sql.append(" and a.status = ").append(ad.getStatus());
 		}
 		if(ad.getSlotId() != null){
-			sql.append(" and a.slot_id = '").append(ad.getSlotId()).append("'");
+			sql.append(" and a.slot_id = ").append(ad.getSlotId());
 		}
 		return sql.toString();
 	}
@@ -43,7 +43,7 @@ public class AdSqlProvider {
 			sql.append(" and a.status = ").append(ad.getStatus());
 		}
 		if(ad.getSlotId() != null){
-			sql.append(" and a.slot_id = '").append(ad.getSlotId()).append("'");
+			sql.append(" and a.slot_id = ").append(ad.getSlotId());
 		}
 		sql.append(" order by a.create_time desc ");
 		sql.append(" limit ").append(ad.getOffset()).append(",").append(ad.getPageSize());
@@ -57,9 +57,9 @@ public class AdSqlProvider {
 	 */
 	public String insertAd(Ad ad){
 		StringBuffer sql = new StringBuffer();
-		sql.append("insert into ad(slot_id,pos,slide,d_id,status,create_time,update_time) value (");
+		sql.append("insert into ad(slot_id, pos, slide, d_id, status, create_time, update_time) value (");
 		if(ad.getSlotId() != null){
-			sql.append("'").append(ad.getSlotId()).append("',");
+			sql.append(ad.getSlotId()).append(",");
 		}else{
 			sql.append("0,");
 		}
@@ -96,7 +96,7 @@ public class AdSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update ad set update_time=now() ");
 		if(ad.getSlotId() != null){
-			sql.append(",slot_id = '").append(ad.getSlotId()).append("'");
+			sql.append(",slot_id = ").append(ad.getSlotId());
 		}
 		if(ad.getPos() != null){
 			sql.append(",pos=").append(ad.getPos());

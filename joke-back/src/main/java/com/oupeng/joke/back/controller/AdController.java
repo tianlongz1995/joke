@@ -3,6 +3,7 @@ package com.oupeng.joke.back.controller;
 import com.oupeng.joke.back.service.AdService;
 import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.domain.Ad;
+import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class AdController {
 	public String getAdList(@RequestParam(value="distributorId",required=false)Integer distributorId,
 							@RequestParam(value="pos",required=false)Integer pos,
 							@RequestParam(value="status",required=false)Integer status,
-							@RequestParam(value="slotId",required=false)String slotId,
+							@RequestParam(value="slotId",required=false)Integer slotId,
 							@RequestParam(value="pageNumber",required=false)Integer pageNumber,
 							@RequestParam(value="pageSize",required=false)Integer pageSize,
 							Model model){
@@ -98,7 +99,7 @@ public class AdController {
 	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/modifyStatus")
+	@RequestMapping(value="/modifyStatus", produces = {"application/json"})
 	@ResponseBody
 	public Result modifyStatus(@RequestParam(value="id")Integer id,
 			@RequestParam(value="status")Integer status){
@@ -133,10 +134,10 @@ public class AdController {
 	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/update")
+	@RequestMapping(value="/update", produces = {"application/json"})
 	@ResponseBody
 	public Result update(@RequestParam(value="id",required=true)Integer id,
-						 @RequestParam(value="slotId",required=false)String slotId,
+						 @RequestParam(value="slotId",required=false)Integer slotId,
 						 @RequestParam(value="pos",required=false)Integer pos,
 						 @RequestParam(value="slide",required=true)Integer slide,
 						 @RequestParam(value="did",required=false)Integer did,
@@ -150,7 +151,7 @@ public class AdController {
 	 * @param ad
 	 * @return
 	 */
-	@RequestMapping(value="/add")
+	@RequestMapping(value="/add", produces = {"application/json"})
 	@ResponseBody
 	public Result add(Ad ad){
 		try {
@@ -159,5 +160,25 @@ public class AdController {
 			logger.error(e.getMessage(), e);
 		}
 		return new Success();
-	} 
+	}
+	/**
+	 * 检查广告位是否创建
+	 * @param did
+	 * @param pos
+	 * @return
+	 */
+	@RequestMapping(value="addCheck", produces = {"application/json"})
+	@ResponseBody
+	public Result addCheck(@RequestParam(value="did",required=true)Integer did,
+						   @RequestParam(value="pos",required=true)Integer pos){
+		try {
+			Integer count = adService.getAdCount(did, pos);
+			if(count != null && count > 0){
+				return new Failed("数据库中已经有对应的记录，请直接修改对应记录即可!");
+			}
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return new Success();
+	}
 }
