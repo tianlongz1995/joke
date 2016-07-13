@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.UnsupportedEncodingException;
+
 @Controller
 @RequestMapping(value="/joke")
 public class JokeController {
@@ -60,12 +62,23 @@ public class JokeController {
     }
     /**
      * 反馈
-     * @param feedback	反馈
+     * @param distributorId
+     * @param channelId
+     * @param type
+     * @param content
      * @return
      */
-    @RequestMapping(value = "/feedback", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/feedback", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public Result feedback(@RequestParam(value="feedback",required=true)Feedback feedback){
+    public Result feedback(@RequestParam(value="distributorId",required=true)Integer distributorId,
+                           @RequestParam(value="channelId",required=true)Integer channelId,
+                           @RequestParam(value="type",required=true)Integer type,
+                           @RequestParam(value="content",required=true)String content){
+        Feedback feedback = new Feedback();
+        feedback.setDistributorId(distributorId);
+        feedback.setChannelId(channelId);
+        feedback.setType(type);
+        feedback.setContent(content);
         jokeService.feedback(feedback);
         return new Success();
     }

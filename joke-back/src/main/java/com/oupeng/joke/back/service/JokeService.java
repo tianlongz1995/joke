@@ -66,11 +66,13 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void jokeLikeCountUpdate(){
+		logger.info("jokeLikeCountUpdate init...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
 						List<String> likeIdList = jedisCache.brpop(JedisKey.JOKE_LIST_LIKE, 60*5);
+						logger.info("insertJokeFeedback receved size:[{}]", likeIdList == null ? 0 : likeIdList.size());
 						if(!CollectionUtils.isEmpty(likeIdList)){
 							String likeId = likeIdList.get(1);
 							logger.info("update joke Like Count id:" + likeId);
@@ -88,11 +90,13 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void jokeStepCountUpdate(){
+		logger.info("jokeStepCountUpdate init...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
-						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 60*5);
+						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 10);
+						logger.info("insertJokeFeedback receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
 						if(!CollectionUtils.isEmpty(stepIdList)){
 							String stepId = stepIdList.get(1);
 							logger.info("update joke step Count id:" + stepId);
@@ -111,11 +115,13 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void insertJokeFeedback(){
+		logger.info("insertJokeFeedback init...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
-						List<String> feedbackList = jedisCache.brpop(JedisKey.JOKE_LIST_FEEDBACK, 60*5);
+						List<String> feedbackList = jedisCache.brpop(JedisKey.JOKE_LIST_FEEDBACK, 10);
+						logger.info("insertJokeFeedback receved size:[{}]", feedbackList == null ? 0 : feedbackList.size());
 						if(!CollectionUtils.isEmpty(feedbackList)){
 							String feedbackStr = feedbackList.get(1);
 							logger.info("update joke feedback String:" + feedbackStr);

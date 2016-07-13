@@ -13,7 +13,7 @@ public class Feedback {
     private Integer distributorId;
     /** 频道编号    */
     private Integer channelId;
-    /** 反馈问题类型    */
+    /** 反馈问题类型 (1:刷新慢；2:不好笑；3:闪退/黑屏；4:其他)   */
     private Integer type;
     /** 反馈内容    */
     private String content;
