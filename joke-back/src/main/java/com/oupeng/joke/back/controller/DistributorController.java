@@ -138,5 +138,31 @@ public class DistributorController {
 					  @RequestParam(value="channelIds",required=false)Integer[] channelIds){
 		distributorService.insertDistributor(name, status, channelIds);
 		return new Success();
-	} 
+	}
+
+	/**
+	 * 渠道广告配置缓存页面
+	 * @param managerKey
+	 * @return
+	 */
+	@RequestMapping(value="/dataManager")
+	public String dataManager(@RequestParam(value="managerKey",required=true)String managerKey){
+		boolean status = distributorService.checkManagerKey(managerKey);
+		if(status){
+			return "/distributor/manager";
+		}else {
+			return "/distributor/list";
+		}
+	}
+
+	/**
+	 * 更新渠道广告配置缓存
+	 * @param managerKey
+	 * @return
+	 */
+	@RequestMapping(value="/updateDistributorAdConfigCache", produces = {"application/json"})
+	@ResponseBody
+	public Result updateDistributorAdConfigCache(@RequestParam(value="managerKey",required=true)String managerKey){
+		return distributorService.updateDistributorAdConfigCache(managerKey);
+	}
 }
