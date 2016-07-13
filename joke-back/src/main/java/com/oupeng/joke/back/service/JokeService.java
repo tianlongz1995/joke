@@ -95,7 +95,7 @@ public class JokeService {
 			public void run() {
 				while(true){
 					try{
-						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 10);
+						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 60*5);
 						logger.info("insertJokeFeedback receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
 						if(!CollectionUtils.isEmpty(stepIdList)){
 							String stepId = stepIdList.get(1);
@@ -120,7 +120,7 @@ public class JokeService {
 			public void run() {
 				while(true){
 					try{
-						List<String> feedbackList = jedisCache.brpop(JedisKey.JOKE_LIST_FEEDBACK, 10);
+						List<String> feedbackList = jedisCache.brpop(JedisKey.JOKE_LIST_FEEDBACK, 60*5);
 						logger.info("insertJokeFeedback receved size:[{}]", feedbackList == null ? 0 : feedbackList.size());
 						if(!CollectionUtils.isEmpty(feedbackList)){
 							String feedbackStr = feedbackList.get(1);

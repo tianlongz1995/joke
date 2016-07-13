@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -63,7 +64,7 @@ public class JokeService {
     /**
      * 定时将赞列表中数据存储到缓存中
      */
-    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 10000)
+    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 5000)
     public void addLikeQueue(){
         try{
             if(!CollectionUtils.isEmpty(addLikeIds)){
@@ -78,7 +79,7 @@ public class JokeService {
     /**
      * 定时将踩列表中数据存储到缓存中
      */
-    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 10000)
+    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 8000)
     public void addStepQueue(){
         try{
             if(!CollectionUtils.isEmpty(addStepIds)){
@@ -103,7 +104,7 @@ public class JokeService {
     /**
      * 定时将反馈信息列表中数据存储到缓存中
      */
-    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 10000)
+    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 10000)
     public void addFeedbackCache(){
         try{
             if(!CollectionUtils.isEmpty(feedbackList)){
