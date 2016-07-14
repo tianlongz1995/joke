@@ -209,7 +209,7 @@ public class JokeService {
     public JokeDetail getJoke(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Integer jokeId){
     	JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),JokeDetail.class);
     	if(joke != null){
-    		String key = null;
+    		String key = "";
         	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
         		key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
         	}/*else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){
@@ -237,12 +237,12 @@ public class JokeService {
     				}
     			}
     		}
-    		handleJokeDetail(joke,listType);
+    		handleJokeDetail(joke);
     	}
 		return joke;
     }
     
-    private void handleJokeDetail(JokeDetail jokeDetail,Integer listType){
+    private void handleJokeDetail(JokeDetail jokeDetail){
     	
     	
     	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);

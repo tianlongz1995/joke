@@ -108,7 +108,7 @@ public class JokeController {
     public Result joke(@RequestParam(value="did",required=true)Integer distributorId,
     		@RequestParam(value="cid",required=true)Integer channelId,
     		@RequestParam(value="tid",required=false)Integer topicId,
-    		@RequestParam(value="lt",required=true)Integer listType,
+    		@RequestParam(value="lt",required=false)Integer listType,
     		@RequestParam(value="jid",required=true)Integer jokeId,
     		HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
