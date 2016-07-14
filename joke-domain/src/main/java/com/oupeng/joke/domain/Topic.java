@@ -6,16 +6,30 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Topic {
+	@JsonInclude(Include.NON_NULL)
 	private Integer id;
+	@JsonInclude(Include.NON_NULL)
 	private String title;
+	@JsonInclude(Include.NON_NULL)
 	private String content;
+	@JsonInclude(Include.NON_NULL)
 	private String img;
+	@JsonInclude(Include.NON_NULL)
 	private String dids;
+	@JsonInclude(Include.NON_NULL)
 	private Integer status;
+	@JsonInclude(Include.NON_NULL)
 	private Date publishTime;
+	@JsonInclude(Include.NON_NULL)
 	private Date createTime;
+	@JsonInclude(Include.NON_NULL)
 	private Date updateTime;
+	@JsonInclude(Include.NON_NULL)
+	public String publishTimeString;
 	
 	public Integer getId() {
 		return id;

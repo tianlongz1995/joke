@@ -8,4 +8,9 @@ public class Constants {
 	public static final Integer CLK_LOG_TYPE_LIKE = 1;//clk类型：赞
 	public static final Integer CLK_LOG_TYPE_STEP = 2;//clk类型：踩
 	public static final Integer CLK_LOG_TYPE_DETAIL = 3;//clk类型：进入详情页
+	
+	public static final Integer LIST_TYPE_TOPIC = -1;//专题列表页
+	public static final Integer LIST_TYPE_COMMON_CHANNEL = 0;//普通频道列表页
+	public static final Integer LIST_TYPE_TOPIC_CHANNEL = 1;//专题频道列表页
+	public static final Integer LIST_TYPE_RECOMMEND_CHANNEL = 2;//推荐频道列表页
 }

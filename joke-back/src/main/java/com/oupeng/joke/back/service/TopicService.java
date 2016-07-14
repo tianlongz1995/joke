@@ -36,7 +36,7 @@ public class TopicService {
 		String result = null;
 		if(Constants.TOPIC_STATUS_VALID == status){
 			result = validTopic(topicMapper.getTopicById(id));
-		}else{
+		}else if(Constants.TOPIC_STATUS_PUBLISH != status){
 			jedisCache.del(JedisKey.SORTEDSET_TOPIC_CHANNEL + id);
 			
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + "*");

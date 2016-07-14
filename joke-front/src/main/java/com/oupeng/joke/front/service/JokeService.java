@@ -5,19 +5,26 @@ import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Feedback;
+import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.JokeDetail;
+import com.oupeng.joke.domain.Topic;
 import com.oupeng.joke.domain.response.DistributorConfig;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
+import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.front.util.Constants;
+import com.oupeng.joke.front.util.FormatUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class JokeService {
@@ -42,7 +49,7 @@ public class JokeService {
             String result = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, did);
             DistributorConfig dcr = JSON.parseObject(result, DistributorConfig.class);
             if(dcr != null){
-                return new Result(200, "success", dcr);
+                return new Success(dcr);
             }
         }
         return new Failed();
@@ -115,5 +122,163 @@ public class JokeService {
         }catch(Exception e){
             logger.error("增加反馈数失败",e);
         }
+    }
+    
+    public Result getJokeList(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Long start,Long end){
+    	Object result = null;
+    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
+    		result = getJokeList4CommonChannel(channelId,start,end);
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){
+    		result = getTopicList4TopicChannel(distributorId,start,end);
+    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
+    		result = getJokeList4RecommendChannel(start,end);
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){
+    		result = getJokeList4TopicChannel(topicId,start,end);
+    	}
+    	return new Success(result);
+    }
+    
+    private List<Joke> getJokeList4CommonChannel(Integer channelId,Long start,Long end){
+    	String key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
+    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(jokeIdSet)){
+			return null;
+		}
+		
+		List<Joke> list = Lists.newArrayList();
+		Joke joke = null;
+		for(String jokeId : jokeIdSet){
+			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+			if(joke != null){
+				list.add(joke);
+			}
+		}
+		return list;
+    }
+    
+    private List<Topic> getTopicList4TopicChannel(Integer distributorId,Long start,Long end){
+    	String key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
+    	Set<String> topicSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(topicSet)){
+			return null;
+		}
+		
+		List<Topic> list = Lists.newArrayList();
+		for(String topicString : topicSet){
+			list.add(JSON.parseObject(topicString,Topic.class));
+		}
+    	return list;
+    }
+    
+    private List<Joke> getJokeList4RecommendChannel(Long start,Long end){
+    	String key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
+    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(jokeIdSet)){
+			return null;
+		}
+		
+		List<Joke> list = Lists.newArrayList();
+		Joke joke = null;
+		for(String jokeId : jokeIdSet){
+			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+			if(joke != null){
+				list.add(joke);
+			}
+		}
+		return list;
+    }
+    
+    private List<Joke> getJokeList4TopicChannel(Integer topicId,Long start,Long end){
+    	String key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
+    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(jokeIdSet)){
+			return null;
+		}
+		
+		List<Joke> list = Lists.newArrayList();
+		Joke joke = null;
+		for(String jokeId : jokeIdSet){
+			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+			if(joke != null){
+				list.add(joke);
+			}
+		}
+		return list;
+    }
+    
+    public JokeDetail getJoke(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Integer jokeId){
+    	JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),JokeDetail.class);
+    	if(joke != null){
+    		String key = "";
+        	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
+        		key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
+        	}/*else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){
+        		key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
+        	}*/else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
+        		key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
+        	}else if(Constants.LIST_TYPE_TOPIC == listType){
+        		key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
+        	}
+    		Long index = jedisCache.zrevrank(key,String.valueOf(jokeId));
+    		if(index != null){
+    			if(index > 0){
+        			Set<String> jokeLastIds = jedisCache.zrevrange(key, index -1, index -1);
+        			if(!CollectionUtils.isEmpty(jokeLastIds)){
+        				for(String jokeLastId : jokeLastIds){
+        					joke.setLastId(Integer.valueOf(jokeLastId));
+        				}
+        			}
+        		}
+        		
+        		Set<String> jokeNextIds = jedisCache.zrevrange(key, index +1, index +1);
+    			if(!CollectionUtils.isEmpty(jokeNextIds)){
+    				for(String jokeNextId : jokeNextIds){
+    					joke.setNextId(Integer.valueOf(jokeNextId));
+    				}
+    			}
+    		}
+    		handleJokeDetail(joke);
+    	}
+		return joke;
+    }
+    
+    private void handleJokeDetail(JokeDetail jokeDetail){
+    	
+    	
+    	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);
+    	if(!CollectionUtils.isEmpty(relatedTextIdList)){
+    		List<Joke> relatedTextList = Lists.newArrayList();
+    		for(String jokeId : relatedTextIdList){
+    			relatedTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
+    		}
+    		jokeDetail.setRelatedText(relatedTextList);
+    	}
+    	
+    	List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 3);
+    	if(!CollectionUtils.isEmpty(relatedImgIdList)){
+    		List<Joke> relatedImgList = Lists.newArrayList();
+    		Joke joke = null;
+    		for(String jokeId : relatedImgIdList){
+    			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+    			if(joke != null){
+    				if(joke.getImg() != null){
+    					joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
+    					joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
+    					joke.setWidth(200);
+    				}
+    				relatedImgList.add(joke);
+    			}
+    		}
+    		jokeDetail.setRelatedImg(relatedImgList);
+    	}
+    	
+    	List<String> recommendIdList = jedisCache.srandmember(JedisKey.SET_RECOMMEDN_JOKE_TEXT, 3);
+    	if(!CollectionUtils.isEmpty(recommendIdList)){
+    		List<Joke> recommendTextList = Lists.newArrayList();
+    		for(String jokeId : recommendIdList){
+    			recommendTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
+    		}
+    		jokeDetail.setRecommend(recommendTextList);
+    	}
     }
 }
