@@ -189,7 +189,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tr>
 						<th>图片</th>
 						<td>
-				  			<input id="addImg" type="file" value=""/>
+				  			<input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png"/>
+				  			<input id="image" type="hidden"/>
+				  			<img id="imgPriview" style="display: none" src="" >
+				  			<input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除" />
 				  		</td>
 					</tr>
 					<tr>
@@ -255,6 +258,30 @@ function verifyTopic(status,id) {
 
 $('#selectTopicList').click(function(event) {
 	location.href = '<%=basePath%>topic/list?status='+$("#status").val();
+});
+
+$('#imgDelButton').click(function () {
+	$('#img').val('');
+	$('#image').val('');
+	$("#imgPriview").hide();
+});
+
+$('#img').change(function () {
+    var file = $(this)[0].files[0];
+    $(this).OupengUpload(file, {
+        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+        acceptFileTypes: 'image/*',
+        maxFileSize: 1024*1024*5,
+        minFileSize: 0,
+        onUploadSuccess: function (data) {
+        	$("#image").val(data);
+        	$("#imgPriview").attr('src',data).show();
+        	$("#imgDelButton").show();
+        },
+        onUploadError: function (data) {
+            alert(data);
+        }
+    });
 });
 
 function post(url, data, success, error) {

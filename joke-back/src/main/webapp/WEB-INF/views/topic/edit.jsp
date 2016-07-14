@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 		  			<th>图片</th>
 			  		<td>
-						<input id="img" type="file" accept=".jpg,.jpeg,.png"/>
+						<input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png"/>
 			  			<c:if test="${empty topic.img}">
 							<input id="image" type="hidden"/>
 							<img id="imgPriview" style="display: none" src="" >
@@ -134,6 +134,12 @@ $(document).ready(function () {
 		$("#imgPriview").css('display','block');
 		$("#imgDelButton").css('display','block');
 	}
+});
+
+$('#imgDelButton').click(function () {
+	$('#img').val('');
+	$('#image').val('');
+	$("#imgPriview").hide();
 });
 
 $('#img').change(function () {
