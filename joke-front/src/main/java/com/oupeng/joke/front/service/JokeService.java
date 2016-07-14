@@ -13,6 +13,7 @@ import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import com.oupeng.joke.front.util.Constants;
+import com.oupeng.joke.front.util.FormatUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -262,7 +263,7 @@ public class JokeService {
     			if(joke != null){
     				if(joke.getImg() != null){
     					joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
-    					joke.setHeight(joke.getHeight() * (200/joke.getWidth()));
+    					joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
     					joke.setWidth(200);
     				}
     				relatedImgList.add(joke);
