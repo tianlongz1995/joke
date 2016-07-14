@@ -190,7 +190,7 @@ public class JedisCache {
 		}
 	}
 	
-	public Set<String> zrevrange(String key,Integer start,Integer end){
+	public Set<String> zrevrange(String key,Long start,Long end){
 		Jedis jedis = null;
 		try{
 			jedis = jedisReadPool.getResource();
@@ -327,6 +327,30 @@ public class JedisCache {
 		try{
 			jedis = jedisReadPool.getResource();
 			jedis.del(keys);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+	
+	public List<String> srandmember(String key,int count) {
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.srandmember(key, count);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+	
+	public Long zrevrank(String key,String member) {
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.zrevrank(key, member);
 		}finally{
 			if(jedis != null){
 				jedis.close();

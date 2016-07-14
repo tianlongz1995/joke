@@ -17,4 +17,8 @@ public class JedisKey {
     public static final String STRING_JOKE = "string.joke.";
     public static final String SORTEDSET_ALL = "sortedset.*";
     public static final String SORTEDSET_TOPIC_ALL = "sortedset*topic*";
+    
+    public static final String SET_RELATED_JOKE_TEXT = "set.related.joke.text";
+    public static final String SET_RELATED_JOKE_IMG = "set.related.joke.img";
+    public static final String SET_RECOMMEDN_JOKE_TEXT = "set.recommend.joke.text";
 }

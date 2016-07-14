@@ -2,20 +2,41 @@ package com.oupeng.joke.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Joke {
+	@JsonInclude(Include.NON_NULL)
 	private Integer id;
+	@JsonInclude(Include.NON_NULL)
 	private String title;
+	@JsonInclude(Include.NON_NULL)
 	private String content;
+	@JsonInclude(Include.NON_NULL)
 	private String img;
+	@JsonInclude(Include.NON_NULL)
 	private String gif;
+	@JsonInclude(Include.NON_NULL)
+	private Integer width;
+	@JsonInclude(Include.NON_NULL)
+	private Integer height;
+	@JsonInclude(Include.NON_NULL)
 	private Integer type;
+	@JsonInclude(Include.NON_NULL)
 	private Integer good;
+	@JsonInclude(Include.NON_NULL)
 	private Integer bad;
+	@JsonInclude(Include.NON_NULL)
 	private Integer status;
+	@JsonInclude(Include.NON_NULL)
 	private Integer sourceId;
+	@JsonInclude(Include.NON_NULL)
 	private String verifyUser;
+	@JsonInclude(Include.NON_NULL)
 	private Date verifyTime;
+	@JsonInclude(Include.NON_NULL)
 	private Date createTime;
+	@JsonInclude(Include.NON_NULL)
 	private Date updateTime;
 	
 	public Integer getId() {
@@ -101,5 +122,17 @@ public class Joke {
 	}
 	public void setBad(Integer bad) {
 		this.bad = bad;
+	}
+	public Integer getWidth() {
+		return width;
+	}
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+	public Integer getHeight() {
+		return height;
+	}
+	public void setHeight(Integer height) {
+		this.height = height;
 	}
 }

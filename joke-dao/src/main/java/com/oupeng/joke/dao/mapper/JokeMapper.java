@@ -73,7 +73,7 @@ public interface JokeMapper {
 	public List<Integer> getJokeForPublishChannel(@Param(value="contentType")String contentType);
 	
 	@Select(value="select  id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
-			+ "create_time as createTime,update_time as updateTime,good,bad from joke where `status` = 1 and "
+			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where `status` = 1 and "
 			+ "DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ")
 	public List<Joke> getJokeListForPublish();
 	
