@@ -39,7 +39,11 @@ public interface ChannelMapper {
 	 */
 	@Select(value="select id,name,sort,status from (select c.id,c.name,ifnull(b.sort,100) as sort,case b.id when b.id then 1 else 0 end as status from channel c left join (select id,c_id,sort from distributor_channel where d_id = #{id}) b on c.id=b.c_id where c.status = 1) a order by a.sort asc")
 	List<Channel> getChannelStatusList(@Param(value="id")Integer id);
-
-	@Select(value="select c.id as i,c.name as n,c.type as t from distributor_channel dc left join channel c on dc.c_id=c.id where dc.d_id = #{id}")
+	/**
+	 * 获取渠道下频道列表
+	 * @param id
+	 * @return
+	 */
+	@Select(value="select c.id as i,c.name as n,c.type as t from distributor_channel dc left join channel c on dc.c_id=c.id where dc.d_id = #{id} order by dc.sort asc")
 	List<ChannelMenu> getDistributorChannelList(@Param(value="id")Integer id);
 }
