@@ -41,8 +41,8 @@ public class CacheConfig {
     public JedisPool jedisReadPool() {
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxWaitMillis(60000);
-        config.setMaxTotal(32);
-        config.setMinIdle(6);
+        config.setMaxTotal(1000);
+        config.setMinIdle(50);
         config.setTestOnBorrow(true);
         config.setTestWhileIdle(true);
         return new JedisPool(config, readHost, port, timeout);
