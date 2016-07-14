@@ -80,6 +80,11 @@ public class JokeService {
 						}
 					}catch(Exception e){
 						logger.error("update joke Like Count error!",e);
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e1) {
+							logger.error("jokeLikeCountUpdate sleep error:" + e1.getMessage(), e1);
+						}
 					}
 				}
 			}
@@ -103,7 +108,12 @@ public class JokeService {
 							jokeMapper.updateJokeStepCount(Integer.valueOf(stepId));
 						}
 					}catch(Exception e){
-						logger.error("update joke step Count error!",e);
+						logger.error("update joke step Count error!" + e.getMessage(),e);
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e1) {
+							logger.error("jokeStepCountUpdate sleep error:" + e1.getMessage(), e1);
+						}
 					}
 				}
 			}
@@ -132,6 +142,11 @@ public class JokeService {
 						}
 					}catch(Exception e){
 						logger.error("update joke feedback Count error!",e);
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e1) {
+							logger.error("insertJokeFeedback sleep error:" + e1.getMessage(), e1);
+						}
 					}
 				}
 			}
