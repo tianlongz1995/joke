@@ -29,7 +29,6 @@ public class DistributorTask {
     private DistributorService distributorService;
     @Autowired
     private ChannelService channelService;
-
     @Autowired
     private JedisCache jedisCache;
     @Autowired
