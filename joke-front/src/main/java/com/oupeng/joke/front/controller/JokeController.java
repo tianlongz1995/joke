@@ -33,7 +33,7 @@ public class JokeController {
      * @param did	渠道编号
      * @return
      */
-    @RequestMapping(value = "/getDistributorConfig", produces = {"application/json"})
+    @RequestMapping(value = "/getDistributorConfig")
     @ResponseBody
     public Result getDistributorConfig(@RequestParam(value="did",required=true)Integer did,
     		HttpServletRequest request){
@@ -47,7 +47,7 @@ public class JokeController {
      * @param type	类型: 1：赞；2：踩
      * @return
      */
-    @RequestMapping(value = "/stepLike", produces = {"application/json"})
+    @RequestMapping(value = "/stepLike")
     @ResponseBody
     public Result stepLike(@RequestParam(value="id",required=true)Integer id, 
     		@RequestParam(value="type",required=true)Integer type,
@@ -66,7 +66,7 @@ public class JokeController {
      * @param content
      * @return
      */
-    @RequestMapping(value = "/feedback", produces = {"application/json;charset=utf-8"})
+    @RequestMapping(value = "/feedback")
     @ResponseBody
     public Result feedback(@RequestParam(value="distributorId",required=true)Integer distributorId,
                            @RequestParam(value="channelId",required=true)Integer channelId,

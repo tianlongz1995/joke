@@ -49,7 +49,7 @@ public class JokeService {
             String result = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, did);
             DistributorConfig dcr = JSON.parseObject(result, DistributorConfig.class);
             if(dcr != null){
-                return new Result(200, "success", dcr);
+                return new Success(dcr);
             }
         }
         return new Failed();
