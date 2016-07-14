@@ -8,7 +8,7 @@ import com.oupeng.joke.domain.Feedback;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.Topic;
-import com.oupeng.joke.domain.response.DistributorConfigResult;
+import com.oupeng.joke.domain.response.DistributorConfig;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;

@@ -3,6 +3,7 @@ package com.oupeng.joke.back.service;
 import java.util.List;
 import java.util.Set;
 
+import com.oupeng.joke.domain.ChannelMenu;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,5 +84,9 @@ public class ChannelService {
 	 */
 	public List<Channel> getChannelStatusList(Integer id){
 		return channelMapper.getChannelStatusList(id);
+	}
+
+	public List<ChannelMenu> getDistributorChannelList(Integer id) {
+		return channelMapper.getDistributorChannelList(id);
 	}
 }

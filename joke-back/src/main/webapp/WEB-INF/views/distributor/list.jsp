@@ -52,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 渠道列表</h2>
+		<h2><a href="#" data-toggle="modal" data-target="#dataManagerModal"><i class="glyphicon glyphicon-user"></i></a> 渠道列表</h2>
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
@@ -199,7 +199,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		</div>
 </div>
-
+<div class="modal fade bs-example-modal-sm" id="dataManagerModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">进入数据管理界面</h4>
+			</div>
+			<div class="modal-body">
+				请输入密码:<input id="managerId" type="text" class="form-control" placeholder="数据管理中心密码"/>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="dataManager">GO!</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 $('#add').click(function(event) {
 	var contentType = [];
@@ -269,7 +285,15 @@ function down(obj) {
 function turnPage(){
 	location.href = '<%=basePath%>distributor/list?status=' + $("#status").val()
 	+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
-}
+};
+$('#dataManager').click(function(event) {
+	var managerId = $("#managerId").val();
+	if(managerId == null && managerId.length() < 6){
+		alert("密码错误！");
+		return false;
+	}
+	location.href = '<%=basePath%>distributor/dataManager?managerKey='+managerId;
+});
 </script>
 
 </div><!-- content end -->

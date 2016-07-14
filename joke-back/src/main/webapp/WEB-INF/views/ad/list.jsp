@@ -234,7 +234,7 @@
                                 </tr>
                                 <tr>
                                     <th>广告位置ID</th>
-                                    <td><input id="slotId" type="text" class="form-control" placeholder="输入广告链接ID"/></td>
+                                    <td><input id="slotId" type="text" class="form-control" placeholder="输入广告位置ID"/></td>
                                 </tr>
                                 <tr>
                                     <th>广告状态</th>
@@ -273,68 +273,52 @@
 
             <script type="text/javascript">
                 $('#addNewad').click(function(event) {
-                    /*var contentType = [];
-                    $('input[name="addcontentType"]:checked').each(function(){
-                        contentType.push($(this).val());
-                    });
-                    if(contentType.length == 0){
-                        alert("未选中任何内容属性");
-                        return false;
-                    }*/
-                    var slide = $('#slide').val();
-                    if(slide == null || slide == undefined){
-                        slide = '';
-                    }
-                    post('ad/add',
-                            'did=' + $("#did").val()+'&pos='+$('#pos').val()+'&slide='+slide+'&status='+$('#addstatus').val()+'&slotId='+$('#slotId').val(),
-                            function (data) {
-                                if(data['status']) {
-                                    location.href = '<%=basePath%>ad/list?status='+$("#status").val();
-                                }else {
-                                    alert('添加失败. info:'+data['info']);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
-                });
-                /*$('#addNewad').click(function (event) {
-                    var slide = $('#slide').val();
-                    if(slide == null || slide == undefined){
-                        slide = '';
-                    }
+                    var slotId = $('#slotId').val();
 
-                    post('<%=basePath%>ad/add',
-                            'did=' + $("#did").val()
-                            + '&pos=' + $('#pos').val()
-                            + '&slide=' + slide
-                            + '&status=' + $('#addstatus').val()
-                            + '&slotId=' + $('#slotId').val(),
-                            function (data) {
-                                if (data['status']) {
-                                    var slotId = $("#myslotId").val();
-                                    var param = '';
-                                    if($.isNumeric(slotId)){
-                                        param += "&slotId="+slotId;
-                                    }
-                                    var did = $('#distributors').val();
-                                    location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
-                                    + '&distributorId=' + did +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
-                                    + '&pos=' + $("#pagePos").val() + param;
-                                } else {
-                                    alert('添加失败. info:' + data['info']);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
-                })*/
+                    if(!isInteger(slotId) || slotId.length > 10){
+                         alert("广告位置ID只能是整数");
+                         return false;
+                     }
+                    var slide = $('#slide').val();
+                    if(slide == null || slide == undefined ){
+                        slide = '';
+                    }
+                    var pos = $('#pos').val();
+                    if(pos == 1){
+                         if(!isInteger(slide) || slide < 1 || slide > 99){
+                             alert("投放频率必须是大于0或者小于100的正整数");
+                             return false;
+                         }
+                    }
+                    post('ad/addCheck','did='+ $("#did").val()+'&pos='+$('#pos').val(),function(result){
+                        if(result.status == 1){
+                            post('ad/add',
+                                    'did=' + $("#did").val()+'&pos='+pos+'&slide='+slide+'&status='+$('#addstatus').val()+'&slotId='+$('#slotId').val(),
+                                    function (data) {
+                                        if(data.status == 1) {
+                                            location.href = '<%=basePath%>ad/list?status='+$("#status").val();
+                                        }else {
+                                            alert('添加失败. info:'+data.info);
+                                        }
+                                    },
+                                    function () {
+                                        alert('请求失败，请检查网络环境');
+                                    });
+                        }else{
+                            alert('添加失败. info:'+result.info);
+                        }
+                    }, function(){
+                        alert('添加失败. info:'+data['info']);
+                    });
+
+                });
+
 
                 function modifyStatus(status, id) {
                     post('<%=basePath%>ad/modifyStatus',
                             'id=' + id + '&status=' + status,
                             function (data) {
-                                if (data['status']) {
+                                if (data.status == 1) {
                                     var slotId = $("#myslotId").val();
                                     var param = '';
                                     if($.isNumeric(slotId)){
@@ -346,7 +330,7 @@
                                     + '&pos=' + $("#pagePos").val() + param;
                                 }
                                 else {
-                                    alert('操作失败. info:' + data['info']);
+                                    alert('操作失败. info:' + data.info);
                                 }
                             },
                             function () {
@@ -392,6 +376,10 @@
                         $("#adStatusTr").next().remove();
                     }
                 });
+                function isInteger(x) {
+                    var ex = /^\d+$/;
+                    return ex.test(x);
+                }
             </script>
 
         </div>

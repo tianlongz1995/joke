@@ -104,6 +104,11 @@ public class FeedbackService {
         return lg;
     }
 
+    /**
+     * 获取曲线图区间值
+     * @param max
+     * @return
+     */
     private Integer getSpace(int max) {
         if(max < 10){
             return 2;

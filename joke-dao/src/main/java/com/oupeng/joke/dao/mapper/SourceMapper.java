@@ -35,7 +35,7 @@ public interface SourceMapper {
 	 * 删除（逻辑删除）
 	 * @param id
 	 */
-	@Select(value="update source set update_time=now(),status = 2 where id = #{id}")
+	@Update(value="update source set update_time=now(),status = 2 where id = #{id}")
 	void del(@Param(value = "id") Integer id);
 
 

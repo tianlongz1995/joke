@@ -74,4 +74,7 @@ public interface DistributorMapper {
 	 */
 	@Select(value="select id,name,status,create_time as createTime,update_time as updateTime from distributor where status = 1")
 	List<Distributor> getAllDistributorList();
+
+	@Select(value="select d.id  from distributor d left join distributor_channel  dc on d.id=dc.d_id where d.status = 1 group by d.id")
+	List<Integer> getDistributorIds();
 }
