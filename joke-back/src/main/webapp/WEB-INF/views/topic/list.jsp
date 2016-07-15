@@ -22,6 +22,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<%@ include file="../common/css.html"%>
 	<script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
 	<script src="/ui/js/date/WdatePicker.js"></script>
+	<script src="ui/js/jquery.oupeng.upload.js"></script>
 
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
@@ -122,16 +123,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
-								<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
-						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线
+						        <a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
+						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
 						        </a>
 								<a class="btn btn-danger" href="#" onclick="verifyTopic(1,${topic.id})">
 					        	 	<i class="glyphicon glyphicon-remove icon-white"></i>下线
 					        	</a>
+					        	<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
+						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线
+						        </a>
 							</c:if>
 							<c:if test="${topic.status == 1}">
 								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
+						        </a>
+						        <a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
+						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
 						        </a>
 								<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
 						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线
@@ -142,9 +149,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
-							<a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
-					        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
-					        </a>
 					    </td>
 					</tr>
 				</c:forEach>
@@ -183,7 +187,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tr>
 						<th>主题</th>
 						<td>
-							<input id="addTitle" type="text" value=""/>
+							<input id="addTitle" type="text" maxlength="30" style="width:500px;" value=""/>
 						</td>
 					</tr>
 					<tr>
@@ -191,7 +195,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td>
 				  			<input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png"/>
 				  			<input id="image" type="hidden"/>
-				  			<img id="imgPriview" style="display: none" src="" >
+				  			<img id="imgPriview" style="display: none;width:500px;height:300px;" src=""/>
 				  			<input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除" />
 				  		</td>
 					</tr>
@@ -227,7 +231,7 @@ $('#addNewTopic').click(function(event) {
 		});
 	
 	post('topic/add',
-		'publishTime='+$("#addPublishTime").val()+'&title='+$('#addTitle').val()+'&img='+$('#addImg').val()+'&content='
+		'publishTime='+$("#addPublishTime").val()+'&title='+$('#addTitle').val()+'&img='+$('#image').val()+'&content='
 			+$('#addContent').val()+'&dids='+dids.toString(), 
 		function (data) {
 			if(data['status']) {

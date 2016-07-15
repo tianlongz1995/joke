@@ -114,6 +114,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${channel.status == 0}">
+								<a class="btn btn-info" href="channel/edit?id=${channel.id}">
+						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
+						        </a>
 								<a class="btn btn-success" href="#" onclick="verifyChannel(1,${channel.id})">
 						        	 <i class="glyphicon glyphicon-ok icon-white"></i>上线
 						        </a>
@@ -123,9 +126,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
-							<a class="btn btn-info" href="channel/edit?id=${channel.id}">
-					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a>
 					        <a class="btn btn-warning" href="channel/joke?channelId=${channel.id}">
 					        	<i class="glyphicon glyphicon-arrow-right"></i>删除内容
 					        </a>
