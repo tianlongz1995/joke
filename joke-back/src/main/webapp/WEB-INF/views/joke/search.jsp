@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</c:if>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-info" href="#" id="searchJoke">
+					<a class="btn btn-primary" href="#" id="searchJoke">
 						<span class="glyphicon glyphicon-search icon-white" >搜索</span>
 					</a>
 				</label>

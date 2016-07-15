@@ -96,7 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</select>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-info" href="#" id="selectVerifyJokeList">
+					<a class="btn btn-primary" href="#" id="selectVerifyJokeList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>

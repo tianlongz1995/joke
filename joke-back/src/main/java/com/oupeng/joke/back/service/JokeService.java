@@ -218,8 +218,8 @@ public class JokeService {
 		return jokeMapper.getJokeForPublishChannel(contentType);
 	}
 	
-	public List<Joke> getJokeListForPublish(){
-		return jokeMapper.getJokeListForPublish();
+	public List<Joke> getJokeListForPublish(String lastUpdateTime,String currentUpdateTime){
+		return jokeMapper.getJokeListForPublish(lastUpdateTime,currentUpdateTime);
 	}
 	
 	public List<Joke> getJokeListForPublishRecommend(){
