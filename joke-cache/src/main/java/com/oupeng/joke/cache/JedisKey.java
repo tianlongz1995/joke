@@ -21,4 +21,6 @@ public class JedisKey {
     public static final String SET_RELATED_JOKE_TEXT = "set.related.joke.text";
     public static final String SET_RELATED_JOKE_IMG = "set.related.joke.img";
     public static final String SET_RECOMMEDN_JOKE_TEXT = "set.recommend.joke.text";
+    
+    public static final String JOKE_LAST_PUBLISH_TIME = "joke.last.publish.time";
 }

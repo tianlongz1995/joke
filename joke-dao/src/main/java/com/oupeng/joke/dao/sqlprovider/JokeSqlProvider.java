@@ -100,4 +100,20 @@ public class JokeSqlProvider {
 		sql.append(" order by verify_time desc limit ").append(start).append(",").append(size);
 		return sql.toString();
 	}
+	
+	public static String getJokeListForPublish(Map<String,Object> map){
+		Object lastUpdateTime = map.get("lut");
+		Object currentUpdateTime = map.get("cut");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select  id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime, ");
+		sql.append(" create_time as createTime,update_time as updateTime,good,bad,width,height from joke where `status` = 1 ");
+		if(lastUpdateTime != null){
+			sql.append(" and verify_time > '").append(lastUpdateTime).append("' ");
+		}
+		
+		if(currentUpdateTime != null){
+			sql.append(" and verify_time <= '").append(currentUpdateTime).append("' ");
+		}
+		return sql.toString();
+	}
 }

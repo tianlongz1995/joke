@@ -1,5 +1,7 @@
 package com.oupeng.joke.back.task;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,13 @@ public class JokeTask {
 	private JedisCache jedisCache;
 	
 	/**
-	 * 发布段子数据，每天凌晨5分时候发布，每次发布前一天数据
+	 * 发布段子数据，5分钟发布一次
 	 * */
-	@Scheduled(cron="0 5 0 * * ?")
+	@Scheduled(cron="0 */5 * * * ?")
 	public void publishJoke(){
-		List<Joke> jokeList = jokeService.getJokeListForPublish();
+		String lastTime = jedisCache.get(JedisKey.JOKE_LAST_PUBLISH_TIME);
+		String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		List<Joke> jokeList = jokeService.getJokeListForPublish(lastTime,currentTime);
 		if(!CollectionUtils.isEmpty(jokeList)){
 			for(Joke joke : jokeList){
 				joke.setCreateTime(null);
@@ -44,5 +48,6 @@ public class JokeTask {
 				}
 			}
 		}
+		jedisCache.set(JedisKey.JOKE_LAST_PUBLISH_TIME, currentTime);
 	}
 }
