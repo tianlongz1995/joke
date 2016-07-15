@@ -85,13 +85,12 @@ public class ChannelService {
 	public List<Channel> getChannelStatusList(Integer id){
 		return channelMapper.getChannelStatusList(id);
 	}
-
 	/**
-	 * 获取渠道下频道列表
-	 * @param id
+	 *	获取频道列表
 	 * @return
 	 */
-	public List<ChannelMenu> getDistributorChannelList(Integer id) {
+	public List<ChannelMenu> getDistributorChannelList(Integer id){
 		return channelMapper.getDistributorChannelList(id);
 	}
+
 }

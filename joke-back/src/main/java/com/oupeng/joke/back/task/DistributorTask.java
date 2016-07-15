@@ -9,6 +9,7 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Ad;
 import com.oupeng.joke.domain.AdConfig;
 import com.oupeng.joke.domain.ChannelMenu;
+import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.DistributorConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,27 +41,39 @@ public class DistributorTask {
     public void syncDistributorAdConfig(){
         long start = System.currentTimeMillis();
         logger.info("syncDistributorAdConfig starting...");
-        List<Integer> ids = distributorService.getDistributorIds();
+        List<Distributor> ids = distributorService.getAllDistributors();
         if(!CollectionUtils.isEmpty(ids)){
             int index = 0;
-            for(Integer id : ids){
-                List<ChannelMenu> channels = channelService.getDistributorChannelList(id);
-                List<Ad> ads = adService.getDistributorAdList(id);
-                AdConfig adConfig = new AdConfig(ads);
-                DistributorConfig dcr = new DistributorConfig();
-                if(!CollectionUtils.isEmpty(channels)){
-                    dcr.setChannels(channels);
-                }
-                if(!CollectionUtils.isEmpty(ads)){
-                    dcr.setAdConfig(adConfig);
-                }
-                String value = JSON.toJSONString(dcr);
-                if(value != null && value.length() > 0){
-                    jedisCache.hset(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id), value);
+            for(Distributor id : ids){
+                if(id.getStatus() != null && id.getStatus() == 1){
+                    List<ChannelMenu> channels = channelService.getDistributorChannelList(id.getId());
+                    List<Ad> ads = adService.getDistributorAdList(id.getId());
+                    AdConfig adConfig = new AdConfig(ads);
+                    DistributorConfig dcr = new DistributorConfig();
+                    if(!CollectionUtils.isEmpty(channels)){
+                        dcr.setChannels(channels);
+                    }else{
+//                  如果渠道下的频道为空或者不存在就屏蔽当前渠道缓存
+                        logger.info("did[{}] Channels is null!", id);
+                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id));
+                        continue;
+                    }
+                    if(!CollectionUtils.isEmpty(ads)){
+                        dcr.setAdConfig(adConfig);
+                    }
+                    String value = JSON.toJSONString(dcr);
+                    if(value != null && value.length() > 0){
+                        jedisCache.hset(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id), value);
+                    }else{
+//                    如果渠道下的内容为空或者不存在就屏蔽当前渠道缓存
+                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id));
+                        logger.info("syncDistributorAdConfig did[{}] body is null" , id);
+                    }
+                    index++;
                 }else{
-                    logger.info("syncDistributorAdConfig did[{}] body is null" , id);
+//                    删除失效渠道下的配置
+                    jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id));
                 }
-                index++;
             }
             long end = System.currentTimeMillis();
             logger.info("syncDistributorAdConfig ids size:[{}] sync size:[{}]! time:[{}]ms", ids.size(),index,end-start);

@@ -3,6 +3,7 @@ package com.oupeng.joke.dao.mapper;
 import java.util.List;
 
 import com.oupeng.joke.domain.ChannelMenu;
+import com.oupeng.joke.domain.Distributor;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -46,4 +47,5 @@ public interface ChannelMapper {
 	 */
 	@Select(value="select c.id as i,c.name as n,c.type as t from distributor_channel dc left join channel c on dc.c_id=c.id where dc.d_id = #{id} and c.status =1 order by dc.sort asc")
 	List<ChannelMenu> getDistributorChannelList(@Param(value="id")Integer id);
+
 }

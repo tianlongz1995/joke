@@ -112,14 +112,14 @@ public class DistributorService {
 			}
 		}
 	}
-
-	/**
-	 * 获取渠道列表
-	 * @return
-	 */
-	public List<Integer> getDistributorIds() {
-		return distributorMapper.getDistributorIds();
-	}
+//
+//	/**
+//	 * 获取渠道列表
+//	 * @return
+//	 */
+//	public List<Integer> getAllDistributorIds() {
+//		return distributorMapper.getDistributorIds();
+//	}
 
 	/**
 	 *
@@ -182,5 +182,13 @@ public class DistributorService {
 			logger.error(result);
 			return new Failed(result);
 		}
+	}
+
+	/**
+	 * 获取所有渠道信息列表
+	 * @return
+	 */
+	public List<Distributor> getAllDistributors() {
+		return distributorMapper.getAllDistributors();
 	}
 }
