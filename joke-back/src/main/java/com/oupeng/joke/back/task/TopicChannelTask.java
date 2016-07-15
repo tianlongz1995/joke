@@ -28,7 +28,7 @@ public class TopicChannelTask {
 	private JedisCache jedisCache;
 	
 	/**
-	 * 发布专题频道下的段子数据，每小时零 10分的时候发布一次((审核通过且属于专题频道的数据))
+	 * 发布专题频道下的段子数据，每 10分种的时候发布一次((审核通过且属于专题频道的数据))
 	 * */
 	@Scheduled(cron="0 10 * * * ?")
 	public void publishTopicChannelJoke(){
