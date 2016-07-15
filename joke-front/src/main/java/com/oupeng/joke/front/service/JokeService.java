@@ -164,8 +164,13 @@ public class JokeService {
 		}
 		
 		List<Topic> list = Lists.newArrayList();
+		Topic topic = null;
 		for(String topicString : topicSet){
-			list.add(JSON.parseObject(topicString,Topic.class));
+			topic = JSON.parseObject(topicString,Topic.class);
+			if(topic != null){
+				topic.setType(Constants.JOKE_TYPE_TOPIC_LIST);
+				list.add(topic);
+			}
 		}
     	return list;
     }

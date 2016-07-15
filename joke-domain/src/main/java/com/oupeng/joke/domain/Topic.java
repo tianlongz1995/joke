@@ -30,6 +30,8 @@ public class Topic {
 	private Date updateTime;
 	@JsonInclude(Include.NON_NULL)
 	public String publishTimeString;
+	@JsonInclude(Include.NON_NULL)
+	public Integer type;
 	
 	public Integer getId() {
 		return id;
@@ -100,5 +102,11 @@ public class Topic {
 				e.printStackTrace();
 			}
 		}
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
 	}
 }
