@@ -64,7 +64,6 @@ public class MailServer {
         pp.setProperty("mail.smtp.auth", mailAuth);
         pp.setProperty("mail.smtp.timeout", timeout);
         javaMailSender.setJavaMailProperties(pp);
-
         taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(minSize);
         taskExecutor.setMaxPoolSize(maxSize);
