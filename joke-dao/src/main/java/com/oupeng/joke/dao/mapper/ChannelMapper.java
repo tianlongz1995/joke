@@ -44,6 +44,6 @@ public interface ChannelMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select(value="select c.id as i,c.name as n,c.type as t from distributor_channel dc left join channel c on dc.c_id=c.id where dc.d_id = #{id} order by dc.sort asc")
+	@Select(value="select c.id as i,c.name as n,c.type as t from distributor_channel dc left join channel c on dc.c_id=c.id where dc.d_id = #{id} and c.status =1 order by dc.sort asc")
 	List<ChannelMenu> getDistributorChannelList(@Param(value="id")Integer id);
 }
