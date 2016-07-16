@@ -59,23 +59,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span >类型</span>
-					<select id="type">
-						<option value="">全部</option>
-						<option value="0" <c:if test="${!empty type && type == 0}">selected</c:if> >文字</option>
-						<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >图片</option>
-						<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >动图</option>
-					</select>
-				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="selectJokeList" >
-						<span class="glyphicon glyphicon-search icon-white" >查询</span>
-					</a>
-				</label>
 			    <label style="padding-right:30px;">
-			        <a class="btn btn-success" href="#" onclick="verifyJoke('batch')">
-			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量添加
+			        <a class="btn btn-danger" href="#" onclick="verifyJoke('batch')">
+			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
 			        </a>
 				</label>
 			</div>
@@ -121,8 +107,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
 						<td>
-							<a class="btn btn-success" href="#" onclick="verifyJoke(${joke.id})">
-					        	 <i class="glyphicon glyphicon-ok icon-white"></i>添加
+							<a class="btn btn-danger" href="#" onclick="verifyJoke(${joke.id})">
+					        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
 					        </a>
 					    </td>
 					</tr>
@@ -176,24 +162,20 @@ function verifyJoke(id) {
 		id = ids.toString();
 	}
 	
-	post('topic/addJoke',
+	post('topic/delBatchJoke',
 			'topicId=${topicId}&ids='+id, 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>topic/joke?topicId=${topicId}&type='+$("#type").val();
+					location.href = '<%=basePath%>topic/deljoke?topicId=${topicId}';
 				}
 				else {
-					alert('添加失败. info:'+data['info']);
+					alert('删除失败. info:'+data['info']);
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
 			});
 }
-
-$('#selectJokeList').click(function(event) {
-	location.href = '<%=basePath%>topic/joke?topicId=${topicId}&type='+$("#type").val();
-});
 
 function post(url, data, success, error) {
 	var csrfHeader = $("meta[name='_csrf_header']").attr("content");

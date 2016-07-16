@@ -14,6 +14,7 @@ import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.TopicMapper;
+import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Topic;
 
 @Service
@@ -85,7 +86,7 @@ public class TopicService {
 		return topicMapper.getTopicForPublish();
 	}
 	
-	private static String validTopic(Topic topic){
+	private String validTopic(Topic topic){
 		String result = null;
 		if(topic.getPublishTime() == null){
 			result = "专题的发布时间不能为空";
@@ -98,16 +99,33 @@ public class TopicService {
 		}else if(StringUtils.isBlank(topic.getContent())){
 			result = "专题的简介不能为空";
 		}else{
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(new Date());
-			calendar.add(Calendar.HOUR_OF_DAY, 1);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-			if(topic.getPublishTime().compareTo(calendar.getTime()) < 0){
-				result = "发布时间最少要在下一个小时";
+			List<Joke> jokeIdList =  getJokeListByTopicId(topic.getId());
+			if(CollectionUtils.isEmpty(jokeIdList)){
+				result = "专题的内容不能为空";
+			}else{
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.add(Calendar.HOUR_OF_DAY, 1);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				if(topic.getPublishTime().compareTo(calendar.getTime()) < 0){
+					result = "发布时间最少要在下一个小时";
+				}
 			}
 		}
 		return result;
+	}
+	
+	public void delTopicJoke(String jokeIds,Integer topicId){
+		if(StringUtils.isNotBlank(jokeIds)){
+			for(String jokeId : jokeIds.split(",")){
+				topicMapper.delTopicJoke(Integer.parseInt(jokeId), topicId);
+			}
+		}
+	}
+	
+	public List<Joke> getJokeListByTopicId(Integer id){
+		return topicMapper.getJokeListByTopicId(id);
 	}
 }

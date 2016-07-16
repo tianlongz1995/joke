@@ -78,21 +78,37 @@ public class TopicController {
 		return new Success();
 	} 
 	
-	@RequestMapping(value="/joke")
-	public String getJokeList(@RequestParam(value="topicId",required=true)Integer topicId,
+	@RequestMapping(value="/addjoke")
+	public String getJokeList4Add(@RequestParam(value="topicId",required=true)Integer topicId,
 			@RequestParam(value="type",required=false)Integer type,
 			Model model){
     	model.addAttribute("topicId", topicId);
     	model.addAttribute("type", type);
     	model.addAttribute("list", jokeService.getJokeListForTopic(type, Constants.JOKE_STATUS_VALID));
-		return "/topic/joke";
+		return "/topic/addjoke";
 	}
 	
-	@RequestMapping(value="/addJoke")
+	@RequestMapping(value="/deljoke")
+	public String getJokeList4Del(@RequestParam(value="topicId",required=true)Integer topicId,
+			Model model){
+    	model.addAttribute("topicId", topicId);
+    	model.addAttribute("list", topicService.getJokeListByTopicId(topicId));
+		return "/topic/deljoke";
+	}
+	
+	@RequestMapping(value="/addBatchJoke")
 	@ResponseBody
 	public Result add(@RequestParam(value="ids",required=false)String ids,
 			@RequestParam(value="topicId",required=true)Integer topicId){
 		topicService.addTopicJoke(ids, topicId);
 		return new Success();
-	} 
+	}
+	
+	@RequestMapping(value="/delBatchJoke")
+	@ResponseBody
+	public Result del(@RequestParam(value="ids",required=false)String ids,
+			@RequestParam(value="topicId",required=true)Integer topicId){
+		topicService.delTopicJoke(ids, topicId);
+		return new Success();
+	}
 }
