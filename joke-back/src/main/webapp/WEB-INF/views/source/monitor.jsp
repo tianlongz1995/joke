@@ -118,7 +118,7 @@
                                             </c:if>
                                         </td>
                                         <td><c:out value="${sourceCrawl.grabCount}"/></td>
-                                        <td><c:out value="${sourceCrawl.verifyRate}"/></td>
+                                        <td><c:out value="${sourceCrawl.verifyRate}"/>%</td>
                                         <td>
                                             <fmt:formatDate value="${sourceCrawl.lastGrabTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>

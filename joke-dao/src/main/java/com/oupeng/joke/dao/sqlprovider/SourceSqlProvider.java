@@ -101,9 +101,11 @@ public class SourceSqlProvider {
 	 */
 	public String getSourceMonitorList(Map<String, Object> map){
 		StringBuffer sql = new StringBuffer();
-		sql.append("select s.name as sourceName, s.url,s.status,m.day,m.grab_count as grabCount,m.verify_rate as verifyRate,m.last_grab_time as lastGrabTime from source_monitor m left join source s on m.source_id = s.id  where 1=1");
+		sql.append("select s.name as sourceName, s.url,s.status,m.day,m.grab_count as grabCount,FORMAT(m.verify_rate * 100,2) as verifyRate,m.last_grab_time as lastGrabTime from source_monitor m left join source s on m.source_id = s.id  where 1=1");
 		if(map.get("status") != null){
-			sql.append(" and status = ").append(map.get("status"));
+			sql.append(" and s.status = ").append(map.get("status"));
+		}else{
+			sql.append(" and s.status != 2");
 		}
 		if(map.get("date") != null){
 			sql.append(" and day = ").append(map.get("date"));

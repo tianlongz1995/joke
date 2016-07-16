@@ -16,7 +16,7 @@ public class SourceCrawl {
 	/**	当天爬虫抓取次数	*/
 	private Integer grabCount;
 	/**	当天审核通过率	*/
-	private Integer verifyRate;
+	private Double verifyRate;
 	/**	数据源状态	*/
 	private Integer status;
 	/**	当天最近一次抓取时间	*/
@@ -74,11 +74,11 @@ public class SourceCrawl {
 		this.grabCount = grabCount;
 	}
 
-	public Integer getVerifyRate() {
+	public Double getVerifyRate() {
 		return verifyRate;
 	}
 
-	public void setVerifyRate(Integer verifyRate) {
+	public void setVerifyRate(Double verifyRate) {
 		this.verifyRate = verifyRate;
 	}
 
