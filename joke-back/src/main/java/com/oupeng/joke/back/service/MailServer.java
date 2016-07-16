@@ -2,9 +2,8 @@ package com.oupeng.joke.back.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -18,33 +17,12 @@ import java.util.Properties;
  * Created by hushuang on 16/7/15.
  */
 @Service
-@ImportResource("classpath:mail.xml")
 public class MailServer {
     private static final Logger logger = LoggerFactory.getLogger(MailServer.class);
     private static final String MAIL_FROM = "monitor@oupeng.com";
-    @Value("${email.encoding}")
-    private String defaultEncoding;
-    @Value("${email.host}")
-    private String emailHost;
-    @Value("${email_port}")
-    private Integer port;
-    @Value("${email.username}")
-    private String userName;
-    @Value("${email.password}")
-    private String password;
-    @Value("${email.from}")
-    private String from;
-    @Value("${email.smtp.auth}")
-    private String mailAuth;
-    @Value("${email.smtp.timeout}")
-    private String timeout;
-    @Value("${mail.thead.minSize}")
-    private Integer minSize;
-    @Value("${mail.thead.maxSize}")
-    private Integer maxSize;
-    @Value("${mail.thead.queueSize}")
-    private Integer queueSize;
 
+    @Autowired
+    private Environment env;
 
     private JavaMailSenderImpl javaMailSender;
     /**
@@ -55,19 +33,19 @@ public class MailServer {
     @PostConstruct
     private void emailSenderInit(){
         javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setDefaultEncoding(defaultEncoding);
-        javaMailSender.setHost(emailHost);
-        javaMailSender.setPort(port);
-        javaMailSender.setUsername(userName);
-        javaMailSender.setPassword(password);
+        javaMailSender.setDefaultEncoding(env.getProperty("email.encoding"));
+        javaMailSender.setHost(env.getProperty("email.host"));
+        javaMailSender.setPort(Integer.valueOf(env.getProperty("email.port")));
+        javaMailSender.setUsername(env.getProperty("email.username"));
+        javaMailSender.setPassword(env.getProperty("email.password"));
         Properties pp = new Properties();
-        pp.setProperty("mail.smtp.auth", mailAuth);
-        pp.setProperty("mail.smtp.timeout", timeout);
+        pp.setProperty("mail.smtp.auth", env.getProperty("email.smtp.auth"));
+        pp.setProperty("mail.smtp.timeout", env.getProperty("email.smtp.timeout"));
         javaMailSender.setJavaMailProperties(pp);
         taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(minSize);
-        taskExecutor.setMaxPoolSize(maxSize);
-        taskExecutor.setQueueCapacity(queueSize);
+        taskExecutor.setCorePoolSize(Integer.valueOf(env.getProperty("email.thead.minSize")));
+        taskExecutor.setMaxPoolSize(Integer.valueOf(env.getProperty("email.thead.maxSize")));
+        taskExecutor.setQueueCapacity(Integer.valueOf(env.getProperty("email.thead.queueSize")));
         taskExecutor.initialize();
     }
 
