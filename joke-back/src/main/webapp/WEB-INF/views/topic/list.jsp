@@ -123,8 +123,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
-						        <a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
+						        <a class="btn btn-primary" href="topic/addjoke?topicId=${topic.id}">
 						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
+						        </a>
+						        <a class="btn btn-warning" href="topic/deljoke?topicId=${topic.id}">
+						        	<i class="glyphicon glyphicon-arrow-left"></i>删除内容
 						        </a>
 								<a class="btn btn-danger" href="#" onclick="verifyTopic(1,${topic.id})">
 					        	 	<i class="glyphicon glyphicon-remove icon-white"></i>下线
@@ -137,8 +140,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
-						        <a class="btn btn-warning" href="topic/joke?topicId=${topic.id}">
+						        <a class="btn btn-primary" href="topic/addjoke?topicId=${topic.id}">
 						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
+						        </a>
+						        <a class="btn btn-warning" href="topic/deljoke?topicId=${topic.id}">
+						        	<i class="glyphicon glyphicon-arrow-left"></i>删除内容
 						        </a>
 								<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
 						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线

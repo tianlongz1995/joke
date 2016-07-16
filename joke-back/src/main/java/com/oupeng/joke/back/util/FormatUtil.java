@@ -7,7 +7,7 @@ public class FormatUtil {
 		if(i1 == null || i2 == null || i1.intValue() == 0 || i2.intValue() ==0){
 			return 0d;
 		}
-		BigDecimal b = new BigDecimal(i1/i2);
-		return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		BigDecimal b = new BigDecimal(Double.valueOf(i1)/Double.valueOf(i2));
+		return b.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 }
