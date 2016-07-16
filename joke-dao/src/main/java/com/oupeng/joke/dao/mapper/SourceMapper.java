@@ -76,6 +76,6 @@ public interface SourceMapper {
 	@InsertProvider(method="insertSourceMonitors",type=SourceSqlProvider.class)
 	void insertSourceMonitors(@Param(value = "today")Integer today, @Param(value = "ids")List<Integer> ids);
 	
-	@Update(value="update source set update_time=now(),verify_rate = #{rate} where source_id = #{sourceId} and day = #{day}")
+	@Update(value="update source_monitor set update_time=now(),verify_rate = #{rate} where source_id = #{sourceId} and day = #{day}")
 	public void updateSourceByVerify(@Param(value = "sourceId")Integer sourceId,@Param(value = "day")Integer day,@Param(value = "rate")Double rate);
 }
