@@ -12,11 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeVerifyInfo;
@@ -30,16 +33,15 @@ public class JokeService {
 
 	@Autowired
 	private JokeMapper jokeMapper;
-
 	@Autowired
 	private JedisCache jedisCache;
+	@Autowired
+	private Environment env;
 	
 	public List<Joke> getJokeListForVerify(Integer type,Integer status){
 		return jokeMapper.getJokeList(type, status,null,null,false);
 	}
 	
-	
-	/***/
 	public void verifyJoke(Integer status,String ids,String user){
 		if(status != Constants.JOKE_STATUS_VALID){
 			String[] jokeIds = ids.split(",");
@@ -153,21 +155,13 @@ public class JokeService {
 		}.start();
 	}
 
-	public void updateJoke(Integer id,String title,String img,String gif,String content,String user){
+	public void updateJoke(Integer id,String title,String img,String gif,Integer width,Integer height,String content,String user){
 		Joke joke = new Joke();
 		joke.setId(id);
-		joke.setGif(gif);
 		joke.setContent(content);
-		joke.setImg(img);
 		joke.setTitle(title);
 		joke.setVerifyUser(user);
-		if(StringUtils.isNotBlank(gif)){
-			joke.setType(Constants.JOKE_TYPE_GIF);
-		}else if(StringUtils.isNotBlank(img)){
-			joke.setType(Constants.JOKE_TYPE_IMG);
-		}else{
-			joke.setType(Constants.JOKE_TYPE_TEXT);
-		}
+		handleJokeImg(img,gif,width,height,joke);
 		jokeMapper.updateJoke(joke);
 	}
 	
@@ -228,5 +222,49 @@ public class JokeService {
 	
 	public List<JokeVerifyRate> getJokeVerifyRate(){
 		return jokeMapper.getJokeVerifyRate();
+	}
+	
+	private void handleJokeImg(String imgUrl,String gifUrl,Integer width,Integer height,Joke joke){
+		if(StringUtils.isNotBlank(gifUrl)){
+			joke.setType(Constants.JOKE_TYPE_GIF);
+			if(!gifUrl.startsWith(env.getProperty("img.server.url"))){
+				//TODO 切动图
+				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+					joke.setGif(imgRespDto.getGifUrl());
+					joke.setImg(imgRespDto.getImgUrl());
+					joke.setWidth(imgRespDto.getWidth());
+					joke.setHeight(imgRespDto.getHeight());
+				}
+			}else{
+				joke.setGif(gifUrl);
+				joke.setImg(imgUrl);
+				joke.setWidth(width);
+				joke.setHeight(height);
+			}
+		}else if(StringUtils.isNotBlank(imgUrl)){
+			joke.setType(Constants.JOKE_TYPE_IMG);
+			if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
+				//TODO 切动图
+				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+					joke.setGif(null);
+					joke.setImg(imgRespDto.getImgUrl());
+					joke.setWidth(imgRespDto.getWidth());
+					joke.setHeight(imgRespDto.getHeight());
+				}
+			}else{
+				joke.setGif(null);
+				joke.setImg(imgUrl);
+				joke.setWidth(width);
+				joke.setHeight(height);
+			}
+		}else{
+			joke.setType(Constants.JOKE_TYPE_TEXT);
+			joke.setGif(null);
+			joke.setImg(null);
+			joke.setWidth(null);
+			joke.setHeight(null);
+		}
 	}
 }

@@ -52,9 +52,11 @@ public class JokeController {
 			@RequestParam(value="title",required=false)String title,
 			@RequestParam(value="content",required=false)String content,
 			@RequestParam(value="img",required=false)String img,
-			@RequestParam(value="gif",required=false)String gif){
+			@RequestParam(value="gif",required=false)String gif,
+			@RequestParam(value="width")Integer width,
+			@RequestParam(value="height")Integer height){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		jokeService.updateJoke(id, title, img, gif, content, username);
+		jokeService.updateJoke(id, title, img, gif,width,height,content, username);
 		return new Success();
 	} 
 	

@@ -26,7 +26,7 @@ public interface JokeMapper {
 	public void verifyJoke(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
 	
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
-			+ "create_time as createTime,update_time as updateTime,good,bad from joke where id = ${id}")
+			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where id = ${id}")
 	@ResultType(value=Joke.class)
 	public Joke getJokeById(@Param(value="id")Integer id);
 	

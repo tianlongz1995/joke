@@ -164,9 +164,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
 					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
 					        </a>
-					        <%-- <a class="btn btn-info" href="joke/edit?id=${joke.id}">
+					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a> --%>
+					        </a>
 						</c:if>
 						<c:if test="${joke.status == 1}">
 							<a class="btn btn-danger" href="#" onclick="verifyJoke(2,${joke.id})">
@@ -177,9 +177,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<a class="btn btn-success" href="#" onclick="verifyJoke(1,${joke.id})">
 					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
 					        </a>
-					        <%-- <a class="btn btn-info" href="joke/edit?id=${joke.id}">
+					        <a class="btn btn-info" href="joke/edit?id=${joke.id}">
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-					        </a> --%>
+					        </a>
 						</c:if>
 				    </td>
 				</tr>

@@ -71,9 +71,19 @@ public class JokeSqlProvider {
 			sql.append(" gif=null,");
 		}
 		if(StringUtils.isNotBlank(joke.getContent())){
-			sql.append(" content='").append(joke.getContent().trim()).append("' ");
+			sql.append(" content='").append(joke.getContent().trim()).append("', ");
 		}else{
-			sql.append(" content=null ");
+			sql.append(" content=null, ");
+		}
+		if(joke.getWidth() != null){
+			sql.append(" width =").append(joke.getWidth()).append(",");
+		}else{
+			sql.append(" width = 0, ");
+		}
+		if(joke.getHeight() != null){
+			sql.append(" height = ").append(joke.getHeight()).append(" ");
+		}else{
+			sql.append(" height = 0 ");
 		}
 		sql.append(" where id =").append(joke.getId());
 		return sql.toString();
