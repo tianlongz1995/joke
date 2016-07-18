@@ -1,7 +1,10 @@
 package com.oupeng.joke.back.util;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class ImgReqDto {
 	private String img;
+	@JSONField(name="isCrop")
 	private boolean isCrop;
 	
 	public ImgReqDto(){
