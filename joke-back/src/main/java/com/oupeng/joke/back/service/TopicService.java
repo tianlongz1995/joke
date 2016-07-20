@@ -31,11 +31,23 @@ public class TopicService {
 	private Environment env;
 	
 	public List<Topic> getTopicList(Integer status){
-		return topicMapper.getTopicList(status);
+		List<Topic> topicList = topicMapper.getTopicList(status);
+		if(!CollectionUtils.isEmpty(topicList)){
+			for(Topic topic : topicList){
+				if(StringUtils.isNotBlank(topic.getImg())){
+					topic.setImg( env.getProperty("img.real.server.url") + topic.getImg());
+				}
+			}
+		}
+		return topicList;
 	}
 	
 	public Topic getTopicById(Integer id){
-		return topicMapper.getTopicById(id);
+		Topic topic = topicMapper.getTopicById(id);
+		if(topic != null && StringUtils.isNotBlank(topic.getImg())){
+			topic.setImg( env.getProperty("img.real.server.url") + topic.getImg());
+		}
+		return topic;
 	}
 	
 	public String updateTopicStatus(Integer id,Integer status){
@@ -131,7 +143,18 @@ public class TopicService {
 	}
 	
 	public List<Joke> getJokeListByTopicId(Integer id){
-		return topicMapper.getJokeListByTopicId(id);
+		List<Joke> jokeList = topicMapper.getJokeListByTopicId(id);
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+			}
+		}
+		return jokeList;
 	}
 	
 	public String handleImg(String imgUrl){

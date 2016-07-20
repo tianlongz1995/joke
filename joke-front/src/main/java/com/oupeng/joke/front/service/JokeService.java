@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +33,9 @@ public class JokeService {
 
     @Autowired
     private JedisCache jedisCache;
+	@Autowired
+	private Environment env;
+    
     /** 赞信息列表    */
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
     /** 踩信息列表    */
@@ -150,6 +154,12 @@ public class JokeService {
 		for(String jokeId : jokeIdSet){
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
 				list.add(joke);
 			}
 		}
@@ -169,6 +179,7 @@ public class JokeService {
 			topic = JSON.parseObject(topicString,Topic.class);
 			if(topic != null){
 				topic.setType(Constants.JOKE_TYPE_TOPIC_LIST);
+				topic.setImg(env.getProperty("img.real.server.url") + topic.getImg());
 				list.add(topic);
 			}
 		}
@@ -187,6 +198,12 @@ public class JokeService {
 		for(String jokeId : jokeIdSet){
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
 				list.add(joke);
 			}
 		}
@@ -205,6 +222,12 @@ public class JokeService {
 		for(String jokeId : jokeIdSet){
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
 				list.add(joke);
 			}
 		}
@@ -214,6 +237,12 @@ public class JokeService {
     public JokeDetail getJoke(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Integer jokeId){
     	JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),JokeDetail.class);
     	if(joke != null){
+    		if(joke.getType() == Constants.JOKE_TYPE_IMG){
+				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+			}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+			}
     		String key = "";
         	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
         		key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
@@ -268,6 +297,7 @@ public class JokeService {
     			if(joke != null){
     				if(joke.getImg() != null){
     					joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
+    					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
     					joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
     					joke.setWidth(200);
     				}

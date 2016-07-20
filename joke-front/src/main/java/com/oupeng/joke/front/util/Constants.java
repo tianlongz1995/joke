@@ -14,4 +14,8 @@ public class Constants {
 	public static final Integer LIST_TYPE_TOPIC_CHANNEL = 1;//专题频道列表页
 	public static final Integer LIST_TYPE_RECOMMEND_CHANNEL = 2;//推荐频道列表页
 	public static final Integer JOKE_TYPE_TOPIC_LIST = 9;//专题列表页的段子类型(9是为了和普通的段子类型区分开)
+	
+	public static final Integer JOKE_TYPE_TEXT = 0;
+	public static final Integer JOKE_TYPE_IMG = 1;
+	public static final Integer JOKE_TYPE_GIF = 2;
 }

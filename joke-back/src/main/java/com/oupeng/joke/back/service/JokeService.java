@@ -39,7 +39,18 @@ public class JokeService {
 	private Environment env;
 	
 	public List<Joke> getJokeListForVerify(Integer type,Integer status){
-		return jokeMapper.getJokeList(type, status,null,null,false);
+		List<Joke> jokeList = jokeMapper.getJokeList(type, status,null,null,false);
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+			}
+		}
+		return jokeList;
 	}
 	
 	public void verifyJoke(Integer status,String ids,String user){
@@ -60,7 +71,16 @@ public class JokeService {
 	}
 	
 	public Joke getJokeById(Integer id){
-		return jokeMapper.getJokeById(id);
+		Joke joke = jokeMapper.getJokeById(id);
+		if(joke != null){
+			if(joke.getType() == Constants.JOKE_TYPE_IMG){
+				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+			}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+			}
+		}
+		return joke;
 	}
 
 	/**
@@ -189,7 +209,18 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForSearch(Integer id,String content){
-		return jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content,false);
+		List<Joke> jokeList = jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content,false);
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+			}
+		}
+		return jokeList;
 	}
 	
 	public int getJokeCountForChannel(String contentType){
@@ -197,11 +228,33 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForChannel(String contentType,Integer start,Integer size){
-		return jokeMapper.getJokeListForChannel(contentType,start,size);
+		List<Joke> jokeList = jokeMapper.getJokeListForChannel(contentType,start,size);
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+			}
+		}
+		return jokeList;
 	}
 	
 	public List<Joke> getJokeListForTopic(Integer type,Integer status){
-		return jokeMapper.getJokeList(type, status,null,null,true);
+		List<Joke> jokeList = jokeMapper.getJokeList(type, status,null,null,true);
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+			}
+		}
+		return jokeList;
 	}
 	
 	public List<Integer> getJokeForPublishTopic(Integer topicId){
