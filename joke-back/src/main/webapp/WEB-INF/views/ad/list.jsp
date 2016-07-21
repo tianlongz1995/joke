@@ -275,7 +275,7 @@
                 $('#addNewad').click(function(event) {
                     var slotId = $('#slotId').val();
 
-                    if(!isInteger(slotId) || slotId.length > 10){
+                    if(!Number.isInteger(Number(slotId)) || slotId.length > 10){
                          alert("广告位置ID只能是整数");
                          return false;
                      }
@@ -285,7 +285,7 @@
                     }
                     var pos = $('#pos').val();
                     if(pos == 1){
-                         if(!isInteger(slide) || slide < 1 || slide > 99){
+                         if(!Number.isInteger(Number(slide)) || slide < 1 || slide > 99){
                              alert("投放频率必须是大于0或者小于100的正整数");
                              return false;
                          }
@@ -376,10 +376,10 @@
                         $("#adStatusTr").next().remove();
                     }
                 });
-                function isInteger(x) {
+                /* function isInteger(x) {
                     var ex = /^\d+$/;
                     return ex.test(x);
-                }
+                } */
             </script>
 
         </div>
