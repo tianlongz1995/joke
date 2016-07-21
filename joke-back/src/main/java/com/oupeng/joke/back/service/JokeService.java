@@ -72,24 +72,22 @@ public class JokeService {
 				while(true){
 					try{
 						List<String> likeIdList = jedisCache.brpop(JedisKey.JOKE_LIST_LIKE, 60*5);
-						logger.info("insertJokeFeedback receved size:[{}]", likeIdList == null ? 0 : likeIdList.size());
+						logger.info("jokeLikeCountUpdate receved size:[{}]", likeIdList == null ? 0 : likeIdList.size());
 						if(!CollectionUtils.isEmpty(likeIdList)){
 							String likeId = likeIdList.get(1);
 							logger.info("update joke Like Count id:" + likeId);
 							jokeMapper.updatejokeLikeCount(Integer.valueOf(likeId));
+							updateJokeLikeCache(likeId);
 						}
 					}catch(Exception e){
 						logger.error("update joke Like Count error!",e);
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e1) {
-							logger.error("jokeLikeCountUpdate sleep error:" + e1.getMessage(), e1);
-						}
 					}
 				}
-			}
+			};
 		}.start();
 	}
+
+
 	/**
 	 * 更新段子被踩数
 	 */
@@ -101,25 +99,20 @@ public class JokeService {
 				while(true){
 					try{
 						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 60*5);
-						logger.info("insertJokeFeedback receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
+						logger.info("jokeStepCountUpdate receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
 						if(!CollectionUtils.isEmpty(stepIdList)){
 							String stepId = stepIdList.get(1);
 							logger.info("update joke step Count id:" + stepId);
 							jokeMapper.updateJokeStepCount(Integer.valueOf(stepId));
+							updateJokeStepCache(stepId);
 						}
 					}catch(Exception e){
 						logger.error("update joke step Count error!" + e.getMessage(),e);
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e1) {
-							logger.error("jokeStepCountUpdate sleep error:" + e1.getMessage(), e1);
-						}
 					}
 				}
-			}
+			};
 		}.start();
 	}
-
 	/**
 	 * 存储段子反馈信息
 	 */
@@ -142,15 +135,43 @@ public class JokeService {
 						}
 					}catch(Exception e){
 						logger.error("update joke feedback Count error!",e);
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e1) {
-							logger.error("insertJokeFeedback sleep error:" + e1.getMessage(), e1);
-						}
 					}
 				}
-			}
+			};
 		}.start();
+	}
+
+	/**
+	 * 更新段子点赞缓存数
+	 * @param jokeId
+	 */
+	private void updateJokeLikeCache(String jokeId) {
+		String jokeStr = jedisCache.get(JedisKey.STRING_JOKE + jokeId);
+		if(jokeStr != null){
+			Joke joke = JSON.parseObject(jokeStr, Joke.class);
+			if(joke != null && joke.getGood() != null){
+				joke.setGood(joke.getGood() + 1);
+			}else {
+				joke.setGood(1);
+			}
+			jedisCache.set(JedisKey.STRING_JOKE + jokeId, JSON.toJSONString(joke));
+		}
+	}
+	/**
+	 * 更新段子被踩缓存数
+	 * @param jokeId
+	 */
+	private void updateJokeStepCache(String jokeId) {
+		String jokeStr = jedisCache.get(JedisKey.STRING_JOKE + jokeId);
+		if(jokeStr != null){
+			Joke joke = JSON.parseObject(jokeStr, Joke.class);
+			if(joke != null && joke.getBad() != null){
+				joke.setBad(joke.getBad() + 1);
+			}else{
+				joke.setBad(1);
+			}
+			jedisCache.set(JedisKey.STRING_JOKE + jokeId, JSON.toJSONString(joke));
+		}
 	}
 
 	public void updateJoke(Integer id,String title,String img,String gif,String content,String user){
