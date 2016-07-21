@@ -285,7 +285,7 @@
                     }
                     var pos = $('#pos').val();
                     if(pos == 1){
-                         if(isInteger(slide) || slide < 1 || slide > 99){
+                         if(!isInteger(slide) || slide < 1 || slide > 99){
                              alert("投放频率必须是大于0或者小于100的正整数");
                              return false;
                          }
