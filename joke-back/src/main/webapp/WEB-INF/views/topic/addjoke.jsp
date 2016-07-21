@@ -102,7 +102,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<p><h5>${joke.title}</h5></p>
 								</c:if>
 								<c:if test="${!empty joke.content}">
-									<p><small>${joke.content}</<small>></p>
+									<p><small>${joke.content}</<small></p>
 								</c:if>
 								<c:if test="${joke.type == 2}">
 									<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>

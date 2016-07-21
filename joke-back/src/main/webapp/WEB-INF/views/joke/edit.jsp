@@ -20,6 +20,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<base href="<%=basePath%>">
 	<%@ include file="../common/css.html"%>
 	<script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
+	<script src="ui/js/jquery.oupeng.upload.js"></script>
+	
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
@@ -69,12 +71,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th>图片 /动图</th>
 					<td>
-						<c:if test="${joke.type == 2}">
-							<img id="img" src="${joke.img}" onfocus="this.src=${joke.gif}" onblur="this.src=${joke.img}"/>
-						</c:if>
-						<c:if test="${joke.type == 1}">
-							<img id="img" src="${joke.img}"/>
-						</c:if>
+						<input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png,.gif"/>
+						<img id="imgPriview" style="display: none" <c:if test="${joke.type == 2}"> src="${joke.gif}" </c:if> <c:if test="${joke.type == 1}"> src="${joke.img}" </c:if> >
+						<input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除" />
 					</td>
 				</tr>
 				<tr>
@@ -86,8 +85,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</thead>
 		</table>
 		<input id="id" type="hidden" value="${joke.id}"/>
-		<input id="imgpath" type="hidden" value=""/>
-		<input id="gifpath" type="hidden" value=""/>
+		<input id="width" type="hidden" value="${joke.width}"/>
+		<input id="height" type="hidden" value="${joke.height}"/>
+		<input id="imgUrl" type="hidden" value="${joke.img}"/>
+		<input id="gifUrl" type="hidden" value="${joke.gif}"/>
 		<button id="updateJoke" type="button" class="btn btn-default" data-dismiss="modal">通过</button>
 	</div>
 </div>
@@ -95,21 +96,63 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 
 <script type="text/javascript">
+$(document).ready(function () {
+	if(('${joke.type}' == '2' || '${joke.type}' == '1') ){
+		$("#imgPriview").css('display','block');
+		$("#imgDelButton").css('display','block');
+	}
+});
+
+$('#imgDelButton').click(function () {
+	$('#img').val('');
+	$('#imgUrl').val('');
+	$('#gifUrl').val('');
+	$('#width').val('');
+	$('#height').val('');
+	$("#imgPriview").hide();
+});
+
+$('#img').change(function () {
+    var file = $(this)[0].files[0];
+    $(this).OupengUpload(file, {
+        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+        acceptFileTypes: 'image/*',
+        maxFileSize: 1024*1024*5,
+        minFileSize: 0,
+        onUploadSuccess: function (data) {
+        	if(data.substring(data.length-4) == ".gif"){
+        		$("#gifUrl").val(data);
+        		$("#imgUrl").val('');
+        	}else{
+        		$("#imgUrl").val(data);
+        		$("#gifUrl").val('');
+        	}
+        	$('#width').val('');
+        	$('#height').val('');
+        	$("#imgPriview").attr('src',data).show();
+        	$("#imgDelButton").show();
+        },
+        onUploadError: function (data) {
+            alert(data);
+        }
+    });
+});
+
 $('#updateJoke').click(function(event) {
 	post('joke/update',
-			'id='+$("#id").val()+'&title='+$("#title").val()+'&imgpath='+$("#imgpath").val()
-			+'&gifpath='+$("#gifpath").val()+'&content='+$("#content2").val(),
-			function (data) {
-				if(data['status']) {
-					location.href = '<%=basePath%>joke/list';
-				}
-				else {
-					alert('更新失败. info:'+data['info']);
-				}
-			},
-			function () {
-				alert('请求失败，请检查网络环境');
-			});
+		'id='+$("#id").val()+'&title='+$("#title").val()+'&img='+$("#imgUrl").val()+'&content='+$("#content2").val()
+			+'&gif='+$("#gifUrl").val()+'&width='+$("#width").val()+'&height='+$("#height").val(),
+		function (data) {
+			if(data['status']) {
+				location.href = '<%=basePath%>joke/list';
+			}
+			else {
+				alert('更新失败. info:'+data['info']);
+			}
+		},
+		function () {
+			alert('请求失败，请检查网络环境');
+		});
 });
 
 function post(url, data, success, error) {

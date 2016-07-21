@@ -54,8 +54,8 @@ public class DistributorTask {
                         dcr.setChannels(channels);
                     }else{
 //                  如果渠道下的频道为空或者不存在就屏蔽当前渠道缓存
-                        logger.info("did[{}] Channels is null!", id);
-                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id));
+                        logger.info("did[{}] Channels is null!", id.getId());
+                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id.getId()));
                         continue;
                     }
                     if(!CollectionUtils.isEmpty(ads)){
@@ -63,16 +63,16 @@ public class DistributorTask {
                     }
                     String value = JSON.toJSONString(dcr);
                     if(value != null && value.length() > 0){
-                        jedisCache.hset(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id), value);
+                        jedisCache.hset(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, String.valueOf(id.getId()), value);
                     }else{
 //                    如果渠道下的内容为空或者不存在就屏蔽当前渠道缓存
-                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id));
-                        logger.info("syncDistributorAdConfig did[{}] body is null" , id);
+                        jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id.getId()));
+                        logger.info("syncDistributorAdConfig did[{}] body is null" , id.getId());
                     }
                     index++;
                 }else{
 //                    删除失效渠道下的配置
-                    jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id));
+                    jedisCache.hdel(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG,String.valueOf(id.getId()));
                 }
             }
             long end = System.currentTimeMillis();
