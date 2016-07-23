@@ -25,8 +25,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 	<style>
-		.table-item{
-			overflow: hidden;
+		th {
+			text-align: center;
+		}
+		.idselect {
+			text-align: center;
+			vertical-align: middle;
 		}
 	</style>
 </head>
@@ -83,12 +87,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</c:if>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="searchJoke">
+					<a class="btn btn-primary btn-sm" href="#" id="searchJoke">
 						<span class="glyphicon glyphicon-search icon-white" >搜索</span>
 					</a>
 				</label>
 				<label style="padding-right:30px;">
-			        <a class="btn btn-danger" href="#" onclick="deleteJoke('batch')">
+			        <a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke('batch')">
 			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
 			        </a>
 				</label>
@@ -96,42 +100,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 			<thead>
 				<tr>
-					<th>全选<input type="checkbox" id="allcheck" /></th>
-					<th>ID</th>
-					<th>内容</th>
-					<th>格式</th>
-					<th>操作</th>
+					<th style="width: 7%;">全选 <input type="checkbox" id="allcheck" /></th>
+					<th style="width: 7%;">ID</th>
+					<th style="width: 73%;">内容</th>
+					<th style="width: 5%;">格式</th>
+					<th style="width: 8%;">操作</th>
 				</tr>
 			</thead>
 	
 			<tbody>
 				<c:forEach items="${list}" var="joke">
-				<tr>
-					<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
-					<td><c:out value="${joke.id}"/></td>
-					<td>
-						<div class="table-item" style="height:60px">
+				<tr >
+					<td class="idselect"><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
+					<td class="idselect"><c:out value="${joke.id}"/></td>
+					<td class="contentcheck" style="padding: 0px;width: 73%;height: 100%;" >
+						<div class="table-item" style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;" <c:if test="${joke.type == 1}">data-origin="${joke.img}"</c:if> <c:if test="${joke.type == 2}">data-src="${joke.gif}"</c:if>>
+
 							<c:if test="${!empty joke.title}">
 								<p><h5>${joke.title}</h5></p>
 							</c:if>
 							<c:if test="${!empty joke.content}">
 								<p><small>${joke.content}</<small></p>
 							</c:if>
-							<c:if test="${joke.type == 2}">
-								<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>
-							</c:if>
-							<c:if test="${joke.type == 1}">
-								<p><img src="${joke.img}"/></p>
-							</c:if>
+
 						</div>
 					</td>
-					<td>
+
+					<td class="idselect">
 						<c:if test="${joke.type == 0}">文字</c:if>
 						<c:if test="${joke.type == 1}">图片</c:if>
 						<c:if test="${joke.type == 2}">动图</c:if>
 					</td>
-					<td>
-						<a class="btn btn-danger" href="#" onclick="deleteJoke(${joke.id})">
+					<td class="idselect">
+						<a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke(${joke.id})">
 				        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
 				        </a>
 				    </td>
@@ -139,13 +140,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</c:forEach>
 			</tbody>
 		</table>
-		
+
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
 </div><!-- row end -->
 
+
+
+
 <script type="text/javascript">
+//$(".table-item").height($(".contentcheck").height());
 $('#table_list img').hover(function(){
 	var gif = $(this).attr('data-src');
 	if(gif){
@@ -159,9 +164,18 @@ $('#table_list img').hover(function(){
 });
 
 $('.table-item').hover(function(){
-	$(this).removeAttr("style");
+	var gif = $(this).attr('data-src');
+	var origin = $(this).attr('data-origin');
+	//console.log(gif + " ori:" + origin)
+	if(gif){
+		$("#pic").attr("src",gif);
+		$("#showPic").css('display','block');
+	} else 	if(origin){
+		$("#pic").attr("src",origin);
+		$("#showPic").css('display','block');
+	}
 }, function(){
-	$(this).attr("style","height:60px");
+	$("#showPic").css('display','none');
 });
 
 $('#allcheck').on('click', function(){
@@ -171,6 +185,18 @@ $('#allcheck').on('click', function(){
         $(":checkbox").prop("checked", false);
     }
 });
+function showModal(td){
+	var gif = $(td).attr('data-src');
+	var origin = $(td).attr('data-origin');
+	//console.log(gif + " ori:" + origin)
+	if(gif){
+		$("#pic").attr("src",gif);
+		$("#showPic").modal('show');
+	} else 	if(origin){
+		$("#pic").attr("src",origin);
+		$("#showPic").modal('show');
+	}
+};
 
 function deleteJoke(id) {
 	if("batch" == id){
@@ -216,6 +242,12 @@ function post(url, data, success, error) {
 
 </div><!-- content end -->
 </div><!-- row end -->
+
+	<!--  图片展示页面	-->
+	<div id="showPic" style="display: none;text-align: center;position: fixed; _position:absolute;left:50%;top:50%;margin: -141px 0 0 -201px;border:0px;">
+		<img id="pic" src=""/>
+	</div>
+
 </div><!-- ch-container end -->
 
 <hr>

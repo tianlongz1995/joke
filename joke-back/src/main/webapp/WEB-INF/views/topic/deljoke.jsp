@@ -24,11 +24,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
-	<style>
+	<%--<style>
 		.table-item{
 			overflow: hidden;
 		}
-	</style>
+	</style>--%>
 	
 </head>
 
@@ -83,19 +83,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tr>
 						<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
 						<td>
-							<div class="table-item" style="height:60px">
+							<div class="table-item"  style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;" <c:if test="${joke.type == 1}">data-origin="${joke.img}"</c:if> <c:if test="${joke.type == 2}">data-src="${joke.gif}"</c:if> >
 								<c:if test="${!empty joke.title}">
 									<p><h5>${joke.title}</h5></p>
 								</c:if>
 								<c:if test="${!empty joke.content}">
 									<p><small>${joke.content}</<small></p>
 								</c:if>
-								<c:if test="${joke.type == 2}">
+								<%--<c:if test="${joke.type == 2}">
 									<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>
 								</c:if>
 								<c:if test="${joke.type == 1}">
 									<p><img src="${joke.img}"/></p>
-								</c:if>
+								</c:if>--%>
 							</div>
 						</td>
 						<td>
@@ -136,9 +136,18 @@ $('#table_list img').hover(function(){
 });
 
 $('.table-item').hover(function(){
-	$(this).removeAttr("style");
+	var gif = $(this).attr('data-src');
+	var origin = $(this).attr('data-origin');
+	//console.log(gif + " ori:" + origin)
+	if(gif){
+		$("#pic").attr("src",gif);
+		$("#showPic").css('display','block');
+	} else 	if(origin){
+		$("#pic").attr("src",origin);
+		$("#showPic").css('display','block');
+	}
 }, function(){
-	$(this).attr("style","height:60px");
+	$("#showPic").css('display','none');
 });
 
 $('#allcheck').on('click', function(){
@@ -189,6 +198,10 @@ function post(url, data, success, error) {
 
 </div><!-- content end -->
 </div><!-- row end -->
+	<!--  图片展示页面	-->
+	<div id="showPic" style="display: none;text-align: center;position: fixed; _position:absolute;left:50%;top:50%;margin: -141px 0 0 -201px;border:0px;">
+		<img id="pic" src=""/>
+	</div>
 </div><!-- ch-container end -->
 
 <hr>
