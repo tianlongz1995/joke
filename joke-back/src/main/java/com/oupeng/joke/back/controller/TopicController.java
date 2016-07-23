@@ -1,5 +1,6 @@
 package com.oupeng.joke.back.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +151,7 @@ public class TopicController {
 									 @RequestParam(value="content",required=false)String content,
 									 Model model){
 		try {
-			if(content != null || (img != null || gif != null)){
+			if(StringUtils.isNotBlank(content) || StringUtils.isNotBlank(img) || StringUtils.isNotBlank(gif)){
 				boolean status = topicService.addOriginalContent(title, img, gif, content, topicId);
 				if (status) {
 					return new Success();

@@ -223,7 +223,8 @@ public class TopicService {
 				return false;
 			}
 		}else{
-			return false;
+//			纯文本内容
+			joke.setType(Constants.JOKE_TYPE_TEXT);
 		}
 //		存储段子信息
 		jokeMapper.insertJoke(joke);
