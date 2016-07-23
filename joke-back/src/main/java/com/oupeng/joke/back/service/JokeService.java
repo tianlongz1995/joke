@@ -319,7 +319,7 @@ public class JokeService {
 		}else if(StringUtils.isNotBlank(imgUrl)){
 			joke.setType(Constants.JOKE_TYPE_IMG);
 			if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
-				//TODO 切动图
+				//TODO 切静图
 				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
 				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
 					joke.setGif(null);

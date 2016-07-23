@@ -2,13 +2,7 @@ package com.oupeng.joke.dao.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 
 import com.oupeng.joke.dao.sqlprovider.JokeSqlProvider;
 import com.oupeng.joke.domain.Feedback;
@@ -90,4 +84,12 @@ public interface JokeMapper {
 			+ " (select source_id,0 as validNum,count(1) as  inValidNum from joke where `status` = 2 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t2 "
 			+ " on t1.source_id = t2.source_id ")
 	public List<JokeVerifyRate> getJokeVerifyRate();
+
+	/**
+	 * 存储段子信息 - 并返回主键
+	 * @param joke
+	 */
+	@InsertProvider(method="insertJoke",type=JokeSqlProvider.class)
+	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
+	void insertJoke(Joke joke);
 }

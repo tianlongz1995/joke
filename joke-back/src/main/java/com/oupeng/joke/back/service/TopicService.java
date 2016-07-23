@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.oupeng.joke.dao.mapper.JokeMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -27,6 +28,8 @@ public class TopicService {
 	private TopicMapper topicMapper;
 	@Autowired
 	private JedisCache jedisCache;
+	@Autowired
+	private JokeMapper jokeMapper;
 	@Autowired
 	private Environment env;
 	
@@ -165,5 +168,67 @@ public class TopicService {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 添加原创数据内容
+	 * @param title
+	 * @param imgUrl
+	 * @param gifUrl
+	 * @param content
+	 * @param topicId
+	 */
+	public boolean addOriginalContent(String title, String imgUrl, String gifUrl, String content, Integer topicId) {
+		Joke joke = new Joke();
+		joke.setContent(content);
+		joke.setTitle(title);
+		if(StringUtils.isNotBlank(gifUrl)){
+			joke.setType(Constants.JOKE_TYPE_GIF);
+			if(!gifUrl.startsWith(env.getProperty("img.server.url"))){
+				//切动图
+				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+//				imgRespDto = new ImgRespDto();
+//				imgRespDto.setGifUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
+//				imgRespDto.setImgUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
+//				imgRespDto.setHeight(200);
+//				imgRespDto.setWidth(100);
+//				imgRespDto.setErrorCode(0);
+				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+					joke.setGif(imgRespDto.getGifUrl());
+					joke.setImg(imgRespDto.getImgUrl());
+					joke.setWidth(imgRespDto.getWidth());
+					joke.setHeight(imgRespDto.getHeight());
+				}
+			}else{
+				return false;
+			}
+		}else if(StringUtils.isNotBlank(imgUrl)){
+			joke.setType(Constants.JOKE_TYPE_IMG);
+			if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
+				// 切静图
+				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+//				imgRespDto = new ImgRespDto();
+//				imgRespDto.setGifUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
+//				imgRespDto.setImgUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
+//				imgRespDto.setHeight(200);
+//				imgRespDto.setWidth(100);
+//				imgRespDto.setErrorCode(0);
+				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+					joke.setGif(null);
+					joke.setImg(imgRespDto.getImgUrl());
+					joke.setWidth(imgRespDto.getWidth());
+					joke.setHeight(imgRespDto.getHeight());
+				}
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+//		存储段子信息
+		jokeMapper.insertJoke(joke);
+//		存储段子专题关联关系
+		topicMapper.insertTopicJoke(joke.getId(), topicId);
+		return true;
 	}
 }

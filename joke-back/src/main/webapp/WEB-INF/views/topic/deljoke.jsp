@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>段子</title>
+	<title>添加专题内容</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -52,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 段子列表</h2>
+		<h2><i class="glyphicon glyphicon-user"></i> 添加专题内容</h2>
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">

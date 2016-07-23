@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>段子</title>
+	<title>添加内容</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -52,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 段子列表</h2>
+		<a href="topic/list"><h2><i class="glyphicon glyphicon-user"></i> 专题管理</h2></a>
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
@@ -77,6 +77,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        <a class="btn btn-success" href="#" onclick="verifyJoke('batch')">
 			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量添加
 			        </a>
+				</label>
+				<label style="padding-right:30px;">
+					<a class="btn btn-info" href="<%=basePath%>topic/addOriginal?topicId=${topicId}" >
+						<i class="glyphicon glyphicon-plus-sign icon-white"></i>添加原创
+					</a>
 				</label>
 			</div>
 		

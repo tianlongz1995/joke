@@ -126,4 +126,46 @@ public class JokeSqlProvider {
 		}
 		return sql.toString();
 	}
+
+	/**
+	 * 存储段子
+	 * @param joke
+	 * @return
+	 */
+	public static String insertJoke(Joke joke){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" insert into joke(title, content, img, gif, width, height, type, status,create_time, update_time) value(");
+		if(StringUtils.isNotBlank(joke.getTitle())){
+			sql.append("'").append(joke.getTitle().trim()).append("', ");
+		}else{
+			sql.append("null,");
+		}
+		if(StringUtils.isNotBlank(joke.getContent())){
+			sql.append("'").append(joke.getContent().trim()).append("', ");
+		}else{
+			sql.append(" null, ");
+		}
+		if(StringUtils.isNotBlank(joke.getImg())){
+			sql.append(" '").append(joke.getImg()).append("', ");
+		}else{
+			sql.append(" null,");
+		}
+		if(StringUtils.isNotBlank(joke.getGif())){
+			sql.append(" '").append(joke.getGif()).append("', ");
+		}else{
+			sql.append(" null,");
+		}
+		if(joke.getWidth() != null){
+			sql.append(joke.getWidth()).append(", ");
+		}else{
+			sql.append(" 0, ");
+		}
+		if(joke.getHeight() != null){
+			sql.append(joke.getHeight()).append(", ");
+		}else{
+			sql.append(" 0, ");
+		}
+		sql.append(joke.getType()).append(", 1, now(), now() )");
+		return sql.toString();
+	}
 }

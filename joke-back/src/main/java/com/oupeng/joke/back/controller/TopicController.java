@@ -1,6 +1,9 @@
 package com.oupeng.joke.back.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +21,7 @@ import com.oupeng.joke.domain.response.Success;
 @Controller
 @RequestMapping(value="/topic")
 public class TopicController {
-
+	private static final Logger logger = LoggerFactory.getLogger(TopicController.class);
 	@Autowired
 	private TopicService topicService;
 	@Autowired
@@ -110,5 +113,52 @@ public class TopicController {
 			@RequestParam(value="topicId",required=true)Integer topicId){
 		topicService.delTopicJoke(ids, topicId);
 		return new Success();
+	}
+
+	/**
+	 * 添加原创内容页面
+	 * @param topicId
+	 * @param type
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/addOriginal")
+	public String addOriginal(@RequestParam(value="topicId",required=true)Integer topicId,
+							  @RequestParam(value="type",required=false)Integer type,
+							  Model model){
+		model.addAttribute("topicId", topicId);
+		model.addAttribute("type", type);
+		return "/topic/addoriginal";
+	}
+
+	/**
+	 * 存储原创内容
+	 * @param topicId
+	 * @param title
+	 * @param img
+	 * @param gif
+	 * @param content
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/addOriginalContent", produces = {"application/json"})
+	@ResponseBody
+	public Result addOriginalContent(@RequestParam(value="topicId",required=true)Integer topicId,
+									 @RequestParam(value="title",required=false)String title,
+									 @RequestParam(value="img",required=false)String img,
+									 @RequestParam(value="gif",required=false)String gif,
+									 @RequestParam(value="content",required=false)String content,
+									 Model model){
+		try {
+			boolean status = topicService.addOriginalContent(title, img, gif, content, topicId);
+			if (status) {
+				return new Success();
+			} else {
+				return new Failed("存储图片失败！");
+			}
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
+			return new Failed();
+		}
 	}
 }

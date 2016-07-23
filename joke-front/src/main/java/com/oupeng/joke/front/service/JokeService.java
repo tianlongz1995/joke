@@ -79,9 +79,9 @@ public class JokeService {
     public void addLikeQueue(){
         try{
             if(!CollectionUtils.isEmpty(addLikeIds)){
-                logger.info("增加点赞数记录"+addLikeIds.size()+"条");
                 jedisCache.lpush(JedisKey.JOKE_LIST_LIKE, addLikeIds.toArray(new String[]{}));
-                addLikeIds.clear();
+				logger.info("增加点赞数记录" + addLikeIds.size() + "条");
+				addLikeIds.clear();
             }
         }catch(Exception e){
             logger.error("增加点赞数失败",e);
@@ -94,9 +94,9 @@ public class JokeService {
     public void addStepQueue(){
         try{
             if(!CollectionUtils.isEmpty(addStepIds)){
-                logger.info("增加踩数记录" + addStepIds.size() + "条");
                 jedisCache.lpush(JedisKey.JOKE_LIST_STEP, addStepIds.toArray(new String[]{}));
-                addStepIds.clear();
+				logger.info("增加踩数记录" + addStepIds.size() + "条");
+				addStepIds.clear();
             }
         }catch(Exception e){
             logger.error("增加踩数失败",e);
@@ -119,9 +119,9 @@ public class JokeService {
     public void addFeedbackCache(){
         try{
             if(!CollectionUtils.isEmpty(feedbackList)){
-                logger.info("增加反馈数记录" + feedbackList.size() + "条");
                 jedisCache.lpush(JedisKey.JOKE_LIST_FEEDBACK, feedbackList.toArray(new String[]{}));
-                feedbackList.clear();
+				logger.info("增加反馈数记录" + feedbackList.size() + "条");
+				feedbackList.clear();
             }
         }catch(Exception e){
             logger.error("增加反馈数失败",e);
