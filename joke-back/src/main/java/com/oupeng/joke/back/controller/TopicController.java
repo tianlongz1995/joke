@@ -150,15 +150,19 @@ public class TopicController {
 									 @RequestParam(value="content",required=false)String content,
 									 Model model){
 		try {
-			boolean status = topicService.addOriginalContent(title, img, gif, content, topicId);
-			if (status) {
-				return new Success();
-			} else {
-				return new Failed("存储图片失败！");
+			if(content != null || (img != null || gif != null)){
+				boolean status = topicService.addOriginalContent(title, img, gif, content, topicId);
+				if (status) {
+					return new Success();
+				} else {
+					return new Failed("存储图片失败！");
+				}
+			}else {
+				return new Failed("内容或者图片不能全为空!");
 			}
 		}catch (Exception e){
 			logger.error(e.getMessage(), e);
-			return new Failed();
+			return new Failed("存储图片异常！");
 		}
 	}
 }

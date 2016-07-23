@@ -101,8 +101,6 @@ $('#imgDelButton').click(function () {
 	$('#img').val('');
 	$('#imgUrl').val('');
 	$('#gifUrl').val('');
-	$('#width').val('');
-	$('#height').val('');
 	$("#imgPriview").hide();
 });
 
@@ -133,9 +131,17 @@ $('#img').change(function () {
 $('#updateJoke').click(function(event) {
 	var topicId = $("#topicId").val();
 	var type = $("#type").val();
+	var imgUrl = $("#imgUrl").val();
+	var gifUrl = $("#gifUrl").val();
+	var title = $("#title").val();
+	var content = $("#content2").val();
+	//console.log("title[" +title+ "] content[" +content+"] img["+imgUrl+"] gif["+gifUrl+"]");
+	if(isEmpty(content) && isEmpty(imgUrl) && isEmpty(gifUrl)){
+		alert("内容或者图片不能全空");
+		return false;
+	}
 	post('topic/addOriginalContent',
-		'topicId='+topicId+'&img='+$("#imgUrl").val()+'&content='+$("#content2").val()
-			+'&gif='+$("#gifUrl").val(),
+		'topicId='+topicId+'&img='+imgUrl+'&content='+content+'&gif='+gifUrl + '&title=' + title,
 		function (data) {
 			if(data.status == 1) {
 				alert(data.status);
@@ -156,6 +162,13 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
+};
+// 判断对象是空的
+function isEmpty(str) {
+	if(str != null && str.length > 0 && str.trim().length > 0) {
+		return false;
+	}
+	return true;
 }
 </script>
 
