@@ -136,7 +136,7 @@ public class JokeSqlProvider {
 	 */
 	public static String insertJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" insert into joke(title, content, img, gif, width, height, type, status,create_time, update_time) value(");
+		sql.append(" insert into joke(title, content, img, gif, width, height, type, status,create_time, update_time,good) value(");
 		if(StringUtils.isNotBlank(joke.getTitle())){
 			sql.append("'").append(joke.getTitle().trim()).append("', ");
 		}else{
@@ -167,7 +167,7 @@ public class JokeSqlProvider {
 		}else{
 			sql.append(" 0, ");
 		}
-		sql.append(joke.getType()).append(", 1, now(), now() )");
+		sql.append(joke.getType()).append(", 1, now(), now(),30+FLOOR(RAND()*70) )");
 		return sql.toString();
 	}
 }
