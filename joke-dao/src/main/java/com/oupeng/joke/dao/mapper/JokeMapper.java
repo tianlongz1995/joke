@@ -16,9 +16,6 @@ public interface JokeMapper {
 	public List<Joke> getJokeList(@Param(value="type")Integer type,@Param(value="status")Integer status,
 			@Param(value="id")Integer id,@Param(value="content")String content,@Param(value="isTopic")boolean isTopic);
 	
-	@UpdateProvider(method="verifyJoke",type=JokeSqlProvider.class)
-	public void verifyJoke(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
-	
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
 			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where id = ${id}")
 	@ResultType(value=Joke.class)
@@ -62,9 +59,13 @@ public interface JokeMapper {
 	@Select(value="select j_id from topic_joke where `status` = 0 and t_id = #{topicId}")
 	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
 	
-	@Select(value="select t.id from joke t where t.`status` = 1 and DATE_FORMAT(t.verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) and "
-			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
+	@Select(value="select t.id from joke t where t.`status` = 1 and "
+			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) limit 100 ")
 	public List<Integer> getJokeForPublishChannel(@Param(value="contentType")String contentType);
+	
+	@Select(value="select count(1) from joke t where t.`status` = 1 and "
+			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
+	public int getJokeCountForPublishChannel(@Param(value="contentType")String contentType);
 	
 	@SelectProvider(method="getJokeListForPublish",type=JokeSqlProvider.class)
 	public List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
@@ -92,4 +93,7 @@ public interface JokeMapper {
 	@InsertProvider(method="insertJoke",type=JokeSqlProvider.class)
 	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
 	void insertJoke(Joke joke);
+	
+	@UpdateProvider(method="updateJokeStatus",type=JokeSqlProvider.class)
+	public void updateJokeStatus(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
 }

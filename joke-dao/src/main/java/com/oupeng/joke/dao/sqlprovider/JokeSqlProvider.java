@@ -38,14 +38,16 @@ public class JokeSqlProvider {
 		return sql.toString();
 	}
 	
-	public static String verifyJoke(Map<String,Object> map){
+	public static String updateJokeStatus(Map<String,Object> map){
 		Integer status = Integer.valueOf(map.get("status").toString());
 		String ids = map.get("ids").toString();
-		String user = map.get("user").toString();
+		Object user = map.get("user");
 		StringBuffer sql = new StringBuffer();
-		sql.append(" update joke set update_time =now(),verify_time=now(), ");
-		sql.append(" status= ").append(status).append(",");
-		sql.append(" verify_user= '").append(user).append("' ");
+		sql.append(" update joke set update_time =now(), ");
+		sql.append(" status= ").append(status);
+		if(user != null && !"".equals(user)){
+			sql.append(",verify_time=now(),").append("verify_user= '").append(user).append("' ");
+		}
 		sql.append(" where id in (").append(ids).append(")");
 		return sql.toString();
 	}

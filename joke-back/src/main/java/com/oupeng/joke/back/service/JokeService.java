@@ -67,7 +67,7 @@ public class JokeService {
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
 		}
-		jokeMapper.verifyJoke(status, ids, user);
+		jokeMapper.updateJokeStatus(status, ids, user);
 	}
 	
 	public Joke getJokeById(Integer id){
@@ -284,6 +284,14 @@ public class JokeService {
 	
 	public List<Integer> getJokeForPublishChannel(String contentType){
 		return jokeMapper.getJokeForPublishChannel(contentType);
+	}
+	
+	public int getJokeCountForPublishChannel(String contentType){
+		return jokeMapper.getJokeCountForPublishChannel(contentType);
+	}
+	
+	public void updateJokeForPublishChannel(String jokeIds){
+		jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_PUBLISH, jokeIds, null);
 	}
 	
 	public List<Joke> getJokeListForPublish(String lastUpdateTime,String currentUpdateTime){

@@ -93,6 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >未审核</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
 						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
+						<option value="3" <c:if test="${!empty status && status == 2}">selected</c:if> >已发布</option>
 					</select>
 				</label>
 				<label style="padding-right:30px;">
@@ -155,6 +156,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.status == 0}">未审核</c:if>
 						<c:if test="${joke.status == 1}">通过</c:if>
 						<c:if test="${joke.status == 2}">不通过</c:if>
+						<c:if test="${joke.status == 3}">已发布</c:if>
 					</td>
 					<td>
 						<c:if test="${joke.status == 0}">
@@ -168,7 +170,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 					        </a>
 						</c:if>
-						<c:if test="${joke.status == 1}">
+						<c:if test="${joke.status == 1 || joke.status == 3}">
 							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">
 					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
 					        </a>

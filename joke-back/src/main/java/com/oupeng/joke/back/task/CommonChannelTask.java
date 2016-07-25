@@ -38,7 +38,7 @@ public class CommonChannelTask {
 	private Environment env;
 	
 	/**
-	 * 发布普通频道下的段子数据，每天凌晨30分时候发布，每次发布前一天数据(审核通过且不属于专题频道的数据)
+	 * 发布普通频道下的段子数据，每天凌晨30分时候发布，每个频道发布100条数据
 	 * */
 	@Scheduled(cron="0 30 0 * * ?")
 	public void publishCommonChannelJoke(){
@@ -53,14 +53,18 @@ public class CommonChannelTask {
 						&& StringUtils.isNotBlank(channel.getContentType())){
 					jokeIds = jokeService.getJokeForPublishChannel(channel.getContentType());
 					if(!CollectionUtils.isEmpty(jokeIds)){
+						StringBuffer jokeids = new StringBuffer();
 						for(Integer jokeId : jokeIds){
 							map.put(String.valueOf(jokeId), Double.valueOf(jokeId));
+							jokeids.append(jokeId).append(",");
 						}
 						jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL+channel.getId(),map);
+						jokeService.updateJokeForPublishChannel(jokeids.deleteCharAt(jokeids.lastIndexOf(",")).toString());
+						int surplusJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType());
 						map.clear();
-						log.append(String.format("		[id:%d,name:%s,size:%d],\r\n",channel.getId(),channel.getName(),jokeIds.size()));
+						log.append(String.format("		[id:%d,name:%s,size:%d,surplus:%d],\r\n",channel.getId(),channel.getName(),jokeIds.size(),surplusJokeCount));
 					}else{
-						log.append(String.format("		[id:%d,name:%s,size:%d],\r\n",channel.getId(),channel.getName(),0));
+						log.append(String.format("		[id:%d,name:%s,size:%d,surplus:%d],\r\n",channel.getId(),channel.getName(),0,0));
 					}
 				}
 			}

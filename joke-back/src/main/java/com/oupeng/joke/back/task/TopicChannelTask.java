@@ -53,11 +53,14 @@ public class TopicChannelTask {
 			for(Topic topic : topicList){
 				jokeIds = jokeService.getJokeForPublishTopic(topic.getId());
 				if(!CollectionUtils.isEmpty(jokeIds)){
+					StringBuffer jokeids = new StringBuffer();
 					for(Integer jokeId : jokeIds){
 						map.put(String.valueOf(jokeId), Double.valueOf(jokeId));
+						jokeids.append(jokeId).append(",");
 					}
 					key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topic.getId();
 					jedisCache.zadd(key, map);
+					jokeService.updateJokeForPublishChannel(jokeids.deleteCharAt(jokeids.lastIndexOf(",")).toString());
 					map.clear();
 					log.append(String.format("		[id:%d,name:%s,size:%d],\r\n",topic.getId(),topic.getTitle(),jokeIds.size()));
 				}else{
