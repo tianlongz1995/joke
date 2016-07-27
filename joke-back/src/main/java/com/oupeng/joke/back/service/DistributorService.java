@@ -1,6 +1,7 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.util.TransformUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.AdMapper;
@@ -190,5 +191,9 @@ public class DistributorService {
 	 */
 	public List<Distributor> getAllDistributors() {
 		return distributorMapper.getAllDistributors();
+	}
+	
+	public String getDistributorIdListByName(String name){
+		return TransformUtil.listToString(distributorMapper.getDistributorIdListByName(name));
 	}
 }

@@ -155,10 +155,13 @@ public class JokeService {
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
+					joke.setContent(joke.getContent().substring(0, 184));
 				}
 				list.add(joke);
 			}
@@ -199,10 +202,13 @@ public class JokeService {
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
+					joke.setContent(joke.getContent().substring(0, 184));
 				}
 				list.add(joke);
 			}
@@ -223,10 +229,13 @@ public class JokeService {
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
 					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
+					joke.setContent(joke.getContent().substring(0, 184));
 				}
 				list.add(joke);
 			}
@@ -315,5 +324,9 @@ public class JokeService {
     		}
     		jokeDetail.setRecommend(recommendTextList);
     	}
+    }
+    
+    private String getListPreviewImg(String img){
+    	return img.replaceAll("_600x_", "_500x_");
     }
 }

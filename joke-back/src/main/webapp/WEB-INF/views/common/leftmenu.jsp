@@ -64,6 +64,17 @@
                 		<span> 用户反馈</span>
                 	</a>
                 </li>
+                <li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-plus"></i><span> 数据统计</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="statistics/dayTotal"><span> 总日报</span></a></li>
+						<li><a href="statistics/dayDetail"><span> 渠道日报</span></a></li>
+						<li><a href="statistics/weekTotal"><span> 总周报</span></a></li>
+						<li><a href="statistics/weekDetail"><span> 渠道周报</span></a></li>
+						<li><a href="statistics/monthTotal"><span> 总月报</span></a></li>
+						<li><a href="statistics/monthDetail"><span> 渠道月报</span></a></li>
+					</ul>
+				</li>
 			</ul>
 			<label id="for-is-ajax" for="is-ajax" style="display: none;"><input id="is-ajax" type="checkbox"> Ajax on menu</label>
         </div>

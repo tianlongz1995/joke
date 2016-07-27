@@ -88,4 +88,7 @@ public interface DistributorMapper {
 	 */
 	@Select(value="select d.id,d.status from distributor d left join distributor_channel  dc on d.id=dc.d_id group by d.id")
 	List<Distributor> getAllDistributors();
+	
+	@Select(value="SELECT id FROM distributor WHERE name like '%${name}%'")
+	public List<Integer> getDistributorIdListByName(@Param(value = "name")String name);
 }

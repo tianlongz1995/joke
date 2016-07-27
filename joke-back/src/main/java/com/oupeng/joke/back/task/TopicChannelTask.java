@@ -77,6 +77,7 @@ public class TopicChannelTask {
 			}
 			logger.info(log.toString());
 			mailService.sendMail(env.getProperty("data.publish.recipient"),env.getProperty("data.publish.cc"),"JOKE--Topic data publish", log.toString());
+			logger.info("邮件发送成功");
 		}
 	}
 }

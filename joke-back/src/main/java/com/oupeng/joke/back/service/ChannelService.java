@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.TransformUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChannelMapper;
@@ -93,4 +94,7 @@ public class ChannelService {
 		return channelMapper.getDistributorChannelList(id);
 	}
 
+	public String getChannelIdListByName(String name){
+		return TransformUtil.listToString(channelMapper.getChannelIdListByName(name));
+	}
 }

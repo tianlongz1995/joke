@@ -138,7 +138,7 @@ public class SourceService {
     	calendar.setTime(new Date());
     	calendar.add(Calendar.DATE, -1);
     	Integer day = Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(calendar.getTime()));
-    	Double rate = FormatUtil.getRoundHalfUp(jokeVerifyRate.getValidNum(), (jokeVerifyRate.getValidNum() + jokeVerifyRate.getInValidNum()));
+    	Double rate = FormatUtil.getRoundHalfUp4Double(jokeVerifyRate.getValidNum(), (jokeVerifyRate.getValidNum() + jokeVerifyRate.getInValidNum()));
     	sourceMapper.updateSourceByVerify(jokeVerifyRate.getSoureId(), day, rate);
     }
 }
