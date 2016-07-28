@@ -230,7 +230,7 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForSearch(Integer id,String content){
-		List<Joke> jokeList = jokeMapper.getJokeList(null,Constants.JOKE_STATUS_VALID,id,content,false);
+		List<Joke> jokeList = jokeMapper.getJokeList(null,null,id,content,false);
 		if(!CollectionUtils.isEmpty(jokeList)){
 			for(Joke joke : jokeList){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){

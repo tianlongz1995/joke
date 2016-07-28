@@ -93,7 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >未审核</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
 						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
-						<option value="3" <c:if test="${!empty status && status == 2}">selected</c:if> >已发布</option>
+						<option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
 					</select>
 				</label>
 				<label style="padding-right:30px;">
