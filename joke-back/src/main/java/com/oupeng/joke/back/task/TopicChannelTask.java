@@ -73,7 +73,7 @@ public class TopicChannelTask {
 					topic.setDids(null);
 					jedisCache.zadd(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + did,Double.valueOf(topic.getId()),String.valueOf(topic.getId()));
 				}
-				jedisCache.set(JedisKey.STRING_TOPIC, JSON.toJSONString(topic));
+				jedisCache.set(JedisKey.STRING_TOPIC + topic.getId(), JSON.toJSONString(topic));
 				topicService.updateTopicStatus(topic.getId(), Constants.TOPIC_STATUS_PUBLISH);
 			}
 			logger.info(log.toString());
