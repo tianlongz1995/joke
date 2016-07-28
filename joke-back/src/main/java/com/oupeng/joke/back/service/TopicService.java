@@ -58,14 +58,15 @@ public class TopicService {
 		if(Constants.TOPIC_STATUS_VALID == status){
 			result = validTopic(topicMapper.getTopicById(id));
 		}else if(Constants.TOPIC_STATUS_PUBLISH != status){
-			jedisCache.del(JedisKey.SORTEDSET_TOPIC_CHANNEL + id);
-			
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + "*");
 			if(!CollectionUtils.isEmpty(keys)){
 				for(String key : keys){
 					jedisCache.zrem(key, String.valueOf(id));
 				}
 			}
+			
+			jedisCache.del(JedisKey.STRING_TOPIC + id);
+			jedisCache.del(JedisKey.SORTEDSET_TOPIC_CHANNEL + id);
 		}
 		if(result == null){
 			topicMapper.updateTopicStatus(id, status);
