@@ -171,15 +171,15 @@ public class JokeService {
     
     private List<Topic> getTopicList4TopicChannel(Integer distributorId,Long start,Long end){
     	String key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
-    	Set<String> topicSet = jedisCache.zrevrange(key, start, end);
-		if(CollectionUtils.isEmpty(topicSet)){
+    	Set<String> topicIdSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(topicIdSet)){
 			return null;
 		}
 		
 		List<Topic> list = Lists.newArrayList();
 		Topic topic = null;
-		for(String topicString : topicSet){
-			topic = JSON.parseObject(topicString,Topic.class);
+		for(String topicId : topicIdSet){
+			topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId),Topic.class);
 			if(topic != null){
 				topic.setType(Constants.JOKE_TYPE_TOPIC_LIST);
 				topic.setImg(env.getProperty("img.real.server.url") + topic.getImg());

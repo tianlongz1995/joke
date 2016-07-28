@@ -38,7 +38,7 @@ public class CommonChannelTask {
 	private Environment env;
 	
 	/**
-	 * 发布普通频道下的段子数据，每天下午6点时候发布，每个频道发布100条数据
+	 * 发布普通频道下的段子数据，每天下午6点时候发布，每个频道最多发布100条数据
 	 * */
 	@Scheduled(cron="0 0 18 * * ?")
 	public void publishCommonChannelJoke(){

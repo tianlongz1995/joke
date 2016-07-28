@@ -15,6 +15,7 @@ public class JedisKey {
     public static final String SORTEDSET_COMMON_CHANNEL = "sortedset.common.channel.";
     public static final String SORTEDSET_RECOMMEND_CHANNEL = "sortedset.recommend.channel";
     public static final String STRING_JOKE = "string.joke.";
+    public static final String STRING_TOPIC = "string.topic.";
     public static final String SORTEDSET_ALL = "sortedset.*";
     public static final String SORTEDSET_TOPIC_ALL = "sortedset*topic*";
     

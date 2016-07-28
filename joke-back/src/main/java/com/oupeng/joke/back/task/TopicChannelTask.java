@@ -38,9 +38,9 @@ public class TopicChannelTask {
 	private Environment env;
 	
 	/**
-	 * 发布专题频道下的段子数据，每 10分种的时候发布一次((审核通过且属于专题频道的数据))
+	 * 发布专题频道下的段子数据，每 5分钟的时候发布一次((审核通过且属于专题频道的数据))
 	 * */
-	@Scheduled(cron="0 10 * * * ?")
+	@Scheduled(cron="0 5 * * * ?")
 	public void publishTopicChannelJoke(){
 		List<Topic> topicList = topicService.getTopicForPublish();
 		if(!CollectionUtils.isEmpty(topicList)){
@@ -71,8 +71,9 @@ public class TopicChannelTask {
 				dids = topic.getDids().split(",");
 				for(String did : dids){
 					topic.setDids(null);
-					jedisCache.zadd(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + did,Double.valueOf(topic.getId()),JSON.toJSONString(topic));
+					jedisCache.zadd(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + did,Double.valueOf(topic.getId()),String.valueOf(topic.getId()));
 				}
+				jedisCache.set(JedisKey.STRING_TOPIC, JSON.toJSONString(topic));
 				topicService.updateTopicStatus(topic.getId(), Constants.TOPIC_STATUS_PUBLISH);
 			}
 			logger.info(log.toString());
