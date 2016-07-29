@@ -27,7 +27,7 @@ public class JokeSqlProvider {
 		if(id != null){
 			sql.append(" and t1.id = ").append(id).append(" ");
 		}
-		if(content != null){
+		if(content != null && !"".equals(content)){
 			sql.append(" and t1.content like '%").append(content).append("%' ");
 		}
 		if(isTopic){
