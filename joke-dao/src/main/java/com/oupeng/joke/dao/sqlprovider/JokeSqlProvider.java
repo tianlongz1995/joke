@@ -28,7 +28,7 @@ public class JokeSqlProvider {
 			sql.append(" and t1.id = ").append(id).append(" ");
 		}
 		if(content != null && !"".equals(content)){
-			sql.append(" and t1.content like '%").append(content).append("%' ");
+			sql.append(" and ( t1.content like '%").append(content).append("%' or t1.title like '%").append(content).append("%') ");
 		}
 		if(isTopic){
 			sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id)");
