@@ -169,6 +169,7 @@ $('#allcheck').on('click', function(){
 });
 
 $('#updateTopic').click(function(event) {
+	$('#updateTopic').attr("disabled","disabled");
 	var dids = [];
 	$('input[name="distributorId"]:checked').each(function(){
 		dids.push($(this).val());

@@ -118,6 +118,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 $('#updateAd').click(function(event) {
+	$('#updateAd').attr("disabled","disabled");
 	var slide = $('#slide').val();
 	if(slide == null || slide == undefined){
 		slide = '';

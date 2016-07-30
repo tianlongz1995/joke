@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<input id="gifUrl" type="hidden" />
 		<input id="type" type="hidden" value="${type}"/>
 		<input id="topicId" type="hidden" value="${topicId}"/>
-		<button id="updateJoke" type="button" class="btn btn-default" data-dismiss="modal">通过</button>
+		<button id="updateJoke" type="button" class="btn btn-default" data-dismiss="modal">添加</button>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
@@ -129,6 +129,7 @@ $('#img').change(function () {
 });
 
 $('#updateJoke').click(function(event) {
+	$('#updateJoke').attr("disabled","disabled");
 	var topicId = $("#topicId").val();
 	var type = $("#type").val();
 	var imgUrl = $("#imgUrl").val();
@@ -144,10 +145,11 @@ $('#updateJoke').click(function(event) {
 		'topicId='+topicId+'&img='+imgUrl+'&content='+content+'&gif='+gifUrl + '&title=' + title,
 		function (data) {
 			if(data.status == 1) {
-				alert(data.status);
+				alert('添加成功!');
 				location.href = '<%=basePath%>topic/addjoke?topicId='+topicId + '&type=' + type;
 			} else {
 				alert('更新失败:'+data.info);
+				location.href = '<%=basePath%>topic/addjoke?topicId='+topicId + '&type=' + type;
 			}
 		},
 		function () {

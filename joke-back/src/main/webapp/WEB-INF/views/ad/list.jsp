@@ -273,6 +273,7 @@
 
             <script type="text/javascript">
                 $('#addNewad').click(function(event) {
+                    $('#addNewad').attr("disabled","disabled");
                     var slotId = $('#slotId').val();
 
                     if(!isInteger(slotId)){

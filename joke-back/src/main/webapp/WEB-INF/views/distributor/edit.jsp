@@ -116,17 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 $('#updateDistributor').click(function(event) {
-	/*$(":checkbox").each(function(){
-		if(this.checked == false){
-			$(this).parent().parent().remove();
-		}
-	});*/
-
-//	$("input[name='channelIds'][checked]").each(function(){
-//		if (true == $(this).attr("checked")) {
-//			alert( $(this).attr('value') );
-//		}
-//	});
+	$('#updateDistributor').attr("disabled","disabled");
 	var id = document.getElementsByName('channelIds');
 	var value = new Array();
 	for(var i = 0; i < id.length; i++){

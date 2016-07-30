@@ -231,6 +231,7 @@ $('#allcheck').on('click', function(){
 
 
 $('#addNewTopic').click(function(event) {
+	$('#addNewTopic').attr("disabled","disabled");
 	var dids = [];
 	$('input[name="distributorId"]:checked').each(function(){
 		dids.push($(this).val());

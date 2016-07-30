@@ -139,6 +139,7 @@ $('#img').change(function () {
 });
 
 $('#updateJoke').click(function(event) {
+	$('#updateJoke').attr("disabled","disabled");
 	post('joke/update',
 		'id='+$("#id").val()+'&title='+$("#title").val()+'&img='+$("#imgUrl").val()+'&content='+$("#content2").val()
 			+'&gif='+$("#gifUrl").val()+'&width='+$("#width").val()+'&height='+$("#height").val(),

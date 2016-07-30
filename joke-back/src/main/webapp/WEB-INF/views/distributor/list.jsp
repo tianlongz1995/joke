@@ -218,6 +218,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <script type="text/javascript">
 $('#add').click(function(event) {
+	$('#add').attr("disabled","disabled");
 	var contentType = [];
 	$('input[name="channelIds"]:checked').each(function(){
 		contentType.push($(this).val());

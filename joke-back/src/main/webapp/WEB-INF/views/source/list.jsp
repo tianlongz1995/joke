@@ -196,6 +196,7 @@
 
             <script type="text/javascript">
                 $('#addNewsource').click(function (event) {
+                    $('#addNewsource').attr("disabled","disabled");
                     post('source/add',
                             'name=' + $("#addName").val()
                             + '&url=' + $('#addUrl').val()
