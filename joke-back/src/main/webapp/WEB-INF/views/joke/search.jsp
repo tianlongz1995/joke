@@ -102,8 +102,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th style="width: 7%;">全选 <input type="checkbox" id="allcheck" /></th>
 					<th style="width: 7%;">ID</th>
-					<th style="width: 73%;">内容</th>
+					<th style="width: 68%;">内容</th>
 					<th style="width: 5%;">格式</th>
+					<th style="width: 5%;">状态</th>
 					<th style="width: 8%;">操作</th>
 				</tr>
 			</thead>
@@ -130,6 +131,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.type == 0}">文字</c:if>
 						<c:if test="${joke.type == 1}">图片</c:if>
 						<c:if test="${joke.type == 2}">动图</c:if>
+					</td>
+					<td class="idselect">
+						<c:if test="${joke.status == 0}">未审核</c:if>
+						<c:if test="${joke.status == 1}">通过</c:if>
+						<c:if test="${joke.status == 2}">不通过</c:if>
+						<c:if test="${joke.status == 3}">已发布</c:if>
 					</td>
 					<td class="idselect">
 						<a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke(${joke.id})">
