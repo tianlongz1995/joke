@@ -196,14 +196,19 @@ public class JokeService {
 		}
 	}
 
-	public void updateJoke(Integer id,String title,String img,String gif,Integer width,Integer height,String content,String user){
+	public boolean updateJoke(Integer id,String title,String img,String gif,Integer width,Integer height,String content,String user){
 		Joke joke = new Joke();
 		joke.setId(id);
 		joke.setContent(content);
 		joke.setTitle(title);
 		joke.setVerifyUser(user);
-		handleJokeImg(img,gif,width,height,joke);
-		jokeMapper.updateJoke(joke);
+		boolean result = handleJokeImg(img,gif,width,height,joke);
+		if(result){
+			jokeMapper.updateJoke(joke);
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	public Map<String,Integer> getJokeVerifyInfoByUser(String user){
@@ -249,7 +254,7 @@ public class JokeService {
 	}
 	
 	public List<Joke> getJokeListForChannel(String contentType,Integer start,Integer size){
-		List<Joke> jokeList = jokeMapper.getJokeListForChannel(contentType,start,size);
+		List<Joke> jokeList = jokeMapper.getJokeListForChannel(contentType, start, size);
 		if(!CollectionUtils.isEmpty(jokeList)){
 			for(Joke joke : jokeList){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
@@ -306,47 +311,57 @@ public class JokeService {
 		return jokeMapper.getJokeVerifyRate();
 	}
 	
-	private void handleJokeImg(String imgUrl,String gifUrl,Integer width,Integer height,Joke joke){
-		if(StringUtils.isNotBlank(gifUrl)){
-			joke.setType(Constants.JOKE_TYPE_GIF);
-			if(!gifUrl.startsWith(env.getProperty("img.server.url"))){
-				//TODO 切动图
-				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
-				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
-					joke.setGif(imgRespDto.getGifUrl());
-					joke.setImg(imgRespDto.getImgUrl());
-					joke.setWidth(imgRespDto.getWidth());
-					joke.setHeight(imgRespDto.getHeight());
+	private boolean handleJokeImg(String imgUrl,String gifUrl,Integer width,Integer height,Joke joke){
+		try {
+			if (StringUtils.isNotBlank(gifUrl)) {
+				joke.setType(Constants.JOKE_TYPE_GIF);
+				if (!gifUrl.startsWith(env.getProperty("img.server.url"))) {
+					//TODO 切动图
+					ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"), gifUrl, true);
+					if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
+						joke.setGif(imgRespDto.getGifUrl());
+						joke.setImg(imgRespDto.getImgUrl());
+						joke.setWidth(imgRespDto.getWidth());
+						joke.setHeight(imgRespDto.getHeight());
+					} else {
+						return false;
+					}
+				} else {
+					joke.setGif(gifUrl);
+					joke.setImg(imgUrl);
+					joke.setWidth(width);
+					joke.setHeight(height);
 				}
-			}else{
-				joke.setGif(gifUrl);
-				joke.setImg(imgUrl);
-				joke.setWidth(width);
-				joke.setHeight(height);
-			}
-		}else if(StringUtils.isNotBlank(imgUrl)){
-			joke.setType(Constants.JOKE_TYPE_IMG);
-			if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
-				//TODO 切静图
-				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
-				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+			} else if (StringUtils.isNotBlank(imgUrl)) {
+				joke.setType(Constants.JOKE_TYPE_IMG);
+				if (!imgUrl.startsWith(env.getProperty("img.server.url"))) {
+					//TODO 切静图
+					ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"), imgUrl, true);
+					if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
+						joke.setGif(null);
+						joke.setImg(imgRespDto.getImgUrl());
+						joke.setWidth(imgRespDto.getWidth());
+						joke.setHeight(imgRespDto.getHeight());
+					} else {
+						return false;
+					}
+				} else {
 					joke.setGif(null);
-					joke.setImg(imgRespDto.getImgUrl());
-					joke.setWidth(imgRespDto.getWidth());
-					joke.setHeight(imgRespDto.getHeight());
+					joke.setImg(imgUrl);
+					joke.setWidth(width);
+					joke.setHeight(height);
 				}
-			}else{
+			} else {
+				joke.setType(Constants.JOKE_TYPE_TEXT);
 				joke.setGif(null);
-				joke.setImg(imgUrl);
-				joke.setWidth(width);
-				joke.setHeight(height);
+				joke.setImg(null);
+				joke.setWidth(null);
+				joke.setHeight(null);
 			}
-		}else{
-			joke.setType(Constants.JOKE_TYPE_TEXT);
-			joke.setGif(null);
-			joke.setImg(null);
-			joke.setWidth(null);
-			joke.setHeight(null);
+			return true;
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
+			return false;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.oupeng.joke.back.controller;
 
+import com.oupeng.joke.domain.response.Failed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -56,9 +57,13 @@ public class JokeController {
 			@RequestParam(value="width")Integer width,
 			@RequestParam(value="height")Integer height){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		jokeService.updateJoke(id, title, img, gif,width,height,content, username);
-		return new Success();
-	} 
+		boolean result = jokeService.updateJoke(id, title, img, gif,width,height,content, username);
+		if(result){
+			return new Success();
+		}else{
+			return new Failed("更新失败");
+		}
+	}
 	
 	@RequestMapping(value="/search")
 	public String searchJokeList(@RequestParam(value="jokeid",required=false)Integer jokeid,

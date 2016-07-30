@@ -1,5 +1,6 @@
 package com.oupeng.joke.back.service;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Set;
 
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,7 @@ import com.oupeng.joke.domain.Topic;
 
 @Service
 public class TopicService {
-
+	private static final Logger logger = LoggerFactory.getLogger(TopicService.class);
 	@Autowired
 	private TopicMapper topicMapper;
 	@Autowired
@@ -48,7 +51,7 @@ public class TopicService {
 	public Topic getTopicById(Integer id){
 		Topic topic = topicMapper.getTopicById(id);
 		if(topic != null && StringUtils.isNotBlank(topic.getImg())){
-			topic.setImg( env.getProperty("img.real.server.url") + topic.getImg());
+			topic.setImg(env.getProperty("img.real.server.url") + topic.getImg());
 		}
 		return topic;
 	}
@@ -74,25 +77,35 @@ public class TopicService {
 		return result;
 	}
 	
-	public void insertTopic(String title,String img,String content,String dids,String publishTime){
+	public boolean insertTopic(String title,String img,String content,String dids,String publishTime){
 		Topic topic = new Topic();
 		topic.setContent(content);
 		topic.setDids(dids);
-		topic.setImg(handleImg(img));
+		String newImg = handleImg(img);
+		if(StringUtils.isBlank(newImg)){
+			return false;
+		}
+		topic.setImg(newImg);
 		topic.setPublishTimeString(publishTime);
 		topic.setTitle(title);
 		topicMapper.insertTopic(topic);
+		return true;
 	}
 	
-	public void updateTopic(Integer id,String title,String img,String content,String dids,String publishTime){
+	public boolean updateTopic(Integer id,String title,String img,String content,String dids,String publishTime){
 		Topic topic = new Topic();
 		topic.setId(id);
 		topic.setContent(content);
 		topic.setDids(dids);
-		topic.setImg(handleImg(img));
+		String newImg = handleImg(img);
+		if(StringUtils.isBlank(newImg)){
+			return false;
+		}
+		topic.setImg(newImg);
 		topic.setPublishTimeString(publishTime);
 		topic.setTitle(title);
 		topicMapper.updateTopic(topic);
+		return true;
 	}
 	
 	public void addTopicJoke(String jokeIds,Integer topicId){
@@ -162,11 +175,15 @@ public class TopicService {
 	}
 	
 	public String handleImg(String imgUrl){
-		if(StringUtils.isNotBlank(imgUrl) && !imgUrl.startsWith(env.getProperty("img.server.url"))){
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
-			if(imgRespDto != null){
-				return imgRespDto.getImgUrl();
+		try{
+			if(StringUtils.isNotBlank(imgUrl) && !imgUrl.startsWith(env.getProperty("img.server.url"))){
+				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
+				if(imgRespDto != null){
+					return imgRespDto.getImgUrl();
+				}
 			}
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -180,57 +197,54 @@ public class TopicService {
 	 * @param topicId
 	 */
 	public boolean addOriginalContent(String title, String imgUrl, String gifUrl, String content, Integer topicId) {
-		Joke joke = new Joke();
-		joke.setContent(content);
-		joke.setTitle(title);
-		if(StringUtils.isNotBlank(gifUrl)){
-			joke.setType(Constants.JOKE_TYPE_GIF);
-			if(!gifUrl.startsWith(env.getProperty("img.server.url"))){
-				//切动图
-				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
-//				imgRespDto = new ImgRespDto();
-//				imgRespDto.setGifUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
-//				imgRespDto.setImgUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
-//				imgRespDto.setHeight(200);
-//				imgRespDto.setWidth(100);
-//				imgRespDto.setErrorCode(0);
-				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
-					joke.setGif(imgRespDto.getGifUrl());
-					joke.setImg(imgRespDto.getImgUrl());
-					joke.setWidth(imgRespDto.getWidth());
-					joke.setHeight(imgRespDto.getHeight());
+		try{
+			Joke joke = new Joke();
+			joke.setContent(content);
+			joke.setTitle(title);
+			if(StringUtils.isNotBlank(gifUrl)){
+				joke.setType(Constants.JOKE_TYPE_GIF);
+				if(!gifUrl.startsWith(env.getProperty("img.server.url"))){
+					//切动图
+					ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+					if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+						joke.setGif(imgRespDto.getGifUrl());
+						joke.setImg(imgRespDto.getImgUrl());
+						joke.setWidth(imgRespDto.getWidth());
+						joke.setHeight(imgRespDto.getHeight());
+					}else{
+						return false;
+					}
+				}else{
+					return false;
+				}
+			}else if(StringUtils.isNotBlank(imgUrl)){
+				joke.setType(Constants.JOKE_TYPE_IMG);
+				if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
+					// 切静图
+					ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+					if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+						joke.setGif(null);
+						joke.setImg(imgRespDto.getImgUrl());
+						joke.setWidth(imgRespDto.getWidth());
+						joke.setHeight(imgRespDto.getHeight());
+					}else{
+						return false;
+					}
+				}else{
+					return false;
 				}
 			}else{
-				return false;
+	//			纯文本内容
+				joke.setType(Constants.JOKE_TYPE_TEXT);
 			}
-		}else if(StringUtils.isNotBlank(imgUrl)){
-			joke.setType(Constants.JOKE_TYPE_IMG);
-			if(!imgUrl.startsWith(env.getProperty("img.server.url"))){
-				// 切静图
-				ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
-//				imgRespDto = new ImgRespDto();
-//				imgRespDto.setGifUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
-//				imgRespDto.setImgUrl("images/1469192679310_a535edf7-4423-4daa-9d53-42874ffc4d27.gif");
-//				imgRespDto.setHeight(200);
-//				imgRespDto.setWidth(100);
-//				imgRespDto.setErrorCode(0);
-				if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
-					joke.setGif(null);
-					joke.setImg(imgRespDto.getImgUrl());
-					joke.setWidth(imgRespDto.getWidth());
-					joke.setHeight(imgRespDto.getHeight());
-				}
-			}else{
-				return false;
-			}
-		}else{
-//			纯文本内容
-			joke.setType(Constants.JOKE_TYPE_TEXT);
+	//		存储段子信息
+			jokeMapper.insertJoke(joke);
+	//		存储段子专题关联关系
+			topicMapper.insertTopicJoke(joke.getId(), topicId);
+			return true;
+		}catch (Exception e){
+			logger.error(e.getMessage(), e);
+			return false;
 		}
-//		存储段子信息
-		jokeMapper.insertJoke(joke);
-//		存储段子专题关联关系
-		topicMapper.insertTopicJoke(joke.getId(), topicId);
-		return true;
 	}
 }

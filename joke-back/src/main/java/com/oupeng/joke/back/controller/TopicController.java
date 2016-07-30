@@ -66,9 +66,13 @@ public class TopicController {
 			@RequestParam(value="content",required=true)String content,
 			@RequestParam(value="dids",required=false)String dids,
 			@RequestParam(value="publishTime",required=false)String publishTime){
-		topicService.updateTopic(id, title, img, content, dids, publishTime);
-		return new Success();
-	} 
+		boolean result = topicService.updateTopic(id, title, img, content, dids, publishTime);
+		if(result){
+			return new Success();
+		}else{
+			return new Failed("更新失败!");
+		}
+	}
 	
 	@RequestMapping(value="/add")
 	@ResponseBody
@@ -77,8 +81,12 @@ public class TopicController {
 			@RequestParam(value="content",required=true)String content,
 			@RequestParam(value="dids",required=false)String dids,
 			@RequestParam(value="publishTime",required=false)String publishTime){
-		topicService.insertTopic(title, img, content, dids, publishTime);;
-		return new Success();
+		boolean result = topicService.insertTopic(title, img, content, dids, publishTime);;
+		if(result){
+			return new Success();
+		}else{
+			return new Failed("更新失败!");
+		}
 	} 
 	
 	@RequestMapping(value="/addjoke")

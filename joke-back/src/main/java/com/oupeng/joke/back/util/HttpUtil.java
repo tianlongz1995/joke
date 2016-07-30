@@ -21,7 +21,7 @@ public class HttpUtil {
 	private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 	
 	@SuppressWarnings("resource")
-	public static ImgRespDto handleImg(String url,String imgUrl,boolean isCrop){
+	public static ImgRespDto handleImg(String url,String imgUrl,boolean isCrop)throws IOException{
 		String requestString = JSONObject.toJSONString(new ImgReqDto(imgUrl, isCrop));
 		
 		HttpPost httppost = new HttpPost(url);
