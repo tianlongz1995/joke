@@ -77,5 +77,8 @@ public interface SourceMapper {
 	void insertSourceMonitors(@Param(value = "today")Integer today, @Param(value = "ids")List<Integer> ids);
 	
 	@Update(value="update source_monitor set update_time=now(),verify_rate = #{rate} where source_id = #{sourceId} and day = #{day}")
-	public void updateSourceByVerify(@Param(value = "sourceId")Integer sourceId,@Param(value = "day")Integer day,@Param(value = "rate")Double rate);
+	void updateSourceByVerify(@Param(value = "sourceId")Integer sourceId,@Param(value = "day")Integer day,@Param(value = "rate")Double rate);
+
+	@Select(value="select count(1) from source where url = #{url} or url = #{urlSuffix} ")
+	int getSourceUrlCount(@Param(value = "url")String url, @Param(value = "urlSuffix")String urlSuffix);
 }

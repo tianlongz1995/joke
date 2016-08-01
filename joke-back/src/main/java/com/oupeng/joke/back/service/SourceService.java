@@ -62,10 +62,30 @@ public class SourceService {
 
     /**
      * 新增内容源
-     * @param source
+     * @param name
+     * @param url
+     * @param status
      */
-    public void insertSource(Source source){
-        sourceMapper.insertSource(source);
+    public boolean insertSource(String name, String url, Integer status){
+        url = url.trim();
+        if(url.length() < 12){}
+        String urlSuffix = url;
+        if(url.endsWith("/")){
+            urlSuffix = url.substring(0, url.length() -1);
+        }else{
+            urlSuffix = url + "/";
+        }
+        int count = sourceMapper.getSourceUrlCount(url, urlSuffix);
+        if(count > 0){
+            return false;
+        }else{
+            Source source = new Source();
+            source.setName(name);
+            source.setUrl(url);
+            source.setStatus(status);
+            sourceMapper.insertSource(source);
+            return true;
+        }
     }
 
     /**i
@@ -141,4 +161,5 @@ public class SourceService {
     	Double rate = FormatUtil.getRoundHalfUp4Double(jokeVerifyRate.getValidNum(), (jokeVerifyRate.getValidNum() + jokeVerifyRate.getInValidNum()));
     	sourceMapper.updateSourceByVerify(jokeVerifyRate.getSoureId(), day, rate);
     }
+
 }

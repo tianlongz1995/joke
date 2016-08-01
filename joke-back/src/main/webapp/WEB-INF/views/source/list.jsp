@@ -198,16 +198,17 @@
                 $('#addNewsource').click(function (event) {
                     $('#addNewsource').attr("disabled","disabled");
                     post('source/add',
-                            'name=' + $("#addName").val()
-                            + '&url=' + $('#addUrl').val()
-                            + '&status=' + $('#addStatus').val(),
+                            'name=' + $("#addName").val()+ '&url=' + $('#addUrl').val()+'&status=' + $('#addStatus').val(),
                             function (data) {
-                                if (data['status']) {
+                                if (data.status == 1) {
                                     location.href = '<%=basePath%>source/list?status=' + $("#status").val()
-                                     +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
+                                    + '&pageSize=' + $("#pageSize").val() + '&pageNumber=' + $("#pageNumber").val()
                                     + '&name=' + $("#name").val() + '&url=' + $("#url").val();
+                                }else if (data.status == 2){
+                                    alert('添加失败:\r\n' + data.info);
+                                    $('#addNewsource').attr("disabled",false);
                                 } else {
-                                    alert('添加失败. info:' + data['info']);
+                                    alert('添加失败:' + data.info);
                                 }
                             },
                             function () {

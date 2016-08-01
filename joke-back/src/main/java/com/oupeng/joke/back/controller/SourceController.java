@@ -139,14 +139,21 @@ public class SourceController {
 
 	/**
 	 * 新增内容源
-	 * @param source
+	 * @param name
+	 * @param url
+	 * @param status
 	 * @return
 	 */
 	@RequestMapping(value="/add", produces = {"application/json"})
 	@ResponseBody
-	public Result add(Source source){
+	public Result add(@RequestParam(value="name",required=true)String name,
+					  @RequestParam(value="url",required=true)String url,
+					  @RequestParam(value="status",required=true)Integer status){
 		try {
-			sourceService.insertSource(source);
+			boolean result = sourceService.insertSource(name, url, status);
+			if(!result){
+				return new Result(2, "URL\""+url.trim()+"\"地址已存在或者不标准，请检查后再提交!", null);
+			}
 		} catch (Exception e){
 			logger.error(e.getMessage(), e);
 		}

@@ -62,9 +62,13 @@ public class SourceSqlProvider {
 		sql.append(" insert into source(name, url, status,create_time,update_time) value (");
 		if(!StringUtils.isBlank(source.getName())){
 			sql.append("'").append(source.getName()).append("',");
+		}else{
+			sql.append("NULL,");
 		}
 		if(!StringUtils.isBlank(source.getUrl())){
 			sql.append("'").append(source.getUrl()).append("',");
+		}else{
+			sql.append("NULL,");
 		}
 		if(source.getStatus() != null){
 			sql.append(source.getStatus()).append(",");
