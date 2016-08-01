@@ -125,9 +125,9 @@ public class TopicService {
 			return "专题的主题不能为空";
 		}else if(StringUtils.isBlank(topic.getImg())){
 			return "专题的图片不能为空";
-		}else if(StringUtils.isBlank(topic.getContent())){
+		}/*else if(StringUtils.isBlank(topic.getContent())){
 			return "专题的简介不能为空";
-		}else{
+		}*/else{
 			List<Joke> jokeIdList =  getJokeListByTopicId(topic.getId());
 			if(CollectionUtils.isEmpty(jokeIdList)){
 				return "专题的内容不能为空";

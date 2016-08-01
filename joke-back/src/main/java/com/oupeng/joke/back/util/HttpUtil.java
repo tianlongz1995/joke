@@ -31,8 +31,8 @@ public class HttpUtil {
 				.build();
 		httppost.setEntity(entity);
 		RequestConfig requestConfig = RequestConfig.custom().
-				setSocketTimeout(2000).
-				setConnectTimeout(2000).
+				setSocketTimeout(2000 * 30).//1分钟
+				setConnectTimeout(2000 * 30).//1分钟
 				build();
 		httppost.setConfig(requestConfig);
 		
