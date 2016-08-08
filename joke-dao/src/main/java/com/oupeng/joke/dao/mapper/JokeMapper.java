@@ -63,9 +63,9 @@ public interface JokeMapper {
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) limit 100 ")
 	public List<Integer> getJokeForPublishChannel(@Param(value="contentType")String contentType);
 	
-	@Select(value="select count(1) from joke t where t.`status` = 1 and "
+	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
-	public int getJokeCountForPublishChannel(@Param(value="contentType")String contentType);
+	public int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
 	
 	@SelectProvider(method="getJokeListForPublish",type=JokeSqlProvider.class)
 	public List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);

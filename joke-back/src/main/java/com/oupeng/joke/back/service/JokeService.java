@@ -289,8 +289,8 @@ public class JokeService {
 		return jokeMapper.getJokeForPublishChannel(contentType);
 	}
 	
-	public int getJokeCountForPublishChannel(String contentType){
-		return jokeMapper.getJokeCountForPublishChannel(contentType);
+	public int getJokeCountForPublishChannel(String contentType,Integer status){
+		return jokeMapper.getJokeCountForPublishChannel(contentType,status);
 	}
 	
 	public void updateJokeForPublishChannel(String jokeIds){

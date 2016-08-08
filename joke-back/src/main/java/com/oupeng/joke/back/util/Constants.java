@@ -4,6 +4,7 @@ public class Constants {
 	public static final Integer JOKE_TYPE_TEXT = 0;
 	public static final Integer JOKE_TYPE_IMG = 1;
 	public static final Integer JOKE_TYPE_GIF = 2;
+	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
 	public static final Integer JOKE_STATUS_VALID = 1;
 	public static final Integer JOKE_STATUS_PUBLISH = 3;
 	public static final Integer CHANNEL_STATUS_VALID = 1;
