@@ -53,7 +53,7 @@ public interface AdMapper {
 	@UpdateProvider(method="updateAd",type=AdSqlProvider.class)
 	void updateAd(Ad ad);
 
-	@Select(value="select slot_id as slotId, pos,slide from ad where d_id = #{id}")
+	@Select(value="select slot_id as slotId, pos,slide from ad where status = 1 and d_id = #{id}")
 	List<Ad> getDistributorAdList(@Param(value = "id")Integer id);
 	/**
 	 * 获取广告数量
