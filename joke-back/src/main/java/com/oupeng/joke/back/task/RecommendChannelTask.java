@@ -23,7 +23,7 @@ public class RecommendChannelTask {
 	private JedisCache jedisCache;
 	
 	/**
-	 * 发布推荐频道下的段子数据，每天凌晨1点时候发布，每次发布当前已发布数据中点赞数前100的段子
+	 * 发布推荐频道下的段子数据，每天凌晨1点时候发布，每次发布昨天发布数据中点赞数前100的段子
 	 * */
 	@Scheduled(cron="0 0 1 * * ?")
 	public void publishRecommendChannelJoke(){

@@ -70,7 +70,7 @@ public interface JokeMapper {
 	@SelectProvider(method="getJokeListForPublish",type=JokeSqlProvider.class)
 	public List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
 	
-	@Select(value="select id,good FROM joke where `status` = 3 ORDER BY good desc limit 100 ")
+	@Select(value="select id,good FROM joke where `status` = 3 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 100 ")
 	public List<Joke> getJokeListForPublishRecommend();
 	
 	@Select(value=" select t1.source_id as soureId,t1.validNum as validNum,case when t2.inValidNum is null then 0 else t2.inValidNum end as inValidNum from "
