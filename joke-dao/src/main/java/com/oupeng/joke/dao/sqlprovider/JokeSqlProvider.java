@@ -34,7 +34,7 @@ public class JokeSqlProvider {
 			sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id)");
 		}
 		
-		sql.append(" order by t1.create_time limit 12 ");
+		sql.append(" order by t1.create_time desc limit 12 ");
 		return sql.toString();
 	}
 	
