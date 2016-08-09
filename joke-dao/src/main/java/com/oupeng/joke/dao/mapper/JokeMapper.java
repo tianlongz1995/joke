@@ -58,10 +58,15 @@ public interface JokeMapper {
 	
 	@Select(value="select j_id from topic_joke where `status` = 0 and t_id = #{topicId}")
 	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
-	
-	@Select(value="select t.id from joke t where t.`status` = 1 and "
-			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) limit 100 ")
-	public List<Integer> getJokeForPublishChannel(@Param(value="contentType")String contentType);
+
+	/**
+	 * 查询最近审核通过的100条数据
+	 * @param contentType
+	 * @return
+	 */
+	@Select(value="select t.id,t.verify_time as verifyTime from joke t where t.`status` = 1 and "
+			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) order by t.verify_time desc limit 100 ")
+	List<Joke> getJokeForPublishChannel(@Param(value="contentType")String contentType);
 	
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
@@ -93,7 +98,13 @@ public interface JokeMapper {
 	@InsertProvider(method="insertJoke",type=JokeSqlProvider.class)
 	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
 	void insertJoke(Joke joke);
-	
+
+	/**
+	 * 更新段子状态
+	 * @param status
+	 * @param ids
+	 * @param user
+	 */
 	@UpdateProvider(method="updateJokeStatus",type=JokeSqlProvider.class)
 	public void updateJokeStatus(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
 }

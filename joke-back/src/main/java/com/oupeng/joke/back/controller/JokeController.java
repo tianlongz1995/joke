@@ -30,8 +30,14 @@ public class JokeController {
 		model.addAttribute("type", type);
 		model.addAllAttributes(jokeService.getJokeVerifyInfoByUser(username));
 		return "/joke/list";
-	} 
-	
+	}
+
+	/**
+	 * 修改审核状态
+	 * @param ids
+	 * @param status
+	 * @return
+	 */
 	@RequestMapping(value="/verify")
 	@ResponseBody
 	public Result verify(@RequestParam(value="ids")String ids,

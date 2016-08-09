@@ -284,8 +284,13 @@ public class JokeService {
 	public List<Integer> getJokeForPublishTopic(Integer topicId){
 		return jokeMapper.getJokeForPublishTopic(topicId);
 	}
-	
-	public List<Integer> getJokeForPublishChannel(String contentType){
+
+	/**
+	 * 查询最近审核通过的100条数据
+	 * @param contentType
+	 * @return
+	 */
+	public List<Joke> getJokeForPublishChannel(String contentType){
 		return jokeMapper.getJokeForPublishChannel(contentType);
 	}
 	

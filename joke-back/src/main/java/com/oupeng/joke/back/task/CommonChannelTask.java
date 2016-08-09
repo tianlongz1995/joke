@@ -3,6 +3,7 @@ package com.oupeng.joke.back.task;
 import java.util.List;
 import java.util.Map;
 
+import com.oupeng.joke.domain.Joke;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,26 +47,31 @@ public class CommonChannelTask {
 		if(!CollectionUtils.isEmpty(channelList)){
 			StringBuffer log = new StringBuffer();
 			log.append("common channel joke publish result:\r\n ");
-			List<Integer> jokeIds = null;
+			List<Joke> jokes = null;
 			Map<String,Double> map = Maps.newHashMap();
 			int surplusJokeCount = 0;
 			int notAuditedJokeCount = 0;
 			for(Channel channel : channelList){
 				if(channel.getType() == Constants.CHANNEL_TYPE_COMMON
 						&& StringUtils.isNotBlank(channel.getContentType())){
-					jokeIds = jokeService.getJokeForPublishChannel(channel.getContentType());
-					notAuditedJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType(),Constants.JOKE_STATUS_NOT_AUDITED);
-					if(!CollectionUtils.isEmpty(jokeIds)){
+//					查询最近审核通过的100条数据
+					jokes = jokeService.getJokeForPublishChannel(channel.getContentType());
+//					查询未审核的段子数
+					notAuditedJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType(), Constants.JOKE_STATUS_NOT_AUDITED);
+					if(!CollectionUtils.isEmpty(jokes)){
 						StringBuffer jokeids = new StringBuffer();
-						for(Integer jokeId : jokeIds){
-							map.put(String.valueOf(jokeId), Double.valueOf(jokeId));
-							jokeids.append(jokeId).append(",");
+						for(Joke joke : jokes){
+//							按照段子审核时间进行权重
+							map.put(String.valueOf(joke.getId()), Double.valueOf(joke.getVerifyTime() != null ? joke.getVerifyTime().getTime() : joke.getId()));
+							jokeids.append(joke.getId()).append(",");
 						}
 						jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL+channel.getId(),map);
+//						更新段子发布状态
 						jokeService.updateJokeForPublishChannel(jokeids.deleteCharAt(jokeids.lastIndexOf(",")).toString());
+//						查询待审核段子数量
 						surplusJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType(),Constants.JOKE_STATUS_VALID);
 						map.clear();
-						log.append(String.format("		[id:%d,name:%s,size:%d,surplus:%d,notAudited:%d],\r\n",channel.getId(),channel.getName(),jokeIds.size(),surplusJokeCount,notAuditedJokeCount));
+						log.append(String.format("		[id:%d,name:%s,size:%d,surplus:%d,notAudited:%d],\r\n",channel.getId(),channel.getName(),jokes.size(),surplusJokeCount,notAuditedJokeCount));
 					}else{
 						log.append(String.format("		[id:%d,name:%s,size:%d,surplus:%d,notAudited:%d],\r\n",channel.getId(),channel.getName(),0,0,notAuditedJokeCount));
 					}

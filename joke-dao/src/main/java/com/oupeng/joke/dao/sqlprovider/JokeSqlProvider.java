@@ -37,7 +37,12 @@ public class JokeSqlProvider {
 		sql.append(" order by t1.create_time desc limit 12 ");
 		return sql.toString();
 	}
-	
+
+	/**
+	 * 更新段子状态
+	 * @param map
+	 * @return
+	 */
 	public static String updateJokeStatus(Map<String,Object> map){
 		Integer status = Integer.valueOf(map.get("status").toString());
 		String ids = map.get("ids").toString();
