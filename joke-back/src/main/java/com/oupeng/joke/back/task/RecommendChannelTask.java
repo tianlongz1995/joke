@@ -27,6 +27,7 @@ public class RecommendChannelTask {
 	 * */
 	@Scheduled(cron="0 0 1 * * ?")
 	public void publishRecommendChannelJoke(){
+//		查询推荐频道下数据内容 图片55条，GIF15条，文字30条
 		List<Joke> jokeList = jokeService.getJokeListForPublishRecommend();
 		if(!CollectionUtils.isEmpty(jokeList)){
 			Map<String,Double> map = Maps.newHashMap();

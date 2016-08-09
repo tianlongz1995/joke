@@ -305,7 +305,14 @@ public class JokeService {
 	public List<Joke> getJokeListForPublish(String lastUpdateTime,String currentUpdateTime){
 		return jokeMapper.getJokeListForPublish(lastUpdateTime,currentUpdateTime);
 	}
-	
+
+	/**
+	 * 查询推荐频道下数据内容
+	 * <pre>
+	 *     图片55条，GIF15条，文字30条
+	 * </pre>
+	 * @return
+	 */
 	public List<Joke> getJokeListForPublishRecommend(){
 		return jokeMapper.getJokeListForPublishRecommend();
 	}
