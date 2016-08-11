@@ -16,7 +16,9 @@ public class FormatUtil {
 		if(i1 == null || i2 == null || i1.intValue() == 0 || i2.intValue() ==0){
 			return "0";
 		}
-		BigDecimal b = new BigDecimal(i1/i2);
+		Double b1 = Double.valueOf(i1.intValue());
+		Double b2 = Double.valueOf(i2.intValue());
+		BigDecimal b = new BigDecimal(b1/b2);
 		return String.valueOf(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 	
