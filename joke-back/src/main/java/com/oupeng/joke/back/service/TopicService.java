@@ -1,9 +1,6 @@
 package com.oupeng.joke.back.service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -186,8 +183,9 @@ public class TopicService {
 	 * @param gifUrl
 	 * @param content
 	 * @param topicId
+	 * @param username
 	 */
-	public boolean addOriginalContent(String title, String imgUrl, String gifUrl, String content, Integer topicId) {
+	public boolean addOriginalContent(String title, String imgUrl, String gifUrl, String content, Integer topicId, String username) {
 		boolean result = false;
 		Joke joke = new Joke();
 		joke.setContent(content);
@@ -218,6 +216,8 @@ public class TopicService {
 		}
 		
 		if(result){
+			joke.setVerifyUser(username);
+			joke.setUuid(UUID.randomUUID().toString());
 			jokeMapper.insertJoke(joke);//存储段子信息
 			topicMapper.insertTopicJoke(joke.getId(), topicId);//存储段子专题关联关系
 		}

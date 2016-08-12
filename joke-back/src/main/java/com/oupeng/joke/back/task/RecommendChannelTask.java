@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ import com.oupeng.joke.domain.Joke;
 
 @Component
 public class RecommendChannelTask {
-
+	private static final Logger logger = LoggerFactory.getLogger(RecommendChannelTask.class);
 	private static long ONE_DAY = 1000 * 60 * 60 * 24;
 	private static String FIX = "000000";
 
@@ -40,10 +42,8 @@ public class RecommendChannelTask {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			for(Joke joke : jokeList){
 				if(joke.getVerifyTime() == null){
+					logger.error("joke id:[{}] joke.getVerifyTime() is null", joke.getId());
 					joke.setVerifyTime(new Date(new Date().getTime() - ONE_DAY));
-				}
-				if(joke.getGood() == null){
-					joke.setGood(1);
 				}
 				Long time = Long.parseLong(sdf.format(joke.getVerifyTime()) + FIX) + joke.getGood();
 				map.put(String.valueOf(joke.getId()), Double.valueOf(time));

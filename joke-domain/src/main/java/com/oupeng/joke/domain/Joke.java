@@ -38,7 +38,9 @@ public class Joke {
 	private Date createTime;
 	@JsonInclude(Include.NON_NULL)
 	private Date updateTime;
-	
+	@JsonInclude(Include.NON_NULL)
+	private String uuid;
+
 	public Integer getId() {
 		return id;
 	}
@@ -134,5 +136,13 @@ public class Joke {
 	}
 	public void setHeight(Integer height) {
 		this.height = height;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

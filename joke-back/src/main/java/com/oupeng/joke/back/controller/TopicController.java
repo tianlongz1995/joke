@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -158,8 +159,11 @@ public class TopicController {
 									 @RequestParam(value="content",required=false)String content,
 									 Model model){
 		try {
-			if(StringUtils.isNotBlank(content) || StringUtils.isNotBlank(img) || StringUtils.isNotBlank(gif)){
-				boolean status = topicService.addOriginalContent(title, img, gif, content, topicId);
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			if(StringUtils.isNotBlank(content)
+					|| StringUtils.isNotBlank(img)
+					|| StringUtils.isNotBlank(gif)){
+				boolean status = topicService.addOriginalContent(title, img, gif, content, topicId, username);
 				if (status) {
 					return new Success();
 				} else {

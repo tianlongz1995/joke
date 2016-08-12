@@ -82,11 +82,11 @@ public interface JokeMapper {
 	 * </pre>
 	 * @return
 	 */
-	@Select(value = "(select id,good FROM joke where `status` = 3 and `type` = 0 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 30) " +
+	@Select(value = "(select id,good,verify_time as verifyTime FROM joke where `status` = 3 and `type` = 0 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 30) " +
 			" union " +
-			"(select id,good FROM joke where `status` = 3 and `type` = 1 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 55) " +
+			"(select id,good,verify_time as verifyTime FROM joke where `status` = 3 and `type` = 1 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 55) " +
 			" union " +
-			"(select id,good FROM joke where `status` = 3 and `type` = 2 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 15)")
+			"(select id,good,verify_time as verifyTime FROM joke where `status` = 3 and `type` = 2 and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ORDER BY good desc limit 15)")
 	List<Joke> getJokeListForPublishRecommend();
 	
 	@Select(value=" select t1.source_id as soureId,t1.validNum as validNum,case when t2.inValidNum is null then 0 else t2.inValidNum end as inValidNum from "
