@@ -18,8 +18,6 @@ import com.oupeng.joke.cache.JedisKey;
 
 @Component
 public class RecommendChannelTask {
-	private static String FIX = "000000";
-
 	@Autowired
 	private JokeService jokeService;
 	@Autowired
@@ -47,7 +45,7 @@ public class RecommendChannelTask {
 		}
 		
 		Map<String,Double> map = Maps.newHashMap();
-		Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd").format(new Date()) + FIX);
+		Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
 		for(int i = 0 ;i < 40 ;i = i+2){
 			map.put(imgJokeList.get(i), baseScore+(40-i));
 			map.put(textJokeList.get(i), baseScore+(40-i));
