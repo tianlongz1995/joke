@@ -269,4 +269,92 @@ public class StatisticsSqlProvider {
 		}
 		return sql;
 	}
+
+	/**
+	 * 获取下拉刷新日报表总数查询SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getDayDropTotalCount(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(1) from stat_drop_total_day where 1 = 1 ");
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and day <= ").append(endDay);
+		}
+		return sql.toString();
+	}
+
+	/**
+	 * 获取下拉刷新日报表记录查询SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getDayDropTotalList(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		Integer start = Integer.parseInt(map.get("start").toString());
+		Integer end = Integer.parseInt(map.get("end").toString());
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select day as time ,pv,uv from stat_drop_total_day where 1 = 1 ");
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and day <= ").append(endDay);
+		}
+		sql.append(" order by day desc ");
+		sql.append(" limit ").append(start).append(",").append(end);
+		return sql.toString();
+	}
+
+	/**
+	 * 获取下拉刷新日报明细总数查询SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getDropDayDetailCount(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(1) from stat_drop_detail_day where did != 'N' ");
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and day <= ").append(endDay);
+		}
+		sql.append(getAndSql(map));
+		return sql.toString();
+	}
+
+	/**
+	 * 获取下拉刷新日报明细记录查询SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getDropDayDetailList(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		Integer start = Integer.parseInt(map.get("start").toString());
+		Integer end = Integer.parseInt(map.get("end").toString());
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select day as time,did,cid,pv as totalPv,uv as totalUv from stat_drop_detail_day where did != 'N' ");
+
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and day <= ").append(endDay);
+		}
+		sql.append(getAndSql(map));
+		sql.append(" order by day desc,did desc,cid desc ");
+		sql.append(" limit ").append(start).append(",").append(end);
+		return sql.toString();
+	}
+
 }

@@ -90,4 +90,54 @@ public class StatisticsService {
 	public List<TimeDetail> getMonthDetailList(Integer startMonth,Integer endMonth,String distributorIds,String channelIds,Integer type,Integer start,Integer end){
 		return statisticsMapper.getMonthDetailList(startMonth, endMonth,distributorIds,channelIds,type,start,end);
 	}
+
+	/**
+	 * 获取下拉刷新日报表总数
+	 * @param startDay	开始日期
+	 * @param endDay	结束日期
+	 * @return
+	 */
+	public Integer getDayDropTotalCount(Integer startDay,Integer endDay){
+		return statisticsMapper.getDayDropTotalCount(startDay, endDay);
+	}
+
+	/**
+	 * 获取下拉刷新日报表记录
+	 * @param startDay
+	 * @param endDay
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<TimeTotal> getDayDropTotalList(Integer startDay,Integer endDay,Integer start,Integer end){
+		return statisticsMapper.getDayDropTotalList(startDay, endDay,start,end);
+	}
+
+	/**
+	 * 获取下拉刷新日报明细总数
+	 * @param startDay
+	 * @param endDay
+	 * @param distributorIds
+	 * @param channelIds
+	 * @param type
+	 * @return
+	 */
+	public Integer getDropDayDetailCount(Integer startDay,Integer endDay,String distributorIds,String channelIds,Integer type){
+		return statisticsMapper.getDropDayDetailCount(startDay, endDay,distributorIds,channelIds,type);
+	}
+
+	/**
+	 * 获取下拉刷新日报明细记录
+	 * @param startDay
+	 * @param endDay
+	 * @param distributorIds
+	 * @param channelIds
+	 * @param type
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<TimeDetail> getDropDayDetailList(Integer startDay,Integer endDay,String distributorIds,String channelIds,Integer type,Integer start,Integer end){
+		return statisticsMapper.getDropDayDetailList(startDay, endDay,distributorIds,channelIds,type,start,end);
+	}
 }

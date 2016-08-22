@@ -70,4 +70,55 @@ public interface StatisticsMapper {
 	public List<TimeDetail> getMonthDetailList(@Param(value = "startMonth")Integer startMonth,@Param(value = "endMonth")Integer endMonth,
 			@Param(value = "dids")String dids,@Param(value = "cids")String cids,@Param(value = "type")Integer type,
 			@Param(value = "start")Integer start,@Param(value = "end")Integer end);
+
+	/**
+	 * 获取下拉刷新日报表总数
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	@SelectProvider(method="getDayDropTotalCount",type=StatisticsSqlProvider.class)
+	Integer getDayDropTotalCount(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay);
+
+	/**
+	 * 获取下拉刷新日报表记录
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	@SelectProvider(method="getDayDropTotalList",type=StatisticsSqlProvider.class)
+	@ResultType(TimeTotal.class)
+	List<TimeTotal> getDayDropTotalList(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay,
+										   @Param(value = "start")Integer start,@Param(value = "end")Integer end);
+
+	/**
+	 * 获取下拉刷新日报明细总数
+	 * @param startDay
+	 * @param endDay
+	 * @param dids
+	 * @param cids
+	 * @param type
+	 * @return
+	 */
+	@SelectProvider(method="getDropDayDetailCount",type=StatisticsSqlProvider.class)
+	Integer getDropDayDetailCount(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay,
+									 @Param(value = "dids")String dids,@Param(value = "cids")String cids,@Param(value = "type")Integer type);
+
+	/**
+	 * 获取下拉刷新日报明细记录
+	 * @param startDay
+	 * @param endDay
+	 * @param dids
+	 * @param cids
+	 * @param type
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	@SelectProvider(method="getDropDayDetailList",type=StatisticsSqlProvider.class)
+	@ResultType(TimeDetail.class)
+	List<TimeDetail> getDropDayDetailList(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay,
+											 @Param(value = "dids")String dids,@Param(value = "cids")String cids,@Param(value = "type")Integer type,
+											 @Param(value = "start")Integer start,@Param(value = "end")Integer end);
+
 }
