@@ -21,7 +21,16 @@ public class ImprLog {
 		this.uid = uid;
 		this.timestamp = System.currentTimeMillis();
 	}
-	
+
+	public ImprLog(Integer did,Integer cid,String uid,Integer type, Long timestamp){
+		super();
+		this.did = did;
+		this.cid = cid;
+		this.type = type;
+		this.uid = uid;
+		this.timestamp = timestamp;
+	}
+
 	public Integer getDid() {
 		return did;
 	}

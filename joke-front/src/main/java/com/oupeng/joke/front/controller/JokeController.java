@@ -25,7 +25,9 @@ public class JokeController {
 	
 	private static final Logger impr = LoggerFactory.getLogger("impr");
 	private static final Logger clk = LoggerFactory.getLogger("clk");
-	
+    /** 下拉刷新日志 */
+    private static final Logger dfl = LoggerFactory.getLogger("dfl");
+
     @Autowired
     private JokeService jokeService;
     /**
@@ -80,13 +82,26 @@ public class JokeController {
         jokeService.feedback(feedback);
         return new Success();
     }
-    
+
+    /**
+     * 段子列表页接口
+     * @param distributorId 渠道编号
+     * @param channelId     频道编号
+     * @param topicId       主题编号
+     * @param listType      列表类型:0:普通频道，1：专题频道；2：推荐频道
+     * @param actionType    动作类型: 0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param start         开始位置；分页参数
+     * @param end           结束位置：分页参数
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/list")
     @ResponseBody
     public Result jokeList(@RequestParam(value="did",required=true)Integer distributorId,
     		@RequestParam(value="cid",required=true)Integer channelId,
     		@RequestParam(value="tid",required=false)Integer topicId,
     		@RequestParam(value="lt",required=true)Integer listType,
+            @RequestParam(value="at",required=true)Integer actionType,
     		@RequestParam(value="start",required=false,defaultValue="0")Long start,
     		@RequestParam(value="end",required=false,defaultValue="9")Long end,
     		HttpServletRequest request){
@@ -96,13 +111,25 @@ public class JokeController {
 			type = Constants.IMPR_LOG_TYPE_LIST;
 		}
     	impr.info(new ImprLog(distributorId, channelId, uid, type).toString());
-    	
+    	if(actionType == 2){
+            dfl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
+        }
 		if(start >= 0 && start <= end  && end - start < 20 ){
 			return jokeService.getJokeList(distributorId, channelId,topicId, listType, start, end);
 		}
         return new Success(null);
     }
-    
+
+    /**
+     * 段子详情页接口
+     * @param distributorId
+     * @param channelId
+     * @param topicId
+     * @param listType
+     * @param jokeId
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/item")
     @ResponseBody
     public Result joke(@RequestParam(value="did",required=true)Integer distributorId,
