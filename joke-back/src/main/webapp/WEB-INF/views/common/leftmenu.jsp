@@ -73,6 +73,7 @@
 						<li><a href="statistics/weekDetail"><span> 渠道周报</span></a></li>
 						<li><a href="statistics/monthTotal"><span> 总月报</span></a></li>
 						<li><a href="statistics/monthDetail"><span> 渠道月报</span></a></li>
+						<!--	新增下拉刷新统计	-->
 						<li><a href="statistics/dropTotal"><span> 下拉刷新日报</span></a></li>
 						<li><a href="statistics/dropDetail"><span> 下拉刷新明细</span></a></li>
 					</ul>
