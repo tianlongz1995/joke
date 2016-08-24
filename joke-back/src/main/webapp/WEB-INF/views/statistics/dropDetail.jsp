@@ -49,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 列表页下拉刷新日统计明细</h2>
+		<h2><i class="glyphicon glyphicon-user"></i> 下拉刷新明细</h2>
 	</div>
 	<div class="box-content">
 		<table  class="table table-striped table-bordered bootstrap-datatable responsive">
