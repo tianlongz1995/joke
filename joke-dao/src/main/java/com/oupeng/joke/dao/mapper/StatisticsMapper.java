@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import com.oupeng.joke.dao.sqlprovider.StatisticsSqlProvider;
 import com.oupeng.joke.domain.statistics.TimeDetail;
 import com.oupeng.joke.domain.statistics.TimeTotal;
+import com.oupeng.joke.domain.statistics.DropDetail;
 
 public interface StatisticsMapper {
 
@@ -116,8 +117,8 @@ public interface StatisticsMapper {
 	 * @return
 	 */
 	@SelectProvider(method="getDropDayDetailList",type=StatisticsSqlProvider.class)
-	@ResultType(TimeDetail.class)
-	List<TimeDetail> getDropDayDetailList(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay,
+	@ResultType(DropDetail.class)
+	List<DropDetail> getDropDayDetailList(@Param(value = "startDay")Integer startDay,@Param(value = "endDay")Integer endDay,
 											 @Param(value = "dids")String dids,@Param(value = "cids")String cids,@Param(value = "type")Integer type,
 											 @Param(value = "start")Integer start,@Param(value = "end")Integer end);
 

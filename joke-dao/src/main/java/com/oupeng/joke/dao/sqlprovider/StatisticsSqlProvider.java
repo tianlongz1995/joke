@@ -321,14 +321,14 @@ public class StatisticsSqlProvider {
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select count(1) from stat_drop_detail_day where did != 'N' ");
+		sql.append(" select count(1) from stat_drop_detail_day s left join `distributor` d on s.did=d.id left join channel c on s.cid=c.id where s.did != 'N' ");
 		if(startDay != null && !"".equals(startDay)){
-			sql.append(" and day >= ").append(startDay);
+			sql.append(" and s.day >= ").append(startDay);
 		}
 		if(endDay != null && !"".equals(endDay)){
-			sql.append(" and day <= ").append(endDay);
+			sql.append(" and s.day <= ").append(endDay);
 		}
-		sql.append(getAndSql(map));
+		sql.append(getAsAndSql("s.", map));
 		return sql.toString();
 	}
 
@@ -343,18 +343,57 @@ public class StatisticsSqlProvider {
 		Integer start = Integer.parseInt(map.get("start").toString());
 		Integer end = Integer.parseInt(map.get("end").toString());
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select day as time,did,cid,pv as totalPv,uv as totalUv from stat_drop_detail_day where did != 'N' ");
-
+		sql.append("select s.day as time,d.name dName,c.name cName,s.pv as totalPv,s.uv as totalUv from stat_drop_detail_day s left join `distributor` d on s.did=d.id left join channel c on s.cid=c.id where s.did != 'N' ");
 		if(startDay != null && !"".equals(startDay)){
-			sql.append(" and day >= ").append(startDay);
+			sql.append(" and s.day >= ").append(startDay);
 		}
 		if(endDay != null && !"".equals(endDay)){
-			sql.append(" and day <= ").append(endDay);
+			sql.append(" and s.day <= ").append(endDay);
 		}
-		sql.append(getAndSql(map));
-		sql.append(" order by day desc,did desc,cid desc ");
+		sql.append(getAsAndSql("s.", map));
+		sql.append(" order by s.day desc,s.did desc,s.cid desc ");
 		sql.append(" limit ").append(start).append(",").append(end);
 		return sql.toString();
 	}
 
+	/**
+	 * 获取带别名的SQL
+	 * @param map
+	 * @return
+	 */
+	private static StringBuffer getAsAndSql(String as, Map<String,Object> map){
+		Object distributorIds = map.get("dids");
+		Object channelIds = map.get("cids");
+		Integer type = Integer.valueOf(map.get("type").toString());
+		StringBuffer sql = new StringBuffer();
+		if(type == 1){
+			if(distributorIds != null && !"".equals(distributorIds)){
+				sql.append(" and ").append(as).append("did in (").append(distributorIds).append(") ");
+			}
+
+			if(channelIds != null && !"".equals(channelIds)){
+				sql.append(" and ").append(as).append("cid in (").append(channelIds).append(") ");
+			}else{
+				sql.append(" and ").append(as).append("cid = 'total' ");
+			}
+		}else if(type == 2){
+			if(channelIds != null && !"".equals(channelIds)){
+				sql.append(" and ").append(as).append("cid in (").append(channelIds).append(") ");
+			}
+
+			if(distributorIds != null && !"".equals(distributorIds)){
+				sql.append(" and ").append(as).append("did in (").append(distributorIds).append(") ");
+			}else{
+				sql.append(" and ").append(as).append("did = 'total' ");
+			}
+		}else if(distributorIds != null && !"".equals(distributorIds)){
+			sql.append(" and ").append(as).append("did in (").append(distributorIds).append(") ");
+			if(channelIds != null && !"".equals(channelIds)){
+				sql.append(" and ").append(as).append("cid in (").append(channelIds).append(") ");
+			}
+		}else if(channelIds != null && !"".equals(channelIds)){
+			sql.append(" and ").append(as).append("cid in (").append(channelIds).append(") ");
+		}
+		return sql;
+	}
 }

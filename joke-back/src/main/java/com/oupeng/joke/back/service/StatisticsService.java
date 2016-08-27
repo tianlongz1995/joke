@@ -2,6 +2,7 @@ package com.oupeng.joke.back.service;
 
 import java.util.List;
 
+import com.oupeng.joke.domain.statistics.DropDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -137,7 +138,7 @@ public class StatisticsService {
 	 * @param end
 	 * @return
 	 */
-	public List<TimeDetail> getDropDayDetailList(Integer startDay,Integer endDay,String distributorIds,String channelIds,Integer type,Integer start,Integer end){
+	public List<DropDetail> getDropDayDetailList(Integer startDay, Integer endDay, String distributorIds, String channelIds, Integer type, Integer start, Integer end){
 		return statisticsMapper.getDropDayDetailList(startDay, endDay,distributorIds,channelIds,type,start,end);
 	}
 }

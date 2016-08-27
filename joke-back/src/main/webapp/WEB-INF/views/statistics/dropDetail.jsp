@@ -97,12 +97,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<option value="0" <c:if test="${empty type || type == 0}">selected</c:if> >全部</option>
 								<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >只看渠道</option>
 								<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >只看频道</option>
-								<option value="3" <c:if test="${!empty type && type == 3}">selected</c:if> >只看标签</option>
 							</select>
 						</label>
 						<label style="padding-right:30px;">
 							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
-							<button id="export" type="button" class="btn btn-warning btn-sm" data-dismiss="modal">导出</button>
+							<%--<button id="export" type="button" class="btn btn-warning btn-sm" data-dismiss="modal">导出</button>--%>
 						</label>
 					</div>
 				</div>
@@ -122,20 +121,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:forEach items="${list}" var="timeDetail">
 				<tr>
 					<td>${timeDetail.time}</td>
-					<td>
-						<c:if test="${timeDetail.did != 'total'}">
-							<c:forEach items="${distributorList}" var="distributor">
-								<c:if test="${distributor.id == timeDetail.did}"><c:out value="${distributor.name}" /></c:if>
-							</c:forEach>
-						</c:if>
-					</td>
-					<td>
-						<c:if test="${timeDetail.cid != 'total'}">
-							<c:forEach items="${channelList}" var="channel">
-								<c:if test="${timeDetail.cid == channel.id}"><c:out value="${channel.name}" /></c:if>
-							</c:forEach>
-						</c:if>
-					</td>
+					<td>${timeDetail.dName}</td>
+					<td>${timeDetail.cName}</td>
 					<td>${timeDetail.totalPv}</td>
 					<td>${timeDetail.totalUv}</td>
 					<td>

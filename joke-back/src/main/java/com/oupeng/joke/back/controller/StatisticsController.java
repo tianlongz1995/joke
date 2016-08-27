@@ -5,10 +5,13 @@ import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.back.service.StatisticsService;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.StatisExportUtil;
+import com.oupeng.joke.domain.statistics.DropDetail;
 import com.oupeng.joke.domain.statistics.TimeDetail;
 import com.oupeng.joke.domain.statistics.TimeDetailExport;
 import com.oupeng.joke.domain.statistics.TimeTotal;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,7 +25,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value="statistics")
 public class StatisticsController {
-
+	private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
 	@Autowired
 	private StatisticsService statisticsService;
 	@Autowired
@@ -453,61 +456,66 @@ public class StatisticsController {
 									 @RequestParam(value="pageSize",required=false)Integer pageSize,
 									 @RequestParam(value="type",required=false,defaultValue="0")Integer type,
 									 ModelMap model) throws IOException {
-		pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
-		pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
-		int pageCount = 0;//总页数
-		int offset = 0 ;//开始条数index
-		List<TimeDetail> list = null;
-		String dids = null;
-		String cids = null;
-		String lids = null;
-		boolean flag = true;
-		if(StringUtils.isNotBlank(distributorName)){
-			dids = distributorService.getDistributorIdListByName(distributorName);
-			if(StringUtils.isBlank(dids)){
-				flag = false;
-			}
-		}
 
-		if(flag && StringUtils.isNotBlank(channelName)){
-			cids = channelService.getChannelIdListByName(channelName);
-			if(StringUtils.isBlank(cids)){
-				flag = false;
-			}
-		}
-		int count = 0;
-		if(flag){
-			count = statisticsService.getDropDayDetailCount(startDay, endDay,dids,lids,type);//总条数
-		}
-		if(count > 0){
-			if (count % pageSize == 0) {
-				pageCount = count / pageSize;
-			} else {
-				pageCount = count / pageSize + 1;
+		try {
+			pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+			pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+			int pageCount = 0;//总页数
+			int offset = 0;//开始条数index
+			List<DropDetail> list = null;
+			String dids = null;
+			String cids = null;
+			String lids = null;
+			boolean flag = true;
+			if (StringUtils.isNotBlank(distributorName)) {
+				dids = distributorService.getDistributorIdListByName(distributorName);
+				if (StringUtils.isBlank(dids)) {
+					flag = false;
+				}
 			}
 
-			if (pageNumber > pageCount) {
-				pageNumber = pageCount;
+			if (flag && StringUtils.isNotBlank(channelName)) {
+				cids = channelService.getChannelIdListByName(channelName);
+				if (StringUtils.isBlank(cids)) {
+					flag = false;
+				}
 			}
-			if (pageNumber < 1) {
-				pageNumber = 1;
+			int count = 0;
+			if (flag) {
+				count = statisticsService.getDropDayDetailCount(startDay, endDay, dids, lids, type);//总条数
 			}
-			offset = (pageNumber - 1) * pageSize;
+			if (count > 0) {
+				if (count % pageSize == 0) {
+					pageCount = count / pageSize;
+				} else {
+					pageCount = count / pageSize + 1;
+				}
 
-			list = statisticsService.getDropDayDetailList(startDay, endDay,dids,cids,type, offset, pageSize);
+				if (pageNumber > pageCount) {
+					pageNumber = pageCount;
+				}
+				if (pageNumber < 1) {
+					pageNumber = 1;
+				}
+				offset = (pageNumber - 1) * pageSize;
+
+				list = statisticsService.getDropDayDetailList(startDay, endDay, dids, cids, type, offset, pageSize);
+			}
+			model.addAttribute("startDay", startDay);
+			model.addAttribute("endDay", endDay);
+			model.addAttribute("distributorName", distributorName);
+			model.addAttribute("channelName", channelName);
+			model.addAttribute("type", type);
+			model.addAttribute("count", count);
+			model.addAttribute("pageNumber", pageNumber);
+			model.addAttribute("pageSize", pageSize);
+			model.addAttribute("pageCount", pageCount);
+			model.addAttribute("list", list);
+			return "/statistics/dropDetail";
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
-		model.addAttribute("startDay", startDay);
-		model.addAttribute("endDay", endDay);
-		model.addAttribute("distributorName", distributorName);
-		model.addAttribute("channelName", channelName);
-		model.addAttribute("type", type);
-		model.addAttribute("count", count);
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("pageSize", pageSize);
-		model.addAttribute("pageCount", pageCount);
-		model.addAttribute("list", list);
-		model.addAttribute("distributorList", distributorService.getAllDistributorList());
-		model.addAttribute("channelList", channelService.getChannelList(null));
 		return "/statistics/dropDetail";
 	}
 }
