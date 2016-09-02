@@ -60,13 +60,14 @@ public interface JokeMapper {
 	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
 
 	/**
-	 * 查询最近审核通过的100条数据
+	 * 查询最近审核通过的size条数据
 	 * @param contentType
+	 * @param size		发布数量
 	 * @return
 	 */
 	@Select(value="select t.id,t.verify_time as verifyTime from joke t where t.`status` = 1 and "
-			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) order by t.verify_time desc limit 100 ")
-	List<Joke> getJokeForPublishChannel(@Param(value="contentType")String contentType);
+			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) order by t.verify_time desc limit #{size} ")
+	List<Joke> getJokeForPublishChannel(@Param(value = "contentType") String contentType, @Param(value = "size")Integer size);
 	
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")

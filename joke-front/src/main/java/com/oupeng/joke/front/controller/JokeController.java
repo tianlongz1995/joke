@@ -88,9 +88,9 @@ public class JokeController {
      * @param distributorId 渠道编号
      * @param channelId     频道编号
      * @param topicId       主题编号
-     * @param listType      列表类型:0:普通频道，1：专题频道；2：推荐频道
+     * @param listType      列表类型: 0:普通频道，1：专题频道；2：推荐频道
      * @param actionType    动作类型: 0:首次请求; 1:上拉刷新; 2:下拉刷新
-     * @param start         开始位置；分页参数
+     * @param start         开始位置: 分页参数
      * @param end           结束位置：分页参数
      * @param request
      * @return
@@ -115,7 +115,8 @@ public class JokeController {
             dfl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
         }
 		if(start >= 0 && start <= end  && end - start < 20 ){
-			return jokeService.getJokeList(distributorId, channelId,topicId, listType, start, end);
+			return jokeService.getJokeList(distributorId, channelId,topicId, listType, start, end, actionType);
+
 		}
         return new Success(null);
     }

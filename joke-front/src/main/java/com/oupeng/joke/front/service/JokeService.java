@@ -35,6 +35,8 @@ public class JokeService {
     private JedisCache jedisCache;
 	@Autowired
 	private Environment env;
+
+	private static Integer publishSize;
     
     /** 赞信息列表    */
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
@@ -127,48 +129,52 @@ public class JokeService {
             logger.error("增加反馈数失败",e);
         }
     }
-    
-    public Result getJokeList(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Long start,Long end){
+
+	/**
+	 * 获取段子列表
+	 * @param distributorId
+	 * @param channelId
+	 * @param topicId
+	 * @param listType
+	 * @param start
+	 * @param end
+	 * @param actionType	动作类型: 0:首次请求; 1:上拉刷新; 2:下拉刷新
+	 * @return
+	 */
+    public Result getJokeList(Integer distributorId, Integer channelId, Integer topicId, Integer listType, Long start, Long end, Integer actionType){
     	Object result = null;
-    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
-    		result = getJokeList4CommonChannel(channelId,start,end);
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){
+    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){ 		// 普通频道列表页
+			if(actionType == 1){  	// 获取普通频道历史记录列表页
+				result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start + 500, end + 500);
+			}else {
+				// 获取普通频道记录列表
+				if(publishSize == null){
+					publishSize = Integer.valueOf(env.getProperty("publish.size"));
+				}
+				if(end > publishSize){ // 下拉刷新超过 publishSize 条就停止刷新
+					result = Lists.newArrayList();
+				}else {
+					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
+				}
+			}
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道
     		result = getTopicList4TopicChannel(distributorId,start,end);
-    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
+    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页
     		result = getJokeList4RecommendChannel(start,end);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页
     		result = getJokeList4TopicChannel(topicId,start,end);
     	}
     	return new Success(result);
     }
-    
-    private List<Joke> getJokeList4CommonChannel(Integer channelId,Long start,Long end){
-    	String key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
-    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
-		if(CollectionUtils.isEmpty(jokeIdSet)){
-			return null;
-		}
-		
-		List<Joke> list = Lists.newArrayList();
-		Joke joke = null;
-		for(String jokeId : jokeIdSet){
-			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
-			if(joke != null){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
-					joke.setContent(joke.getContent().substring(0, 184));
-				}
-				list.add(joke);
-			}
-		}
-		return list;
-    }
-    
+
+
+	/**
+	 * 获取专题频道
+	 * @param distributorId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
     private List<Topic> getTopicList4TopicChannel(Integer distributorId,Long start,Long end){
     	String key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
     	Set<String> topicIdSet = jedisCache.zrevrange(key, start, end);
@@ -188,59 +194,28 @@ public class JokeService {
 		}
     	return list;
     }
-    
+
+	/**
+	 * 获取推荐频道列表页
+	 * @param start
+	 * @param end
+	 * @return
+	 */
     private List<Joke> getJokeList4RecommendChannel(Long start,Long end){
     	String key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
-    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
-		if(CollectionUtils.isEmpty(jokeIdSet)){
-			return null;
-		}
-		
-		List<Joke> list = Lists.newArrayList();
-		Joke joke = null;
-		for(String jokeId : jokeIdSet){
-			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
-			if(joke != null){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
-					joke.setContent(joke.getContent().substring(0, 184));
-				}
-				list.add(joke);
-			}
-		}
-		return list;
+		return getJokeCacheList(key, start, end);
     }
-    
+
+	/**
+	 * 获取专题列表页
+	 * @param topicId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
     private List<Joke> getJokeList4TopicChannel(Integer topicId,Long start,Long end){
     	String key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
-    	Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
-		if(CollectionUtils.isEmpty(jokeIdSet)){
-			return null;
-		}
-		
-		List<Joke> list = Lists.newArrayList();
-		Joke joke = null;
-		for(String jokeId : jokeIdSet){
-			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
-			if(joke != null){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
-					joke.setContent(joke.getContent().substring(0, 184));
-				}
-				list.add(joke);
-			}
-		}
-		return list;
+		return getJokeCacheList(key, start, end);
     }
     
     public JokeDetail getJoke(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Integer jokeId){
@@ -329,4 +304,36 @@ public class JokeService {
     private String getListPreviewImg(String img){
     	return img.replaceAll("_600x_", "_500x_");
     }
+
+	/**
+	 * 获取段子缓存列表
+	 * @param key
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private List<Joke> getJokeCacheList(final String key, final Long start, final Long end) {
+		Set<String> jokeIdSet = jedisCache.zrevrange(key, start, end);
+		if(CollectionUtils.isEmpty(jokeIdSet)){
+			return null;
+		}
+		List<Joke> list = Lists.newArrayList();
+		Joke joke = null;
+		for(String jokeId : jokeIdSet){
+			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+			if(joke != null){
+				if(joke.getType() == Constants.JOKE_TYPE_IMG){
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
+				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
+					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				}
+				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
+					joke.setContent(joke.getContent().substring(0, 184));
+				}
+				list.add(joke);
+			}
+		}
+		return list;
+	}
 }

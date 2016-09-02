@@ -52,10 +52,9 @@ public class CommonChannelTask {
 			int surplusJokeCount = 0;
 			int notAuditedJokeCount = 0;
 			for(Channel channel : channelList){
-				if(channel.getType() == Constants.CHANNEL_TYPE_COMMON
-						&& StringUtils.isNotBlank(channel.getContentType())){
-//					查询最近审核通过的100条数据
-					jokes = jokeService.getJokeForPublishChannel(channel.getContentType());
+				if(channel.getType() == Constants.CHANNEL_TYPE_COMMON && StringUtils.isNotBlank(channel.getContentType())){
+//					查询最近审核通过的size条数据
+					jokes = jokeService.getJokeForPublishChannel(channel.getContentType(), Integer.valueOf(env.getProperty("publish.size")));
 //					查询未审核的段子数
 					notAuditedJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType(), Constants.JOKE_STATUS_NOT_AUDITED);
 					if(!CollectionUtils.isEmpty(jokes)){
@@ -65,7 +64,7 @@ public class CommonChannelTask {
 							map.put(String.valueOf(joke.getId()), Double.valueOf(joke.getVerifyTime() != null ? joke.getVerifyTime().getTime() : joke.getId()));
 							jokeids.append(joke.getId()).append(",");
 						}
-						jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL+channel.getId(),map);
+						jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL + channel.getId(),map);
 //						更新段子发布状态
 						jokeService.updateJokeForPublishChannel(jokeids.deleteCharAt(jokeids.lastIndexOf(",")).toString());
 //						查询待审核段子数量

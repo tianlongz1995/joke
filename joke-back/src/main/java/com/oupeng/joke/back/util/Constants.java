@@ -7,6 +7,7 @@ public class Constants {
 	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
 	public static final Integer JOKE_STATUS_VALID = 1;
 	public static final Integer JOKE_STATUS_PUBLISH = 3;
+	/**	渠道上线状态: 1	*/
 	public static final Integer CHANNEL_STATUS_VALID = 1;
 	public static final Integer CHANNEL_TYPE_COMMON = 0;
 	public static final Integer CHANNEL_TYPE_TOPIC = 1;

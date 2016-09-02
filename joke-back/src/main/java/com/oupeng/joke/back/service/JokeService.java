@@ -288,10 +288,11 @@ public class JokeService {
 	/**
 	 * 查询最近审核通过的100条数据
 	 * @param contentType
+	 * @param size 			发布数量
 	 * @return
 	 */
-	public List<Joke> getJokeForPublishChannel(String contentType){
-		return jokeMapper.getJokeForPublishChannel(contentType);
+	public List<Joke> getJokeForPublishChannel(String contentType, Integer size){
+		return jokeMapper.getJokeForPublishChannel(contentType, size);
 	}
 	
 	public int getJokeCountForPublishChannel(String contentType,Integer status){

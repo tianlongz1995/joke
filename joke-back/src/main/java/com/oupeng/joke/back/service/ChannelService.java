@@ -31,10 +31,17 @@ public class ChannelService {
 	public Channel getChannelById(Integer id){
 		return channelMapper.getChannelById(id);
 	}
-	
+
+	/**
+	 * 更新频道状态
+	 * @param id
+	 * @param status 状态 0:下线 1:上线
+	 * @return
+	 */
 	public String updateChannelStatus(Integer id,Integer status){
 		Channel channel = channelMapper.getChannelById(id);
 		String result = null;
+//		渠道上线
 		if(status == Constants.CHANNEL_STATUS_VALID ){
 			if(StringUtils.isBlank(channel.getContentType())){
 				result = "专题内容属性不能为空";
@@ -42,12 +49,12 @@ public class ChannelService {
 					&& !CollectionUtils.isEmpty(channelMapper.getChannelByType(channel.getType()))){
 				result = "专题频道、推荐频道同时只能存在一个";
 			}
-				
+//		渠道下线 - 删除缓存
 		}else{
 			if(channel.getType() == Constants.CHANNEL_TYPE_RECOMMEND){
 				jedisCache.del(JedisKey.SORTEDSET_RECOMMEND_CHANNEL);
 			}else if(channel.getType() == Constants.CHANNEL_TYPE_COMMON){
-				jedisCache.del(JedisKey.SORTEDSET_COMMON_CHANNEL+id);
+				jedisCache.del(JedisKey.SORTEDSET_COMMON_CHANNEL + id);
 			}else if(channel.getType() == Constants.CHANNEL_TYPE_TOPIC){
 				Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_TOPIC_ALL);
 				if(!CollectionUtils.isEmpty(keys)){
