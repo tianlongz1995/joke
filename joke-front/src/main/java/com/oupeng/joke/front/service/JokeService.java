@@ -27,6 +27,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 @Service
 public class JokeService {
     private static Logger logger = LoggerFactory.getLogger(JokeService.class);
@@ -36,15 +38,20 @@ public class JokeService {
 	@Autowired
 	private Environment env;
 
-	private static Integer publishSize;
+	private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();/** 赞信息列表    */
+	private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();/** 踩信息列表    */
+	private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();/** 反馈信息列表    */
+	
+	private static Integer PUBLISH_SIZE = null;
+	private static String IMG_REAL_SERVER_URL = null;
     
-    /** 赞信息列表    */
-    private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
-    /** 踩信息列表    */
-    private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();
-    /** 反馈信息列表    */
-    private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();
-
+	@PostConstruct
+	public void initConstants(){
+		PUBLISH_SIZE = Integer.valueOf(env.getProperty("publish.size"));
+		IMG_REAL_SERVER_URL = env.getProperty("img.real.server.url");
+	}
+    
+    
     /**
      * 获取渠道配置
      * @param did
@@ -145,13 +152,9 @@ public class JokeService {
     	Object result = null;
     	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){ 		// 普通频道列表页
 			if(actionType == 1){  	// 获取普通频道历史记录列表页
-				result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start + 500, end + 500);
+				result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start + PUBLISH_SIZE, end + PUBLISH_SIZE);
 			}else {
-				// 获取普通频道记录列表
-				if(publishSize == null){
-					publishSize = Integer.valueOf(env.getProperty("publish.size"));
-				}
-				if(end > publishSize){ // 下拉刷新超过 publishSize 条就停止刷新
+				if(end > PUBLISH_SIZE){ // 下拉刷新超过 publishSize 条就停止刷新
 					result = Lists.newArrayList();
 				}else {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
@@ -188,7 +191,7 @@ public class JokeService {
 			topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId),Topic.class);
 			if(topic != null){
 				topic.setType(Constants.JOKE_TYPE_TOPIC_LIST);
-				topic.setImg(env.getProperty("img.real.server.url") + topic.getImg());
+				topic.setImg(IMG_REAL_SERVER_URL + topic.getImg());
 				list.add(topic);
 			}
 		}
@@ -222,17 +225,15 @@ public class JokeService {
     	JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),JokeDetail.class);
     	if(joke != null){
     		if(joke.getType() == Constants.JOKE_TYPE_IMG){
-				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+				joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
 			}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+				joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
+				joke.setGif( IMG_REAL_SERVER_URL + joke.getGif());
 			}
     		String key = "";
         	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){
         		key = JedisKey.SORTEDSET_COMMON_CHANNEL + channelId;
-        	}/*else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){
-        		key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
-        	}*/else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
+        	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
         		key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
         	}else if(Constants.LIST_TYPE_TOPIC == listType){
         		key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
@@ -261,8 +262,6 @@ public class JokeService {
     }
     
     private void handleJokeDetail(JokeDetail jokeDetail){
-    	
-    	
     	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);
     	if(!CollectionUtils.isEmpty(relatedTextIdList)){
     		List<Joke> relatedTextList = Lists.newArrayList();
@@ -281,7 +280,7 @@ public class JokeService {
     			if(joke != null){
     				if(joke.getImg() != null){
     					joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
-    					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+    					joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
     					joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
     					joke.setWidth(200);
     				}
@@ -323,10 +322,10 @@ public class JokeService {
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
+					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( getListPreviewImg(env.getProperty("img.real.server.url") + joke.getImg()));
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
+					joke.setGif( IMG_REAL_SERVER_URL + joke.getGif());
 				}
 				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
 					joke.setContent(joke.getContent().substring(0, 184));
