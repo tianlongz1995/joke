@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ import com.oupeng.joke.domain.Joke;
 
 @Component
 public class JokeTask {
+	private static Logger logger = LoggerFactory.getLogger(JokeTask.class);
 	@Autowired
 	private JokeService jokeService;
 	@Autowired
@@ -28,9 +31,11 @@ public class JokeTask {
 	 * */
 	@Scheduled(cron="0 */5 * * * ?")
 	public void publishJoke(){
+		logger.debug("publishJoke start...");
 		String lastTime = jedisCache.get(JedisKey.JOKE_LAST_PUBLISH_TIME);
 		String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		List<Joke> jokeList = jokeService.getJokeListForPublish(lastTime,currentTime);
+		int index = 0;
 		if(!CollectionUtils.isEmpty(jokeList)){
 			for(Joke joke : jokeList){
 				joke.setCreateTime(null);
@@ -46,8 +51,11 @@ public class JokeTask {
 				}else if(joke.getType() == Constants.JOKE_TYPE_IMG){
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(joke.getId()));
 				}
+				index++;
 			}
 		}
 		jedisCache.set(JedisKey.JOKE_LAST_PUBLISH_TIME, currentTime);
+
+		logger.debug("publishJoke over time:{} size:{}", currentTime, index);
 	}
 }
