@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Interner;
+
 import com.oupeng.joke.domain.Dictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 
-import javax.annotation.PostConstruct;
+
 
 @Component
 public class RecommendChannelTask {
