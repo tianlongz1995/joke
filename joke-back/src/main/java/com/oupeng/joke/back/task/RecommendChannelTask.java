@@ -10,7 +10,6 @@ import com.oupeng.joke.domain.Dictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -31,8 +30,7 @@ public class RecommendChannelTask {
 	private JokeService jokeService;
 	@Autowired
 	private JedisCache jedisCache;
-	@Autowired
-	private Environment env;
+
 	/**	发布文字数量	*/
 	private static Integer PUBLISH_TEXT_SIZE = 200;
 	/**	发布静图数量	*/
