@@ -58,6 +58,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="alert alert-info">
 			需要添加新的频道点击: 
 					<a href="#" data-toggle="modal" data-target="#newChannel">新增频道</a>
+			<div style="float:right;margin-top: -5px;">
+				<a type="button" class="btn btn-danger btn-sm" href="<%=basePath%>channel/weight?code=10001" >推荐频道权重管理</a>
+			</div>
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
@@ -70,7 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</select>
 				</label>
 				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="selectChannelList">
+					<a class="btn btn-primary btn-sm" href="#" id="selectChannelList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>

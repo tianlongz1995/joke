@@ -1,5 +1,8 @@
 package com.oupeng.joke.back.controller;
 
+import com.oupeng.joke.back.service.SourceService;
+import com.oupeng.joke.domain.Dictionary;
+import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,21 +16,74 @@ import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 
+import java.util.List;
+
 @Controller
 @RequestMapping(value="/joke")
 public class JokeController {
 	
 	@Autowired
 	private JokeService jokeService;
-	
+	@Autowired
+	private SourceService sourceService;
+
+	/**
+	 * 待审核段子列表
+	 * @param status
+	 * @param type
+	 * @param source
+	 * @param startDay
+	 * @param endDay
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/list")
 	public String getJokeListForVerify(@RequestParam(value="status",required=false)Integer status,
-			@RequestParam(value="type",required=false)Integer type,
-			Model model){
+									   @RequestParam(value="type",required=false)Integer type,
+									   @RequestParam(value="source",required=false)Integer source,
+									   @RequestParam(value="startDay",required=false)String startDay,
+									   @RequestParam(value="endDay",required=false)String endDay,
+									   @RequestParam(value="pageNumber",required=false)Integer pageNumber,
+									   @RequestParam(value="pageSize",required=false)Integer pageSize,
+									    Model model){
+		pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+		pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+		int pageCount = 0;//总页数
+		int offset = 0 ;//开始条数index
+		List<Joke> list = null;
+		//	获取总条数
+		int count = jokeService.getJokeListForVerifyCount(type, status, source, startDay, endDay);
+		if(count > 0){
+			if (count % pageSize == 0) {
+				pageCount = count / pageSize;
+			} else {
+				pageCount = count / pageSize + 1;
+			}
+
+			if (pageNumber > pageCount) {
+				pageNumber = pageCount;
+			}
+			if (pageNumber < 1) {
+				pageNumber = 1;
+			}
+			offset = (pageNumber - 1) * pageSize;
+
+			list = jokeService.getJokeListForVerify(type, status, source, startDay, endDay, offset, pageSize);
+		}
+
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		model.addAttribute("list", jokeService.getJokeListForVerify(type, status));
+		model.addAttribute("list", list);
+		model.addAttribute("sourceList", sourceService.getSourceList());
 		model.addAttribute("status", status);
 		model.addAttribute("type", type);
+		model.addAttribute("source", source);
+		model.addAttribute("startDay", startDay);
+		model.addAttribute("endDay", endDay);
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("pageCount", pageCount);
 		model.addAllAttributes(jokeService.getJokeVerifyInfoByUser(username));
 		return "/joke/list";
 	}
@@ -38,7 +94,7 @@ public class JokeController {
 	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/verify")
+	@RequestMapping(value="/verify", produces = {"application/json"})
 	@ResponseBody
 	public Result verify(@RequestParam(value="ids")String ids,
 			@RequestParam(value="status")Integer status){
@@ -51,8 +107,19 @@ public class JokeController {
 	public String edit(@RequestParam(value="id")Integer id,Model model){
 		model.addAttribute("joke", jokeService.getJokeById(id));
 		return "/joke/edit";
-	} 
-	
+	}
+
+	/**
+	 * 更新段子信息 - 默认通过审核
+	 * @param id
+	 * @param title
+	 * @param content
+	 * @param img
+	 * @param gif
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	@RequestMapping(value="/update")
 	@ResponseBody
 	public Result update(@RequestParam(value="id")Integer id,

@@ -7,7 +7,7 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.Feedback;
+import com.oupeng.joke.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,6 @@ import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.dao.mapper.JokeMapper;
-import com.oupeng.joke.domain.Joke;
-import com.oupeng.joke.domain.JokeVerifyInfo;
-import com.oupeng.joke.domain.JokeVerifyRate;
 
 import javax.annotation.PostConstruct;
 
@@ -37,22 +34,56 @@ public class JokeService {
 	private JedisCache jedisCache;
 	@Autowired
 	private Environment env;
-	
-	public List<Joke> getJokeListForVerify(Integer type,Integer status){
-		List<Joke> jokeList = jokeMapper.getJokeList(type, status,null,null,false);
-		if(!CollectionUtils.isEmpty(jokeList)){
-			for(Joke joke : jokeList){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-			}
-		}
+
+	/**
+	 * 获取段子列表
+	 * @param type
+	 * @param status
+	 * @param source
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	public List<Joke> getJokeListForVerify(Integer type, Integer status, Integer source, String startDay, String endDay, Integer offset, Integer pageSize){
+		List<Joke> jokeList = jokeMapper.getJokeListForVerify(type, status, source, startDay, endDay, offset, pageSize);
+        handleJokesUrl(jokeList);
 		return jokeList;
 	}
-	
+
+	/**
+	 * 获取待审核的段子列表总记录数
+	 * @param type
+	 * @param status
+	 * @param source
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	public int getJokeListForVerifyCount(Integer type, Integer status, Integer source, String startDay, String endDay) {
+		return jokeMapper.getJokeListForVerifyCount(type, status, source, startDay, endDay);
+	}
+
+	/**
+	 * 处理段子列表记录URL
+	 * @param jokeList
+	 */
+	private void handleJokesUrl(List<Joke> jokeList) {
+		if(!CollectionUtils.isEmpty(jokeList)){
+			for(Joke joke : jokeList){
+			    handleJokeUrl(joke);
+			}
+		}
+	}
+
+    private void handleJokeUrl(Joke joke) {
+        if(joke.getType() == Constants.JOKE_TYPE_IMG){
+            joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+        }else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+            joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+            joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+        }
+    }
+
 	public void verifyJoke(Integer status,String ids,String user){
 		if(status != Constants.JOKE_STATUS_VALID){
 			String[] jokeIds = ids.split(",");
@@ -73,12 +104,7 @@ public class JokeService {
 	public Joke getJokeById(Integer id){
 		Joke joke = jokeMapper.getJokeById(id);
 		if(joke != null){
-			if(joke.getType() == Constants.JOKE_TYPE_IMG){
-				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-			}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-				joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-			}
+            handleJokeUrl(joke);
 		}
 		return joke;
 	}
@@ -196,6 +222,18 @@ public class JokeService {
 		}
 	}
 
+	/**
+	 * 更新段子信息
+	 * @param id
+	 * @param title
+	 * @param img
+	 * @param gif
+	 * @param width
+	 * @param height
+	 * @param content
+	 * @param user
+	 * @return
+	 */
 	public boolean updateJoke(Integer id,String title,String img,String gif,Integer width,Integer height,String content,String user){
 		Joke joke = new Joke();
 		joke.setId(id);
@@ -234,16 +272,7 @@ public class JokeService {
 	
 	public List<Joke> getJokeListForSearch(Integer id,String content){
 		List<Joke> jokeList = jokeMapper.getJokeList(null,null,id,content,false);
-		if(!CollectionUtils.isEmpty(jokeList)){
-			for(Joke joke : jokeList){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-			}
-		}
+        handleJokesUrl(jokeList);
 		return jokeList;
 	}
 	
@@ -251,33 +280,15 @@ public class JokeService {
 		return jokeMapper.getJokeCountForChannel(contentType);
 	}
 	
-	public List<Joke> getJokeListForChannel(String contentType,Integer start,Integer size){
+	public List<Joke> getJokeListForChannel(String contentType, Integer start, Integer size){
 		List<Joke> jokeList = jokeMapper.getJokeListForChannel(contentType, start, size);
-		if(!CollectionUtils.isEmpty(jokeList)){
-			for(Joke joke : jokeList){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-			}
-		}
+        handleJokesUrl(jokeList);
 		return jokeList;
 	}
 	
 	public List<Joke> getJokeListForTopic(Integer type,Integer status){
 		List<Joke> jokeList = jokeMapper.getJokeList(type, status,null,null,true);
-		if(!CollectionUtils.isEmpty(jokeList)){
-			for(Joke joke : jokeList){
-				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
-				}
-			}
-		}
+        handleJokesUrl(jokeList);
 		return jokeList;
 	}
 	
@@ -346,4 +357,61 @@ public class JokeService {
 		}
 		return false;
 	}
+
+	/**
+	 * 获取字典记录总条数
+	 * @param code
+	 * @return
+	 */
+	public int getDictionaryRecordCount(String code) {
+		return jokeMapper.getDictionaryRecordCount(code);
+	}
+
+	/**
+	 * 获取字典记录列表
+	 * @param code
+	 * @param offset
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Dictionary> getDictionaryRecordList(String code, int offset, Integer pageSize) {
+		return jokeMapper.getDictionaryRecordList(code, offset, pageSize);
+	}
+
+	/**
+	 * 添加一条字典记录
+	 * @param dict
+	 * @return
+	 */
+	public int addDictionary(Dictionary dict) {
+		return jokeMapper.addDictionary(dict);
+	}
+
+	/**
+	 * 修改权重信息
+	 * @param dict
+	 * @return
+	 */
+	public int weightEdit(Dictionary dict) {
+		return jokeMapper.weightEdit(dict);
+	}
+
+	/**
+	 * 删除权限信息
+	 * @param id
+	 * @return
+	 */
+	public int weightDel(Integer id) {
+		return jokeMapper.weightDel(id);
+	}
+
+	/**
+	 * 获取字典信息
+	 * @param id
+	 * @return
+	 */
+	public Object weightGet(String id) {
+		return jokeMapper.weightGet(id);
+	}
+
 }

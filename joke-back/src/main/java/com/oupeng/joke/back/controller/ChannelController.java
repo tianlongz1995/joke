@@ -2,6 +2,7 @@ package com.oupeng.joke.back.controller;
 
 import java.util.List;
 
+import com.oupeng.joke.domain.Dictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -110,5 +111,104 @@ public class ChannelController {
     	model.addAttribute("list", list);
     	model.addAttribute("channelList", channelService.getChannelList(null));
 		return "/channel/joke";
-	} 
+	}
+
+	/**
+	 * 推荐频道权重管理
+	 * @param code
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/weight")
+	public String weight(@RequestParam(value="code")String code,
+							  @RequestParam(value="pageNumber",required=false)Integer pageNumber,
+							  @RequestParam(value="pageSize",required=false)Integer pageSize,
+							  Model model) {
+		pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+		pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+		int pageCount = 0;//总页数
+		int offset = 0 ;//开始条数index
+		List<Dictionary> list = null;
+		//	获取总条数
+		int count = jokeService.getDictionaryRecordCount(code);
+		if(count > 0){
+			if (count % pageSize == 0) {
+				pageCount = count / pageSize;
+			} else {
+				pageCount = count / pageSize + 1;
+			}
+
+			if (pageNumber > pageCount) {
+				pageNumber = pageCount;
+			}
+			if (pageNumber < 1) {
+				pageNumber = 1;
+			}
+			offset = (pageNumber - 1) * pageSize;
+
+			list = jokeService.getDictionaryRecordList(code, offset, pageSize);
+		}
+		model.addAttribute("code", code);
+		model.addAttribute("count", count);
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("pageCount", pageCount);
+		model.addAttribute("list", list);
+		return "/channel/weight";
+	}
+
+	/**
+	 * 添加权重
+	 * @param dict
+	 * @return
+	 */
+	@RequestMapping(value="/weightAdd", produces = {"application/json"})
+	@ResponseBody
+	public Result weightAdd(Dictionary dict) {
+		if(jokeService.addDictionary(dict) == 1){
+			return new Success();
+		}
+		return new Failed();
+	}
+
+	/**
+	 * 修改权重信息
+	 * @param dict
+	 * @return
+	 */
+	@RequestMapping(value="/weightEdit", produces = {"application/json"})
+	@ResponseBody
+	public Result weightEdit(Dictionary dict) {
+		if(jokeService.weightEdit(dict) == 1){
+			return new Success();
+		}
+		return new Failed();
+	}
+
+	/**
+	 * 删除权限信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/weightDel", produces = {"application/json"})
+	@ResponseBody
+	public Result weightDel(@RequestParam(value="id",required=false)Integer id) {
+		if(jokeService.weightDel(id) == 1){
+			return new Success();
+		}
+		return new Failed();
+	}
+
+	/**
+	 * 获取字典信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/weightGet", produces = {"application/json"})
+	@ResponseBody
+	public Result weightGet(@RequestParam(value="id") String id) {
+		return new Success(jokeService.weightGet(id));
+	}
 }

@@ -143,7 +143,7 @@ public class JokeService {
 	 */
     public Result getJokeList(Integer distributorId, Integer channelId, Integer topicId, Integer listType, Long start, Long end, Integer actionType){
     	Object result = null;
-    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){ 		// 普通频道列表页
+    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){ 		// 普通频道列表页 lt = 0
 			if(actionType == 1){  	// 获取普通频道历史记录列表页
 				result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start + 500, end + 500);
 			}else {
@@ -157,11 +157,11 @@ public class JokeService {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
 				}
 			}
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道 lt = 1
     		result = getTopicList4TopicChannel(distributorId,start,end);
-    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页
+    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
     		result = getJokeList4RecommendChannel(start,end);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页	lt = 9
     		result = getJokeList4TopicChannel(topicId,start,end);
     	}
     	return new Success(result);

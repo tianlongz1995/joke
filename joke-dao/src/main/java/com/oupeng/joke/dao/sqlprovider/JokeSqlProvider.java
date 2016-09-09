@@ -2,12 +2,18 @@ package com.oupeng.joke.dao.sqlprovider;
 
 import java.util.Map;
 
+import com.oupeng.joke.domain.Dictionary;
 import org.apache.commons.lang3.StringUtils;
 
 import com.oupeng.joke.domain.Joke;
 
 public class JokeSqlProvider {
 
+	/**
+	 * 获取数据源列表SQL
+	 * @param map
+	 * @return
+	 */
 	public static String getJokeList(Map<String,Object> map){
 		Object type = map.get("type");
 		Object status = map.get("status");
@@ -56,7 +62,12 @@ public class JokeSqlProvider {
 		sql.append(" where id in (").append(ids).append(")");
 		return sql.toString();
 	}
-	
+
+	/**
+	 * 更新段子信息SQL
+	 * @param joke
+	 * @return
+	 */
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update joke set update_time =now(),verify_time=now(), ");
@@ -104,7 +115,12 @@ public class JokeSqlProvider {
 		}
 		return sql.toString();
 	}
-	
+
+	/**
+	 * 获取频道数据源列表SQL
+	 * @param map
+	 * @return
+	 */
 	public static String getJokeListForChannel(Map<String,Object> map){
 		Object contentType = map.get("contentType");
 		Integer start = Integer.valueOf(map.get("start").toString());
@@ -175,6 +191,149 @@ public class JokeSqlProvider {
 		sql.append(joke.getType()).append(",'");
 		sql.append(joke.getUuid()).append("','");
 		sql.append(joke.getVerifyUser()).append("', 1, now(), now(), now(),30+FLOOR(RAND()*70) )");
+		return sql.toString();
+	}
+
+	/**
+	 * 添加权重字典
+	 * @param dict
+	 * @return
+	 */
+	public static String addDictionary(Dictionary dict){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" insert into dictionary(`code`, parent_code, `type`, `value`, `describe`, `seq`, create_time, update_time) value(");
+		if(StringUtils.isNotBlank(dict.getCode())){
+			sql.append("'").append(dict.getCode().trim()).append("', ");
+		}else{
+			sql.append("null,");
+		}
+		if(StringUtils.isNotBlank(dict.getParentCode())){
+			sql.append("'").append(dict.getParentCode().trim()).append("', ");
+		}else{
+			sql.append(" null, ");
+		}
+		if(StringUtils.isNotBlank(dict.getParentCode())){
+			sql.append(" '").append(dict.getParentCode()).append("', ");
+		}else{
+			sql.append(" null,");
+		}
+		if(StringUtils.isNotBlank(dict.getValue())){
+			sql.append(" '").append(dict.getValue()).append("', ");
+		}else{
+			sql.append(" null,");
+		}
+		if(StringUtils.isNotBlank(dict.getDescribe())){
+			sql.append(" '").append(dict.getDescribe()).append("', ");
+		}else{
+			sql.append(" null,");
+		}
+		if(dict.getSeq() != null){
+			sql.append(dict.getSeq()).append(", ");
+		}else{
+			sql.append(" 0, ");
+		}
+		sql.append(" now(), now() )");
+		return sql.toString();
+	}
+
+	/**
+	 * 修改权重字典
+	 * @param dict
+	 * @return
+	 */
+	public static String weightEdit(Dictionary dict){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" update dictionary set update_time =now(), ");
+		if(StringUtils.isNotBlank(dict.getCode())){
+			sql.append(" `code`='").append(dict.getCode().trim()).append("',");
+		}else{
+			sql.append(" `code`=null,");
+		}
+		if(StringUtils.isNotBlank(dict.getParentCode())){
+			sql.append(" parent_code='").append(dict.getParentCode()).append("',");
+		}else{
+			sql.append(" parent_code=null,");
+		}
+		if(StringUtils.isNotBlank(dict.getValue())){
+			sql.append(" `value`='").append(dict.getValue()).append("',");
+		}else{
+			sql.append(" `value`=null,");
+		}
+		if(StringUtils.isNotBlank(dict.getDescribe())){
+			sql.append(" `describe`='").append(dict.getDescribe().trim()).append("'");
+		}else{
+			sql.append(" `describe`=null ");
+		}
+		sql.append(" where id =").append(dict.getId());
+		return sql.toString();
+	}
+
+	/**
+	 * 获取待审核的段子列表SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeListForVerify(Map<String,Object> map){
+		Integer type = (Integer) map.get("type");
+		Integer status = (Integer) map.get("status");
+		Integer source = (Integer) map.get("source");
+		String startDay = (String) map.get("startDay");
+		String endDay = (String) map.get("endDay");
+		Integer offset = (Integer) map.get("offset");
+		Integer pageSize = (Integer) map.get("pageSize");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t2.name as sourceName,");
+		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
+		sql.append(" t1.update_time as updateTime from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
+		if(type != null){
+			sql.append(" and t1.type = ").append(type).append(" ");
+		}
+		if(status != null){
+			sql.append(" and t1.status = ").append(status).append(" ");
+		}
+		if(source != null){
+			sql.append(" and t1.source_id = ").append(source).append(" ");
+		}
+		if(StringUtils.isNotBlank(startDay)){
+			sql.append(" and t1.`create_time` >= str_to_date('").append(startDay).append("', '%Y-%m-%d %H:%i:%s') ");
+		}
+		if(StringUtils.isNotBlank(endDay)){
+			sql.append(" and t1.`create_time` <= str_to_date('").append(endDay).append("', '%Y-%m-%d %H:%i:%s') ");
+		}
+		sql.append(" order by t1.create_time desc limit ");
+		sql.append(offset).append(" , ").append(pageSize);
+		return sql.toString();
+	}
+
+	/**
+	 * 获取待审核的段子列表记录总数SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeListForVerifyCount(Map<String,Object> map){
+		Integer type = (Integer) map.get("type");
+		Integer status = (Integer) map.get("status");
+		Integer source = (Integer) map.get("source");
+		String startDay = (String) map.get("startDay");
+		String endDay = (String) map.get("endDay");
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(1) from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
+		if(type != null){
+			sql.append(" and t1.type = ").append(type).append(" ");
+		}
+		if(status != null){
+			sql.append(" and t1.status = ").append(status).append(" ");
+		}
+		if(source != null){
+			sql.append(" and t1.source_id = ").append(source).append(" ");
+		}
+		if(StringUtils.isNotBlank(startDay)){
+			sql.append(" and t1.`create_time` >= str_to_date('").append(startDay).append("', '%Y-%m-%d %H:%i:%s') ");
+		}
+		if(StringUtils.isNotBlank(endDay)){
+			sql.append(" and t1.`create_time` <= str_to_date('").append(endDay).append("', '%Y-%m-%d %H:%i:%s') ");
+		}
 		return sql.toString();
 	}
 }

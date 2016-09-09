@@ -42,7 +42,13 @@ public class SourceService {
     public List<Source> getSourceList(Source source){
         return sourceMapper.getSourceList(source);
     }
-
+    /**
+     * 获取内容源列表
+     * @return
+     */
+    public List<Source> getSourceList(){
+        return sourceMapper.getSourceList();
+    }
     /**
      * 获取内容源信息
      * @param id 内容源编号

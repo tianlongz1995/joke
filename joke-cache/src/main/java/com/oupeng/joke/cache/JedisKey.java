@@ -15,7 +15,7 @@ public class JedisKey {
     public static final String SORTEDSET_TOPIC_CHANNEL = "sortedset.topic.channel.";
     /** 普通频道段子编号列表   */
     public static final String SORTEDSET_COMMON_CHANNEL = "sortedset.common.channel.";
-
+    /** 推荐频道段子ID列表    */
     public static final String SORTEDSET_RECOMMEND_CHANNEL = "sortedset.recommend.channel";
     public static final String STRING_JOKE = "string.joke.";
     public static final String STRING_TOPIC = "string.topic.";

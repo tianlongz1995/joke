@@ -9,23 +9,29 @@ import java.util.List;
 
 public interface SourceMapper {
 	/**
-	 * 获取广告列表总数
+	 * 获取内容源列表总数
 	 * @param source
 	 * @return
 	 */
 	@SelectProvider(method="getSourceListCount",type=SourceSqlProvider.class)
 	int getSourceListCount(Source source);
 	/**
-	 * 获取广告列表
-	 * @param source        广告
+	 * 获取内容源列表
+	 * @param source        内容源
 	 * @return
 	 */
 	@SelectProvider(method="getSourceList",type=SourceSqlProvider.class)
 	List<Source> getSourceList(Source source);
+	/**
+	 * 获取内容源列表
+	 * @return
+	 */
+	@Select("select id, name from source")
+	List<Source> getSourceList();
 
 	/**
-	 * 获取广告信息
-	 * @param id 广告编号
+	 * 获取内容源信息
+	 * @param id 内容源编号
 	 * @return
 	 */
 	@Select(value="select id, name, url, status,create_time as createTime,update_time as updateTime from source where id = #{id}")
@@ -40,14 +46,14 @@ public interface SourceMapper {
 
 
 	/**
-	 * 新增广告
+	 * 新增内容源
 	 * @param source
 	 */
 	@InsertProvider(method="insertSource",type=SourceSqlProvider.class)
 	void insertSource(Source source);
 
 	/**
-	 * 更新广告信息
+	 * 更新内容源信息
 	 * @param source
 	 */
 	@UpdateProvider(method="updateSource",type=SourceSqlProvider.class)
