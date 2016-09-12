@@ -75,7 +75,7 @@ public interface JokeMapper {
 	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
 
 	/**
-	 * 查询最近审核通过的size条数据
+	 * 查询最近审核通过的数据
 	 * @param contentType
 	 * @param size		发布数量
 	 * @return
@@ -86,10 +86,10 @@ public interface JokeMapper {
 	
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
-	public int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
+	int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
 	
 	@SelectProvider(method="getJokeListForPublish",type=JokeSqlProvider.class)
-	public List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
+	List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
 
 	/**
 	 * 查询推荐频道下数据内容
@@ -112,7 +112,7 @@ public interface JokeMapper {
 			+ " RIGHT JOIN "
 			+ " (select source_id,0 as validNum,count(1) as  inValidNum from joke where `status` = 2 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t2 "
 			+ " on t1.source_id = t2.source_id ")
-	public List<JokeVerifyRate> getJokeVerifyRate();
+	List<JokeVerifyRate> getJokeVerifyRate();
 
 	/**
 	 * 存储段子信息 - 并返回主键
@@ -205,4 +205,12 @@ public interface JokeMapper {
 	@SelectProvider(method = "getJokeListForVerifyCount", type = JokeSqlProvider.class)
 	int getJokeListForVerifyCount(@Param("type")Integer type, @Param("status")Integer status, @Param("source")Integer source, @Param("startDay")String startDay, @Param("endDay")String endDay);
 
+	/**
+	 * 修改发布数量
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@Update("update channel set size = #{size} where id = #{id}")
+    int editPublishSize(@Param("id")String id, @Param("size")Integer size);
 }

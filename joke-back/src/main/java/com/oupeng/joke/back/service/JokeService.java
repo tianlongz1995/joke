@@ -297,9 +297,9 @@ public class JokeService {
 	}
 
 	/**
-	 * 查询最近审核通过的100条数据
-	 * @param contentType
-	 * @param size 			发布数量
+	 * 查询最近审核通过的数据
+	 * @param contentType	发布类型
+	 * @param size 			数量
 	 * @return
 	 */
 	public List<Joke> getJokeForPublishChannel(String contentType, Integer size){
@@ -414,4 +414,13 @@ public class JokeService {
 		return jokeMapper.weightGet(id);
 	}
 
+	/**
+	 * 修改发布数量
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	public int editPublishSize(String id, Integer size) {
+		return jokeMapper.editPublishSize(id, size);
+	}
 }

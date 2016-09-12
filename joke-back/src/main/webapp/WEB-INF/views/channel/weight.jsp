@@ -66,22 +66,6 @@
                                 <a href="#" data-toggle="modal" data-target="#newItem">新增权重</a>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
-                                <%--<div class="dataTables_filter" id="DataTables_Table_0_filter">--%>
-                                    <%--<label style="padding-right:30px;">--%>
-                                        <%--<span >状态</span>--%>
-                                        <%--<select id="status">--%>
-                                            <%--<option value="">全部</option>--%>
-                                            <%--<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >下线</option>--%>
-                                            <%--<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >上线</option>--%>
-                                        <%--</select>--%>
-                                    <%--</label>--%>
-                                    <%--<label style="padding-right:30px;">--%>
-                                        <%--<a class="btn btn-primary btn-sm" href="#" id="selectItemList">--%>
-                                            <%--<span class="glyphicon glyphicon-search icon-white" >查询</span>--%>
-                                        <%--</a>--%>
-                                    <%--</label>--%>
-                                <%--</div>--%>
-
                                 <thead>
                                 <tr>
                                     <th>序号</th>
@@ -109,9 +93,9 @@
                                             <a class="btn btn-info btn-sm" onclick="weightEidt('${dictionary.id}')" >
                                                 <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                             </a>
-                                            <a class="btn btn-warning btn-sm" onclick="weightDel('${dictionary.id}')" >
+                                            <%--<a class="btn btn-warning btn-sm" onclick="weightDel('${dictionary.id}')" >
                                                 <i class="glyphicon glyphicon-arrow-right"></i> 删除
-                                            </a>
+                                            </a>--%>
                                         </td>
                                     </tr>
                                 </c:forEach>

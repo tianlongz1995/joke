@@ -57,7 +57,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="box-content">
 		<div class="alert alert-info">
 			需要添加新的频道点击: 
-					<a href="#" data-toggle="modal" data-target="#newChannel">新增频道</a>
+					<a href="#" id="newChannelButton" data-toggle="modal" data-target="#newChannel">新增频道</a>
 			<div style="float:right;margin-top: -5px;">
 				<a type="button" class="btn btn-danger btn-sm" href="<%=basePath%>channel/weight?code=10001" >推荐频道权重管理</a>
 			</div>
@@ -86,6 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th>内容属性</th>
 					<th>类型</th>
 					<th>有趣/吐槽</th>
+					<th>发布数量</th>
 					<th>状态</th>
 					<th>操作</th>
 				</tr>
@@ -111,6 +112,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td>
 							<c:out value="${channel.good}"/><span>/</span><c:out value="${channel.bad}"/>
 						</td>
+						<td style="text-align: center;vertical-align: middle;">
+							<c:if test="${channel.type == 0}">
+									${channel.size}
+							</c:if>
+							<c:if test="${channel.type != 0}">
+								-
+							</c:if>
+						</td>
 						<td>
 							<c:if test="${channel.status == 0}">下线</c:if>
 							<c:if test="${channel.status == 1}">上线</c:if>
@@ -132,6 +141,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        <a class="btn btn-warning" href="channel/joke?channelId=${channel.id}">
 					        	<i class="glyphicon glyphicon-arrow-right"></i>删除内容
 					        </a>
+                            <a class="btn btn-success" href="#" onclick="editSize(${channel.id},'${channel.name}',${channel.size})">
+                                <i class="glyphicon glyphicon-ok icon-white"></i>修改发布数量
+                            </a>
 					    </td>
 					</tr>
 				</c:forEach>
@@ -167,6 +179,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  		</td>
 					</tr>
 					<tr>
+						<th>发布数量</th>
+						<td><input id="addSize" type="text" class="form-control" placeholder="每次发布数量"/></td>
+					</tr>
+					<tr>
 						<th>内容属性</th>
 						<td>
 							<label style="padding-right:30px;">
@@ -189,6 +205,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 </div>
 
+<div class="modal fade" id="publishSizeModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 id="editTitle" class="modal-title" id="editModalLabel">修改发布数量</h4>
+            </div>
+            <div class="modal-body">
+                <table id="size-table" class="table table-hover">
+                    <input type="hidden" id="publishId" />
+                    <tr>
+                        <th>发布数量</th>
+                        <td><input id="publishSize" type="text" class="form-control" placeholder="发布数量"/></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-danger" onclick="publishConfirm()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 $('#addNewChannel').click(function(event) {
 	$('#addNewChannel').attr("disabled","disabled");
@@ -200,8 +241,13 @@ $('#addNewChannel').click(function(event) {
 		alert("未选中任何内容属性");
 		return false;
 	}
+	var size = $('#addSize').val();
+	if(size < 1 || size > 1000){
+		alert("发布数据数量必须在1~1000之内!");
+		return false;
+	}
 	post('channel/add',
-		'name='+$("#addname").val()+'&type='+$('#addtype').val()+'&contentType='+contentType.toString(), 
+		'name='+$("#addname").val()+'&type='+$('#addtype').val()+'&contentType='+contentType.toString()+'&size='+size,
 		function (data) {
 			if(data['status']) {
 				location.href = '<%=basePath%>channel/list?status='+$("#status").val();
@@ -213,7 +259,9 @@ $('#addNewChannel').click(function(event) {
 			alert('请求失败，请检查网络环境');
 		});
 });
-
+$("#newChannelButton").click(function (event) {
+	$('#addNewChannel').removeAttr("disabled");
+});
 function verifyChannel(status,id) {
 	post('channel/verify',
 			'id='+id+'&status='+status, 
@@ -232,7 +280,29 @@ function verifyChannel(status,id) {
 $('#selectChannelList').click(function(event) {
 	location.href = '<%=basePath%>channel/list?status='+$("#status").val();
 });
+function editSize(id, name, size) {
+    $('#publishSizeModal').modal('show');
+    $('#editTitle').html("修改" + name + "发布数量");
+    $('#publishId').val(id);
+    $("#publishSize").val(size);
 
+};
+function publishConfirm() {
+    var id = $("#publishId").val();
+    var size = $("#publishSize").val();
+    post('channel/editPublishSize',
+            'id='+id+'&size='+size,
+            function (data) {
+                if(data.status) {
+                    location.href = '<%=basePath%>channel/list?status='+$("#status").val();
+                }else {
+                    alert('操作失败:'+data.info);
+                }
+            },
+            function () {
+                alert('请求失败，请检查网络环境');
+            });
+}
 function post(url, data, success, error) {
 	var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 	var csrfToken = $("meta[name='_csrf']").attr("content");

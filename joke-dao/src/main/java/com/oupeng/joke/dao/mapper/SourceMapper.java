@@ -27,7 +27,7 @@ public interface SourceMapper {
 	 * @return
 	 */
 	@Select("select id, name from source")
-	List<Source> getSourceList();
+	List<Source> getAllSourceList();
 
 	/**
 	 * 获取内容源信息

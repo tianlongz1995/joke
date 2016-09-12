@@ -75,7 +75,7 @@ public class JokeController {
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		model.addAttribute("list", list);
-		model.addAttribute("sourceList", sourceService.getSourceList());
+		model.addAttribute("sourceList", sourceService.getAllSourceList());
 		model.addAttribute("status", status);
 		model.addAttribute("type", type);
 		model.addAttribute("source", source);

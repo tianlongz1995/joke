@@ -25,14 +25,27 @@ public class ChannelController {
 	private ChannelService channelService;
 	@Autowired
 	private JokeService jokeService;
-	
+
+	/**
+	 * 频道列表页面
+	 * @param status
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/list")
 	public String getChannelList(@RequestParam(value="status",required=false)Integer status,Model model){
 		model.addAttribute("list", channelService.getChannelList(status));
 		model.addAttribute("status", status);
 		return "/channel/list";
-	} 
-	
+	}
+
+	/**
+	 * 频道状态修改
+	 * @param id
+	 * @param status
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/verify")
 	@ResponseBody
 	public Result verify(@RequestParam(value="id")Integer id,
@@ -44,30 +57,55 @@ public class ChannelController {
 		}else{
 			return new Failed(result);
 		}
-	} 
-	
+	}
+
+	/**
+	 * 进入频道修改页面
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/edit")
 	public String edit(@RequestParam(value="id")Integer id,Model model){
 		model.addAttribute("channel", channelService.getChannelById(id));
 		return "/channel/edit";
-	} 
-	
+	}
+
+	/**
+	 * 修改频道
+	 * @param id
+	 * @param name
+	 * @param type
+	 * @param size
+	 * @param contentType
+	 * @return
+	 */
 	@RequestMapping(value="/update")
 	@ResponseBody
 	public Result update(@RequestParam(value="id",required=true)Integer id,
 			@RequestParam(value="name",required=false)String name,
-			@RequestParam(value="type",required=true)Integer type,
+			@RequestParam(value="type")Integer type,
+			@RequestParam(value="size")Integer size,
 			@RequestParam(value="contentType",required=false)String contentType){
-		channelService.updateChannel(id, name, type, contentType);
+		channelService.updateChannel(id, name, type, contentType, size);
 		return new Success();
-	} 
-	
+	}
+
+	/**
+	 * 添加渠道
+	 * @param name
+	 * @param type
+	 * @param size
+	 * @param contentType
+	 * @return
+	 */
 	@RequestMapping(value="/add")
 	@ResponseBody
 	public Result add(@RequestParam(value="name",required=false)String name,
-			@RequestParam(value="type",required=true)Integer type,
+			@RequestParam(value="type")Integer type,
+			@RequestParam(value="size")Integer size,
 			@RequestParam(value="contentType",required=false)String contentType){
-		channelService.insertChannel(name, type, contentType);
+		channelService.insertChannel(name, type, contentType, size);
 		return new Success();
 	} 
 	
@@ -211,4 +249,21 @@ public class ChannelController {
 	public Result weightGet(@RequestParam(value="id") String id) {
 		return new Success(jokeService.weightGet(id));
 	}
+
+	/**
+	 * 修改发布数量
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@RequestMapping(value="/editPublishSize", produces = {"application/json"})
+	@ResponseBody
+	public Result editPublishSize(@RequestParam(value="id") String id,@RequestParam(value="size") Integer size) {
+		int result = jokeService.editPublishSize(id, size);
+		if(result == 1){
+			return new Success();
+		}
+		return new Failed();
+	}
+
 }

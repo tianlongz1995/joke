@@ -37,12 +37,14 @@ public class CommonChannelTask {
 	private MailService mailService;
 	@Autowired
 	private Environment env;
-	
+
+
 	/**
 	 * 发布普通频道下的段子数据，每天下午6点时候发布，每个频道最多发布100条数据
 	 * */
 	@Scheduled(cron="0 0 18 * * ?")
 	public void publishCommonChannelJoke(){
+//		获取有效频道列表
 		List<Channel> channelList = channelService.getChannelList(Constants.CHANNEL_STATUS_VALID);
 		if(!CollectionUtils.isEmpty(channelList)){
 			StringBuffer log = new StringBuffer();
@@ -53,8 +55,8 @@ public class CommonChannelTask {
 			int notAuditedJokeCount = 0;
 			for(Channel channel : channelList){
 				if(channel.getType() == Constants.CHANNEL_TYPE_COMMON && StringUtils.isNotBlank(channel.getContentType())){
-//					查询最近审核通过的size条数据
-					jokes = jokeService.getJokeForPublishChannel(channel.getContentType(), Integer.valueOf(env.getProperty("publish.size")));
+//					查询最近审核通过的数据
+					jokes = jokeService.getJokeForPublishChannel(channel.getContentType(), channel.getSize());
 //					查询未审核的段子数
 					notAuditedJokeCount = jokeService.getJokeCountForPublishChannel(channel.getContentType(), Constants.JOKE_STATUS_NOT_AUDITED);
 					if(!CollectionUtils.isEmpty(jokes)){

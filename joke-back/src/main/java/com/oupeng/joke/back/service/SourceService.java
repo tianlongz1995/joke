@@ -46,8 +46,8 @@ public class SourceService {
      * 获取内容源列表
      * @return
      */
-    public List<Source> getSourceList(){
-        return sourceMapper.getSourceList();
+    public List<Source> getAllSourceList(){
+        return sourceMapper.getAllSourceList();
     }
     /**
      * 获取内容源信息
