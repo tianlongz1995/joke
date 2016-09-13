@@ -158,9 +158,9 @@ public class JokeService {
 				}
 			}
     	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道 lt = 1
-    		result = getTopicList4TopicChannel(distributorId,start,end);
+    		result = getTopicList4TopicChannel(distributorId, start, end);
     	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
-    		result = getJokeList4RecommendChannel(start,end);
+    		result = getJokeList4RecommendChannel(start, end, actionType);
     	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页	lt = 9
     		result = getJokeList4TopicChannel(topicId,start,end);
     	}
@@ -201,9 +201,13 @@ public class JokeService {
 	 * @param end
 	 * @return
 	 */
-    private List<Joke> getJokeList4RecommendChannel(Long start,Long end){
+    private List<Joke> getJokeList4RecommendChannel(Long start,Long end, Integer actionType){
     	String key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
-		return getJokeCacheList(key, start, end);
+		if(actionType == 1){
+			return getJokeCacheList(key, start + 500, end + 500);
+		} else {
+			return getJokeCacheList(key, start, end);
+		}
     }
 
 	/**
