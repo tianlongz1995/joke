@@ -23,11 +23,21 @@ public class ChannelService {
 	private ChannelMapper channelMapper;
 	@Autowired
 	private JedisCache jedisCache;
-	
+
+	/**
+	 * 获取频道列表
+	 * @param status
+	 * @return
+	 */
 	public List<Channel> getChannelList(Integer status){
 		return channelMapper.getChannelList(status);
 	}
 
+	/**
+	 * 获取频道
+	 * @param id
+	 * @return
+	 */
 	public Channel getChannelById(Integer id){
 		return channelMapper.getChannelById(id);
 	}
@@ -68,20 +78,35 @@ public class ChannelService {
 		}
 		return result;
 	}
-	
-	public void insertChannel(String name,Integer type,String contentType){
+
+	/**
+	 * 新增频道
+	 * @param name
+	 * @param type
+	 * @param contentType
+	 */
+	public void insertChannel(String name,Integer type,String contentType,Integer size){
 		Channel channel = new Channel();
 		channel.setName(name);
 		channel.setType(type);
 		channel.setContentType(contentType);
+		channel.setSize(size);
 		channelMapper.insertChannel(channel);
 	}
-	
-	public void updateChannel(Integer id ,String name,Integer type,String contentType){
+
+	/**
+	 * 修改频道
+	 * @param id
+	 * @param name
+	 * @param type
+	 * @param contentType
+	 */
+	public void updateChannel(Integer id ,String name,Integer type,String contentType,Integer size){
 		Channel channel = new Channel();
 		channel.setId(id);
 		channel.setName(name);
 		channel.setType(type);
+		channel.setSize(size);
 		channel.setContentType(contentType);
 		channelMapper.updateChannel(channel);
 	}

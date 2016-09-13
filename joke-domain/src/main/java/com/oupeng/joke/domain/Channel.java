@@ -3,15 +3,26 @@ package com.oupeng.joke.domain;
 import java.util.Date;
 
 public class Channel {
+	/**	主键	*/
 	private Integer id;
+	/**	频道名称	*/
 	private String name;
+	/**	频道类型  0:普通 1:专题 2:推荐	*/
 	private Integer type;
+	/**	频道状态 0:下线 1:上线	*/
 	private Integer status;
+	/**	频道内容类型(笑话属性，多个用逗号分隔 0:纯文;1:图片;2:动图) */
 	private String contentType;
+	/**	点赞数	*/
 	private Integer good;
+	/**	被踩数	*/
 	private Integer bad;
+	/**	创建时间	*/
 	private Date createTime;
+	/**	更新时间	*/
 	private Date updateTime;
+	/**	定时发布数量	*/
+	private Integer size;
 	
 	public Integer getId() {
 		return id;
@@ -67,5 +78,12 @@ public class Channel {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 }

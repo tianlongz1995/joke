@@ -55,8 +55,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<h2><i class="glyphicon glyphicon-user"></i> 段子列表</h2>
 	</div>
 	<div class="box-content">
-		<div class="alert alert-info">
-		</div>
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 			    <label style="padding-right:30px;">
@@ -67,8 +65,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		
 			<thead>
-				<div class="alert alert-info">
-				</div>
 				<tr>
 					<th>全选<input type="checkbox" id="allcheck" /></th>
 					<th>内容</th>
@@ -90,12 +86,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<c:if test="${!empty joke.content}">
 									<p><small>${joke.content}</<small></p>
 								</c:if>
-								<%--<c:if test="${joke.type == 2}">
-									<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>
-								</c:if>
-								<c:if test="${joke.type == 1}">
-									<p><img src="${joke.img}"/></p>
-								</c:if>--%>
 							</div>
 						</td>
 						<td>

@@ -66,6 +66,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td><input id="name" type="text" class="form-control" value="${channel.name}"/></td>
 				</tr>
 				<tr>
+					<th>发布数量</th>
+					<td><input id="size" type="text" class="form-control" placeholder="发布数量" value="${channel.size}"/></td>
+				</tr>
+				<tr>
 		  			<th>类别</th>
 			  		<td>
 			  			<select id="type" class="form-control" >
@@ -117,9 +121,13 @@ $('#updateChannel').click(function(event) {
 		alert("未选中任何内容属性");
 		return false;
 	}
-	
+	var size = $('#size').val();
+	if(size < 1 || size > 1000){
+		alert("发布数据数量必须在1~1000之内!");
+		return false;
+	}
 	post('channel/update',
-			'id='+$("#channelid").val()+'&name='+$("#name").val()+'&type='+$('#type').val()+'&contentType='+contentType.toString(),
+			'id='+$("#channelid").val()+'&name='+$("#name").val()+'&type='+$('#type').val()+'&contentType='+contentType.toString()+'&size='+size,
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>channel/list';

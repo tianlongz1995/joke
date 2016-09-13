@@ -2,19 +2,34 @@ package com.oupeng.joke.dao.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.*;
+
 
 import com.oupeng.joke.dao.sqlprovider.JokeSqlProvider;
-import com.oupeng.joke.domain.Feedback;
-import com.oupeng.joke.domain.Joke;
-import com.oupeng.joke.domain.JokeVerifyInfo;
-import com.oupeng.joke.domain.JokeVerifyRate;
+import com.oupeng.joke.domain.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.Delete;
 
 public interface JokeMapper {
-	
+	/**
+	 * 获取数据源列表
+	 * @param type
+	 * @param status
+	 * @param id
+	 * @param content
+	 * @param isTopic
+	 * @return
+	 */
 	@SelectProvider(method="getJokeList",type=JokeSqlProvider.class)
-	public List<Joke> getJokeList(@Param(value="type")Integer type,@Param(value="status")Integer status,
-			@Param(value="id")Integer id,@Param(value="content")String content,@Param(value="isTopic")boolean isTopic);
+	List<Joke> getJokeList(@Param(value="type")Integer type, @Param(value="status")Integer status,
+						   @Param(value="id")Integer id, @Param(value="content")String content, @Param(value="isTopic")boolean isTopic);
 	
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
 			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where id = ${id}")
@@ -60,7 +75,7 @@ public interface JokeMapper {
 	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
 
 	/**
-	 * 查询最近审核通过的size条数据
+	 * 查询最近审核通过的数据
 	 * @param contentType
 	 * @param size		发布数量
 	 * @return
@@ -71,10 +86,10 @@ public interface JokeMapper {
 	
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
-	public int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
+	int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
 	
 	@SelectProvider(method="getJokeListForPublish",type=JokeSqlProvider.class)
-	public List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
+	List<Joke> getJokeListForPublish(@Param(value="lut")String lastUpdateTime,@Param(value="cut")String currentUpdateTime);
 
 	/**
 	 * 查询推荐频道下数据内容
@@ -97,7 +112,7 @@ public interface JokeMapper {
 			+ " RIGHT JOIN "
 			+ " (select source_id,0 as validNum,count(1) as  inValidNum from joke where `status` = 2 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t2 "
 			+ " on t1.source_id = t2.source_id ")
-	public List<JokeVerifyRate> getJokeVerifyRate();
+	List<JokeVerifyRate> getJokeVerifyRate();
 
 	/**
 	 * 存储段子信息 - 并返回主键
@@ -114,5 +129,88 @@ public interface JokeMapper {
 	 * @param user
 	 */
 	@UpdateProvider(method="updateJokeStatus",type=JokeSqlProvider.class)
-	public void updateJokeStatus(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
+	void updateJokeStatus(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
+
+	/**
+	 * 获取字典记录总条数
+	 * @param code
+	 * @return
+	 */
+	@Select(value="select count(1) from dictionary where `parent_code` = #{code}")
+	int getDictionaryRecordCount(@Param(value="code")String code);
+
+	/**
+	 * 获取字典记录列表
+	 * @param code
+	 * @param offset
+	 * @param pageSize
+	 * @return
+	 */
+	@Select(value="select id, code, parent_code as parentCode, type, value, `describe`, `seq`,update_time as updateTime from dictionary where parent_code = #{code} order by seq asc limit #{offset}, #{pageSize} ")
+	List<Dictionary> getDictionaryRecordList(@Param(value="code")String code, @Param(value="offset")int offset, @Param(value="pageSize")Integer pageSize);
+
+	/**
+	 * 添加权重字典
+	 * @param dict
+	 * @return
+	 */
+	@InsertProvider(method = "addDictionary", type = JokeSqlProvider.class)
+	int addDictionary(Dictionary dict);
+
+	/**
+	 * 修改权重信息
+	 * @param dict
+	 * @return
+	 */
+	@UpdateProvider(method="weightEdit",type=JokeSqlProvider.class)
+	int weightEdit(Dictionary dict);
+
+	/**
+	 * 删除权限信息
+	 * @param id
+	 * @return
+	 */
+	@Delete("delete from dictionary where id = #{id}")
+	int weightDel(@Param("id") Integer id);
+
+	/**
+	 * 获取字典信息
+	 * @param id
+	 * @return
+	 */
+	@Select("select id, `code`, parent_code as parentCode, `value`, `describe`, `seq` from dictionary where id= #{id}")
+	Dictionary weightGet(@Param("id") String id);
+
+	/**
+	 * 获取待审核的段子列表
+	 * @param type
+	 * @param status
+	 * @param source
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	@SelectProvider(method = "getJokeListForVerify", type = JokeSqlProvider.class)
+	List<Joke> getJokeListForVerify(@Param("type")Integer type, @Param("status")Integer status, @Param("source")Integer source, @Param("startDay")String startDay, @Param("endDay")String endDay, @Param("offset")Integer offset, @Param("pageSize")Integer pageSize);
+
+	/**
+	 * 获取待审核的段子列表记录总数
+	 * @param type
+	 * @param status
+	 * @param source
+	 * @param startDay
+	 * @param endDay
+	 * @return
+	 */
+	@SelectProvider(method = "getJokeListForVerifyCount", type = JokeSqlProvider.class)
+	int getJokeListForVerifyCount(@Param("type")Integer type, @Param("status")Integer status, @Param("source")Integer source, @Param("startDay")String startDay, @Param("endDay")String endDay);
+
+	/**
+	 * 修改发布数量
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@Update("update channel set size = #{size} where id = #{id}")
+    int editPublishSize(@Param("id")String id, @Param("size")Integer size);
 }

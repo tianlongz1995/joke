@@ -31,6 +31,8 @@ public class Joke {
 	@JsonInclude(Include.NON_NULL)
 	private Integer sourceId;
 	@JsonInclude(Include.NON_NULL)
+	private String sourceName;
+	@JsonInclude(Include.NON_NULL)
 	private String verifyUser;
 	@JsonInclude(Include.NON_NULL)
 	private Date verifyTime;
@@ -83,6 +85,15 @@ public class Joke {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
+
 	public Integer getSourceId() {
 		return sourceId;
 	}
