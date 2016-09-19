@@ -141,9 +141,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        <a class="btn btn-warning" href="channel/joke?channelId=${channel.id}">
 					        	<i class="glyphicon glyphicon-arrow-right"></i>删除内容
 					        </a>
-                            <a class="btn btn-success" href="#" onclick="editSize(${channel.id},'${channel.name}',${channel.size})">
-                                <i class="glyphicon glyphicon-ok icon-white"></i>修改发布数量
-                            </a>
+                            <c:if test="${channel.type == 0}">
+                                <a class="btn btn-success" href="#" onclick="editSize(${channel.id},'${channel.name}',${channel.size})">
+                                    <i class="glyphicon glyphicon-ok icon-white"></i>修改发布数量
+                                </a>
+                            </c:if>
 					    </td>
 					</tr>
 				</c:forEach>

@@ -1,8 +1,11 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.SourceSqlProvider;
+import com.oupeng.joke.domain.QueryParam;
 import com.oupeng.joke.domain.Source;
 import com.oupeng.joke.domain.SourceCrawl;
+import com.oupeng.joke.domain.statistics.SourceCrawlExport;
+import com.oupeng.joke.domain.statistics.SourceQualityExport;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -87,4 +90,139 @@ public interface SourceMapper {
 
 	@Select(value="select count(1) from source where url = #{url} or url = #{urlSuffix} ")
 	int getSourceUrlCount(@Param(value = "url")String url, @Param(value = "urlSuffix")String urlSuffix);
+
+	/**
+	 * 获取内容源分类审核质量统计总数
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getQualityListCount", type = SourceSqlProvider.class)
+    int getQualityListCount(QueryParam queryParam);
+
+	/**
+	 * 获取内容源分类审核质量统计记录
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getQualityList", type = SourceSqlProvider.class)
+	List<SourceCrawl> getQualityList(QueryParam queryParam);
+
+	/**
+	 * 获取内容源抓取统计记录总数
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlListCount", type = SourceSqlProvider.class)
+    int getSourceCrawlListCount(QueryParam queryParam);
+	/**
+	 * 获取内容源抓取统计记录
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlList", type = SourceSqlProvider.class)
+	List<SourceCrawl> getSourceCrawlList(QueryParam queryParam);
+
+	/**
+	 * 获取内容源抓取总统计记录总数
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlTotalListCount", type = SourceSqlProvider.class)
+	int getSourceCrawlTotalListCount(QueryParam queryParam);
+
+	/**
+	 * 获取内容源抓取统计总记录
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlTotalList", type = SourceSqlProvider.class)
+	List<SourceCrawl> getSourceCrawlTotalList(QueryParam queryParam);
+
+    /**
+     * 获取内容源审核质量统计总数
+     * @param queryParam
+     * @return
+     */
+    @SelectProvider(method = "getQualityListTotalCount", type = SourceSqlProvider.class)
+    int getQualityListTotalCount(QueryParam queryParam);
+
+    /**
+     * 获取内容源审核质量统计记录
+     * @param queryParam
+     * @return
+     */
+    @SelectProvider(method = "getQualityTotalList", type = SourceSqlProvider.class)
+    List<SourceCrawl> getQualityTotalList(QueryParam queryParam);
+
+    /**
+     * 写入前一天数据源抓取统计
+     * @param day
+     * @param dayStr
+     * @return
+     */
+    @Insert("insert into `stat_source_crawl_day`(source_id,source_type,grab_total,day,status)  select j.`source_id`,j.type,count(j.id),#{day},1  from joke j where j.create_time >= '${dayStr} 00:00:00' and j.create_time <= '${dayStr} 23:59:59' and j.`source_id` > 0 group by j.`source_id`,j.type")
+    int insertSourceCrawlStat(@Param("day") String day, @Param("dayStr")String dayStr);
+
+    /**
+     * 获取数据源抓取记录列表
+     * @param day
+     * @return
+     */
+    @Select("select source_id as sourceId, grab_count as grabCount, day, last_grab_time as lastGrabTime from source_monitor where day = #{day}")
+    List<SourceCrawl> getSourceMonitorCrawlList(@Param("day") String day);
+
+    /**
+     * 更新数据源的最后抓取时间与抓取次数
+     * @param sourceCrawl
+     */
+    @Update("update stat_source_crawl_day set last_grab_time = #{lastGrabTime}, grab_count = #{grabCount}  where source_id = #{sourceId} and `day` = #{day}")
+    void updateSourceCrawlLastGrabTimeAndGrabCount(SourceCrawl sourceCrawl);
+
+    /**
+     * 写入前一天数据源审核统计
+     * @param day
+     * @param dayStr
+     * @return
+     */
+    @Insert("insert into `stat_quality_day`(source_id, source_type, passed, failed, day) select j.`source_id`, j.type, sum(case j.status when 3 then 1 when 1 then 1 else 0 end) as passed, sum(case j.status when 2 then 1 else 0 end) as failed, #{day} from joke j where j.verify_time >= '${dayStr} 00:00:00' and j.verify_time <= '${dayStr} 23:59:59' and j.`source_id` > 0   group by j.`source_id`,j.type ")
+    int insertSourceQualityStat(@Param("day") String day, @Param("dayStr")String dayStr);
+
+    /**
+     * 更新数据源审核质量的最后抓取时间
+     * @param sourceCrawl
+     */
+    @Update("update `stat_quality_day` set last_crawl_time = #{lastGrabTime} where source_id = #{sourceId} and `day` = #{day}")
+    void updateSourceQualityLastGrabTime(SourceCrawl sourceCrawl);
+
+	/**
+	 * 获取数据源分类抓取统计导出列表
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlExport", type = SourceSqlProvider.class)
+    List<SourceCrawlExport> getSourceCrawlExport(QueryParam queryParam);
+
+	/**
+	 * 获取数据源抓取统计导出列表
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceCrawlTotalExport", type = SourceSqlProvider.class)
+	List<SourceCrawlExport> getSourceCrawlTotalExport(QueryParam queryParam);
+
+	/**
+	 * 获取数据源分类审核质量统计导出列表
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceQualityExport", type = SourceSqlProvider.class)
+	List<SourceQualityExport> getSourceQualityExport(QueryParam queryParam);
+
+	/**
+	 * 获取数据源审核质量统计导出列表
+	 * @param queryParam
+	 * @return
+	 */
+	@SelectProvider(method = "getSourceQualityTotalExport", type = SourceSqlProvider.class)
+	List<SourceQualityExport> getSourceQualityTotalExport(QueryParam queryParam);
 }

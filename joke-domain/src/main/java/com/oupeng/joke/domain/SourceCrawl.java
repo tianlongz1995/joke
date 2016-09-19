@@ -13,8 +13,16 @@ public class SourceCrawl {
 	private String url;
 	/**	抓取日期：yyyyMMdd	*/
 	private Integer day;
-	/**	当天爬虫抓取次数	*/
+    /**	当天爬虫抓取数量	*/
+    private Integer grabTotal;
+	/**	当天爬虫抓取次数(日)	*/
 	private Integer grabCount;
+	/**	内容格式	*/
+	private Integer type;
+	/**	审核通过数	*/
+	private Integer passed;
+	/**	未审核通过数	*/
+	private Integer failed;
 	/**	当天审核通过率	*/
 	private Double verifyRate;
 	/**	数据源状态	*/
@@ -113,4 +121,36 @@ public class SourceCrawl {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
+    public Integer getGrabTotal() {
+        return grabTotal;
+    }
+
+    public void setGrabTotal(Integer grabTotal) {
+        this.grabTotal = grabTotal;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getPassed() {
+        return passed;
+    }
+
+    public void setPassed(Integer passed) {
+        this.passed = passed;
+    }
+
+    public Integer getFailed() {
+        return failed;
+    }
+
+    public void setFailed(Integer failed) {
+        this.failed = failed;
+    }
 }
