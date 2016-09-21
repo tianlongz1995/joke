@@ -1,5 +1,11 @@
 package com.oupeng.joke.back.util;
 
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -7,22 +13,8 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFComment;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-
 public class StatisExportUtil<T> {
-
+    private static final Logger logger = LoggerFactory.getLogger(StatisExportUtil.class);
 	@SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 	public void exportExcel(String title, String[] headers,Collection<T> dataset, HttpServletResponse response){  
         HSSFWorkbook workbook = new HSSFWorkbook();  
@@ -114,8 +106,8 @@ public class StatisExportUtil<T> {
         	response.setContentType("application/ms-excel");// 定义输出类型 
             workbook.write(response.getOutputStream());  
             response.flushBuffer();
-        } catch (IOException e) {  
-            e.printStackTrace();  
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }  
     }
 }

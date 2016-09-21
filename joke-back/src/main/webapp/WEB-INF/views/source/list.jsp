@@ -58,9 +58,9 @@
                         <div class="box-content">
                             <div class="alert alert-info" >
                                 需要添加新的内容源点击:  <a href="#" data-toggle="modal" data-target="#newsource"><i class="glyphicon glyphicon-plus"></i> 新增内容源</a>
-                                <div style="float:right;margin-top: -5px;">
+                                <%--<div style="float:right;margin-top: -5px;">
                                     <a type="button" class="btn btn-danger btn-sm" href="<%=basePath%>source/monitor" >查看监控</a>
-                                </div>
+                                </div>--%>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
                                 <div class="row">

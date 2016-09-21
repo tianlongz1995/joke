@@ -52,11 +52,13 @@
                 		<span> 广告管理</span>
                 	</a>
                 </li>
-                <li>
-                	<a class="ajax-link" href="source/list">
-                		<i class="glyphicon glyphicon-signal"></i>
-                		<span> 内容源管理</span>
-                	</a>
+                <li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-link"></i><span> 内容源管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="source/list"><span> 内容源列表</span></a></li>
+						<li><a href="source/crawl?sourceType=1"><span> 抓取统计</span></a></li>
+						<li><a href="source/quality?sourceType=1"><span> 审核质量统计</span></a></li>
+					</ul>
                 </li>
                 <li>
                 	<a class="ajax-link" href="feedback/monitor">

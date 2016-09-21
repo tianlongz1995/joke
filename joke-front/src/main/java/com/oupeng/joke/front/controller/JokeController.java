@@ -106,9 +106,9 @@ public class JokeController {
     		@RequestParam(value="end",required=false,defaultValue="9")Long end,
     		HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
-		int type = Constants.IMPR_LOG_TYPE_CHANNEL;
+		int type = Constants.IMPR_LOG_TYPE_LIST;
 		if(start == 0 && end == 9){
-			type = Constants.IMPR_LOG_TYPE_LIST;
+			type = Constants.IMPR_LOG_TYPE_CHANNEL;
 		}
     	impr.info(new ImprLog(distributorId, channelId, uid, type).toString());
     	if(actionType == 2){

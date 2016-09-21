@@ -1,7 +1,10 @@
 package com.oupeng.joke.dao.sqlprovider;
 
+import com.oupeng.joke.domain.QueryParam;
 import com.oupeng.joke.domain.Source;
+import com.oupeng.joke.domain.statistics.SourceCrawlExport;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -136,4 +139,188 @@ public class SourceSqlProvider {
 		return sql.substring(0, sql.length() - 1);
 	}
 
+	/**
+	 * 获取内容源审核质量统计总数SQL
+	 * @param queryParam
+	 * @return
+	 */
+	public String getQualityListCount(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select count(c.id) from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		return sql.toString();
+	}
+
+
+	/**
+	 * 获取内容源审核质量统计记录SQL
+	 * @param queryParam
+	 * @return
+	 */
+	public String getQualityList(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select c.day, s.name as sourceName, s.url, c.source_type as type, passed, c.failed ,last_crawl_time as lastGrabTime from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		return sql.toString();
+	}
+
+	/**
+	 * 获取内容源审核质量统计总数SQL
+	 * @param queryParam
+	 * @return
+	 */
+	public String getQualityListTotalCount(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select count(1) from (select c.source_id ,c.`day` from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append(" group by c.day,c.source_id ) a");
+		return sql.toString();
+	}
+
+
+	/**
+	 * 获取内容源审核质量统计记录SQL
+	 * @param queryParam
+	 * @return
+	 */
+	public String getQualityTotalList(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select s.name as sourceName,s.url,cc.passed ,cc.failed, cc.lastGrabTime,cc.day from (select sum(c.`passed`) as passed,max(c.failed) as failed, c.source_id , max(c.`last_crawl_time`) as lastGrabTime,c.`day` from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append("  group by c.day,c.source_id limit ");
+		sql.append(queryParam.getOffset()).append(", ").append(queryParam.getPageSize());
+		sql.append(" ) cc left join source s on cc.source_id = s.id order by cc.day asc ");
+		return sql.toString();
+	}
+
+
+    /**
+     * 获取内容源审核质量统计总数SQL
+     * @param queryParam
+     * @return
+     */
+    public String getSourceCrawlListCount(QueryParam queryParam){
+        StringBuffer sql = new StringBuffer();
+        sql.append("select count(c.id) from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+        sql.append(getSourceDayStatQuerySql(queryParam));
+        return sql.toString();
+    }
+
+
+    /**
+     * 获取内容源抓取统计总数SQL
+     * @param queryParam
+     * @return
+     */
+    public String getSourceCrawlList(QueryParam queryParam){
+        StringBuffer sql = new StringBuffer();
+        sql.append("select c.day, s.name as sourceName, s.url, c.source_type as type, c.grab_total as grabTotal, c.grab_count as grabCount, c.last_grab_time as lastGrabTime, c.status from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+        sql.append(getSourceDayStatQuerySql(queryParam));
+        sql.append("  order by c.day,s.name desc limit ");
+        sql.append(queryParam.getOffset()).append(", ").append(queryParam.getPageSize());
+        return sql.toString();
+    }
+
+    /**
+     * 获取内容源审核质量统计总数SQL
+     * @param queryParam
+     * @return
+     */
+    public String getSourceCrawlTotalListCount(QueryParam queryParam){
+        StringBuffer sql = new StringBuffer();
+        sql.append("select count(1) from (select c.source_id ,c.`day` from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+        sql.append(getSourceDayStatQuerySql(queryParam));
+        sql.append(" group by c.day,c.source_id ) a");
+        return sql.toString();
+    }
+
+
+    /**
+     * 获取内容源抓取统计记录SQL
+     * @param queryParam
+     * @return
+     */
+    public String getSourceCrawlTotalList(QueryParam queryParam){
+        StringBuffer sql = new StringBuffer();
+        sql.append("select s.name as sourceName,s.url,cc.grabTotal,cc.grabCount,cc.status,cc.lastGrabTime,cc.day from (select sum(c.`grab_total`) as grabTotal,max(c.grab_count) as grabCount, c.source_id ,min(c.status) as `status` ,max(c.`last_grab_time`) as lastGrabTime,c.`day` from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+        sql.append(getSourceDayStatQuerySql(queryParam));
+        sql.append("  group by c.day,c.source_id limit ");
+        sql.append(queryParam.getOffset()).append(", ").append(queryParam.getPageSize());
+        sql.append(" ) cc left join source s on cc.source_id = s.id order by cc.day asc ");
+        return sql.toString();
+    }
+
+	/**
+	 * 获取内容源审核质量统计查询SQL
+	 * @param queryParam
+	 * @return
+	 */
+	private String getSourceDayStatQuerySql(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		if(StringUtils.isNotBlank(queryParam.getName())){
+			sql.append(" and s.name like '%").append(queryParam.getName()).append("%'");
+		}
+		if(queryParam.getType() != null){
+			sql.append(" and c.source_type=").append(queryParam.getType());
+		}
+		if(StringUtils.isNumeric(queryParam.getStartTime()) && StringUtils.isNumeric(queryParam.getEndTime())){
+			sql.append(" and c.day >= ").append(queryParam.getStartTime());
+			sql.append(" and c.day <= ").append(queryParam.getEndTime());
+		}
+		return sql.toString();
+	}
+
+	/**
+	 * 获取内容源分类抓取报告SQL - 分类查询
+	 * @param queryParam
+	 * @return
+	 */
+	public String getSourceCrawlExport(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select c.day, s.name as sourceName, s.url, case c.source_type when 0 then '纯文' when 1 then '图片' when 2 then '动图' end as type, c.grab_total as grabTotal,case c.status when 1 then '可用' else '不可用' end as status, c.grab_count as grabCount, c.last_grab_time as lastGrabTime  from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append(" order by c.day,s.name desc ");
+		return sql.toString();
+	}
+
+	/**
+	 * 获取内容源抓取报告SQL - 默认方式 - 按数据源汇总
+	 * @param queryParam
+	 * @return
+	 */
+	public String getSourceCrawlTotalExport(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select cc.day,s.name as sourceName,s.url,'-' as type,cc.grabTotal,case cc.status when 1 then '可用' else '不可用' end as status,cc.grabCount,cc.lastGrabTime from (select sum(c.`grab_total`) as grabTotal,max(c.grab_count) as grabCount, c.source_id ,min(c.status) as `status` ,max(c.`last_grab_time`) as lastGrabTime,c.`day` from `stat_source_crawl_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append("  group by c.day,c.source_id  ");
+		sql.append(" ) cc left join source s on cc.source_id = s.id order by cc.day asc ");
+		return sql.toString();
+	}
+
+	/**
+	 * 获取内容源分类审核质量报告SQL - 分类查询
+	 * @param queryParam
+	 * @return
+	 */
+	public String getSourceQualityExport(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select c.day, s.name as sourceName, s.url, case c.source_type when 0 then '纯文' when 1 then '图片' when 2 then '动图' end as type,(c.passed + c.failed) as total, c.passed, c.failed ,last_crawl_time as lastGrabTime from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append(" order by c.day,s.name desc ");
+		return sql.toString();
+	}
+
+	/**
+	 * 获取内容源审核质量报告SQL - 默认方式 - 按数据源汇总
+	 * @param queryParam
+	 * @return
+	 */
+	public String getSourceQualityTotalExport(QueryParam queryParam){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select cc.day,s.name as sourceName,s.url,'-' as type, (cc.passed + cc.failed) as total, cc.passed ,cc.failed, cc.lastGrabTime  from (select sum(c.`passed`) as passed,max(c.failed) as failed, c.source_id , max(c.`last_crawl_time`) as lastGrabTime,c.`day` from `stat_quality_day` c left join source s on c.source_id = s.id where 1 = 1 ");
+		sql.append(getSourceDayStatQuerySql(queryParam));
+		sql.append(" group by c.day,c.source_id ");
+		sql.append(" ) cc left join source s on cc.source_id = s.id order by cc.day,sourceName asc ");
+		return sql.toString();
+	}
 }

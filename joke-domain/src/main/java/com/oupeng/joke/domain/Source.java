@@ -11,7 +11,7 @@ public class Source {
 	private Date updateTime;
 	/**	分页开始条数Index	*/
 	private Integer offset;
-	/**	当前页数	*/
+	/**	每页记录数	*/
 	private Integer pageSize;
 	public Integer getId() {
 		return id;

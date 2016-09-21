@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
+		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
 				.formLogin().defaultSuccessUrl("/home").and().formLogin().failureUrl("/?error=1");
 		http.logout().logoutUrl("/logout").and().logout().logoutSuccessUrl("/").and().logout()
 				.deleteCookies("JSESSIONID");
