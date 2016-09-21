@@ -157,13 +157,15 @@ public class JokeService {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
 				}
 			}
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道 lt = 1
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题封面 lt = 1
     		result = getTopicList4TopicChannel(distributorId, start, end);
     	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
     		result = getJokeList4RecommendChannel(start, end, actionType);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页	lt = 9
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表	lt = 9
     		result = getJokeList4TopicChannel(topicId,start,end);
-    	}
+    	}else if(Constants.LIST_TYPE_TOPIC_DETAIL == listType){			// 专题详情	lt = 10
+			result = getJokeList4TopicChannel(topicId,start,end);
+		}
     	return new Success(result);
     }
 
