@@ -32,13 +32,29 @@ public class TopicController {
 	
 	
 	@RequestMapping(value="/list")
-	public String getTopicList(@RequestParam(value="status",required=false)Integer status,Model model){
+	public String getTopicList(@RequestParam(value="status",required=false)Integer status, Model model){
 		model.addAttribute("list", topicService.getTopicList(status));
 		model.addAttribute("distributorList", distributorService.getAllDistributorList());
 		model.addAttribute("status", status);
 		return "/topic/list";
-	} 
-	
+	}
+
+	/**
+	 * 专题封面管理页面
+	 * @return
+	 */
+	@RequestMapping(value="/topicCover")
+	public String topicCover(@RequestParam(value="status",required=false,defaultValue = "1")Integer status, Model model){
+		model.addAttribute("list", topicService.getTopicCoverList(status));
+		return "/topic/topic";
+	}
+
+	/**
+	 * 修改专题状态
+	 * @param id
+	 * @param status
+	 * @return
+	 */
 	@RequestMapping(value="/verify")
 	@ResponseBody
 	public Result verify(@RequestParam(value="id")Integer id,
@@ -175,6 +191,46 @@ public class TopicController {
 		}catch (Exception e){
 			logger.error(e.getMessage(), e);
 			return new Failed("存储图片异常！");
+		}
+	}
+
+	@RequestMapping(value="/addTopicCover", produces = {"application/json"})
+	@ResponseBody
+	public Result addTopicCover( @RequestParam(value="seq")Integer seq,
+								 @RequestParam(value="name")String name,
+								 @RequestParam(value="logo")String logo){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		int count = topicService.addTopicCover(seq, name, logo, userName);
+		if (count == 1){
+			return new Success();
+		} else {
+			return new Failed("创建专题封面失败!");
+		}
+	}
+	@RequestMapping(value="/delTopicCover", produces = {"application/json"})
+	@ResponseBody
+	public Result delTopicCover( @RequestParam(value="id")Integer id,
+								 Model model){
+		int count = topicService.delTopicColver(id);
+		if (count == 1){
+			return new Success();
+		} else {
+			return new Failed("删除专题封面失败!");
+		}
+	}
+
+	@RequestMapping(value="/modifyTopicCover", produces = {"application/json"})
+	@ResponseBody
+	public Result modifyTopicCover(@RequestParam(value="id")Integer id,
+								   @RequestParam(value="name")String name,
+								   @RequestParam(value="seq")String seq,
+								   @RequestParam(value="image")String logo){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		int count = topicService.modifyTopicCover(id, seq, name, logo, userName);
+		if (count == 1){
+			return new Success();
+		} else {
+			return new Failed("创建专题封面失败!");
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.oupeng.joke.back.service;
 import java.util.*;
 
 import com.oupeng.joke.dao.mapper.JokeMapper;
+import com.oupeng.joke.domain.TopicCover;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -222,5 +223,39 @@ public class TopicService {
 			topicMapper.insertTopicJoke(joke.getId(), topicId);//存储段子专题关联关系
 		}
 		return result;
+	}
+
+	/**
+	 * 获取专题封面列表
+	 * @param status
+	 * @return
+	 */
+    public List<TopicCover> getTopicCoverList(Integer status) {
+		List<TopicCover> list = topicMapper.getTopicCoverList(status);
+    	if(!CollectionUtils.isEmpty(list)){
+			for(TopicCover topicCover : list){
+				if(StringUtils.isNotBlank(topicCover.getLogo())){
+					topicCover.setLogo(env.getProperty("img.real.server.url") + topicCover.getLogo());
+				}
+			}
+		}
+		return list;
+    }
+
+	public int addTopicCover(Integer seq, String name, String logo, String userName) {
+		TopicCover t = new TopicCover();
+		t.setSeq(seq);
+		t.setName(name);
+		t.setLogo(logo);
+		t.setUpdateBy(userName);
+		return topicMapper.addTopicCover(t);
+	}
+
+	public int delTopicColver(Integer id) {
+		return topicMapper.delTopicColver(id);
+	}
+
+	public int modifyTopicCover(Integer id, String seq, String name, String logo, String userName) {
+		return topicMapper.modifyTopicCover(id, seq, name, logo, userName);
 	}
 }

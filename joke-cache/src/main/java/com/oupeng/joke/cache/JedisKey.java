@@ -9,7 +9,7 @@ public class JedisKey {
     public static final String JOKE_LIST_FEEDBACK = "list.joke.feedback";
     /** 渠道配置信息Hash表key    */
     public static final String JOKE_HASH_DISTRIBUTOR_CONFIG = "hash.joke.distributor.config";
-    
+    /** 专题频道    */
     public static final String SORTEDSET_DISTRIBUTOR_TOPIC = "sortedset.distributor.topic.";
 
     public static final String SORTEDSET_TOPIC_CHANNEL = "sortedset.topic.channel.";
