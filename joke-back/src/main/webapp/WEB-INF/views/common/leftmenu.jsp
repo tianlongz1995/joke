@@ -41,15 +41,10 @@
                 	</a>
                 </li>
                 <li class="accordion">
-                	<%--<a class="ajax-link" href="topic/list">
-                		<i class="glyphicon glyphicon-th"></i>
-                		<span> 专题管理</span>
-                	</a>--%>
-
 					<a href="#"><i class="glyphicon glyphicon-th"></i><span> 专题管理</span></a>
 					<ul class="nav nav-pills nav-stacked">
-						<li><a href="topic/list"><span> 专题列表</span></a></li>
-						<li><a href="topic/topicCover"><span> 专题管理</span></a></li>
+						<li><a href="topic/topicCover?status=1"><span> 专题封面管理</span></a></li>
+						<li><a href="topic/list"><span> 专题列表管理</span></a></li>
 					</ul>
                 </li>
                 <li>

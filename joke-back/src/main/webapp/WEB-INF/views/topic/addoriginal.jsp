@@ -55,6 +55,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<h2><i class="glyphicon glyphicon-user"></i> 专题内容</h2>
 	</div>
 	<div class="box-content" style="text-align: center;">
+		<div class="alert alert-info">
+			<a href="javascript:history.go(-1);">
+				<i class="glyphicon glyphicon-arrow-left"></i> 返回专题列表
+			</a>
+		</div>
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -90,13 +95,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 
 <script type="text/javascript">
-/*$(document).ready(function () {
-	if(('${joke.type}' == '2' || '${joke.type}' == '1') ){
-		$("#imgPriview").css('display','block');
-		$("#imgDelButton").css('display','block');
-	}
-});*/
-
 $('#imgDelButton').click(function () {
 	$('#img').val('');
 	$('#imgUrl').val('');

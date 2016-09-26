@@ -64,12 +64,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="box-content">
 		<div class="alert alert-info">
 			需要添加新的封面: <a href="#" id="showTopicCoverModel" onclick="showAddModel()">新增封面</a>
+			<div style="float:right;margin-top: -5px;">
+				<a type="button" class="btn btn-danger btn-sm" href="#" onclick="showFlushTopicCoverModel()" >更新专题封面缓存</a>
+			</div>
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
-            <tr>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="bs-example" style="margin: 5px;padding: 5px;">
+						<form class="form-inline">
+							<div class="form-group" style="display: inline-block;">
+								<label>
+									<label for="name" style="display: inline-block;">状态:</label>
+								</label>
+							</div>
+							<div class="checkbox" style="display: inline-block; " >
+								<label style="padding-left: 3px;">
+									<div id="typeGroup" class="btn-group">
+										<button onclick="checkType(this)" type="button" value="1" class="btn btn-default <c:if test="${status == 1}">btn-primary</c:if> btn-sm" <c:if test="${!empty status && status == 1}">id='status'</c:if> >上线</button>
+										<button onclick="checkType(this)" type="button" value="0" class="btn btn-default <c:if test="${status == 0}">btn-primary</c:if> btn-sm" <c:if test="${!empty status && status == 0}">id='status'</c:if> >下线</button>
+									</div>
+								</label>
+							</div>
+							&nbsp;&nbsp;
+							<div class="form-group"style="display: inline-block;">
+								<a class="btn btn-primary btn-sm" href="#" id="query" style="text-align: center;">
+									<span class="glyphicon glyphicon-search icon-white">查询</span>
+								</a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<tr>
                 <th class="center">序号</th>
                 <th class="center">图片</th>
                 <th class="center">专题名称</th>
+				<th class="center">状态</th>
+				<th class="center">排序</th>
                 <th class="center">专题列表</th>
                 <th class="center">操作</th>
             </tr>
@@ -80,23 +112,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <img src="${topic.logo}" style="width: 176px;height: 100px;">
                     </td>
                     <td class="center">${topic.name}</td>
+					<td class="center">
+						<c:if test="${topic.status == 0}">下线</c:if>
+						<c:if test="${topic.status == 1}">上线</c:if>
+					</td>
+					<td class="center">
+						<c:if test="${topic.status == 1}">
+							<a class="btn btn-warning btn-sm" href="#" onclick="move(${topic.id}, 0, ${topic.seq})">
+								<i class="glyphicon glyphicon-hand-up"></i> 置顶
+							</a>
+							<div>
+								<a class="btn btn-success btn-sm" href="#" onclick="move(${topic.id}, 1, ${topic.seq})">
+									<i class="glyphicon glyphicon-arrow-up"></i> 上移
+								</a>
+							</div>
+							<div>
+								<a class="btn btn-success btn-sm" href="#" onclick="move(${topic.id}, 2, ${topic.seq})">
+									<i class="glyphicon glyphicon-arrow-down"></i> 下移
+								</a>
+							</div>
+						</c:if>
+						<c:if test="${topic.status == 0}">不能移动</c:if>
+					</td>
                     <td class="center">
-                        <a class="btn btn-info" href="topic/edit?id=${topic.id}">
+                        <a class="btn btn-info btn-sm" href="topic/list?topicCoverId=${topic.id}">
                             <i class="glyphicon glyphicon-edit icon-white"></i> 编辑专题列表
                         </a>
                     </td>
                     <td class="center">
-                        <a class="btn btn-warning" href="#" onclick="showModify(${topic.id},'${topic.name}',${topic.seq},'${topic.logo}',${topic.status})">
+                        <a class="btn btn-warning btn-sm" href="#" onclick="showModify(${topic.id},'${topic.name}',${topic.seq},'${topic.logo}',${topic.status})">
                             <i class="glyphicon glyphicon-pencil"></i> 修改
                         </a>
-                        <a class="btn btn-success" href="#" onclick="showDel(${topic.id})">
+                        <a class="btn btn-success btn-sm" href="#" onclick="showDel(${topic.id})">
                             <i class="glyphicon glyphicon-trash"></i> 删除
                         </a>
                     </td>
                 </tr>
             </c:forEach>
 		</table>
-		
+		<div class="row">
+			<div class="col-md-12 center-block">
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<jsp:include page="../common/page.jsp" />
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
@@ -169,6 +229,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</td>
 						</tr>
 						<tr>
+							<th>状态</th>
+							<td>
+								<div id="radioGroup" class="btn-group">
+									<button id="inlineRadio1" onclick="checkRadio(this)" type="button" value="1" class="btn btn-default btn-sm"  >上线</button>
+									<button id="inlineRadio2" onclick="checkRadio(this)" type="button" value="0" class="btn btn-default btn-sm"  >下线</button>
+								</div>
+							</td>
+						</tr>
+						<tr>
 							<th>LOGO</th>
 							<td>
 								<input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png"/>
@@ -202,6 +271,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<button type="button" class="btn btn-primary" onclick="delConfirm()">删除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--	刷新专题封面确认框	-->
+	<div class="modal fade bs-example-modal-sm" id="flushModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h3 class="modal-title" id="flushModalLabel">刷新专题封面缓存</h3>
+				</div>
+				<div class="modal-body" style="text-align: center;">
+					<h4>确定要刷新专题封面吗?</h4>
+					<div class="form-group" style="display: inline-block;">
+						<label>
+							<label for="flushPass" style="display: inline-block;">管理密码 : </label>
+						</label>
+						<label style="padding-left: 3px;">
+							<input id="flushPass" type="text" class="form-control input-sm" style="width:130px;" placeholder="密码" />
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer" style="text-align: center;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type="button" class="btn btn-primary" onclick="flushTopicCoverCache()">刷新</button>
 				</div>
 			</div>
 		</div>
@@ -265,6 +362,15 @@ function showModify(id, name, seq, logo, status) {
 	$("#id").val(id);
 	$("#name").val(name);
 	$("#seq").val(seq);
+	if(status == 1){
+		$("#inlineRadio1").attr('checked', 'checked');
+		$("#inlineRadio1").removeClass("btn-default").addClass("btn-primary");
+		$("#inlineRadio2").removeClass("btn-primary").addClass("btn-default");
+	}else{
+		$("#inlineRadio2").attr('checked', 'checked');
+		$("#inlineRadio2").removeClass("btn-default").addClass("btn-primary");
+		$("#inlineRadio1").removeClass("btn-primary").addClass("btn-default");
+	}
 	$("#image").val(logo);
 	$("#imgPriview").attr('src',logo).show();
 	$("#imgDelButton").show();
@@ -275,6 +381,10 @@ function modifyTopicCoverCommit() {
 	var seq = $("#seq").val();
 	var name = $("#name").val();
 	var image = $("#image").val();
+	var status = 0;
+	if($("#inlineRadio1").hasClass("btn-primary")){
+		status = 1;
+	}
 	if(seq == null || seq.length < 1 || isNaN(seq) || seq > 1000){
 		alert("序号必须是小于1000的数字!");
 		return false;
@@ -284,7 +394,7 @@ function modifyTopicCoverCommit() {
 		return false;
 	}
 	post('topic/modifyTopicCover',
-			'id='+id+'&image='+image+'&seq='+seq+'&name='+name,
+			'id='+id+'&image='+image+'&seq='+seq+'&name='+name+'&status='+status,
 			function (data) {
 				if(data.status == 1) {
 					location.href = '<%=basePath%>topic/topicCover';
@@ -298,10 +408,13 @@ function modifyTopicCoverCommit() {
 };
 
 
-$('#selectTopicList').click(function(event) {
-	location.href = '<%=basePath%>topic/list?status='+$("#status").val();
+$('#query').click(function(event) {
+	var status = $("#status").val();
+	if(status == null){
+		status = '';
+	}
+	location.href = '<%=basePath%>topic/topicCover?status='+status;
 });
-
 $('#imgDelButton').click(function () {
 	$('#img').val('');
 	$('#image').val('');
@@ -360,6 +473,70 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
+};
+function checkType(node) {
+	//                    删除兄弟节点的选中状态
+	$(node).siblings().removeClass("btn-primary").addClass("btn-default").removeAttr('id');
+//                    切换本节点的选中状态
+	if($(node).hasClass("btn-primary")){
+		$(node).removeClass("btn-primary").addClass("btn-default").removeAttr('id');
+	}else{
+		$(node).removeClass("btn-default").addClass("btn-primary").attr('id','status');
+	}
+};
+function checkRadio(node) {
+	if($(node).hasClass("btn-default")){
+		$(node).removeClass("btn-default").addClass("btn-primary");
+		$(node).siblings().removeClass("btn-primary").addClass("btn-default");
+	}
+};
+function move(id, type, seq){
+	var status = $("#status").val();
+	if(status == null){
+		status = '';
+	}
+	post('topic/move',
+			'id='+id+'&type='+type+'&seq='+seq,
+			function (data) {
+				if(data.status == 1) {
+					location.href = '<%=basePath%>topic/topicCover?status='+status+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+				}else {
+					alert('移动专题封面位置失败:'+data.info);
+				}
+			},
+			function () {
+				alert('请求失败，请检查网络环境');
+			});
+};
+/**	分页方法	*/
+function turnPage(){
+	var status = $("#status").val();
+	if(status == null){
+		status = '';
+	}
+	location.href = '<%=basePath%>topic/topicCover?status='+status+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+};
+function showFlushTopicCoverModel() {
+	$("#flushModal").modal('show');
+}
+function flushTopicCoverCache() {
+	var flushPass = $("#flushPass").val();
+	if(flushPass == null || flushPass.length < 10){
+		alert("必须输入正确的管理密码!");
+		return false;
+	}
+	post('topic/flushTopicCoverCache',
+			'flushPass=' + flushPass,
+			function (data) {
+				if(data.status == 1) {
+					location.href = '<%=basePath%>topic/topicCover?status='+status+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+				}else {
+					alert('刷新失败:'+data.info);
+				}
+			},
+			function () {
+				alert('请求失败，请检查网络环境');
+			});
 }
 </script>
 

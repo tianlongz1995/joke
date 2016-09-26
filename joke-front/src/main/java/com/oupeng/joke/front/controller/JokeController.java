@@ -97,11 +97,11 @@ public class JokeController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Result jokeList(@RequestParam(value="did",required=true)Integer distributorId,
-    		@RequestParam(value="cid",required=true)Integer channelId,
+    public Result jokeList(@RequestParam(value="did")Integer distributorId,
+    		@RequestParam(value="cid")Integer channelId,
     		@RequestParam(value="tid",required=false)Integer topicId,
-    		@RequestParam(value="lt",required=true)Integer listType,
-            @RequestParam(value="at",required=true)Integer actionType,
+    		@RequestParam(value="lt")Integer listType,
+            @RequestParam(value="at")Integer actionType,
     		@RequestParam(value="start",required=false,defaultValue="0")Long start,
     		@RequestParam(value="end",required=false,defaultValue="9")Long end,
     		HttpServletRequest request){

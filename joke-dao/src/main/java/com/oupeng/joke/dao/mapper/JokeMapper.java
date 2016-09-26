@@ -19,6 +19,26 @@ import org.apache.ibatis.annotations.Delete;
 
 public interface JokeMapper {
 	/**
+	 * 获取段子列表总数
+	 * @param type
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method="getJokeListForTopicCount",type=JokeSqlProvider.class)
+	int getJokeListForTopicCount(@Param("type")Integer type, @Param("status")Integer status);
+
+	/**
+	 * 获取专题段子列表
+	 * @param type
+	 * @param status
+	 * @param offset
+	 * @param pageSize
+	 * @return
+	 */
+	@SelectProvider(method="getJokeListForTopic",type=JokeSqlProvider.class)
+	List<Joke> getJokeListForTopic(@Param("type")Integer type, @Param("status")Integer status, @Param("offset")Integer offset, @Param("pageSize")Integer pageSize);
+
+	/**
 	 * 获取数据源列表
 	 * @param type
 	 * @param status
@@ -34,14 +54,14 @@ public interface JokeMapper {
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
 			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where id = ${id}")
 	@ResultType(value=Joke.class)
-	public Joke getJokeById(@Param(value="id")Integer id);
+	Joke getJokeById(@Param(value="id")Integer id);
 	
 	@UpdateProvider(method="updateJoke",type=JokeSqlProvider.class)
-	public void updateJoke(Joke joke);
+	void updateJoke(Joke joke);
 	
 	@Select(value="select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
 			+ " and status = 1 and verify_user =#{user} group by type ")
-	public List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);
+	List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);
 
 	/**
 	 * 更新段子被踩数
@@ -65,14 +85,19 @@ public interface JokeMapper {
 	void insertJokeFeedback(Feedback feedback);
 	
 	@SelectProvider(method="getJokeListForChannel",type=JokeSqlProvider.class)
-	public List<Joke> getJokeListForChannel(@Param(value="contentType")String contentType,@Param(value="start")Integer start,
+	List<Joke> getJokeListForChannel(@Param(value="contentType")String contentType,@Param(value="start")Integer start,
 			@Param(value="size")Integer size);
 	
 	@SelectProvider(method="getJokeCountForChannel",type=JokeSqlProvider.class)
-	public int getJokeCountForChannel(String contentType);
-	
+	int getJokeCountForChannel(String contentType);
+
+	/**
+	 * 获取专题对应的段子编号
+	 * @param topicId
+	 * @return
+	 */
 	@Select(value="select j_id from topic_joke where `status` = 0 and t_id = #{topicId}")
-	public List<Integer> getJokeForPublishTopic(@Param(value="topicId")Integer topicId);
+	List<Integer> getJokeForPublishTopic(@Param("topicId")Integer topicId);
 
 	/**
 	 * 查询最近审核通过的数据
@@ -213,4 +238,5 @@ public interface JokeMapper {
 	 */
 	@Update("update channel set size = #{size} where id = #{id}")
     int editPublishSize(@Param("id")String id, @Param("size")Integer size);
+
 }

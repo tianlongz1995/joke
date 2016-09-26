@@ -12,11 +12,14 @@ import com.oupeng.joke.domain.Topic;
 public interface TopicMapper {
 	/**
 	 * 获取专题列表
+	 * @param topicCoverId
 	 * @param status
+	 * @param offset
+	 * @param pageSize
 	 * @return
 	 */
 	@SelectProvider(method="getTopicList",type=TopicSqlProvider.class)
-	List<Topic> getTopicList(Integer status);
+	List<Topic> getTopicList(@Param("topicCoverId")Integer topicCoverId, @Param("status")Integer status,  @Param("offset")Integer offset, @Param("pageSize")Integer pageSize);
 
 	/**
 	 * 获取专题
@@ -24,7 +27,7 @@ public interface TopicMapper {
 	 * @return
 	 */
 	@Select(value="select id,title,content,img,d_ids as dids,status,publish_time as publishTime,"
-			+ "create_time as createTime,update_time as updateTime from topic where id = #{id}")
+			+ "create_time as createTime,update_time as updateTime, c_id as coverId from topic where id = #{id}")
 	Topic getTopicById(@Param(value="id")Integer id);
 
 	/**
@@ -61,8 +64,7 @@ public interface TopicMapper {
 	 * 获取待发布的专题
 	 * @return
 	 */
-	@Select(value=" select id,title,content,img,d_ids as dids from topic where `status` = 2 and "
-			+ " DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
+	@Select(value="select id, title, content, img, c_id as coverId from topic where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
 	List<Topic> getTopicForPublish();
 
 	/**
@@ -85,18 +87,91 @@ public interface TopicMapper {
 	List<Joke> getJokeListByTopicId(@Param(value="id")Integer id);
 
 	/**
+	 * 获取专题封面记录总数
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method = "getTopicCoverListCount", type = TopicSqlProvider.class)
+	int getTopicCoverListCount(Integer status);
+
+	/**
 	 * 获取专题封面列表
 	 * @param status
 	 * @return
 	 */
-	@Select("select id, name, logo, seq, status from topic_cover where status = #{status} order by seq asc")
-	List<TopicCover> getTopicCoverList(Integer status);
-	@Insert("insert into topic_cover(seq, name, logo, status, update_by, update_time) value(#{seq}, #{name}, #{logo}, 1, #{updateBy}, now())")
+	@SelectProvider(method = "getTopicCoverList", type = TopicSqlProvider.class)
+	List<TopicCover> getTopicCoverList(@Param(value="status")Integer status, @Param(value="offset")Integer offset, @Param(value="pageSize")Integer pageSize);
+
+	/**
+	 * 新增专题封面
+	 * @param t
+	 * @return
+	 */
+	@Insert("insert into topic_cover(seq, name, logo, status, update_by, update_time) value(#{seq}, #{name}, #{logo}, 0, #{updateBy}, now())")
 	int addTopicCover(TopicCover t);
 
-	@Delete("delete from topic_cover where id = #{id}")
+	/**
+	 * 删除专题封面
+	 * @param id
+	 * @return
+	 */
+	@Delete("update topic_cover set status = 2 where id = #{id}")
 	int delTopicColver(@Param("id")Integer id);
 
-	@Update("update topic_cover set seq = #{seq}, name = #{name}, logo = #{logo}, update_by = #{userName},update_time = now() where id = #{id}")
-	int modifyTopicCover(@Param("id")Integer id, @Param("seq")String seq, @Param("name")String name, @Param("logo")String logo, @Param("userName")String userName);
+	/**
+	 * 更新专题封面
+	 * @param id
+	 * @param seq
+	 * @param name
+	 * @param logo
+	 * @param userName
+	 * @return
+	 */
+	@Update("update topic_cover set seq = #{seq}, name = #{name}, logo = #{logo}, status = #{status}, update_by = #{userName},update_time = now() where id = #{id}")
+	int modifyTopicCover(@Param("id")Integer id, @Param("seq")Integer seq, @Param("name")String name, @Param("logo")String logo, @Param("status")Integer status, @Param("userName")String userName);
+
+	/**
+	 * 获取所有专题封面列表
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method = "getAllTopicCoverMoveList", type = TopicSqlProvider.class)
+	List<TopicCover> getAllTopicCoverMoveList(Integer status);
+
+	/**
+	 * 更新位置
+	 * @param id
+	 * @param seq
+	 * @return
+	 */
+	@Update("update topic_cover set seq = #{seq} where id = #{id}")
+	void updateTopicCoverSeq(@Param("id")Integer id, @Param("seq")Integer seq);
+
+	/**
+	 * 获取专题列表记录总数
+	 * @param topicCoverId
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method = "getTopicListCount", type = TopicSqlProvider.class)
+	int getTopicListCount(@Param("topicCoverId")Integer topicCoverId, @Param("status")Integer status);
+
+
+	/**
+	 * 获取专题段子分页列表
+	 * @param topicId
+	 * @param offset
+	 * @param pageSize
+	 * @return
+	 */
+	@SelectProvider(method = "getTopicJokeListByTopicId", type = TopicSqlProvider.class)
+	List<Joke> getTopicJokeListByTopicId(@Param("topicId")Integer topicId, @Param("offset")Integer offset, @Param("pageSize")Integer pageSize);
+
+	/**
+	 * 获取专题段子分页列表记录总数
+	 * @param topicId
+	 * @return
+	 */
+	@Select("select count(t1.id) from joke t1 left join topic_joke t2 on t1.id = t2.j_id where t2.status = 0 and t2.t_id = #{topicId}")
+	int getTopicJokeListCountByTopicId(@Param("topicId")Integer topicId);
 }

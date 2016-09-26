@@ -24,12 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
-	<%--<style>
-		.table-item{
-			overflow: hidden;
-		}
-	</style>--%>
-	
+
 </head>
 
 <body>
@@ -56,66 +51,60 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
+			<a href="<%=basePath%>topic/list?status=${status}&topicCoverId=${topicCoverId}&pageSize=${pSize}&pageNumber=${pNumber}">
+				<i class="glyphicon glyphicon-arrow-left"></i> 返回专题列表
+			</a>
 		</div>
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 			    <label style="padding-right:30px;">
-			        <a class="btn btn-danger" href="#" onclick="verifyJoke('batch')">
+			        <a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke('batch')">
 			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
 			        </a>
 				</label>
 			</div>
-		
-			<thead>
-				<div class="alert alert-info">
-				</div>
+			<tr>
+				<th>全选<input type="checkbox" id="allcheck" /></th>
+				<th>内容</th>
+				<th>类型</th>
+				<th>审核通过时间</th>
+				<th>操作</th>
+			</tr>
+			<c:forEach items="${list}" var="joke">
 				<tr>
-					<th>全选<input type="checkbox" id="allcheck" /></th>
-					<th>内容</th>
-					<th>类型</th>
-					<th>审核通过时间</th>
-					<th>操作</th>
+					<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
+					<td>
+						<div class="table-item"  style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;" <c:if test="${joke.type == 1}">data-origin="${joke.img}"</c:if> <c:if test="${joke.type == 2}">data-src="${joke.gif}"</c:if> >
+							<c:if test="${!empty joke.title}">
+								<p><h5>${joke.title}</h5></p>
+							</c:if>
+							<c:if test="${!empty joke.content}">
+								<p><small>${joke.content}</small></p>
+							</c:if>
+						</div>
+					</td>
+					<td>
+						<c:if test="${joke.type == 0}">文字</c:if>
+						<c:if test="${joke.type == 1}">图片</c:if>
+						<c:if test="${joke.type == 2}">动图</c:if>
+					</td>
+					<td>
+						<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					</td>
+					<td>
+						<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(${joke.id})">
+							 <i class="glyphicon glyphicon-remove icon-white"></i>删除
+						</a>
+					</td>
 				</tr>
-			</thead>
-	
-			<tbody>
-				<c:forEach items="${list}" var="joke">
-					<tr>
-						<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
-						<td>
-							<div class="table-item"  style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;" <c:if test="${joke.type == 1}">data-origin="${joke.img}"</c:if> <c:if test="${joke.type == 2}">data-src="${joke.gif}"</c:if> >
-								<c:if test="${!empty joke.title}">
-									<p><h5>${joke.title}</h5></p>
-								</c:if>
-								<c:if test="${!empty joke.content}">
-									<p><small>${joke.content}</<small></p>
-								</c:if>
-								<%--<c:if test="${joke.type == 2}">
-									<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>
-								</c:if>
-								<c:if test="${joke.type == 1}">
-									<p><img src="${joke.img}"/></p>
-								</c:if>--%>
-							</div>
-						</td>
-						<td>
-							<c:if test="${joke.type == 0}">文字</c:if>
-							<c:if test="${joke.type == 1}">图片</c:if>
-							<c:if test="${joke.type == 2}">动图</c:if>
-						</td>
-						<td>
-							<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-						</td>
-						<td>
-							<a class="btn btn-danger" href="#" onclick="verifyJoke(${joke.id})">
-					        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
-					        </a>
-					    </td>
-					</tr>
-				</c:forEach>
-			</tbody>
+			</c:forEach>
 		</table>
 		<div class="row">
+			<div class="col-md-12 center-block">
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<jsp:include page="../common/page.jsp" />
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -175,17 +164,15 @@ function verifyJoke(id) {
 			'topicId=${topicId}&ids='+id, 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>topic/deljoke?topicId=${topicId}';
-				}
-				else {
+					location.href = '<%=basePath%>topic/deljoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+				} else {
 					alert('删除失败. info:'+data['info']);
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
 			});
-}
-
+};
 function post(url, data, success, error) {
 	var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 	var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -193,7 +180,11 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
-}
+};
+/**	分页方法	*/
+function turnPage(){
+	location.href = '<%=basePath%>topic/deljoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+};
 </script>
 
 </div><!-- content end -->
