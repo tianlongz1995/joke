@@ -21,10 +21,12 @@ public class JedisKey {
     public static final String STRING_TOPIC = "string.topic.";
     public static final String SORTEDSET_ALL = "sortedset.*";
     public static final String SORTEDSET_TOPIC_ALL = "sortedset*topic*";
-    
+    /** 相关文字段子    */
     public static final String SET_RELATED_JOKE_TEXT = "set.related.joke.text";
+    /** 相关图片段子    */
     public static final String SET_RELATED_JOKE_IMG = "set.related.joke.img";
+    /** 推荐文字段子    */
     public static final String SET_RECOMMEDN_JOKE_TEXT = "set.recommend.joke.text";
-    
+    /** 段子最后发布时间    */
     public static final String JOKE_LAST_PUBLISH_TIME = "joke.last.publish.time";
 }

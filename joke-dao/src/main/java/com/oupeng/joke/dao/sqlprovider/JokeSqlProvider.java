@@ -133,7 +133,12 @@ public class JokeSqlProvider {
 		sql.append(" order by verify_time desc limit ").append(start).append(",").append(size);
 		return sql.toString();
 	}
-	
+
+	/**
+	 * 获取待发布的段子列表SQL
+	 * @param map
+	 * @return
+	 */
 	public static String getJokeListForPublish(Map<String,Object> map){
 		Object lastUpdateTime = map.get("lut");
 		Object currentUpdateTime = map.get("cut");

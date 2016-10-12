@@ -313,7 +313,13 @@ public class JokeService {
 	public void updateJokeForPublishChannel(String jokeIds){
 		jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_PUBLISH, jokeIds, null);
 	}
-	
+
+	/**
+	 * 获取待发布的段子列表
+	 * @param lastUpdateTime
+	 * @param currentUpdateTime
+	 * @return
+	 */
 	public List<Joke> getJokeListForPublish(String lastUpdateTime,String currentUpdateTime){
 		return jokeMapper.getJokeListForPublish(lastUpdateTime,currentUpdateTime);
 	}

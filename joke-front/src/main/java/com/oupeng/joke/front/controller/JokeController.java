@@ -22,11 +22,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value="/joke")
 public class JokeController {
-	
+    /** 访问日志 */
 	private static final Logger impr = LoggerFactory.getLogger("impr");
+    /** 详情点击日志 */
 	private static final Logger clk = LoggerFactory.getLogger("clk");
     /** 下拉刷新日志 */
     private static final Logger dfl = LoggerFactory.getLogger("dfl");
+    /** 上拉刷新日志 */
+    private static final Logger ufl = LoggerFactory.getLogger("ufl");
+    /** 列表页图片展开日志 */
+    private static final Logger iol = LoggerFactory.getLogger("iol");
 
     @Autowired
     private JokeService jokeService;
@@ -37,7 +42,7 @@ public class JokeController {
      */
     @RequestMapping(value = "/getDistributorConfig")
     @ResponseBody
-    public Result getDistributorConfig(@RequestParam(value="did",required=true)Integer did,
+    public Result getDistributorConfig(@RequestParam(value="did")Integer did,
     		HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
     	impr.info(new ImprLog(did, null, uid, Constants.IMPR_LOG_TYPE_DISTRIBUTOR).toString());
@@ -51,8 +56,8 @@ public class JokeController {
      */
     @RequestMapping(value = "/stepLike")
     @ResponseBody
-    public Result stepLike(@RequestParam(value="id",required=true)Integer id, 
-    		@RequestParam(value="type",required=true)Integer type,
+    public Result stepLike(@RequestParam(value="id")Integer id,
+    		@RequestParam(value="type")Integer type,
     		HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
     	clk.info(new ClickLog(id, uid, type).toString());
@@ -70,10 +75,10 @@ public class JokeController {
      */
     @RequestMapping(value = "/feedback")
     @ResponseBody
-    public Result feedback(@RequestParam(value="distributorId",required=true)Integer distributorId,
-                           @RequestParam(value="channelId",required=true)Integer channelId,
-                           @RequestParam(value="type",required=true)Integer type,
-                           @RequestParam(value="content",required=true)String content){
+    public Result feedback(@RequestParam(value="distributorId")Integer distributorId,
+                           @RequestParam(value="channelId")Integer channelId,
+                           @RequestParam(value="type")Integer type,
+                           @RequestParam(value="content")String content){
         Feedback feedback = new Feedback();
         feedback.setDistributorId(distributorId);
         feedback.setChannelId(channelId);
@@ -97,11 +102,11 @@ public class JokeController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Result jokeList(@RequestParam(value="did",required=true)Integer distributorId,
-    		@RequestParam(value="cid",required=true)Integer channelId,
+    public Result jokeList(@RequestParam(value="did")Integer distributorId,
+    		@RequestParam(value="cid")Integer channelId,
     		@RequestParam(value="tid",required=false)Integer topicId,
-    		@RequestParam(value="lt",required=true)Integer listType,
-            @RequestParam(value="at",required=true)Integer actionType,
+    		@RequestParam(value="lt")Integer listType,
+            @RequestParam(value="at")Integer actionType,
     		@RequestParam(value="start",required=false,defaultValue="0")Long start,
     		@RequestParam(value="end",required=false,defaultValue="9")Long end,
     		HttpServletRequest request){
@@ -113,6 +118,9 @@ public class JokeController {
     	impr.info(new ImprLog(distributorId, channelId, uid, type).toString());
     	if(actionType == 2){
             dfl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
+        }
+        if(actionType == 1){
+            ufl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
         }
 		if(start >= 0 && start <= end  && end - start < 20 ){
 			return jokeService.getJokeList(distributorId, channelId,topicId, listType, start, end, actionType);
@@ -133,15 +141,35 @@ public class JokeController {
      */
     @RequestMapping(value = "/item")
     @ResponseBody
-    public Result joke(@RequestParam(value="did",required=true)Integer distributorId,
-    		@RequestParam(value="cid",required=true)Integer channelId,
+    public Result joke(@RequestParam(value="did")Integer distributorId,
+    		@RequestParam(value="cid")Integer channelId,
     		@RequestParam(value="tid",required=false)Integer topicId,
     		@RequestParam(value="lt",required=false)Integer listType,
-    		@RequestParam(value="jid",required=true)Integer jokeId,
+    		@RequestParam(value="jid")Integer jokeId,
     		HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
     	impr.info(new ImprLog(distributorId, channelId, uid, Constants.IMPR_LOG_TYPE_DETAIL).toString());
     	clk.info(new ClickLog(jokeId, uid, Constants.CLK_LOG_TYPE_DETAIL).toString());
         return new Success(jokeService.getJoke(distributorId, channelId,topicId, listType,jokeId));
+    }
+
+    /**
+     * 列表页图片展开日志
+     * @param distributorId 渠道编号
+     * @param channelId     频道编号(目前只支持推荐频道、图片频道)
+     * @param jokeId        段子编号
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/imageOpenLog")
+    @ResponseBody
+    public Result imageOpenLog(@RequestParam(value="did")Integer distributorId,
+                               @RequestParam(value="cid")Integer channelId,
+                               @RequestParam(value="jid",required = false)Integer jokeId,
+                       HttpServletRequest request){
+        String uid = CookieUtil.getCookie(request);
+        impr.info(new ImprLog(distributorId, channelId, uid, Constants.IMPR_LOG_TYPE_DETAIL).toString());
+        iol.info(new ImprLog(distributorId, channelId, uid, Constants.IMPR_LOG_TYPE_LIST, null).toString());
+        return new Success();
     }
 }

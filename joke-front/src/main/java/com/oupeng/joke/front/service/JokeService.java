@@ -224,7 +224,16 @@ public class JokeService {
     	String key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
 		return getJokeCacheList(key, start, end);
     }
-    
+
+	/**
+	 * 获取段子详情
+	 * @param distributorId
+	 * @param channelId
+	 * @param topicId
+	 * @param listType
+	 * @param jokeId
+	 * @return
+	 */
     public JokeDetail getJoke(Integer distributorId,Integer channelId,Integer topicId,Integer listType,Integer jokeId){
     	JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),JokeDetail.class);
     	if(joke != null){
@@ -260,22 +269,27 @@ public class JokeService {
     				}
     			}
     		}
-    		handleJokeDetail(joke);
+    		handleJokeDetail(joke); // 处理段子推荐信息
     	}
 		return joke;
     }
-    
-    private void handleJokeDetail(JokeDetail jokeDetail){
-    	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);
-    	if(!CollectionUtils.isEmpty(relatedTextIdList)){
-    		List<Joke> relatedTextList = Lists.newArrayList();
-    		for(String jokeId : relatedTextIdList){
-    			relatedTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
-    		}
-    		jokeDetail.setRelatedText(relatedTextList);
-    	}
-    	
-    	List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 3);
+
+	/**
+	 * 处理段子详情中推荐段子
+	 * @param jokeDetail
+	 */
+	private void handleJokeDetail(JokeDetail jokeDetail){
+//		//随机获取3条相关文字段子
+//    	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);
+//    	if(!CollectionUtils.isEmpty(relatedTextIdList)){
+//    		List<Joke> relatedTextList = Lists.newArrayList();
+//    		for(String jokeId : relatedTextIdList){
+//    			relatedTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
+//    		}
+//    		jokeDetail.setRelatedText(relatedTextList);
+//    	}
+		//随机获取3条相关图片段子
+    	List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 6);
     	if(!CollectionUtils.isEmpty(relatedImgIdList)){
     		List<Joke> relatedImgList = Lists.newArrayList();
     		Joke joke = null;
@@ -293,15 +307,15 @@ public class JokeService {
     		}
     		jokeDetail.setRelatedImg(relatedImgList);
     	}
-    	
-    	List<String> recommendIdList = jedisCache.srandmember(JedisKey.SET_RECOMMEDN_JOKE_TEXT, 3);
-    	if(!CollectionUtils.isEmpty(recommendIdList)){
-    		List<Joke> recommendTextList = Lists.newArrayList();
-    		for(String jokeId : recommendIdList){
-    			recommendTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
-    		}
-    		jokeDetail.setRecommend(recommendTextList);
-    	}
+////		随机获取3条推荐文字段子
+//    	List<String> recommendIdList = jedisCache.srandmember(JedisKey.SET_RECOMMEDN_JOKE_TEXT, 3);
+//    	if(!CollectionUtils.isEmpty(recommendIdList)){
+//    		List<Joke> recommendTextList = Lists.newArrayList();
+//    		for(String jokeId : recommendIdList){
+//    			recommendTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
+//    		}
+//    		jokeDetail.setRecommend(recommendTextList);
+//    	}
     }
     
     private String getListPreviewImg(String img){
