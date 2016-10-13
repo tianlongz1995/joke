@@ -318,9 +318,9 @@ public class JokeService {
 //    	}
     }
     
-    private String getListPreviewImg(String img){
-    	return img.replaceAll("_600x_", "_500x_");
-    }
+//    private String getListPreviewImg(String img){
+//    	return img.replaceAll("_600x_", "_500x_");
+//    }
 
 	/**
 	 * 获取段子缓存列表
@@ -340,9 +340,11 @@ public class JokeService {
 			joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
 			if(joke != null){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
+//					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
+					joke.setImg(IMG_REAL_SERVER_URL + joke.getImg());
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
+//					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
+					joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
 					joke.setGif( IMG_REAL_SERVER_URL + joke.getGif());
 				}
 				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
