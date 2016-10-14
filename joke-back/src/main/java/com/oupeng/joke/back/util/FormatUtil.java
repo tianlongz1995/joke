@@ -2,6 +2,8 @@ package com.oupeng.joke.back.util;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class FormatUtil {
 	public static Double getRoundHalfUp4Double(Integer i1,Integer i2){
@@ -33,4 +35,19 @@ public class FormatUtil {
 		return nt.format(b1/b2);
 		
 	}
+
+	/**
+	 * 获取昨天日期
+	 * @return  yyyyMMdd
+	 */
+    public static Integer getYesterday() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		return Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(cal.getTime()));
+
+	}
+
+//	public static void main(String[] args){
+//		System.out.println(getYesterday());
+//	}
 }

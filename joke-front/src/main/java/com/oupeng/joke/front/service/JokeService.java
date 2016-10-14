@@ -33,6 +33,9 @@ import javax.annotation.PostConstruct;
 public class JokeService {
     private static Logger logger = LoggerFactory.getLogger(JokeService.class);
 
+	private static final String PNG = ".png";
+	private static final String JPG = ".jpg";
+
     @Autowired
     private JedisCache jedisCache;
 	@Autowired
@@ -240,7 +243,7 @@ public class JokeService {
     		if(joke.getType() == Constants.JOKE_TYPE_IMG){
 				joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
 			}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-				joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
+				joke.setImg( png2jpg(IMG_REAL_SERVER_URL + joke.getImg()));
 				joke.setGif( IMG_REAL_SERVER_URL + joke.getGif());
 			}
     		String key = "";
@@ -279,15 +282,6 @@ public class JokeService {
 	 * @param jokeDetail
 	 */
 	private void handleJokeDetail(JokeDetail jokeDetail){
-//		//随机获取3条相关文字段子
-//    	List<String> relatedTextIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_TEXT, 3);
-//    	if(!CollectionUtils.isEmpty(relatedTextIdList)){
-//    		List<Joke> relatedTextList = Lists.newArrayList();
-//    		for(String jokeId : relatedTextIdList){
-//    			relatedTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
-//    		}
-//    		jokeDetail.setRelatedText(relatedTextList);
-//    	}
 		//随机获取3条相关图片段子
     	List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 6);
     	if(!CollectionUtils.isEmpty(relatedImgIdList)){
@@ -307,21 +301,8 @@ public class JokeService {
     		}
     		jokeDetail.setRelatedImg(relatedImgList);
     	}
-////		随机获取3条推荐文字段子
-//    	List<String> recommendIdList = jedisCache.srandmember(JedisKey.SET_RECOMMEDN_JOKE_TEXT, 3);
-//    	if(!CollectionUtils.isEmpty(recommendIdList)){
-//    		List<Joke> recommendTextList = Lists.newArrayList();
-//    		for(String jokeId : recommendIdList){
-//    			recommendTextList.add(JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class));
-//    		}
-//    		jokeDetail.setRecommend(recommendTextList);
-//    	}
     }
     
-//    private String getListPreviewImg(String img){
-//    	return img.replaceAll("_600x_", "_500x_");
-//    }
-
 	/**
 	 * 获取段子缓存列表
 	 * @param key
@@ -343,8 +324,8 @@ public class JokeService {
 //					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
 					joke.setImg(IMG_REAL_SERVER_URL + joke.getImg());
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-//					joke.setImg( getListPreviewImg(IMG_REAL_SERVER_URL + joke.getImg()));
-					joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
+					joke.setImg( png2jpg(IMG_REAL_SERVER_URL + joke.getImg()));
+//					joke.setImg( IMG_REAL_SERVER_URL + joke.getImg());
 					joke.setGif( IMG_REAL_SERVER_URL + joke.getGif());
 				}
 				if(StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184){
@@ -354,5 +335,14 @@ public class JokeService {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 修改图片后缀
+	 * @param img
+	 * @return
+	 */
+	private static String png2jpg(String img) {
+		return img.replace(PNG, JPG);
 	}
 }

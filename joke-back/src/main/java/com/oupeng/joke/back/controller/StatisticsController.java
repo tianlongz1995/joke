@@ -4,6 +4,7 @@ import com.oupeng.joke.back.service.ChannelService;
 import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.back.service.StatisticsService;
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.back.util.StatisExportUtil;
 import com.oupeng.joke.domain.statistics.DropDetail;
 import com.oupeng.joke.domain.statistics.TimeDetail;
@@ -387,9 +388,11 @@ public class StatisticsController {
     }
 
 	/**
-	 *
+	 * 刷新统计
 	 * @param startDay		开始日期
 	 * @param endDay		结束日期
+	 * @param flushType		刷新类型 0:下拉刷新、1:上拉刷新
+	 * @param dateType		日期类型 0：日报；1：周报；2：月报
 	 * @param pageNumber	页码
 	 * @param pageSize		记录数
 	 * @param model
@@ -398,6 +401,8 @@ public class StatisticsController {
 	@RequestMapping(value = "/dropTotal")
 	public String dropTotal( @RequestParam(value="startDay",required=false)Integer startDay,
 									@RequestParam(value="endDay",required=false)Integer endDay,
+							 		@RequestParam(value="flushType",required=false,defaultValue="0")Integer flushType,
+							 		@RequestParam(value="dateType",required=false,defaultValue="0")Integer dateType,
 									@RequestParam(value="pageNumber",required=false)Integer pageNumber,
 									@RequestParam(value="pageSize",required=false)Integer pageSize,
 									ModelMap model) {
@@ -406,7 +411,7 @@ public class StatisticsController {
 		int pageCount = 0;//总页数
 		int offset = 0 ;//开始条数index
 		List<TimeTotal> list = null;
-		int count = statisticsService.getDayDropTotalCount(startDay, endDay);//总条数
+		int count = statisticsService.getDayDropTotalCount(startDay, endDay, flushType, dateType);//总条数
 		if(count > 0){
 			if (count % pageSize == 0) {
 				pageCount = count / pageSize;
@@ -422,7 +427,7 @@ public class StatisticsController {
 			}
 			offset = (pageNumber - 1) * pageSize;
 
-			list = statisticsService.getDayDropTotalList(startDay, endDay, offset, pageSize);
+			list = statisticsService.getDayDropTotalList(startDay, endDay, offset, pageSize, flushType, dateType);
 		}
 		model.addAttribute("startDay", startDay);
 		model.addAttribute("endDay", endDay);
@@ -430,14 +435,18 @@ public class StatisticsController {
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("pageCount", pageCount);
+		model.addAttribute("flushType", flushType);
+		model.addAttribute("dateType", dateType);
 		model.addAttribute("list", list);
 		return "/statistics/dropTotal";
 	}
 
 	/**
-	 *
+	 * 刷新日报明细
 	 * @param startDay		开始日期
 	 * @param endDay		结束日期
+	 * @param flushType		刷新类型 0:下拉刷新、1:上拉刷新
+	 * @param dateType		日期类型 0：日报；1：周报；2：月报
 	 * @param pageNumber	页码
 	 * @param pageSize		记录数
 	 * @param distributorName	渠道名称
@@ -450,6 +459,8 @@ public class StatisticsController {
 	@RequestMapping(value = "/dropDetail")
 	public String dropDetail( @RequestParam(value="startDay",required=false)Integer startDay,
 									 @RequestParam(value="endDay",required=false)Integer endDay,
+							  		 @RequestParam(value="flushType",required=false,defaultValue="0")Integer flushType,
+							  		 @RequestParam(value="dateType",required=false,defaultValue="0")Integer dateType,
 									 @RequestParam(value="dname",required=false)String distributorName,
 									 @RequestParam(value="cname",required=false)String channelName,
 									 @RequestParam(value="pageNumber",required=false)Integer pageNumber,
@@ -482,7 +493,7 @@ public class StatisticsController {
 			}
 			int count = 0;
 			if (flag) {
-				count = statisticsService.getDropDayDetailCount(startDay, endDay, dids, lids, type);//总条数
+				count = statisticsService.getDropDayDetailCount(startDay, endDay, dids, lids, type, flushType, dateType);//总条数
 			}
 			if (count > 0) {
 				if (count % pageSize == 0) {
@@ -499,7 +510,7 @@ public class StatisticsController {
 				}
 				offset = (pageNumber - 1) * pageSize;
 
-				list = statisticsService.getDropDayDetailList(startDay, endDay, dids, cids, type, offset, pageSize);
+				list = statisticsService.getDropDayDetailList(startDay, endDay, dids, cids, type, offset, pageSize, flushType, dateType);
 			}
 			model.addAttribute("startDay", startDay);
 			model.addAttribute("endDay", endDay);
@@ -510,6 +521,8 @@ public class StatisticsController {
 			model.addAttribute("pageNumber", pageNumber);
 			model.addAttribute("pageSize", pageSize);
 			model.addAttribute("pageCount", pageCount);
+			model.addAttribute("flushType", flushType);
+			model.addAttribute("dateType", dateType);
 			model.addAttribute("list", list);
 			return "/statistics/dropDetail";
 		} catch (Exception e) {
@@ -517,5 +530,75 @@ public class StatisticsController {
 			e.printStackTrace();
 		}
 		return "/statistics/dropDetail";
+	}
+
+
+	/**
+	 * 列表页长图展开点击统计
+	 * @param startDay		开始时间
+	 * @param endDay		结束时间
+	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param distributorId
+	 * @param channelId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param model
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/imageOpen")
+	public String imageOpen(@RequestParam(value="startDay",required=false)Integer startDay,
+							@RequestParam(value="endDay",required=false)Integer endDay,
+							@RequestParam(value="reportType",required=false,defaultValue="0")Integer reportType,
+							@RequestParam(value="dateType",required=false,defaultValue="0")Integer dateType,
+							@RequestParam(value="did",required=false)Integer distributorId,
+							@RequestParam(value="cid",required=false)Integer channelId,
+							@RequestParam(value="pageNumber",required=false)Integer pageNumber,
+							@RequestParam(value="pageSize",required=false)Integer pageSize,
+							ModelMap model) throws IOException {
+
+		pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+		pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+		int pageCount = 0;//总页数
+		int offset = 0 ;//开始条数index
+		List<DropDetail> list = null;
+		if(startDay == null || endDay == null){
+			startDay = FormatUtil.getYesterday();
+			endDay = startDay;
+		}
+
+		int count = statisticsService.getImageOpenCount(startDay, endDay, reportType, dateType, distributorId, channelId);//总条数
+		if(count > 0){
+			if (count % pageSize == 0) {
+				pageCount = count / pageSize;
+			} else {
+				pageCount = count / pageSize + 1;
+			}
+
+			if (pageNumber > pageCount) {
+				pageNumber = pageCount;
+			}
+			if (pageNumber < 1) {
+				pageNumber = 1;
+			}
+			offset = (pageNumber - 1) * pageSize;
+
+			list = statisticsService.getImageOpenList(startDay, endDay, offset, pageSize, reportType, dateType, distributorId, channelId);
+		}
+		model.addAttribute("startDay", startDay);
+		model.addAttribute("endDay", endDay);
+		model.addAttribute("count", count);
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("pageCount", pageCount);
+		model.addAttribute("reportType", reportType);
+		model.addAttribute("dateType", dateType);
+		model.addAttribute("distributorId", distributorId);
+		model.addAttribute("channelId", channelId);
+		model.addAttribute("list", list);
+		model.addAttribute("distributorList", distributorService.getAllDistributorList());
+		model.addAttribute("channelList", channelService.getChannelList(Constants.CHANNEL_STATUS_VALID));
+		return "/statistics/imageOpen";
 	}
 }

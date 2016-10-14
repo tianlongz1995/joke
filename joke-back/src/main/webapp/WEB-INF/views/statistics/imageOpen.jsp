@@ -49,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 下拉刷新明细</h2>
+		<h2><i class="glyphicon glyphicon-user"></i> 列表页长图展示点击统计</h2>
 	</div>
 	<div class="box-content">
 		<table  class="table table-striped table-bordered bootstrap-datatable responsive">
@@ -75,42 +75,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</c:if>
 						</label>
 						<label style="padding-right:30px;">
-							<span >渠道名称</span>
-							<c:if test="${empty distributorName}">
-								<input id="distributorName" type="text" aria-controls="DataTables_Table_0" style="max-width: 120px;"/>
-							</c:if>
-							<c:if test="${!empty distributorName}">
-								<input id="distributorName" type="text" aria-controls="DataTables_Table_0" value="${distributorName}" style="max-width: 120px;"/>
-							</c:if>
+							<span>渠道名称</span>
+							<select id="distributorId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="" >全选</option>
+								<c:if test="${!empty distributorList}">
+									<c:forEach items="${distributorList}" var="distributor">
+										<option value="${distributor.id}" <c:if test="${!empty distributorId && distributorId == distributor.id}">selected</c:if> >${distributor.name}</option>
+									</c:forEach>
+								</c:if>
+							</select>
 						</label>
 						<label style="padding-right:30px;">
 							<span >频道名称</span>
-							<c:if test="${empty channelName}">
-								<input id="channelName" type="text" aria-controls="DataTables_Table_0"  style="max-width: 120px;"/>
-							</c:if>
-							<c:if test="${!empty channelName}">
-								<input id="channelName" type="text" aria-controls="DataTables_Table_0" value="${channelName}" style="max-width: 120px;"/>
-							</c:if>
-						</label>
-						<label style="padding-right:30px;" id="typeLabel">
-							<select id="type" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
-								<option value="0" <c:if test="${empty type || type == 0}">selected</c:if> >全部</option>
-								<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >只看渠道</option>
-								<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >只看频道</option>
+							<select id="channelId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="" >全选</option>
+								<c:if test="${!empty channelList}">
+									<c:forEach items="${channelList}" var="channel">
+										<option value="${channel.id}" <c:if test="${!empty channelId && channelId == channel.id}">selected</c:if> >${channel.name}</option>
+									</c:forEach>
+								</c:if>
 							</select>
 						</label>
-						<label style="padding-right:30px;" id="flushTypeLabel">
-							<select id="flushType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
-								<option value="0" <c:if test="${empty flushType || flushType == 0}">selected</c:if> >下拉刷新</option>
-								<option value="1" <c:if test="${!empty flushType && flushType == 1}">selected</c:if> >上拉刷新</option>
-							</select>
-						</label>
-
-						<label style="padding-right:30px;" id="dateTypeLabel">
+						<label style="padding-right:30px;" id="dateTypeLabel" >
 							<select id="dateType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
 								<option value="0" <c:if test="${empty dateType || dateType == 0}">selected</c:if> >日报</option>
 								<option value="1" <c:if test="${!empty dateType && dateType == 1}">selected</c:if> >周报</option>
 								<option value="2" <c:if test="${!empty dateType &&  dateType == 2}">selected</c:if> >月报</option>
+							</select>
+						</label>
+						<label style="padding-right:30px;" id="typeLabel" >
+							<select id="reportType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="0" <c:if test="${empty reportType || reportType == 0}">selected</c:if> >总报</option>
+								<option value="1" <c:if test="${!empty reportType && reportType == 1}">selected</c:if> >渠道</option>
+								<option value="2" <c:if test="${!empty reportType && reportType == 2}">selected</c:if> >频道</option>
+								<option value="3" <c:if test="${!empty reportType && reportType == 3}">selected</c:if> >明细</option>
 							</select>
 						</label>
 
@@ -121,17 +119,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 				</div>
 			</div>
-			<thead>
-				<tr>
-					<th>日期</th>
-					<th>渠道</th>
-					<th>频道</th>
-					<th>列表页下拉刷新PV</th>
-					<th>列表页下拉刷新UV</th>
-					<th>列表页人均下拉刷新PV</th>
-				</tr>
-			</thead>
-	
+			<tr>
+				<th>日期</th>
+				<th>渠道</th>
+				<th>频道</th>
+				<th>PV</th>
+				<th>UV</th>
+				<th>人均PV</th>
+			</tr>
+
 			<tbody>
 				<c:forEach items="${list}" var="timeDetail">
 				<tr>
@@ -163,33 +159,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 <script type="text/javascript">
 	function turnPage(){
-		location.href = '<%=basePath%>statistics/dropDetail?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+
-				'&dname='+$("#distributorName").val()+'&cname='+$("#channelName").val()+
-				'&type='+$("#type").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
-				+'&flushType='+$("#flushType").val()+'&dateType='+$("#dateType").val();
+		location.href = '<%=basePath%>statistics/imageOpen?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+
+				'&did='+$("#distributorId").val()+'&cid='+$("#channelId").val()+
+				'&reportType='+$("#reportType").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
+				+'&dateType='+$("#dateType").val();
 	};
-	$('#export').click(function(event) {
-		var url = '<%=basePath%>statistics/dropDetailExport?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+
-				'&dname='+$("#distributorName").val()+'&cname='+$("#channelName").val()+'&type='+$("#type").val()
-				+'&flushType='+$("#flushType").val()+'&dateType='+$("#dateType").val();
-		var $iframe,iframe_doc,iframe_html;
-	    if (($iframe = $('#download_iframe')).length === 0) {
-	        $iframe = $("<iframe id='download_iframe'" +
-	            " style='display: none' src='about:blank'></iframe>"
-	        ).appendTo("body");
-	    }
-	
-	    iframe_doc = $iframe[0].contentWindow || $iframe[0].contentDocument;
-	    if (iframe_doc.document) {
-	        iframe_doc = iframe_doc.document;
-	    }
-	
-	    iframe_html = "<html><head></head><body><form method='POST' action='" + url + "'>"
-	    iframe_html += "</form></body></html>";
-	    iframe_doc.open();
-	    iframe_doc.write(iframe_html);
-	    $(iframe_doc).find('form').submit();
-	});
 	$("body").keyup(function () {  
         if (event.which == 13){  
             $("#btnClick").trigger("click");  

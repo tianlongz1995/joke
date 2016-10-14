@@ -76,8 +76,10 @@
 						<li><a href="statistics/monthTotal"><span> 总月报</span></a></li>
 						<li><a href="statistics/monthDetail"><span> 渠道月报</span></a></li>
 						<!--	新增下拉刷新统计	-->
-						<li><a href="statistics/dropTotal"><span> 下拉刷新日报</span></a></li>
-						<li><a href="statistics/dropDetail"><span> 下拉刷新明细</span></a></li>
+						<li><a href="statistics/dropTotal"><span> 刷新统计</span></a></li>
+						<li><a href="statistics/dropDetail"><span> 刷新明细统计</span></a></li>
+						<!--	列表页长图展开点击统计	-->
+						<li><a href="statistics/imageOpen"><span> 长图展开统计</span></a></li>
 					</ul>
 				</li>
 			</ul>

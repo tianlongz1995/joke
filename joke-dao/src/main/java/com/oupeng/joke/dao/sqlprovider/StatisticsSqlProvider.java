@@ -278,6 +278,8 @@ public class StatisticsSqlProvider {
 	public static String getDayDropTotalCount(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
+		Object flushType = map.get("flushType");
+		Object dateType = map.get("dateType");
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select count(1) from stat_drop_total_day where 1 = 1 ");
 		if(startDay != null && !"".equals(startDay)){
@@ -285,6 +287,12 @@ public class StatisticsSqlProvider {
 		}
 		if(endDay != null && !"".equals(endDay)){
 			sql.append(" and day <= ").append(endDay);
+		}
+		if(flushType != null && !"".equals(flushType)){
+			sql.append(" and type = ").append(flushType);
+		}
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and date_type = ").append(dateType);
 		}
 		return sql.toString();
 	}
@@ -297,6 +305,8 @@ public class StatisticsSqlProvider {
 	public static String getDayDropTotalList(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
+		Object flushType = map.get("flushType");
+		Object dateType = map.get("dateType");
 		Integer start = Integer.parseInt(map.get("start").toString());
 		Integer end = Integer.parseInt(map.get("end").toString());
 		StringBuffer sql = new StringBuffer();
@@ -306,6 +316,12 @@ public class StatisticsSqlProvider {
 		}
 		if(endDay != null && !"".equals(endDay)){
 			sql.append(" and day <= ").append(endDay);
+		}
+		if(flushType != null && !"".equals(flushType)){
+			sql.append(" and type = ").append(flushType);
+		}
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and date_type = ").append(dateType);
 		}
 		sql.append(" order by day desc ");
 		sql.append(" limit ").append(start).append(",").append(end);
@@ -320,6 +336,8 @@ public class StatisticsSqlProvider {
 	public static String getDropDayDetailCount(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
+		Object flushType = map.get("flushType");
+		Object dateType = map.get("dateType");
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select count(1) from stat_drop_detail_day s left join `distributor` d on s.did=d.id left join channel c on s.cid=c.id where s.did != 'N' ");
 		if(startDay != null && !"".equals(startDay)){
@@ -327,6 +345,12 @@ public class StatisticsSqlProvider {
 		}
 		if(endDay != null && !"".equals(endDay)){
 			sql.append(" and s.day <= ").append(endDay);
+		}
+		if(flushType != null && !"".equals(flushType)){
+			sql.append(" and s.type = ").append(flushType);
+		}
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and s.date_type = ").append(dateType);
 		}
 		sql.append(getAsAndSql("s.", map));
 		return sql.toString();
@@ -340,6 +364,8 @@ public class StatisticsSqlProvider {
 	public static String getDropDayDetailList(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
+		Object flushType = map.get("flushType");
+		Object dateType = map.get("dateType");
 		Integer start = Integer.parseInt(map.get("start").toString());
 		Integer end = Integer.parseInt(map.get("end").toString());
 		StringBuffer sql = new StringBuffer();
@@ -349,6 +375,12 @@ public class StatisticsSqlProvider {
 		}
 		if(endDay != null && !"".equals(endDay)){
 			sql.append(" and s.day <= ").append(endDay);
+		}
+		if(flushType != null && !"".equals(flushType)){
+			sql.append(" and s.type = ").append(flushType);
+		}
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and s.date_type = ").append(dateType);
 		}
 		sql.append(getAsAndSql("s.", map));
 		sql.append(" order by s.day desc,s.did desc,s.cid desc ");
@@ -396,4 +428,83 @@ public class StatisticsSqlProvider {
 		}
 		return sql;
 	}
+
+	/**
+	 * 获取图片展开点击统计总记录数SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getImageOpenCount(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		Object reportType = map.get("reportType");
+		Object dateType = map.get("dateType");
+		Object distributorId = map.get("distributorId");
+		Object channelId = map.get("channelId");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(1) from stat_image_open where 1 = 1 ");
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and day <= ").append(endDay);
+		}
+		if(distributorId != null && !"".equals(distributorId)){
+			sql.append(" and did = '").append(distributorId).append("'");
+		}
+		if(channelId != null && !"".equals(channelId)){
+			sql.append(" and cid = '").append(channelId).append("'");
+		}
+//		日期类型: 0:日报; 1:周报; 2:月报
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and date_type = ").append(dateType);
+		}
+//		报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+		if(reportType != null && !"".equals(reportType)){
+			sql.append(" and report_type = ").append(reportType);
+		}
+		return sql.toString();
+	}
+
+	/**
+	 * 获取图片展开点击统计记录列表
+	 * @param map
+	 * @return
+	 */
+	public static String getImageOpenList(Map<String,Object> map){
+		Object startDay = map.get("startDay");
+		Object endDay = map.get("endDay");
+		Object reportType = map.get("reportType");
+		Object dateType = map.get("dateType");
+		Object distributorId = map.get("distributorId");
+		Object channelId = map.get("channelId");
+		Integer offset = Integer.parseInt(map.get("offset").toString());
+		Integer pageSize = Integer.parseInt(map.get("pageSize").toString());
+		StringBuffer sql = new StringBuffer();
+		sql.append("select s.day as time, d.name as dName, c.name as dName, s.pv as totalPv, s.uv as totalUv from stat_image_open s left join `distributor` d on s.did = d.id left join channel c on s.cid = c.id where 1 = 1");
+		if(startDay != null && !"".equals(startDay)){
+			sql.append(" and s.day >= ").append(startDay);
+		}
+		if(endDay != null && !"".equals(endDay)){
+			sql.append(" and s.day <= ").append(endDay);
+		}
+		if(distributorId != null && !"".equals(distributorId)){
+			sql.append(" and s.did = '").append(distributorId).append("'");
+		}
+		if(channelId != null && !"".equals(channelId)){
+			sql.append(" and s.cid = '").append(channelId).append("'");
+		}
+//		日期类型: 0:日报; 1:周报; 2:月报
+		if(dateType != null && !"".equals(dateType)){
+			sql.append(" and s.date_type = ").append(dateType);
+		}
+//		报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+		if(reportType != null && !"".equals(reportType)){
+			sql.append(" and s.report_type = ").append(reportType);
+		}
+		sql.append(" order by s.day, s.did, s.cid desc ");
+		sql.append(" limit ").append(offset).append(", ").append(pageSize);
+		return sql.toString();
+	}
+
 }

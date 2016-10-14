@@ -73,6 +73,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyyMMdd'})" class="Wdate" value="${endDay}"/>
 							</c:if>
 						</label>
+						<label style="padding-right:30px;" id="flushTypeLabel">
+							<select id="flushType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="0" <c:if test="${empty flushType || flushType == 0}">selected</c:if> >下拉刷新</option>
+								<option value="1" <c:if test="${!empty flushType && flushType == 1}">selected</c:if> >上拉刷新</option>
+							</select>
+						</label>
+
+						<label style="padding-right:30px;" id="dateTypeLabel">
+							<select id="dateType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="0" <c:if test="${empty dateType || dateType == 0}">selected</c:if> >日报</option>
+								<option value="1" <c:if test="${!empty dateType && dateType == 1}">selected</c:if> >周报</option>
+								<option value="2" <c:if test="${!empty dateType && dateType == 2}">selected</c:if> >月报</option>
+							</select>
+						</label>
 					
 						<label style="padding-right:30px;">
 							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
@@ -118,7 +132,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 <script type="text/javascript">
 	function turnPage(){
-		location.href = '<%=basePath%>statistics/dropTotal?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val();
+		location.href = '<%=basePath%>statistics/dropTotal?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()+'&flushType='+$("#flushType").val()+'&dateType='+$("#dateType").val();
 	}
 	
 	$("body").keyup(function () {  
