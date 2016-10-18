@@ -48,6 +48,17 @@ public class FormatUtil {
 	}
 
 //	public static void main(String[] args){
-//		System.out.println(getYesterday());
+//		System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(1476442401000L)));
 //	}
+
+	/**
+	 * 获取昨天日期字符串
+	 * @param format  格式(例如:yyyy-MM-dd HH:mm:ss)
+	 * @return
+	 */
+	public static String getYesterdayStr(String format) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		return new SimpleDateFormat(format).format(cal.getTime());
+	}
 }

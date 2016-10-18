@@ -3,6 +3,7 @@ package com.oupeng.joke.back.controller;
 import com.oupeng.joke.back.service.SourceService;
 import com.oupeng.joke.back.service.DistributorService;
 import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.back.util.StatisExportUtil;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.QueryParam;
@@ -188,8 +189,8 @@ public class SourceController {
             List<SourceCrawl> list = null;
             int pageCount = 0;//总页数
             int offset = 0 ;//开始条数index
-			queryParam.setStartTime(queryParam.getStartTime() == null ? null : queryParam.getStartTime().replaceAll("-",""));
-			queryParam.setEndTime(queryParam.getEndTime() == null ? null : queryParam.getEndTime().replaceAll("-",""));
+			queryParam.setStartTime(queryParam.getStartTime() == null ? String.valueOf(FormatUtil.getYesterday()) : queryParam.getStartTime().replaceAll("-",""));
+			queryParam.setEndTime(queryParam.getEndTime() == null ? String.valueOf(FormatUtil.getYesterday()) : queryParam.getEndTime().replaceAll("-",""));
 			int count = sourceService.getSourceCrawlListCount(queryParam);//总条数
             if(count > 0){
                 if (count % queryParam.getPageSize() == 0) {
@@ -279,10 +280,8 @@ public class SourceController {
      */
     private void setQueryTime(QueryParam queryParam) {
         if(StringUtils.isBlank(queryParam.getStartTime()) || StringUtils.isBlank(queryParam.getEndTime())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String currentDate = sdf.format(new Date());
-            queryParam.setStartTime(currentDate);
-            queryParam.setEndTime(currentDate);
+            queryParam.setStartTime(FormatUtil.getYesterdayStr("yyyy-MM-dd"));
+            queryParam.setEndTime(queryParam.getStartTime());
         }
     }
 

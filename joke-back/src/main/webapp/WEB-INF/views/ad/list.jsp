@@ -93,7 +93,7 @@
                                                 <option value="">全部</option>
                                             </c:if>
                                             <option value="1" <c:if test="${!empty pos && pos == 1}">selected</c:if> >列表页中间</option>
-                                            <option value="2" <c:if test="${!empty pos && pos == 2}">selected</c:if> >列表页底部</option>
+                                            <option value="2" <c:if test="${!empty pos && pos == 2}">selected</c:if> >详情页插屏</option>
                                             <option value="3" <c:if test="${!empty pos && pos == 3}">selected</c:if> >详情页上方</option>
                                             <option value="4" <c:if test="${!empty pos && pos == 4}">selected</c:if> >详情页中部</option>
                                             <option value="5" <c:if test="${!empty pos && pos == 5}">selected</c:if> >详情页底部</option>
@@ -154,7 +154,7 @@
                                         <td><c:out value="${ad.slotId}"/></td>
                                         <td>
                                             <c:if test="${ad.pos == 1}">列表页中间</c:if>
-                                            <c:if test="${ad.pos == 2}">列表页底部</c:if>
+                                            <c:if test="${ad.pos == 2}">详情页插屏</c:if>
                                             <c:if test="${ad.pos == 3}">详情页上方</c:if>
                                             <c:if test="${ad.pos == 4}">详情页中部</c:if>
                                             <c:if test="${ad.pos == 5}">详情页底部</c:if>
@@ -250,7 +250,7 @@
                                     <td>
                                         <select id="pos" class="form-control">
                                             <option value="1" selected>列表页中间</option>
-                                            <option value="2">列表页底部</option>
+                                            <option value="2">详情页插屏</option>
                                             <option value="3">详情页上方</option>
                                             <option value="4">详情页中部</option>
                                             <option value="5">详情页底部</option>
@@ -275,11 +275,11 @@
                 $('#addNewad').click(function(event) {
                     $('#addNewad').attr("disabled","disabled");
                     var slotId = $('#slotId').val();
-
-                    if(!isInteger(slotId)){
-                         alert("广告位置ID只能是整数");
-                         return false;
-                     }
+                    if(slotId != null && slotId.trim().length > 0 && !isInteger(slotId)){
+                        alert("广告编号不是Int类型!");
+                        $('#addNewad').removeAttr("disabled");
+                        return false;
+                    }
                     var slide = $('#slide').val();
                     if(slide == null || slide == undefined ){
                         slide = '';
@@ -288,6 +288,7 @@
                     if(pos == 1){
                          if(!isInteger(slide) || slide < 1 || slide > 99){
                              alert("投放频率必须是大于0或者小于100的正整数");
+                             $('#addNewad').removeAttr("disabled");
                              return false;
                          }
                     }
@@ -299,16 +300,20 @@
                                         if(data.status == 1) {
                                             location.href = '<%=basePath%>ad/list?status='+$("#status").val();
                                         }else {
+                                            $('#addNewad').removeAttr("disabled");
                                             alert('添加失败. info:'+data.info);
                                         }
                                     },
                                     function () {
+                                        $('#addNewad').removeAttr("disabled");
                                         alert('请求失败，请检查网络环境');
                                     });
                         }else{
+                            $('#addNewad').removeAttr("disabled");
                             alert('添加失败. info:'+result.info);
                         }
                     }, function(){
+                        $('#addNewad').removeAttr("disabled");
                         alert('添加失败. info:'+data['info']);
                     });
 
@@ -342,8 +347,12 @@
                 $('#selectadList').click(function (event) {
                     var slotId = $("#myslotId").val();
                     var param = '';
-                    if($.isNumeric(slotId)){
+                    if(isInteger(slotId)){
                         param += "&slotId="+slotId;
+                    }
+                    if(slotId != null && slotId.trim().length > 0 && !isInteger(slotId)){
+                        alert("广告编号不是Int类型!");
+                        return false;
                     }
                     var did = $('#distributors').val();
                     location.href = '<%=basePath%>ad/list?status=' + $("#status").val()
@@ -362,8 +371,12 @@
                 function turnPage(){
                     var slotId = $("#myslotId").val();
                     var param = '';
-                    if($.isNumeric(slotId)){
+                    if(isInteger(slotId)){
                         param += "&slotId="+slotId;
+                    }
+                    if(slotId != null && slotId.trim().length > 0 && !isInteger(slotId)){
+                        alert("广告编号不是Int类型!");
+                        return false;
                     }
                     location.href = '<%=basePath%>ad/list?status='+$("#status").val()+'&distributorId='+$("#distributors").val()+'&pos='+$("#pagePos").val()
                     +'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val() + param;
@@ -383,7 +396,7 @@
                      }
                      var n = Number(x);
                      return n >= -2147483648 && n <= 2147483647;
-                } 
+                }
             </script>
 
         </div>

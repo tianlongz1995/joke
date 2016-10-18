@@ -93,7 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td>
 						<select id="pos" class="form-control" disabled="disabled">
 							<option value="1" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 1}">selected</c:if> >列表页中间</option>
-							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >列表页底部</option>
+							<option value="2" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 2}">selected</c:if> >详情页插屏</option>
 							<option value="3" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 3}">selected</c:if> >详情页上方</option>
 							<option value="4" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 4}">selected</c:if> >详情页中部</option>
 							<option value="5" <c:if test="${!empty ad && !empty ad.pos && ad.pos == 5}">selected</c:if> >详情页底部</option>

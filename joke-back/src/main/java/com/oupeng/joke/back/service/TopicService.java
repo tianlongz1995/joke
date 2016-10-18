@@ -192,7 +192,7 @@ public class TopicService {
 		joke.setTitle(title);
 		if(StringUtils.isNotBlank(gifUrl)){//动图
 			joke.setType(Constants.JOKE_TYPE_GIF);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, false);
 			if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
 				joke.setGif(imgRespDto.getGifUrl());
 				joke.setImg(imgRespDto.getImgUrl());
@@ -202,7 +202,7 @@ public class TopicService {
 			}
 		}else if(StringUtils.isNotBlank(imgUrl)){//静图
 			joke.setType(Constants.JOKE_TYPE_IMG);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
 			if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
 				joke.setGif(null);
 				joke.setImg(imgRespDto.getImgUrl());
