@@ -25,7 +25,7 @@ import com.oupeng.joke.domain.Topic;
 
 @Service
 public class TopicService {
-	private static final Logger logger = LoggerFactory.getLogger(TopicService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TopicService.class);
 
 	@Autowired
 	private TopicMapper topicMapper;
@@ -231,7 +231,7 @@ public class TopicService {
 		handleJokePhoto(jokeList);
 		return jokeList;
 	}
-	
+
 	public String handleImg(String imgUrl){
 		if(StringUtils.isNotBlank(imgUrl)){
 			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
