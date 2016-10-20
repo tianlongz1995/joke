@@ -9,16 +9,23 @@ public class JedisKey {
     public static final String JOKE_LIST_FEEDBACK = "list.joke.feedback";
     /** 渠道配置信息Hash表key    */
     public static final String JOKE_HASH_DISTRIBUTOR_CONFIG = "hash.joke.distributor.config";
-    
-    public static final String SORTEDSET_DISTRIBUTOR_TOPIC = "sortedset.distributor.topic.";
-
+    /** 专题频道封面首页    */
+    public static final String SORTEDSET_TOPIC_COVER_LIST = "sortedset.topic.channel";
+    /** 专题类型列表    */
+    public static final String SORTEDSET_TOPIC_LIST = "sortedset.topic.list.";
+    /** 专题详情    */
     public static final String SORTEDSET_TOPIC_CHANNEL = "sortedset.topic.channel.";
     /** 普通频道段子编号列表   */
     public static final String SORTEDSET_COMMON_CHANNEL = "sortedset.common.channel.";
     /** 推荐频道段子ID列表    */
     public static final String SORTEDSET_RECOMMEND_CHANNEL = "sortedset.recommend.channel";
+    /** 段子缓存    */
     public static final String STRING_JOKE = "string.joke.";
+    /** 专题封面缓存    */
+    public static final String STRING_TOPIC_COVER = "string.topic.cover.";
+    /** 专题缓存    */
     public static final String STRING_TOPIC = "string.topic.";
+
     public static final String SORTEDSET_ALL = "sortedset.*";
     public static final String SORTEDSET_TOPIC_ALL = "sortedset*topic*";
     /** 相关文字段子    */

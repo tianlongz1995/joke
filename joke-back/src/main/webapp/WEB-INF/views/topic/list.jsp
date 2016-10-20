@@ -63,9 +63,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span >状态</span>
-					<select id="status">
+                <div class="form-group" style="display: inline-block;padding-left:10px;">
+                    <label>
+                        <label for="status" style="display: inline-block;">状态 : </label>
+                    </label>
+                </div>
+                <label style="padding-right:10px;">
+					<select class="form-control input-sm" id="status">
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >新建</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >下线</option>
@@ -73,8 +77,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
 					</select>
 				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="selectTopicList">
+                <div class="form-group" style="display: inline-block;padding-left:10px;">
+                    <label>
+                        <label for="status" style="display: inline-block;">专题类型 : </label>
+                    </label>
+                </div>
+                <label>
+                    <select class="form-control input-sm" id="topicCoverId">
+                        <option value="">全部</option>
+                        <c:forEach items="${topicCoverList}" var="tc">
+                            <option value="${tc.id}" <c:if test="${!empty topicCoverId && topicCoverId == tc.id}">selected</c:if> >${tc.name}</option>
+                        </c:forEach>
+                    </select>
+                </label>
+				<label style="padding-left:30px;">
+					<a class="btn btn-primary btn-sm" href="#" id="selectTopicList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>
@@ -83,8 +100,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<thead>
 				<tr>
 					<th>期数</th>
+                    <th>LOGO图</th>
 					<th>主题</th>
-					<th>发布渠道</th>
 					<th>状态</th>
 					<th>创建时间</th>
 					<th>发布时间</th>
@@ -96,16 +113,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:forEach items="${list}" var="topic">
 					<tr>
 						<td>[<c:out value="${topic.id}"/>]</td>
+                        <td>
+                            <img src="${topic.img}" style="width: 176px;height: 100px;">
+                        </td>
 						<td><c:out value="${topic.title}"/></td>
-						<td>
-							<c:if test="${!empty topic.dids}">
-								<c:forTokens items="${topic.dids}" delims="," var="did">
-									<c:forEach items="${distributorList}" var="distributor">
-										<c:if test="${distributor.id == did}">${distributor.name}<br/></c:if>
-									</c:forEach>
-								</c:forTokens>
-							</c:if>
-						</td>
 						<td>
 							<c:if test="${topic.status == 0}">新建</c:if>
 							<c:if test="${topic.status == 1}">下线</c:if>
@@ -120,38 +131,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${topic.status == 0}">
-								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
-						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
+								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}&topicCoverId=${topicCoverId}">
+						        	<i class="glyphicon glyphicon-edit icon-white"></i> 编辑
 						        </a>
-						        <a class="btn btn-primary" href="topic/addjoke?topicId=${topic.id}">
-						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
+						        <a class="btn btn-primary btn-sm" href="topic/addjoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
+						        	<i class="glyphicon glyphicon-plus"></i> 添加内容
 						        </a>
-						        <a class="btn btn-warning" href="topic/deljoke?topicId=${topic.id}">
-						        	<i class="glyphicon glyphicon-arrow-left"></i>删除内容
+						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
+						        	<i class="glyphicon glyphicon-trash"></i> 删除内容
 						        </a>
-								<a class="btn btn-danger" href="#" onclick="verifyTopic(1,${topic.id})">
-					        	 	<i class="glyphicon glyphicon-remove icon-white"></i>下线
+								<a class="btn btn-danger btn-sm" href="#" onclick="verifyTopic(1,${topic.id})">
+					        	 	<i class="glyphicon glyphicon-remove icon-white"></i> 下线
 					        	</a>
-					        	<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
-						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线
+					        	<a class="btn btn-success btn-sm" href="#" onclick="verifyTopic(2,${topic.id})">
+						       		<i class="glyphicon glyphicon-ok icon-white"></i> 上线
 						        </a>
 							</c:if>
 							<c:if test="${topic.status == 1}">
-								<a class="btn btn-info" href="topic/edit?id=${topic.id}">
+								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}&topicCoverId=${topicCoverId}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
-						        <a class="btn btn-primary" href="topic/addjoke?topicId=${topic.id}">
-						        	<i class="glyphicon glyphicon-arrow-right"></i>添加内容
+						        <a class="btn btn-primary btn-sm" href="topic/addjoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
+						        	<i class="glyphicon glyphicon-plus"></i>添加内容
 						        </a>
-						        <a class="btn btn-warning" href="topic/deljoke?topicId=${topic.id}">
-						        	<i class="glyphicon glyphicon-arrow-left"></i>删除内容
+						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
+						        	<i class="glyphicon glyphicon-trash"></i>删除内容
 						        </a>
-								<a class="btn btn-success" href="#" onclick="verifyTopic(2,${topic.id})">
+								<a class="btn btn-success btn-sm" href="#" onclick="verifyTopic(2,${topic.id})">
 						       		<i class="glyphicon glyphicon-ok icon-white"></i>上线
 						        </a>
 							</c:if>
 							<c:if test="${topic.status == 2 || topic.status == 3}">
-								<a class="btn btn-danger" href="#" onclick="verifyTopic(1,${topic.id})">
+								<a class="btn btn-danger btn-sm" href="#" onclick="verifyTopic(1,${topic.id})">
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
@@ -160,7 +171,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</c:forEach>
 			</tbody>
 		</table>
-		
+        <div class="row">
+            <div class="col-md-12 center-block">
+                <div class="dataTables_paginate paging_bootstrap pagination">
+                    <jsp:include page="../common/page.jsp" />
+                </div>
+            </div>
+        </div>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
@@ -171,25 +188,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title" id="myModalLabel">新建专题</h4>
+				<h4 class="modal-title" id="myModalLabel">新增专题列表内容</h4>
 			</div>
 			<div class="modal-body">
 				<table id="orders-table" class="table table-hover">
 					<tr>
 						<th>发布时间</th>
 						<td>
-							<input id="addPublishTime" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="Wdate" value=""/>
+							<input id="addPublishTime"  type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="Wdate" value=""/>
 						</td>
 					</tr>
 					<tr>
-						<th>发布渠道</th>
+						<th>专题类型</th>
 						<td>
-							<input type="checkbox" id="allcheck" >全选</input>
-							<c:forEach items="${distributorList}" var="distributor">
-								<input type="checkbox" name="distributorId" value="${distributor.id}" >${distributor.name}</input>
-							</c:forEach>
+							<select class="form-control input-sm" id="topicCover">
+								<option value="">请选择专题类型</option>
+								<c:forEach items="${topicCoverList}" var="tc">
+									<option value="${tc.id}" >${tc.name}</option>
+								</c:forEach>
+							</select>
 						</td>
 					</tr>
+					<%--<tr>--%>
+						<%--<th>发布渠道</th>--%>
+						<%--<td>--%>
+							<%--<input type="checkbox" id="allcheck" >全选</input>--%>
+							<%--<c:forEach items="${distributorList}" var="distributor">--%>
+								<%--<input type="checkbox" name="distributorId" value="${distributor.id}" >${distributor.name}</input>--%>
+							<%--</c:forEach>--%>
+						<%--</td>--%>
+					<%--</tr>--%>
 					<tr>
 						<th>主题</th>
 						<td>
@@ -232,14 +260,23 @@ $('#allcheck').on('click', function(){
 
 $('#addNewTopic').click(function(event) {
 	$('#addNewTopic').attr("disabled","disabled");
-	var dids = [];
-	$('input[name="distributorId"]:checked').each(function(){
-		dids.push($(this).val());
-		});
-	
+//	var dids = [];
+//	$('input[name="distributorId"]:checked').each(function(){
+//		dids.push($(this).val());
+//		});
+	var coverId = $("#topicCover").val();
+	if(coverId == null || coverId.length < 1){
+		alert("必须选择一个专题类型!");
+		return false;
+	}
+	var addContent = $("#addContent").val();
+	if(addContent == null || addContent.length < 1){
+		alert("必须填写简介!");
+		return false;
+	}
 	post('topic/add',
 		'publishTime='+$("#addPublishTime").val()+'&title='+$('#addTitle').val()+'&img='+$('#image').val()+'&content='
-			+$('#addContent').val()+'&dids='+dids.toString(), 
+			+addContent+'&topicCoverId='+coverId,
 		function (data) {
 			if(data['status']) {
 				location.href = '<%=basePath%>topic/list?status='+$("#status").val();
@@ -268,7 +305,7 @@ function verifyTopic(status,id) {
 }
 
 $('#selectTopicList').click(function(event) {
-	location.href = '<%=basePath%>topic/list?status='+$("#status").val();
+	location.href = '<%=basePath%>topic/list?status='+$("#status").val()+'&topicCoverId='+$("#topicCoverId").val();
 });
 
 $('#imgDelButton').click(function () {
@@ -302,7 +339,11 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
-}
+};
+/**	分页方法	*/
+function turnPage(){
+    location.href = '<%=basePath%>topic/list?status='+$("#status").val()+'&topicCoverId='+$("#topicCoverId").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+};
 </script>
 
 </div><!-- content end -->

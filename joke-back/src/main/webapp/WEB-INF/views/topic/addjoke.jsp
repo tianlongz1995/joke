@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>添加内容</title>
+	<title>添加专题内容</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -49,45 +49,48 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div id="content" class="col-lg-10 col-sm-10">
 <div class="row">
 <div class="box col-md-12">
-
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<a href="topic/list"><h2><i class="glyphicon glyphicon-user"></i> 专题管理</h2></a>
+		<a href="<%=basePath%>topic/list"><h2><i class="glyphicon glyphicon-user"></i> 专题管理</h2></a>
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
+			<a href="<%=basePath%>topic/list?status=${status}&topicCoverId=${topicCoverId}&pageSize=${pSize}&pageNumber=${pNumber}">
+				<i class="glyphicon glyphicon-arrow-left"></i> 返回专题列表
+			</a>
 		</div>
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
+				<div class="form-group" style="display: inline-block;padding-left:10px;">
+					<label>
+						<label for="type" style="display: inline-block;">类型 : </label>
+					</label>
+				</div>
 				<label style="padding-right:30px;">
-					<span >类型</span>
-					<select id="type">
+					<select class="form-control input-sm" id="type">
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty type && type == 0}">selected</c:if> >文字</option>
 						<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >图片</option>
 						<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >动图</option>
 					</select>
 				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary" href="#" id="selectJokeList" >
+				<label style="padding-right:15px;">
+					<a class="btn btn-primary btn-sm" href="#" id="selectJokeList" >
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>
-			    <label style="padding-right:30px;">
-			        <a class="btn btn-success" href="#" onclick="verifyJoke('batch')">
+			    <label style="padding-right:15px;">
+			        <a class="btn btn-success btn-sm" href="#" onclick="verifyJoke('batch')">
 			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量添加
 			        </a>
 				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-info" href="<%=basePath%>topic/addOriginal?topicId=${topicId}" >
+				<label style="padding-right:15px;">
+					<a class="btn btn-info btn-sm" href="<%=basePath%>topic/addOriginal?topicId=${topicId}" >
 						<i class="glyphicon glyphicon-plus-sign icon-white"></i>添加原创
 					</a>
 				</label>
 			</div>
 		
-			<thead>
-				<div class="alert alert-info">
-				</div>
 				<tr>
 					<th>全选<input type="checkbox" id="allcheck" /></th>
 					<th>内容</th>
@@ -95,9 +98,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th>审核通过时间</th>
 					<th>操作</th>
 				</tr>
-			</thead>
-	
-			<tbody>
+
 				<c:forEach items="${list}" var="joke">
 					<tr>
 						<td><input type="checkbox" name="jokeid" value="${joke.id}"/></td>
@@ -107,14 +108,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<p><h5>${joke.title}</h5></p>
 								</c:if>
 								<c:if test="${!empty joke.content}">
-									<p><small>${joke.content}</<small></p>
+									<p><small>${joke.content}</small></p>
 								</c:if>
-								<%--<c:if test="${joke.type == 2}">
-									<p><img src="${joke.img}" data-origin="${joke.img}" data-src="${joke.gif}" /></p>
-								</c:if>
-								<c:if test="${joke.type == 1}">
-									<p><img src="${joke.img}"/></p>
-								</c:if>--%>
 							</div>
 						</td>
 						<td>
@@ -126,15 +121,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
 						<td>
-							<a class="btn btn-success" href="#" onclick="verifyJoke(${joke.id})">
+							<a class="btn btn-success btn-sm" href="#" onclick="verifyJoke(${joke.id})">
 					        	 <i class="glyphicon glyphicon-ok icon-white"></i>添加
 					        </a>
 					    </td>
 					</tr>
 				</c:forEach>
-			</tbody>
 		</table>
 		<div class="row">
+			<div class="col-md-12 center-block">
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<jsp:include page="../common/page.jsp" />
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -194,7 +193,7 @@ function verifyJoke(id) {
 			'topicId=${topicId}&ids='+id, 
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>topic/addjoke?topicId=${topicId}&type='+$("#type").val();
+					location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
 				}
 				else {
 					alert('添加失败. info:'+data['info']);
@@ -206,7 +205,7 @@ function verifyJoke(id) {
 }
 
 $('#selectJokeList').click(function(event) {
-	location.href = '<%=basePath%>topic/addjoke?topicId=${topicId}&type='+$("#type").val();
+	location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
 });
 
 function post(url, data, success, error) {
@@ -216,7 +215,11 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
-}
+};
+/**	分页方法	*/
+function turnPage(){
+	location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+};
 </script>
 
 </div><!-- content end -->

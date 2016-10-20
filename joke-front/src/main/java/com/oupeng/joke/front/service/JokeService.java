@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.Feedback;
-import com.oupeng.joke.domain.Joke;
-import com.oupeng.joke.domain.JokeDetail;
-import com.oupeng.joke.domain.Topic;
+import com.oupeng.joke.domain.*;
 import com.oupeng.joke.domain.response.DistributorConfig;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
@@ -163,26 +160,50 @@ public class JokeService {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
 				}
 			}
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题频道 lt = 1
-    		result = getTopicList4TopicChannel(distributorId, start, end);
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题封面 lt = 1
+    		result = getTopicCover4TopicChannel(start, end);
     	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
     		result = getJokeList4RecommendChannel(start, end, actionType);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表页	lt = 9
-    		result = getJokeList4TopicChannel(topicId,start,end);
-    	}
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表	lt = 9
+			result = getTopicList4TopicChannel(distributorId, start, end);
+    	}else if(Constants.LIST_TYPE_TOPIC_DETAIL == listType){			// 专题详情	lt = 10
+			result = getJokeList4TopicChannel(topicId,start,end);
+		}
     	return new Success(result);
     }
 
+	/**
+	 * 获取专题封面
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private List<TopicCover> getTopicCover4TopicChannel(Long start, Long end) {
+		Set<String> topicIdSet = jedisCache.zrange(JedisKey.SORTEDSET_TOPIC_COVER_LIST, start.intValue(), end.intValue());
+		if(CollectionUtils.isEmpty(topicIdSet)){
+			return null;
+		}
+		List<TopicCover> list = Lists.newArrayList();
+		TopicCover topicCover;
+		for(String topicCoverId : topicIdSet){
+			topicCover = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC_COVER + topicCoverId), TopicCover.class);
+			if(topicCover != null){
+				topicCover.setLogo(env.getProperty("img.real.server.url") + topicCover.getLogo());
+			}
+		}
+		return list;
+	}
+
 
 	/**
-	 * 获取专题频道
+	 * 获取专题列表
 	 * @param distributorId
 	 * @param start
 	 * @param end
 	 * @return
 	 */
     private List<Topic> getTopicList4TopicChannel(Integer distributorId,Long start,Long end){
-    	String key = JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + distributorId;
+    	String key = JedisKey.SORTEDSET_TOPIC_LIST + distributorId;
     	Set<String> topicIdSet = jedisCache.zrevrange(key, start, end);
 		if(CollectionUtils.isEmpty(topicIdSet)){
 			return null;
@@ -217,7 +238,7 @@ public class JokeService {
     }
 
 	/**
-	 * 获取专题列表页
+	 * 获取专题详情页
 	 * @param topicId
 	 * @param start
 	 * @param end

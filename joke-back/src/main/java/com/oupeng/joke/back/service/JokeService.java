@@ -285,13 +285,33 @@ public class JokeService {
         handleJokesUrl(jokeList);
 		return jokeList;
 	}
-	
-	public List<Joke> getJokeListForTopic(Integer type,Integer status){
-		List<Joke> jokeList = jokeMapper.getJokeList(type, status,null,null,true);
+
+	/**
+	 * 获取已审核的段子列表记录总数
+	 * @param type
+	 * @param status
+	 * @return
+	 */
+	public int getJokeListForTopicCount(Integer type,Integer status) {
+		return jokeMapper.getJokeListForTopicCount(type, status);
+	}
+	/**
+	 * 获取已审核的段子列表  TODO
+	 * @param type
+	 * @param status
+	 * @return
+	 */
+	public List<Joke> getJokeListForTopic(Integer type,Integer status, Integer offset, Integer pageSize){
+		List<Joke> jokeList = jokeMapper.getJokeListForTopic(type, status, offset, pageSize);
         handleJokesUrl(jokeList);
 		return jokeList;
 	}
-	
+
+	/**
+	 * 获取专题对应的段子编号
+	 * @param topicId
+	 * @return
+	 */
 	public List<Integer> getJokeForPublishTopic(Integer topicId){
 		return jokeMapper.getJokeForPublishTopic(topicId);
 	}
@@ -429,4 +449,5 @@ public class JokeService {
 	public int editPublishSize(String id, Integer size) {
 		return jokeMapper.editPublishSize(id, size);
 	}
+
 }

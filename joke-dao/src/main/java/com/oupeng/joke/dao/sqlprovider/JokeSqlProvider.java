@@ -10,6 +10,52 @@ import com.oupeng.joke.domain.Joke;
 public class JokeSqlProvider {
 
 	/**
+	 * 获取专题段子列表总数SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeListForTopicCount(Map<String,Object> map){
+		Object type = map.get("type");
+		Object status = map.get("status");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(t1.id) from joke t1 where t1.verify_time >= CURDATE()  ");
+		if(type != null){
+			sql.append(" and t1.type = ").append(type).append(" ");
+		}
+		if(status != null){
+			sql.append(" and t1.status = ").append(status).append(" ");
+		}
+		sql.append(" and not exists (select 1 from topic_joke t2 where t2.j_id = t1.id) ");
+		return sql.toString();
+	}
+	/**
+	 * 获取专题段子列表总数SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeListForTopic(Map<String,Object> map){
+		Object type = map.get("type");
+		Object status = map.get("status");
+		Object offset = map.get("offset");
+		Object pageSize = map.get("pageSize");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t1.source_id as sourceId,");
+		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
+		sql.append(" t1.update_time as updateTime,t1.good,t1.bad from joke t1 where 1 = 1 ");
+		if(type != null){
+			sql.append(" and t1.type = ").append(type).append(" ");
+		}
+		if(status != null){
+			sql.append(" and t1.status = ").append(status).append(" ");
+		}
+		sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id) ");
+		sql.append(" order by t1.create_time desc ");
+		if(offset != null && pageSize != null){
+			sql.append(" limit ").append(offset).append(", ").append(pageSize);
+		}
+		return sql.toString();
+	}
+	/**
 	 * 获取数据源列表SQL
 	 * @param map
 	 * @return
@@ -39,7 +85,6 @@ public class JokeSqlProvider {
 		if(isTopic){
 			sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id)");
 		}
-		
 		sql.append(" order by t1.create_time desc limit 12 ");
 		return sql.toString();
 	}

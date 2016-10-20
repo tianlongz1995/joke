@@ -40,11 +40,12 @@
                 		<span> 频道管理</span>
                 	</a>
                 </li>
-                <li>
-                	<a class="ajax-link" href="topic/list">
-                		<i class="glyphicon glyphicon-th"></i>
-                		<span> 专题管理</span>
-                	</a>
+                <li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-th"></i><span> 专题管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="topic/topicCover?status=1"><span> 专题封面管理</span></a></li>
+						<li><a href="topic/list"><span> 专题列表管理</span></a></li>
+					</ul>
                 </li>
                 <li>
                 	<a class="ajax-link" href="ad/list">

@@ -75,12 +75,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 				</tr>
 				<tr>
-		  			<th>发布渠道</th>
+		  			<th>专题类型</th>
 			  		<td>
-			  			<input type="checkbox" id="allcheck" >全选</input>
-						<c:forEach items="${distributorList}" var="distributor">
-							<input type="checkbox" name="distributorId" value="${distributor.id}"  <c:if test="${fn:contains(topic.dids,distributor.id)}">checked</c:if>>${distributor.name}</input>
-						</c:forEach>
+						<select class="form-control input-sm" id="topicCover">
+							<option value="">请选择专题类型</option>
+							<c:forEach items="${topicCoverList}" var="tc">
+								<option value="${tc.id}" <c:if test="${!empty topic.coverId && topic.coverId == tc.id}">selected</c:if> >${tc.name}</option>
+							</c:forEach>
+						</select>
+			  			<%--<input type="checkbox" id="allcheck" >全选</input>--%>
+						<%--<c:forEach items="${distributorList}" var="distributor">--%>
+							<%--<input type="checkbox" name="distributorId" value="${distributor.id}"  <c:if test="${fn:contains(topic.dids,distributor.id)}">checked</c:if>>${distributor.name}</input>--%>
+						<%--</c:forEach>--%>
 			  		</td>
 			  	</tr>
 				<tr>
@@ -160,26 +166,32 @@ $('#img').change(function () {
     });
 });
 
-$('#allcheck').on('click', function(){
-	if ($(this).prop("checked")) {
-        $(":checkbox").prop("checked", true);
-    }else {
-        $(":checkbox").prop("checked", false);
-    }
-});
+//$('#allcheck').on('click', function(){
+//	if ($(this).prop("checked")) {
+//        $(":checkbox").prop("checked", true);
+//    }else {
+//        $(":checkbox").prop("checked", false);
+//    }
+//});
 
 $('#updateTopic').click(function(event) {
 	$('#updateTopic').attr("disabled","disabled");
-	var dids = [];
-	$('input[name="distributorId"]:checked').each(function(){
-		dids.push($(this).val());
-		});
+//	var dids = [];
+//	$('input[name="distributorId"]:checked').each(function(){
+//		dids.push($(this).val());
+//		});
+	var coverId = $("#topicCover").val();
+	if(coverId == null || coverId.length < 1){
+		alert("必须选择一个专题类型!");
+		$('#updateTopic').removeAttr("disabled");
+		return false;
+	}
 	post('topic/update',
-			'id='+$("#topicid").val()+'&title='+$("#title").val()+'&content='+$('#content2').val()+'&dids='+dids.toString()
+			'id='+$("#topicid").val()+'&title='+$("#title").val()+'&content='+$('#content2').val()+'&topicCoverId='+coverId
 				+'&img='+$('#image').val()+'&publishTime='+$('#publishTime').val(),
 			function (data) {
 				if(data['status']) {
-					location.href = '<%=basePath%>topic/list';
+					location.href = '<%=basePath%>topic/list?status=${status}&topicCoverId=${topicCoverId}';
 				}
 				else {
 					alert('更新失败. info:'+data['info']);
