@@ -172,4 +172,69 @@ public class JokeController {
         iol.info(new ImprLog(distributorId, channelId, uid, Constants.IMPR_LOG_TYPE_LIST, null).toString());
         return new Success();
     }
+
+    /**
+     * 专题列表
+     * @param distributorId 渠道编号
+     * @param channelId     频道编号
+     * @param actionType    动作类型 (0:首次请求; 1:上拉刷新; 2:下拉刷新)
+     * @param utc           UTC时间
+     * @param count         返回记录数量
+     * @param start
+     * @param end
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "topicList")
+    @ResponseBody
+    public Result topicList(@RequestParam(value="did")Integer distributorId,
+                            @RequestParam(value="cid")Integer channelId,
+                            @RequestParam(value="at")Integer actionType,
+                            @RequestParam(value="utc")Long utc,
+                            @RequestParam(value="count")Integer count,
+                            @RequestParam(value="start",required=false,defaultValue="0")Long start,
+                            @RequestParam(value="end",required=false,defaultValue="9")Long end,
+                        HttpServletRequest request){
+        String uid = CookieUtil.getCookie(request);
+        int type = Constants.IMPR_LOG_TYPE_LIST; // 列表页查询
+        if(actionType == 0){
+            type = Constants.IMPR_LOG_TYPE_CHANNEL; // 频道入口
+        }
+//        记录访问日志
+        impr.info(new ImprLog(distributorId, channelId, uid, type).toString());
+//        下拉刷新日志
+        if(actionType == 2){
+            dfl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
+        }
+//        上拉刷新日志
+        if(actionType == 1){
+            ufl.info(new ImprLog(distributorId, channelId, uid, type, null).toString());
+        }
+        return new Success(jokeService.topicList(actionType, utc, count, start, end));
+    }
+
+    /**
+     * 专题详情
+     * @param distributorId
+     * @param channelId
+     * @param topicId
+     * @param start
+     * @param end
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "topicDetails")
+    @ResponseBody
+    public Result topicDetails(@RequestParam(value="did")Integer distributorId,
+                               @RequestParam(value="cid")Integer channelId,
+                               @RequestParam(value="tid")Integer topicId,
+                               @RequestParam(value="start",required=false,defaultValue="0")Long start,
+                               @RequestParam(value="end",required=false,defaultValue="9")Long end,
+                            HttpServletRequest request){
+        String uid = CookieUtil.getCookie(request);
+//        记录访问日志
+        impr.info(new ImprLog(distributorId, channelId, uid, Constants.IMPR_LOG_TYPE_LIST).toString());
+        return new Success(jokeService.topicDetails(topicId));
+    }
+
 }
