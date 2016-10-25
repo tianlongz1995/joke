@@ -534,11 +534,12 @@ public class StatisticsController {
 
 
 	/**
-	 * 列表页长图展开点击统计
+	 * 使用统计
 	 * @param startDay		开始时间
 	 * @param endDay		结束时间
 	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
 	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param logType		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 	 * @param distributorId
 	 * @param channelId
 	 * @param pageNumber
@@ -547,16 +548,17 @@ public class StatisticsController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/imageOpen")
-	public String imageOpen(@RequestParam(value="startDay",required=false)Integer startDay,
-							@RequestParam(value="endDay",required=false)Integer endDay,
-							@RequestParam(value="reportType",required=false,defaultValue="0")Integer reportType,
-							@RequestParam(value="dateType",required=false,defaultValue="0")Integer dateType,
-							@RequestParam(value="did",required=false)Integer distributorId,
-							@RequestParam(value="cid",required=false)Integer channelId,
-							@RequestParam(value="pageNumber",required=false)Integer pageNumber,
-							@RequestParam(value="pageSize",required=false)Integer pageSize,
-							ModelMap model) throws IOException {
+	@RequestMapping(value = "/usage")
+	public String usage(@RequestParam(value="startDay",required=false)Integer startDay,
+						@RequestParam(value="endDay",required=false)Integer endDay,
+						@RequestParam(value="reportType",required=false,defaultValue="0")Integer reportType,
+						@RequestParam(value="dateType",required=false,defaultValue="0")Integer dateType,
+						@RequestParam(value="logType",required=false,defaultValue="0")Integer logType,
+						@RequestParam(value="did",required=false)Integer distributorId,
+						@RequestParam(value="cid",required=false)Integer channelId,
+						@RequestParam(value="pageNumber",required=false)Integer pageNumber,
+						@RequestParam(value="pageSize",required=false)Integer pageSize,
+						ModelMap model) throws IOException {
 
 		pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
 		pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
@@ -568,7 +570,7 @@ public class StatisticsController {
 			endDay = startDay;
 		}
 
-		int count = statisticsService.getImageOpenCount(startDay, endDay, reportType, dateType, distributorId, channelId);//总条数
+		int count = statisticsService.getUsageCount(startDay, endDay, reportType, dateType, logType, distributorId, channelId);//总条数
 		if(count > 0){
 			if (count % pageSize == 0) {
 				pageCount = count / pageSize;
@@ -584,7 +586,7 @@ public class StatisticsController {
 			}
 			offset = (pageNumber - 1) * pageSize;
 
-			list = statisticsService.getImageOpenList(startDay, endDay, offset, pageSize, reportType, dateType, distributorId, channelId);
+			list = statisticsService.getUsageList(startDay, endDay, offset, pageSize, reportType, dateType, logType, distributorId, channelId);
 		}
 		model.addAttribute("startDay", startDay);
 		model.addAttribute("endDay", endDay);
@@ -594,11 +596,13 @@ public class StatisticsController {
 		model.addAttribute("pageCount", pageCount);
 		model.addAttribute("reportType", reportType);
 		model.addAttribute("dateType", dateType);
+		model.addAttribute("logType", logType);
 		model.addAttribute("distributorId", distributorId);
 		model.addAttribute("channelId", channelId);
 		model.addAttribute("list", list);
 		model.addAttribute("distributorList", distributorService.getAllDistributorList());
 		model.addAttribute("channelList", channelService.getChannelList(Constants.CHANNEL_STATUS_VALID));
-		return "/statistics/imageOpen";
+		return "/statistics/usage";
 	}
+
 }

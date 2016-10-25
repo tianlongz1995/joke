@@ -119,11 +119,13 @@ $('#updateChannel').click(function(event) {
 		});
 	if(contentType.length == 0){
 		alert("未选中任何内容属性");
+		$('#updateChannel').removeAttr("disabled");
 		return false;
 	}
 	var size = $('#size').val();
 	if(size < 1 || size > 1000){
 		alert("发布数据数量必须在1~1000之内!");
+		$('#updateChannel').removeAttr("disabled");
 		return false;
 	}
 	post('channel/update',
@@ -131,13 +133,14 @@ $('#updateChannel').click(function(event) {
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>channel/list';
-				}
-				else {
+				} else {
 					alert('更新失败. info:'+data['info']);
+					$('#updateChannel').removeAttr("disabled");
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
+				$('#updateChannel').removeAttr("disabled");
 			});
 });
 

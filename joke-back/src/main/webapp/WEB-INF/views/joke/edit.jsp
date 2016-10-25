@@ -146,13 +146,14 @@ $('#updateJoke').click(function(event) {
 		function (data) {
 			if(data['status']) {
 				location.href = '<%=basePath%>joke/list';
-			}
-			else {
+			} else {
 				alert('更新失败. info:'+data['info']);
+				$('#updateJoke').removeAttr("disabled");
 			}
 		},
 		function () {
 			alert('请求失败，请检查网络环境');
+			$('#updateJoke').removeAttr("disabled");
 		});
 });
 

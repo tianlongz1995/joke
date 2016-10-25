@@ -36,4 +36,16 @@ public class ImgRespDto {
 	public void setErrorCode(Integer errorCode) {
 		this.errorCode = errorCode;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("ImgRespDto{");
+		sb.append("imgUrl='").append(imgUrl).append('\'');
+		sb.append(", gifUrl='").append(gifUrl).append('\'');
+		sb.append(", width=").append(width);
+		sb.append(", height=").append(height);
+		sb.append(", errorCode=").append(errorCode);
+		sb.append('}');
+		return sb.toString();
+	}
 }

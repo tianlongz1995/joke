@@ -9,12 +9,12 @@ public class JedisKey {
     public static final String JOKE_LIST_FEEDBACK = "list.joke.feedback";
     /** 渠道配置信息Hash表key    */
     public static final String JOKE_HASH_DISTRIBUTOR_CONFIG = "hash.joke.distributor.config";
-    /** 专题频道封面首页    */
-    public static final String SORTEDSET_TOPIC_COVER_LIST = "sortedset.topic.channel";
-    /** 专题类型列表    */
-    public static final String SORTEDSET_TOPIC_LIST = "sortedset.topic.list.";
-    /** 专题详情    */
-    public static final String SORTEDSET_TOPIC_CHANNEL = "sortedset.topic.channel.";
+//    /** 专题频道封面首页    */
+//    public static final String SORTEDSET_TOPIC_COVER_LIST = "sortedset.topic.channel";
+    /** 专题列表    */
+    public static final String SORTEDSET_TOPIC_LIST = "sortedset.topic.list";
+    /** 专题段子集合    */
+    public static final String SORTEDSET_TOPIC_JOKE_SET = "sortedset.topic.joke.set.";
     /** 普通频道段子编号列表   */
     public static final String SORTEDSET_COMMON_CHANNEL = "sortedset.common.channel.";
     /** 推荐频道段子ID列表    */

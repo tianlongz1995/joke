@@ -75,6 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 				</tr>
 				<tr>
+<<<<<<< Updated upstream
 		  			<th>专题类型</th>
 			  		<td>
 						<select class="form-control input-sm" id="topicCover">
@@ -90,13 +91,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		</td>
 			  	</tr>
 				<tr>
+=======
+>>>>>>> Stashed changes
 		  			<th>主题</th>
 			  		<td>
 			  			<c:if test="${empty topic.title}">
-							<input id="title" type="text" value="" style="width:500px;" maxlength="30" />
+							<input id="title" type="text" value="" style="width:100%;"  />
 						</c:if>
 						<c:if test="${!empty topic.title}">
-							<input id="title" type="text" style="width:500px;" maxlength="30" value="${topic.title}"/>
+							<input id="title" type="text" style="width:100%;"  value="${topic.title}"/>
 						</c:if>
 			  		</td>
 			  	</tr>
@@ -180,6 +183,7 @@ $('#updateTopic').click(function(event) {
 //	$('input[name="distributorId"]:checked').each(function(){
 //		dids.push($(this).val());
 //		});
+<<<<<<< Updated upstream
 	var coverId = $("#topicCover").val();
 	if(coverId == null || coverId.length < 1){
 		alert("必须选择一个专题类型!");
@@ -194,11 +198,22 @@ $('#updateTopic').click(function(event) {
 					location.href = '<%=basePath%>topic/list?status=${status}&topicCoverId=${topicCoverId}';
 				}
 				else {
+=======
+	post('topic/update',
+			'id='+$("#topicid").val()+'&title='+$("#title").val()+'&content='+$('#content2').val()
+				+'&img='+$('#image').val()+'&publishTime='+$('#publishTime').val(),
+			function (data) {
+				if(data['status']) {
+					location.href = '<%=basePath%>topic/list?status=${status}';
+				} else {
+>>>>>>> Stashed changes
 					alert('更新失败. info:'+data['info']);
+					$('#updateTopic').removeAttr("disabled");
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
+				$('#updateTopic').removeAttr("disabled");
 			});
 });
 

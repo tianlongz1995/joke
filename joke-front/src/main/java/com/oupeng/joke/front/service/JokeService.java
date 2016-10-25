@@ -160,59 +160,32 @@ public class JokeService {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
 				}
 			}
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题封面 lt = 1
-    		result = getTopicCover4TopicChannel(start, end);
+
+    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题标签页 lt = 1
+    		result = getTopicList4TopicChannel(start, end);
     	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
     		result = getJokeList4RecommendChannel(start, end, actionType);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题列表	lt = 9
-			result = getTopicList4TopicChannel(distributorId, start, end);
-    	}else if(Constants.LIST_TYPE_TOPIC_DETAIL == listType){			// 专题详情	lt = 10
-			result = getJokeList4TopicChannel(topicId,start,end);
-		}
+    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题详情页	lt = 9
+			result = getJokeList4TopicChannel(topicId, start, end);
+    	}
     	return new Success(result);
     }
 
 	/**
-	 * 获取专题封面
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	private List<TopicCover> getTopicCover4TopicChannel(Long start, Long end) {
-		Set<String> topicIdSet = jedisCache.zrange(JedisKey.SORTEDSET_TOPIC_COVER_LIST, start.intValue(), end.intValue());
-		if(CollectionUtils.isEmpty(topicIdSet)){
-			return null;
-		}
-		List<TopicCover> list = Lists.newArrayList();
-		TopicCover topicCover;
-		for(String topicCoverId : topicIdSet){
-			topicCover = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC_COVER + topicCoverId), TopicCover.class);
-			if(topicCover != null){
-				topicCover.setLogo(env.getProperty("img.real.server.url") + topicCover.getLogo());
-			}
-		}
-		return list;
-	}
-
-
-	/**
 	 * 获取专题列表
-	 * @param distributorId
 	 * @param start
 	 * @param end
 	 * @return
 	 */
-    private List<Topic> getTopicList4TopicChannel(Integer distributorId,Long start,Long end){
-    	String key = JedisKey.SORTEDSET_TOPIC_LIST + distributorId;
-    	Set<String> topicIdSet = jedisCache.zrevrange(key, start, end);
+    private List<Topic> getTopicList4TopicChannel(Long start,Long end){
+    	Set<String> topicIdSet = jedisCache.zrevrange(JedisKey.SORTEDSET_TOPIC_LIST, start, end);
 		if(CollectionUtils.isEmpty(topicIdSet)){
 			return null;
 		}
-		
 		List<Topic> list = Lists.newArrayList();
-		Topic topic = null;
+		Topic topic;
 		for(String topicId : topicIdSet){
-			topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId),Topic.class);
+			topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId), Topic.class);
 			if(topic != null){
 				topic.setType(Constants.JOKE_TYPE_TOPIC_LIST);
 				topic.setImg(IMG_REAL_SERVER_URL + topic.getImg());
@@ -244,8 +217,8 @@ public class JokeService {
 	 * @param end
 	 * @return
 	 */
-    private List<Joke> getJokeList4TopicChannel(Integer topicId,Long start,Long end){
-    	String key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
+    private List<Joke> getJokeList4TopicChannel(Integer topicId, Long start, Long end){
+    	String key = JedisKey.SORTEDSET_TOPIC_JOKE_SET + topicId;
 		return getJokeCacheList(key, start, end);
     }
 
@@ -273,10 +246,11 @@ public class JokeService {
         	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){
         		key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
         	}else if(Constants.LIST_TYPE_TOPIC == listType){
-        		key = JedisKey.SORTEDSET_TOPIC_CHANNEL + topicId;
+        		key = JedisKey.SORTEDSET_TOPIC_JOKE_SET + topicId;
         	}
-    		Long index = jedisCache.zrevrank(key,String.valueOf(jokeId));
+    		Long index = jedisCache.zrevrank(key, String.valueOf(jokeId));
     		if(index != null){
+//    			获取下一条段子编号
     			if(index > 0){
         			Set<String> jokeLastIds = jedisCache.zrevrange(key, index -1, index -1);
         			if(!CollectionUtils.isEmpty(jokeLastIds)){
@@ -285,7 +259,7 @@ public class JokeService {
         				}
         			}
         		}
-        		
+//        		获取上一条段子编号
         		Set<String> jokeNextIds = jedisCache.zrevrange(key, index +1, index +1);
     			if(!CollectionUtils.isEmpty(jokeNextIds)){
     				for(String jokeNextId : jokeNextIds){
@@ -365,5 +339,27 @@ public class JokeService {
 	 */
 	private static String png2jpg(String img) {
 		return img.replace(PNG, JPG);
+	}
+
+	/**
+	 * 获取主题列表
+	 * @param actionType	动作类型
+	 * @param utc			时间:备用
+	 * @param count			请求记录数量
+	 * @param start			开始记录位置
+	 * @param end			结束记录位置
+	 * @return
+	 */
+	public List<Topic> topicList(Integer actionType, Long utc, Integer count, Long start, Long end) {
+		return getTopicList4TopicChannel(start, end);
+	}
+
+	/**
+	 * 获取主题详情
+	 * @param topicId
+	 * @return
+	 */
+	public Object topicDetails(Integer topicId) {
+		return getJokeList4TopicChannel(topicId, 0L, -1L);
 	}
 }

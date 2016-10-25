@@ -206,12 +206,14 @@
                                     + '&name=' + $("#name").val() + '&url=' + $("#url").val();
                                 }else if (data.status == 2){
                                     alert('添加失败:\r\n' + data.info);
-                                    $('#addNewsource').attr("disabled",false);
+                                    $('#addNewsource').removeAttr("disabled");
                                 } else {
+                                    $('#addNewsource').removeAttr("disabled");
                                     alert('添加失败:' + data.info);
                                 }
                             },
                             function () {
+                                $('#addNewsource').removeAttr("disabled");
                                 alert('请求失败，请检查网络环境');
                             });
                 });

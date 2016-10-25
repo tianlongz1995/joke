@@ -144,17 +144,19 @@ public interface StatisticsMapper {
 	 * 获取图片展开点击统计总记录数
 	 * @param startDay
 	 * @param endDay
-	 * @param type
-	 * @param dateType
+	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param logType		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 	 * @param distributorId
 	 * @param channelId
 	 * @return
 	 */
-	@SelectProvider(method="getImageOpenCount",type=StatisticsSqlProvider.class)
-	int getImageOpenCount(@Param("startDay") Integer startDay,
+	@SelectProvider(method="getUsageCount",type=StatisticsSqlProvider.class)
+	int getUsageCount(@Param("startDay") Integer startDay,
 						  @Param("endDay") Integer endDay,
-						  @Param("reportType") Integer type,
+						  @Param("reportType") Integer reportType,
 						  @Param("dateType") Integer dateType,
+						  @Param("logType") Integer logType,
 						  @Param("distributorId") Integer distributorId,
 						  @Param("channelId") Integer channelId);
 
@@ -164,19 +166,21 @@ public interface StatisticsMapper {
 	 * @param endDay
 	 * @param offset
 	 * @param pageSize
-	 * @param type
-	 * @param dateType
+	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param logType		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 	 * @param distributorId
 	 * @param channelId
 	 * @return
 	 */
-	@SelectProvider(method="getImageOpenList",type=StatisticsSqlProvider.class)
-	List<DropDetail> getImageOpenList(@Param("startDay") Integer startDay,
-									 @Param("endDay") Integer endDay,
-									 @Param("offset") Integer offset,
-									 @Param("pageSize") Integer pageSize,
-									 @Param("reportType") Integer type,
-									 @Param("dateType") Integer dateType,
-									 @Param("distributorId") Integer distributorId,
-									 @Param("channelId") Integer channelId);
+	@SelectProvider(method="getUsageList",type=StatisticsSqlProvider.class)
+	List<DropDetail> getUsageList(@Param("startDay") Integer startDay,
+									  @Param("endDay") Integer endDay,
+									  @Param("offset") Integer offset,
+									  @Param("pageSize") Integer pageSize,
+									  @Param("reportType") Integer reportType,
+									  @Param("dateType") Integer dateType,
+									  @Param("logType") Integer logType,
+									  @Param("distributorId") Integer distributorId,
+									  @Param("channelId") Integer channelId);
 }

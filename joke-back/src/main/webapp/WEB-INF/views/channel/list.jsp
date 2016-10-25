@@ -241,11 +241,13 @@ $('#addNewChannel').click(function(event) {
 		});
 	if(contentType.length == 0){
 		alert("未选中任何内容属性");
+		$('#addNewChannel').removeAttr("disabled");
 		return false;
 	}
 	var size = $('#addSize').val();
 	if(size < 1 || size > 1000){
 		alert("发布数据数量必须在1~1000之内!");
+		$('#addNewChannel').removeAttr("disabled");
 		return false;
 	}
 	post('channel/add',
@@ -255,10 +257,12 @@ $('#addNewChannel').click(function(event) {
 				location.href = '<%=basePath%>channel/list?status='+$("#status").val();
 			}else {
 				alert('添加频道失败. info:'+data['info']);
+				$('#addNewChannel').removeAttr("disabled");
 			}
 		},
 		function () {
 			alert('请求失败，请检查网络环境');
+			$('#addNewChannel').removeAttr("disabled");
 		});
 });
 $("#newChannelButton").click(function (event) {

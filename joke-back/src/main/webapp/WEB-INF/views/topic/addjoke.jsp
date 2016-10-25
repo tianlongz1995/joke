@@ -55,7 +55,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="box-content">
 		<div class="alert alert-info">
+<<<<<<< Updated upstream
 			<a href="<%=basePath%>topic/list?status=${status}&topicCoverId=${topicCoverId}&pageSize=${pSize}&pageNumber=${pNumber}">
+=======
+			<a href="<%=basePath%>topic/list?status=${status}&pageSize=${pSize}&pageNumber=${pNumber}">
+>>>>>>> Stashed changes
 				<i class="glyphicon glyphicon-arrow-left"></i> 返回专题列表
 			</a>
 		</div>
@@ -193,7 +197,11 @@ function verifyJoke(id) {
 			'topicId=${topicId}&ids='+id, 
 			function (data) {
 				if(data['status']) {
+<<<<<<< Updated upstream
 					location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
+=======
+					location.href = '<%=basePath%>topic/addjoke?status=${status}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
+>>>>>>> Stashed changes
 				}
 				else {
 					alert('添加失败. info:'+data['info']);
@@ -205,7 +213,11 @@ function verifyJoke(id) {
 }
 
 $('#selectJokeList').click(function(event) {
+<<<<<<< Updated upstream
 	location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
+=======
+	location.href = '<%=basePath%>topic/addjoke?status=${status}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val();
+>>>>>>> Stashed changes
 });
 
 function post(url, data, success, error) {
@@ -218,7 +230,11 @@ function post(url, data, success, error) {
 };
 /**	分页方法	*/
 function turnPage(){
+<<<<<<< Updated upstream
 	location.href = '<%=basePath%>topic/addjoke?status=${status}&topicCoverId=${topicCoverId}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+=======
+	location.href = '<%=basePath%>topic/addjoke?status=${status}&pSize=${pSize}&pNumber=${pNumber}&topicId=${topicId}&type='+$("#type").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
+>>>>>>> Stashed changes
 };
 </script>
 

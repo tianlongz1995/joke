@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
+import com.oupeng.joke.domain.Topic;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 
 public class TopicSqlProvider {
@@ -18,17 +21,11 @@ public class TopicSqlProvider {
 	 * @return
 	 */
 	public static String getTopicListCount(Map<String,Object> map){
-		Object topicCoverId = map.get("topicCoverId");
 		Object status = map.get("status");
 		StringBuffer sql = new StringBuffer();
 		sql.append("select count(1) from topic where 1 = 1 ");
 		if(status != null){
 			sql.append(" and status = ").append(status);
-		} else {
-			sql.append(" and status != 2 ");
-		}
-		if(topicCoverId != null){
-			sql.append(" and c_id = ").append(topicCoverId);
 		}
 		sql.append(" order by create_time desc ");
 		return sql.toString();
@@ -39,7 +36,6 @@ public class TopicSqlProvider {
 	 * @return
 	 */
 	public static String getTopicList(Map<String,Object> map){
-		Object topicCoverId = map.get("topicCoverId");
 		Object status = map.get("status");
 		Object offset = map.get("offset");
 		Object pageSize = map.get("pageSize");
@@ -50,9 +46,6 @@ public class TopicSqlProvider {
 			sql.append(" and status = ").append(status);
 		} else {
 			sql.append(" and status != 2 ");
-		}
-		if(topicCoverId != null){
-			sql.append(" and c_id = ").append(topicCoverId);
 		}
 		sql.append(" order by create_time desc ");
 		if(offset != null && pageSize != null){
@@ -68,7 +61,7 @@ public class TopicSqlProvider {
 	 */
 	public static String insertTopic(Topic topic){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" insert into topic(title, content, img, status, publish_time, create_time, update_time, c_id) value (");
+		sql.append(" insert into topic(title, content, img, status, publish_time, create_time, update_time) value (");
 		if(StringUtils.isNotBlank(topic.getTitle())){
 			sql.append("'").append(topic.getTitle().trim()).append("',");
 		}else{
@@ -95,8 +88,7 @@ public class TopicSqlProvider {
 		}else{
 			sql.append("null,");
 		}
-		sql.append("now(),now(),");
-		sql.append(topic.getCoverId()).append(")");
+		sql.append("now(),now())");
 		return sql.toString();
 	}
 
@@ -125,7 +117,6 @@ public class TopicSqlProvider {
 		}else{
 			sql.append("null,");
 		}
-		sql.append("c_id=").append(topic.getCoverId()).append(",");
 		sql.append("publish_time=");
 		if(StringUtils.isNotBlank(topic.getPublishTimeString())){
 			sql.append("'").append(topic.getPublishTimeString()).append("'");
@@ -153,45 +144,62 @@ public class TopicSqlProvider {
 		return sql.toString();
 	}
 
-	/**
-	 * 获取专题封面列表
-	 * @param map
-	 * @return
-	 */
-	public static String getTopicCoverList(Map<String,Object> map){
-		StringBuffer sql = new StringBuffer();
-		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
-		Object status = map.get("status");
-		Object offset = map.get("offset");
-		Object pageSize = map.get("pageSize");
-		if(status != null){
-			sql.append(" and status = ").append(status);
-		} else {
-			sql.append(" and status != 2 ");
-		}
-		sql.append(" order by seq asc ");
-		if(offset != null && pageSize != null){
-			sql.append(" limit ").append(offset).append(" , ").append(pageSize);
-		}
-		return sql.toString();
-	}
 
-	/**
-	 * 获取所有专题封面列表
-	 * @param status
-	 * @return
-	 */
-	public static String getAllTopicCoverMoveList(Integer status){
-		StringBuffer sql = new StringBuffer();
-		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
-		if(status != null){
-			sql.append(" and status = ").append(status);
-		} else {
-			sql.append(" and status != 2 ");
-		}
-		sql.append(" order by seq asc ");
-		return sql.toString();
-	}
+//	/**
+//	 * 获取专题封面记录总数
+//	 * @param status
+//	 * @return
+//	 */
+//	public static String getTopicCoverListCount(Integer status){
+//		StringBuffer sql = new StringBuffer();
+//		sql.append("select count(1) from topic_cover ");
+//		if(status != null){
+//			sql.append(" where status = ").append(status);
+//		} else {
+//			sql.append(" where status != 2 ");
+//		}
+//		return sql.toString();
+//	}
+
+//	/**
+//	 * 获取专题封面列表
+//	 * @param map
+//	 * @return
+//	 */
+//	public static String getTopicCoverList(Map<String,Object> map){
+//		StringBuffer sql = new StringBuffer();
+//		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
+//		Object status = map.get("status");
+//		Object offset = map.get("offset");
+//		Object pageSize = map.get("pageSize");
+//		if(status != null){
+//			sql.append(" and status = ").append(status);
+//		} else {
+//			sql.append(" and status != 2 ");
+//		}
+//		sql.append(" order by seq asc ");
+//		if(offset != null && pageSize != null){
+//			sql.append(" limit ").append(offset).append(" , ").append(pageSize);
+//		}
+//		return sql.toString();
+//	}
+//
+//	/**
+//	 * 获取所有专题封面列表
+//	 * @param status
+//	 * @return
+//	 */
+//	public static String getAllTopicCoverMoveList(Integer status){
+//		StringBuffer sql = new StringBuffer();
+//		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
+//		if(status != null){
+//			sql.append(" and status = ").append(status);
+//		} else {
+//			sql.append(" and status != 2 ");
+//		}
+//		sql.append(" order by seq asc ");
+//		return sql.toString();
+//	}
 
 	/**
 	 * 获取专题段子列表SQL

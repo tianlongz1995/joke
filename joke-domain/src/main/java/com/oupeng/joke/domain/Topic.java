@@ -32,9 +32,7 @@ public class Topic {
 	public String publishTimeString;
 	@JsonInclude(Include.NON_NULL)
 	public Integer type;
-	@JsonInclude(Include.NON_NULL)
-	public Integer coverId;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -112,11 +110,4 @@ public class Topic {
 		this.type = type;
 	}
 
-	public Integer getCoverId() {
-		return coverId;
-	}
-
-	public void setCoverId(Integer coverId) {
-		this.coverId = coverId;
-	}
 }

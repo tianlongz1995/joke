@@ -37,6 +37,7 @@
     <appender name="dfl" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/dfl.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -48,6 +49,7 @@
     <appender name="ufl" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/ufl.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -59,6 +61,7 @@
     <appender name="iol" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/iol.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -91,6 +94,10 @@
 
     <logger name="iol" level="INFO" additivity="false">
         <appender-ref ref="iol"/>
+    </logger>
+
+    <logger name="org.springframework.scheduling">
+        <level value="info" />
     </logger>
 
     <root level="INFO">

@@ -156,10 +156,11 @@ public class StatisticsService {
 	 * @param endDay
 	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
 	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param logType		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 	 * @return
 	 */
-    public int getImageOpenCount(Integer startDay, Integer endDay, Integer reportType, Integer dateType, Integer distributorId, Integer channelId) {
-    	return statisticsMapper.getImageOpenCount(startDay, endDay, reportType, dateType, distributorId, channelId);
+    public int getUsageCount(Integer startDay, Integer endDay, Integer reportType, Integer dateType, Integer logType, Integer distributorId, Integer channelId) {
+    	return statisticsMapper.getUsageCount(startDay, endDay, reportType, dateType, logType, distributorId, channelId);
     }
 
 	/**
@@ -170,9 +171,10 @@ public class StatisticsService {
 	 * @param pageSize
 	 * @param reportType	报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
 	 * @param dateType		日期类型: 0:日报; 1:周报; 2:月报
+	 * @param logType		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 	 * @return
 	 */
-	public List<DropDetail> getImageOpenList(Integer startDay, Integer endDay, int offset, Integer pageSize, Integer reportType, Integer dateType, Integer distributorId, Integer channelId) {
-		return statisticsMapper.getImageOpenList(startDay, endDay, offset, pageSize, reportType, dateType, distributorId, channelId);
+	public List<DropDetail> getUsageList(Integer startDay, Integer endDay, int offset, Integer pageSize, Integer reportType, Integer dateType, Integer logType, Integer distributorId, Integer channelId) {
+		return statisticsMapper.getUsageList(startDay, endDay, offset, pageSize, reportType, dateType, logType, distributorId, channelId);
 	}
 }

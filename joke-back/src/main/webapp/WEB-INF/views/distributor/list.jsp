@@ -225,6 +225,7 @@ $('#add').click(function(event) {
 	});
 	if(contentType.length == 0){
 		alert("未选中任何频道");
+		$('#add').removeAttr("disabled");
 		return false;
 	}
 	post('distributor/add',
@@ -233,10 +234,12 @@ $('#add').click(function(event) {
 				if(data['status']) {
 					location.href = '<%=basePath%>distributor/list?status='+$("#status").val();
 				}else {
+					$('#add').removeAttr("disabled");
 					alert('添加频道失败. info:'+data['info']);
 				}
 			},
 			function () {
+				$('#add').removeAttr("disabled");
 				alert('请求失败，请检查网络环境');
 			});
 });

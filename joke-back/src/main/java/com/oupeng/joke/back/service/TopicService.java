@@ -1,11 +1,14 @@
 package com.oupeng.joke.back.service;
 
-import java.util.*;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
-import com.oupeng.joke.domain.TopicCover;
+import com.oupeng.joke.dao.mapper.TopicMapper;
+import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.Topic;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +17,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
-import com.oupeng.joke.cache.JedisCache;
-import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.dao.mapper.TopicMapper;
-import com.oupeng.joke.domain.Joke;
-import com.oupeng.joke.domain.Topic;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TopicService {
@@ -39,24 +38,22 @@ public class TopicService {
 
 	/**
 	 * 获取专题列表记录总数
-	 * @param topicCoverId
 	 * @param status
 	 * @return
 	 */
-	public int getTopicListCount(Integer topicCoverId, Integer status) {
-		return topicMapper.getTopicListCount(topicCoverId, status);
+	public int getTopicListCount(Integer status) {
+		return topicMapper.getTopicListCount(status);
 	}
 
 	/**
 	 * 获取专题列表
-	 * @param topicCoverId
 	 * @param status
 	 * @param offset
 	 * @param pageSize
 	 * @return
 	 */
-	public List<Topic> getTopicList(Integer topicCoverId, Integer status, Integer offset,Integer pageSize){
-		List<Topic> topicList = topicMapper.getTopicList(topicCoverId, status, offset, pageSize);
+	public List<Topic> getTopicList(Integer status, Integer offset,Integer pageSize){
+		List<Topic> topicList = topicMapper.getTopicList(status, offset, pageSize);
 		if(!CollectionUtils.isEmpty(topicList)){
 			for(Topic topic : topicList){
 				if(StringUtils.isNotBlank(topic.getImg())){
@@ -92,18 +89,9 @@ public class TopicService {
 			result = validTopic(topicMapper.getTopicById(id));
 		}else if(Constants.TOPIC_STATUS_PUBLISH != status){
 //			根据专题编号删除专题封面集合中的某个专题
-			Topic topic = topicMapper.getTopicById(id);
-			jedisCache.zrem(JedisKey.SORTEDSET_TOPIC_LIST + topic.getCoverId(), String.valueOf(id));
-//			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_DISTRIBUTOR_TOPIC + "*");
-//			if(!CollectionUtils.isEmpty(keys)){
-//				for(String key : keys){
-//					jedisCache.zrem(key, String.valueOf(id));
-//				}
-//			}
+			jedisCache.zrem(JedisKey.SORTEDSET_TOPIC_LIST, String.valueOf(id));
 //			删除专题缓存
 			jedisCache.del(JedisKey.STRING_TOPIC + id);
-//			删除专题频道缓存中的专题
-			jedisCache.del(JedisKey.SORTEDSET_TOPIC_CHANNEL + id);
 		}
 		if(result == null){
 			topicMapper.updateTopicStatus(id, status);
@@ -117,13 +105,11 @@ public class TopicService {
 	 * @param img
 	 * @param content
 	 * @param publishTime
-	 * @param coverId
 	 * @return
 	 */
-	public boolean insertTopic(String title, String img, String content, String publishTime, Integer coverId){
+	public boolean insertTopic(String title, String img, String content, String publishTime){
 		Topic topic = new Topic();
 		topic.setContent(content);
-//		topic.setDids(dids);
 		String newImg = handleImg(img);
 		if(StringUtils.isBlank(newImg)){
 			return false;
@@ -131,7 +117,6 @@ public class TopicService {
 		topic.setImg(newImg);
 		topic.setPublishTimeString(publishTime);
 		topic.setTitle(title);
-		topic.setCoverId(coverId);
 		topicMapper.insertTopic(topic);
 		return true;
 	}
@@ -142,15 +127,13 @@ public class TopicService {
 	 * @param title
 	 * @param img
 	 * @param content
-	 * @param coverId
 	 * @param publishTime
 	 * @return
 	 */
-	public boolean updateTopic(Integer id,String title,String img,String content,Integer coverId,String publishTime){
+	public boolean updateTopic(Integer id,String title,String img,String content,String publishTime){
 		Topic topic = new Topic();
 		topic.setId(id);
 		topic.setContent(content);
-		topic.setCoverId(coverId);
 		String newImg = handleImg(img);
 		if(StringUtils.isBlank(newImg)){
 			return false;
@@ -186,15 +169,11 @@ public class TopicService {
 	private String validTopic(Topic topic){
 		if(topic.getPublishTime() == null){
 			return "专题的发布时间不能为空";
-		}else if(topic.getCoverId() == null){
-			return "专题的分类不能为空";
 		}else if(StringUtils.isBlank(topic.getTitle())){
 			return "专题的主题不能为空";
 		}else if(StringUtils.isBlank(topic.getImg())){
 			return "专题的图片不能为空";
-		}/*else if(StringUtils.isBlank(topic.getContent())){
-			return "专题的简介不能为空";
-		}*/else{
+		}else{
 			List<Joke> jokeIdList =  getJokeListByTopicId(topic.getId());
 			if(CollectionUtils.isEmpty(jokeIdList)){
 				return "专题的内容不能为空";
@@ -258,23 +237,27 @@ public class TopicService {
 		joke.setTitle(title);
 		if(StringUtils.isNotBlank(gifUrl)){//动图
 			joke.setType(Constants.JOKE_TYPE_GIF);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, false);
-			if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+			if(imgRespDto != null && imgRespDto.getErrorCode() == 0 && StringUtils.isNotBlank(imgRespDto.getImgUrl()) && StringUtils.isNotBlank(imgRespDto.getGifUrl())){
 				joke.setGif(imgRespDto.getGifUrl());
 				joke.setImg(imgRespDto.getImgUrl());
 				joke.setWidth(imgRespDto.getWidth());
 				joke.setHeight(imgRespDto.getHeight());
 				result = true;
+			}else{
+				logger.error("添加原创处理动图失败:" , imgRespDto);
 			}
 		}else if(StringUtils.isNotBlank(imgUrl)){//静图
 			joke.setType(Constants.JOKE_TYPE_IMG);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
-			if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+			if(imgRespDto != null && imgRespDto.getErrorCode() == 0 && StringUtils.isNotBlank(imgRespDto.getImgUrl())){
 				joke.setGif(null);
 				joke.setImg(imgRespDto.getImgUrl());
 				joke.setWidth(imgRespDto.getWidth());
 				joke.setHeight(imgRespDto.getHeight());
 				result = true;
+			}else{
+				logger.error("添加原创处理动图失败:" , imgRespDto);
 			}
 		}else{//纯文本内容
 			joke.setType(Constants.JOKE_TYPE_TEXT);
@@ -288,170 +271,6 @@ public class TopicService {
 			topicMapper.insertTopicJoke(joke.getId(), topicId);//存储段子专题关联关系
 		}
 		return result;
-	}
-
-	/**
-	 * 获取专题封面记录总数
-	 * @param status
-	 * @return
-	 */
-	public int getTopicCoverListCount(Integer status) {
-		return topicMapper.getTopicCoverListCount(status);
-	}
-	/**
-	 * 获取专题封面列表
-	 *
-	 * @param status
-	 * @param offset
-	 * @param pageSize
-	 * @return
-	 */
-    public List<TopicCover> getTopicCoverList(Integer status, int offset, Integer pageSize) {
-		List<TopicCover> list = topicMapper.getTopicCoverList(status, offset, pageSize);
-    	if(!CollectionUtils.isEmpty(list)){
-			for(TopicCover topicCover : list){
-				if(StringUtils.isNotBlank(topicCover.getLogo())){
-					topicCover.setLogo(env.getProperty("img.real.server.url") + topicCover.getLogo());
-				}
-			}
-		}
-		return list;
-    }
-
-	/**
-	 * 新增专题封面
-	 * @param seq
-	 * @param name
-	 * @param logo
-	 * @param userName
-	 * @return
-	 */
-	public int addTopicCover(Integer seq, String name, String logo, String userName) {
-		TopicCover t = new TopicCover();
-		t.setSeq(seq);
-		t.setName(name);
-		int index = logo.indexOf("images/");
-		if(index > -1){
-			logo = logo.substring(index);
-		}
-		t.setLogo(logo);
-		t.setUpdateBy(userName);
-		return topicMapper.addTopicCover(t);
-	}
-
-	/**
-	 * 删除专题封面
-	 * @param id
-	 * @return
-	 */
-	public int delTopicColver(Integer id) {
-//		删除数据库中专题封面
-		int count = topicMapper.delTopicColver(id);
-		if(count == 1){
-//			删除缓存中的专题封面记录
-			jedisCache.del(JedisKey.STRING_TOPIC_COVER + id);
-//			删除缓存中专题封面列表中的记录
-			jedisCache.zrem(JedisKey.SORTEDSET_TOPIC_COVER_LIST, String.valueOf(id));
-		}
-		return count;
-	}
-
-	/**
-	 * 修改专题封面
-	 * @param id
-	 * @param seq
-	 * @param name
-	 * @param logo
-	 * @param userName
-	 * @return
-	 */
-	public int modifyTopicCover(Integer id, Integer seq, String name, String logo,Integer status, String userName) {
-		int index = logo.indexOf("images/");
-		if(index > -1){
-			logo = logo.substring(index);
-		}
-//		下线的序号都改为999
-		if(status == 0){
-			seq = 999;
-		}
-		return topicMapper.modifyTopicCover(id, seq, name, logo, status, userName);
-	}
-
-	/**
-	 * 获取所有专题列表
-	 * @param status
-	 * @return
-	 */
-	public List<TopicCover> getAllTopicCoverMoveList(Integer status){
-		return topicMapper.getAllTopicCoverMoveList(status);
-	}
-	/**
-	 * 移动专题封面位置
-	 * @param id
-	 * @param seq
-	 * @param type
-	 * @return
-	 */
-	public boolean moveTopicCover(Integer id, Integer seq,Integer type) {
-		List<TopicCover> list = topicMapper.getAllTopicCoverMoveList(1);
-		if(!CollectionUtils.isEmpty(list)){
-			TopicCover t = list.get(0);
-			if(t.getId() == id){
-				return false;
-			}
-			if(type == 0){ // 置顶
-				topicMapper.updateTopicCoverSeq(id, t.getSeq());
-				int index = 0;
-				int lastId = 0;
-				for(TopicCover tc: list){ // 从第一位依次往下交换序号
-					if(index == 0){
-						lastId = tc.getId();
-						index++;
-						continue;
-					}
-					if(tc.getId() == id){
-						topicMapper.updateTopicCoverSeq(lastId, tc.getSeq());
-						break;
-					}else{
-						topicMapper.updateTopicCoverSeq(lastId, tc.getSeq());
-						lastId = tc.getId();
-					}
-					index++;
-				}
-				return true;
-			} else if(type == 1){// 上移
-				int lastIndex = 0;
-				int lastId = 0;
-				for(TopicCover tc : list){
-					if(tc.getId() == id){
-						break;
-					}
-					lastIndex = tc.getSeq();
-					lastId = tc.getId();
-				}
-				topicMapper.updateTopicCoverSeq(id, lastIndex);
-				topicMapper.updateTopicCoverSeq(lastId, seq);
-				return true;
-			} else if(type == 2){// 下移
-				int lastIndex = 0;
-				int lastId = 0;
-				int end = 1;
-				for(TopicCover tc : list){
-					lastIndex = tc.getSeq();
-					lastId = tc.getId();
-					if(end == 0){
-						break;
-					}
-					if(tc.getId() == id){
-						end--;
-					}
-				}
-				topicMapper.updateTopicCoverSeq(id, lastIndex);
-				topicMapper.updateTopicCoverSeq(lastId, seq);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -493,44 +312,4 @@ public class TopicService {
 		}
 	}
 
-	/**
-	 * 刷新专题封面缓存
-	 * @param flushPass
-	 * @return
-	 */
-	public boolean flushTopicCoverCache(String flushPass) {
-		long start = System.currentTimeMillis();
-		int size = 0;
-		logger.info("手动刷新专题封面开始...");
-		if(flushPass.equals("admin@joke.com")){
-			try{
-//		查询正常上线的专题封面
-				List<TopicCover> list = topicMapper.getAllTopicCoverMoveList(Constants.ENABLE_STATUS);
-				if(!CollectionUtils.isEmpty(list)){
-					Map<String,Double> map = Maps.newHashMap();
-					for(TopicCover topicCover : list){
-						map.put(topicCover.getId().toString(), Double.valueOf(topicCover.getSeq()));
-//					缓存专题封面
-						jedisCache.set(JedisKey.STRING_TOPIC_COVER + topicCover.getId(), JSON.toJSONString(topicCover));
-					}
-//				更新专题封面列表缓存
-					jedisCache.delAndSetSortedSet(JedisKey.SORTEDSET_TOPIC_COVER_LIST, map);
-					size = map.size();
-					return true;
-				} else {
-					return false;
-				}
-			}catch (Exception e){
-				logger.error("刷新专题封面缓存异常:" + e.getMessage(), e);
-				return false;
-			}finally {
-				long end = System.currentTimeMillis();
-				logger.info("定时更新专题封面结束: {}条记录更新, 耗时:{}ms", size, end - start);
-			}
-		} else {
-			long end = System.currentTimeMillis();
-			logger.info("定时更新专题封面结束: {}条记录更新, 耗时:{}ms", size, end - start);
-			return false;
-		}
-	}
 }

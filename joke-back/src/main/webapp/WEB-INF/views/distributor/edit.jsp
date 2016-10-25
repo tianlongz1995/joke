@@ -129,13 +129,14 @@ $('#updateDistributor').click(function(event) {
 			function (data) {
 				if(data['status']) {
 					location.href = '<%=basePath%>distributor/list';
-				}
-				else {
+				} else {
 					alert('更新失败. info:'+data['info']);
+					$('#updateDistributor').removeAttr("disabled");
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
+				$('#updateDistributor').removeAttr("disabled");
 			});
 });
 function up(obj) {

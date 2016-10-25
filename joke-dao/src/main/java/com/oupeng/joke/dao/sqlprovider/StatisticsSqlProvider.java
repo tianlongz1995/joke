@@ -434,15 +434,16 @@ public class StatisticsSqlProvider {
 	 * @param map
 	 * @return
 	 */
-	public static String getImageOpenCount(Map<String,Object> map){
+	public static String getUsageCount(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
-		Object reportType = map.get("reportType");
-		Object dateType = map.get("dateType");
+		Object reportType = map.get("reportType"); 	// 报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+		Object dateType = map.get("dateType");		// 日期类型: 0:日报; 1:周报; 2:月报
+		Object logType = map.get("logType");		// 日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 		Object distributorId = map.get("distributorId");
 		Object channelId = map.get("channelId");
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select count(1) from stat_image_open where 1 = 1 ");
+		sql.append(" select count(1) from stat_usage where 1 = 1 ");
 		if(startDay != null && !"".equals(startDay)){
 			sql.append(" and day >= ").append(startDay);
 		}
@@ -463,6 +464,8 @@ public class StatisticsSqlProvider {
 		if(reportType != null && !"".equals(reportType)){
 			sql.append(" and report_type = ").append(reportType);
 		}
+//		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
+		sql.append(" and log_type = ").append(logType);
 		return sql.toString();
 	}
 
@@ -471,17 +474,18 @@ public class StatisticsSqlProvider {
 	 * @param map
 	 * @return
 	 */
-	public static String getImageOpenList(Map<String,Object> map){
+	public static String getUsageList(Map<String,Object> map){
 		Object startDay = map.get("startDay");
 		Object endDay = map.get("endDay");
-		Object reportType = map.get("reportType");
-		Object dateType = map.get("dateType");
+		Object reportType = map.get("reportType"); 	// 报告类型: 0:总报; 1:渠道; 2:频道; 3:明细
+		Object dateType = map.get("dateType");		// 日期类型: 0:日报; 1:周报; 2:月报
+		Object logType = map.get("logType");		// 日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
 		Object distributorId = map.get("distributorId");
 		Object channelId = map.get("channelId");
 		Integer offset = Integer.parseInt(map.get("offset").toString());
 		Integer pageSize = Integer.parseInt(map.get("pageSize").toString());
 		StringBuffer sql = new StringBuffer();
-		sql.append("select s.day as time, d.name as dName, c.name as dName, s.pv as totalPv, s.uv as totalUv from stat_image_open s left join `distributor` d on s.did = d.id left join channel c on s.cid = c.id where 1 = 1");
+		sql.append("select s.day as time, d.name as dName, c.name as cName, s.pv as totalPv, s.uv as totalUv from stat_usage s left join `distributor` d on s.did = d.id left join channel c on s.cid = c.id where 1 = 1");
 		if(startDay != null && !"".equals(startDay)){
 			sql.append(" and s.day >= ").append(startDay);
 		}
@@ -502,6 +506,8 @@ public class StatisticsSqlProvider {
 		if(reportType != null && !"".equals(reportType)){
 			sql.append(" and s.report_type = ").append(reportType);
 		}
+//		日志类型 0：长图展开点击日志；1：上拉刷新日志；2：下拉刷新日志
+		sql.append(" and s.log_type = ").append(logType);
 		sql.append(" order by s.day, s.did, s.cid desc ");
 		sql.append(" limit ").append(offset).append(", ").append(pageSize);
 		return sql.toString();

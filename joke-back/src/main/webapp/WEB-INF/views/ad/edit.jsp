@@ -127,12 +127,14 @@ $('#updateAd').click(function(event) {
 
 	if(!isInteger(slotId)){
 		alert("广告位置ID只能是整数");
+		$('#updateAd').removeAttr("disabled");
 		return false;
 	}
 	var pos = $('#pos').val();
 	if(pos == 1){
 		if(!isInteger(slide) || slide < 1 || slide > 99){
 			alert("投放频率必须是大于0或者小于100的正整数");
+			$('#updateAd').removeAttr("disabled");
 			return false;
 		}
 	}
@@ -141,13 +143,14 @@ $('#updateAd').click(function(event) {
 			function (data) {
 				if(data.status == 1) {
 					location.href = '<%=basePath%>ad/list';
-				}
-				else {
+				} else {
 					alert('更新失败:'+data.info);
+					$('#updateAd').removeAttr("disabled");
 				}
 			},
 			function () {
 				alert('请求失败，请检查网络环境');
+				$('#updateAd').removeAttr("disabled");
 			});
 });
 

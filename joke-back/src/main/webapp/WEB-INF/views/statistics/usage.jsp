@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="zh">
 <head>
 	<meta charset="utf-8">
-	<title>数据统计</title>
+	<title>使用统计</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
 	<meta name="author" content="Muhammad Usman">
@@ -49,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-user"></i> 列表页长图展示点击统计</h2>
+		<h2><i class="glyphicon glyphicon-user"></i> 使用统计</h2>
 	</div>
 	<div class="box-content">
 		<table  class="table table-striped table-bordered bootstrap-datatable responsive">
@@ -75,7 +75,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</c:if>
 						</label>
 						<label style="padding-right:30px;">
-							<span>渠道名称</span>
+							<span>日志类型</span>
+							<select id="logType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+								<option value="0" <c:if test="${empty logType || logType == 0}">selected</c:if> >长图展开日志</option>
+								<option value="1" <c:if test="${!empty logType && logType == 1}">selected</c:if> >上拉刷新日志</option>
+								<option value="2" <c:if test="${!empty logType &&  logType == 2}">selected</c:if> >下拉刷新日志</option>
+							</select>
+						</label>
+						<label style="padding-right:30px;">
+							<span>渠道</span>
 							<select id="distributorId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
 								<option value="" >全选</option>
 								<c:if test="${!empty distributorList}">
@@ -86,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</select>
 						</label>
 						<label style="padding-right:30px;">
-							<span >频道名称</span>
+							<span >频道</span>
 							<select id="channelId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
 								<option value="" >全选</option>
 								<c:if test="${!empty channelList}">
@@ -113,7 +121,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</label>
 
 						<label style="padding-right:30px;">
-							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
+							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="query()" value="查询"/>
 							<%--<button id="export" type="button" class="btn btn-warning btn-sm" data-dismiss="modal">导出</button>--%>
 						</label>
 					</div>
@@ -121,8 +129,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<tr>
 				<th>日期</th>
-				<th>渠道</th>
-				<th>频道</th>
+				<!--  渠道	-->
+				<c:if test="${!empty reportType && reportType == 1}">
+					<th>渠道</th>
+				</c:if>
+				<!--  频道	-->
+				<c:if test="${!empty reportType && reportType == 2}">
+					<th>频道</th>
+				</c:if>
+				<!--  明细	-->
+				<c:if test="${!empty reportType && reportType == 3}">
+					<th>渠道</th>
+					<th>频道</th>
+				</c:if>
 				<th>PV</th>
 				<th>UV</th>
 				<th>人均PV</th>
@@ -132,8 +151,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:forEach items="${list}" var="timeDetail">
 				<tr>
 					<td>${timeDetail.time}</td>
-					<td>${timeDetail.dName}</td>
-					<td>${timeDetail.cName}</td>
+					<!--  渠道	-->
+					<c:if test="${!empty reportType && reportType == 1}">
+						<td>${timeDetail.dName}</td>
+					</c:if>
+					<!--  频道	-->
+					<c:if test="${!empty reportType && reportType == 2}">
+						<td>${timeDetail.cName}</td>
+					</c:if>
+					<!--  明细	-->
+					<c:if test="${!empty reportType && reportType == 3}">
+						<td>${timeDetail.dName}</td>
+						<td>${timeDetail.cName}</td>
+					</c:if>
 					<td>${timeDetail.totalPv}</td>
 					<td>${timeDetail.totalUv}</td>
 					<td>
@@ -159,10 +189,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div><!-- row end -->
 <script type="text/javascript">
 	function turnPage(){
-		location.href = '<%=basePath%>statistics/imageOpen?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+
+		location.href = '<%=basePath%>statistics/usage?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()+
 				'&did='+$("#distributorId").val()+'&cid='+$("#channelId").val()+
 				'&reportType='+$("#reportType").val()+'&pageSize='+$("#pageSize").val()+'&pageNumber='+$("#pageNumber").val()
-				+'&dateType='+$("#dateType").val();
+				+'&dateType='+$("#dateType").val()+'&logType='+$("#logType").val();
+	};
+	function query(){
+		location.href = '<%=basePath%>statistics/usage?startDay='+$("#startDay").val()+'&endDay='+$("#endDay").val()
+				+'&did='+$("#distributorId").val()+'&cid='+$("#channelId").val()+ '&reportType='+$("#reportType").val()
+				+'&dateType='+$("#dateType").val()+'&logType='+$("#logType").val();
 	};
 	$("body").keyup(function () {  
         if (event.which == 13){  
