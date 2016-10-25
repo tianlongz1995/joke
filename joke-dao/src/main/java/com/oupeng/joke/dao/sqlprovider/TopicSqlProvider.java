@@ -1,14 +1,5 @@
 package com.oupeng.joke.dao.sqlprovider;
 
-import com.oupeng.joke.domain.TopicCover;
-import org.apache.commons.lang3.StringUtils;
-
-import com.oupeng.joke.domain.Topic;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-
-import java.util.List;
 import com.oupeng.joke.domain.Topic;
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,11 +68,6 @@ public class TopicSqlProvider {
 		}else{
 			sql.append("null,");
 		}
-//		if(StringUtils.isNotBlank(topic.getDids())){
-//			sql.append("'").append(topic.getDids()).append("',");
-//		}else{
-//			sql.append("null,");
-//		}
 		sql.append("0,");
 		if(topic.getPublishTimeString() != null){
 			sql.append("'").append(topic.getPublishTimeString()).append("',");
@@ -143,63 +129,6 @@ public class TopicSqlProvider {
 		}
 		return sql.toString();
 	}
-
-
-//	/**
-//	 * 获取专题封面记录总数
-//	 * @param status
-//	 * @return
-//	 */
-//	public static String getTopicCoverListCount(Integer status){
-//		StringBuffer sql = new StringBuffer();
-//		sql.append("select count(1) from topic_cover ");
-//		if(status != null){
-//			sql.append(" where status = ").append(status);
-//		} else {
-//			sql.append(" where status != 2 ");
-//		}
-//		return sql.toString();
-//	}
-
-//	/**
-//	 * 获取专题封面列表
-//	 * @param map
-//	 * @return
-//	 */
-//	public static String getTopicCoverList(Map<String,Object> map){
-//		StringBuffer sql = new StringBuffer();
-//		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
-//		Object status = map.get("status");
-//		Object offset = map.get("offset");
-//		Object pageSize = map.get("pageSize");
-//		if(status != null){
-//			sql.append(" and status = ").append(status);
-//		} else {
-//			sql.append(" and status != 2 ");
-//		}
-//		sql.append(" order by seq asc ");
-//		if(offset != null && pageSize != null){
-//			sql.append(" limit ").append(offset).append(" , ").append(pageSize);
-//		}
-//		return sql.toString();
-//	}
-//
-//	/**
-//	 * 获取所有专题封面列表
-//	 * @param status
-//	 * @return
-//	 */
-//	public static String getAllTopicCoverMoveList(Integer status){
-//		StringBuffer sql = new StringBuffer();
-//		sql.append("select id, name, logo, seq, status from topic_cover where 1 = 1 ");
-//		if(status != null){
-//			sql.append(" and status = ").append(status);
-//		} else {
-//			sql.append(" and status != 2 ");
-//		}
-//		sql.append(" order by seq asc ");
-//		return sql.toString();
-//	}
 
 	/**
 	 * 获取专题段子列表SQL

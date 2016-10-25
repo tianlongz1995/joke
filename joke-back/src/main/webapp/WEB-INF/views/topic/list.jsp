@@ -77,22 +77,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
 					</select>
 				</label>
-<<<<<<< Updated upstream
-                <div class="form-group" style="display: inline-block;padding-left:10px;">
-                    <label>
-                        <label for="status" style="display: inline-block;">专题类型 : </label>
-                    </label>
-                </div>
-                <label>
-                    <select class="form-control input-sm" id="topicCoverId">
-                        <option value="">全部</option>
-                        <c:forEach items="${topicCoverList}" var="tc">
-                            <option value="${tc.id}" <c:if test="${!empty topicCoverId && topicCoverId == tc.id}">selected</c:if> >${tc.name}</option>
-                        </c:forEach>
-                    </select>
-                </label>
-=======
->>>>>>> Stashed changes
 				<label style="padding-left:30px;">
 					<a class="btn btn-primary btn-sm" href="#" id="selectTopicList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
@@ -134,15 +118,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${topic.status == 0}">
-<<<<<<< Updated upstream
-								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}&topicCoverId=${topicCoverId}">
-						        	<i class="glyphicon glyphicon-edit icon-white"></i> 编辑
-						        </a>
-						        <a class="btn btn-primary btn-sm" href="topic/addjoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
-						        	<i class="glyphicon glyphicon-plus"></i> 添加内容
-						        </a>
-						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
-=======
 								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i> 编辑
 						        </a>
@@ -150,7 +125,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        	<i class="glyphicon glyphicon-plus"></i> 添加内容
 						        </a>
 						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&pSize=${pageSize}&pNumber=${pageNumber}">
->>>>>>> Stashed changes
 						        	<i class="glyphicon glyphicon-trash"></i> 删除内容
 						        </a>
 								<a class="btn btn-danger btn-sm" href="#" onclick="verifyTopic(1,${topic.id})">
@@ -161,15 +135,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        </a>
 							</c:if>
 							<c:if test="${topic.status == 1}">
-<<<<<<< Updated upstream
-								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}&topicCoverId=${topicCoverId}">
-						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
-						        </a>
-						        <a class="btn btn-primary btn-sm" href="topic/addjoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
-						        	<i class="glyphicon glyphicon-plus"></i>添加内容
-						        </a>
-						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&topicCoverId=${topicCoverId}&pSize=${pageSize}&pNumber=${pageNumber}">
-=======
 								<a class="btn btn-info btn-sm" href="topic/edit?id=${topic.id}&status=${status}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
@@ -177,7 +142,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						        	<i class="glyphicon glyphicon-plus"></i>添加内容
 						        </a>
 						        <a class="btn btn-warning btn-sm" href="topic/deljoke?topicId=${topic.id}&status=${status}&pSize=${pageSize}&pNumber=${pageNumber}">
->>>>>>> Stashed changes
 						        	<i class="glyphicon glyphicon-trash"></i>删除内容
 						        </a>
 								<a class="btn btn-success btn-sm" href="#" onclick="verifyTopic(2,${topic.id})">
@@ -219,31 +183,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<th>发布时间</th>
 						<td>
 							<input id="addPublishTime"  type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="Wdate" value=""/>
-<<<<<<< Updated upstream
 						</td>
 					</tr>
-					<tr>
-						<th>专题类型</th>
-						<td>
-							<select class="form-control input-sm" id="topicCover">
-								<option value="">请选择专题类型</option>
-								<c:forEach items="${topicCoverList}" var="tc">
-									<option value="${tc.id}" >${tc.name}</option>
-								</c:forEach>
-							</select>
-=======
->>>>>>> Stashed changes
-						</td>
-					</tr>
-					<%--<tr>--%>
-						<%--<th>发布渠道</th>--%>
-						<%--<td>--%>
-							<%--<input type="checkbox" id="allcheck" >全选</input>--%>
-							<%--<c:forEach items="${distributorList}" var="distributor">--%>
-								<%--<input type="checkbox" name="distributorId" value="${distributor.id}" >${distributor.name}</input>--%>
-							<%--</c:forEach>--%>
-						<%--</td>--%>
-					<%--</tr>--%>
 					<tr>
 						<th>主题</th>
 						<td>
@@ -286,34 +227,15 @@ $('#allcheck').on('click', function(){
 
 $('#addNewTopic').click(function(event) {
 	$('#addNewTopic').attr("disabled","disabled");
-<<<<<<< Updated upstream
-//	var dids = [];
-//	$('input[name="distributorId"]:checked').each(function(){
-//		dids.push($(this).val());
-//		});
-	var coverId = $("#topicCover").val();
-	if(coverId == null || coverId.length < 1){
-		alert("必须选择一个专题类型!");
-		return false;
-	}
-	var addContent = $("#addContent").val();
-	if(addContent == null || addContent.length < 1){
-		alert("必须填写简介!");
-=======
 	var addContent = $("#addContent").val();
 	if(addContent == null || addContent.length < 1){
 		alert("必须填写简介!");
 		$('#addNewTopic').removeAttr("disabled");
->>>>>>> Stashed changes
 		return false;
 	}
 	post('topic/add',
 		'publishTime='+$("#addPublishTime").val()+'&title='+$('#addTitle').val()+'&img='+$('#image').val()+'&content='
-<<<<<<< Updated upstream
-			+addContent+'&topicCoverId='+coverId,
-=======
 			+addContent,
->>>>>>> Stashed changes
 		function (data) {
 			if(data['status']) {
 				location.href = '<%=basePath%>topic/list?status='+$("#status").val();
@@ -381,11 +303,7 @@ function post(url, data, success, error) {
 };
 /**	分页方法	*/
 function turnPage(){
-<<<<<<< Updated upstream
-    location.href = '<%=basePath%>topic/list?status='+$("#status").val()+'&topicCoverId='+$("#topicCoverId").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
-=======
     location.href = '<%=basePath%>topic/list?status='+$("#status").val()+'&pageNumber='+$("#pageNumber").val()+'&pageSize='+$("#pageSize").val();
->>>>>>> Stashed changes
 };
 </script>
 
