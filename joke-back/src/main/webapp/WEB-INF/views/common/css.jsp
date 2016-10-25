@@ -1,4 +1,4 @@
-<%@page pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!-- The styles -->
 <link id="bs-css" href="ui/charisma/css/bootstrap-cerulean.min.css" rel="stylesheet">
 <link href="ui/charisma/css/charisma-app.css" rel="stylesheet">

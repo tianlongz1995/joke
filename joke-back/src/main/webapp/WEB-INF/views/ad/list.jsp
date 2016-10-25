@@ -19,7 +19,8 @@
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
     <base href="<%=basePath%>">
-    <%@ include file="../common/css.html" %>
+    <%--<%@ include file="../common/css.html" %>--%>
+    <jsp:include page="../common/css.jsp"/>
     <script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
 
     <!-- The fav icon -->
@@ -407,7 +408,9 @@
 <!-- ch-container end -->
 
 <hr>
-<%@ include file="../common/footer.html" %>
-<%@ include file="../common/js.html" %>
+<%--<%@ include file="../common/footer.html" %>--%>
+<%--<%@ include file="../common/js.html" %>--%>
+<jsp:include page="../common/footer.jsp"/>
+<jsp:include page="../common/js.jsp"/>
 </body>
 </html>

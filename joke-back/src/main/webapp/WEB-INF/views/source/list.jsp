@@ -58,9 +58,6 @@
                         <div class="box-content">
                             <div class="alert alert-info" >
                                 需要添加新的内容源点击:  <a href="#" data-toggle="modal" data-target="#newsource"><i class="glyphicon glyphicon-plus"></i> 新增内容源</a>
-                                <%--<div style="float:right;margin-top: -5px;">
-                                    <a type="button" class="btn btn-danger btn-sm" href="<%=basePath%>source/monitor" >查看监控</a>
-                                </div>--%>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
                                 <div class="row">
@@ -68,17 +65,17 @@
                                         <div class="bs-example" style="margin: 5px;padding: 5px;">
                                             <form class="form-inline">
                                                 <div class="form-group" style="display: inline-block;">
-                                                    <label for="sourceNane">名称：</label>
-                                                    <input id="name" type="text" class="form-control input-sm" id="sourceNane" style="width: 150px;display: inline-block;" value="${name}" placeholder="输入数据源名称">
+                                                    <label for="name">名称：</label>
+                                                    <input id="name" type="text" class="form-control input-sm" name="sourceNane" style="width: 150px;display: inline-block;" value="${name}" placeholder="输入数据源名称">
                                                 </div>
                                                 &nbsp;&nbsp;
                                                 <div class="form-group"style="display: inline-block;">
-                                                    <label for="sourceUrl">URL：</label>
-                                                    <input id="url" type="email" class="form-control input-sm" id="sourceUrl" style="width: 150px;display: inline-block;" value="${url}" placeholder="输入数据源URL">
+                                                    <label for="url">URL：</label>
+                                                    <input id="url" type="email" class="form-control input-sm" name="sourceUrl" style="width: 150px;display: inline-block;" value="${url}" placeholder="输入数据源URL">
                                                 </div>
                                                 &nbsp;&nbsp;
                                                 <div style="display: inline-block;">
-                                                    <select id="status" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;" >
+                                                    <select id="status" class="form-control input-sm" >
                                                         <c:if test="${empty status}">
                                                             <option value="" selected>全部</option>
                                                         </c:if>

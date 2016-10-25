@@ -64,38 +64,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<h2><i class="glyphicon glyphicon-user"></i> 内容列表</h2>
 	</div>
 	<div class="box-content">
-		<div class="alert alert-info">
-		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
-			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span >ID</span>
-					<c:if test="${empty jokeid}">
-						<input id="jokeid" type="text" />
-					</c:if>
-					<c:if test="${!empty jokeid}">
-						<input id="jokeid" type="text" value="${jokeid}"/>
-					</c:if>
-				</label>
-				<label style="padding-right:30px;">
-					<span >关键字</span>
-					<c:if test="${empty content}">
-						<input id="content2" type="text" style="width:500px;" maxlength="30" />
-					</c:if>
-					<c:if test="${!empty content}">
-						<input id="content2" type="text" style="width:500px;" maxlength="30"   value="${content}"/>
-					</c:if>
-				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary btn-sm" href="#" id="searchJoke">
-						<span class="glyphicon glyphicon-search icon-white" >搜索</span>
-					</a>
-				</label>
-				<label style="padding-right:30px;">
-			        <a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke('batch')">
-			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
-			        </a>
-				</label>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="bs-example" style="margin: 5px;padding: 5px;">
+						<form class="form-inline">
+							<div class="form-group" style="display: inline-block;">
+								<label for="jokeid">ID：</label>
+								<input id="jokeid" type="text" class="form-control input-sm" style="width: 150px;display: inline-block;" value="${jokeid}" placeholder="输入ID">
+							</div>
+							&nbsp;&nbsp;
+							<div class="form-group" style="display: inline-block;">
+								<label for="content2">关键字：</label>
+								<input id="content2" type="email" class="form-control input-sm" style="width: 150px;display: inline-block;" value="${content}" placeholder="关键字">
+							</div>
+							&nbsp;&nbsp;
+							<div class="form-group" style="display: inline-block;">
+								<a class="btn btn-primary btn-sm" href="#" id="searchJoke" style="text-align: center;">
+									<span class="glyphicon glyphicon-search icon-white">搜索</span>
+								</a>
+							</div>
+							&nbsp;&nbsp;
+							<div class="form-group" style="display: inline-block;">
+								<a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke('batch')" style="text-align: center;">
+									<span class="glyphicon glyphicon-search icon-white">批量删除</span>
+								</a>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 		
 			<thead>
@@ -121,7 +118,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<p><h5>${joke.title}</h5></p>
 							</c:if>
 							<c:if test="${!empty joke.content}">
-								<p><small>${joke.content}</<small></p>
+								<p><small>${joke.content}</small></p>
 							</c:if>
 
 						</div>

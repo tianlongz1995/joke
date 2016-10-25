@@ -60,22 +60,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<a href="#" data-toggle="modal" data-target="#newDistributor">新增渠道</a>
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
-			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span>状态：</span>
-					<select id="status" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
-						<option value="">全部</option>
-						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >下线</option>
-						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >上线</option>
-					</select>
-				</label>
-				<label style="padding-right:30px;">
-					<a class="btn btn-primary btn-sm" href="#" id="selectDistributorList">
-						<span class="glyphicon glyphicon-search icon-white" >查询</span>
-					</a>
-				</label>
+			<div class="row">
+				<div class="col-md-12">
+					<form class="form-inline">
+						<div class="form-group" style="display: inline-block;">
+							<label>
+								<label for="status" style="display: inline-block;">状态：</label>
+							</label>
+						</div>
+						<div class="form-group" style="display: inline-block;">
+							<select id="status" class="form-control input-sm">
+								<option value="">全部</option>
+								<option value="0"
+										<c:if test="${!empty status && status == 0}">selected</c:if> >下线
+								</option>
+								<option value="1"
+										<c:if test="${!empty status && status == 1}">selected</c:if> >上线
+								</option>
+							</select>
+						</div>
+						<div class="form-group" style="display: inline-block;padding-left: 15px;">
+							<a class="btn btn-primary btn-sm" href="#" id="selectDistributorList">
+								<span class="glyphicon glyphicon-search icon-white">查询</span>
+							</a>
+						</div>
+					</form>
+				</div>
 			</div>
-		
 			<thead>
 				<tr>
 					<th>ID</th>

@@ -1,4 +1,4 @@
-<%@page pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!-- external javascript -->
 <script src="ui/charisma/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- library for cookie management -->
