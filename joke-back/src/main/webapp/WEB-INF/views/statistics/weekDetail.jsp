@@ -153,22 +153,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td>${timeDetail.totalPv}</td>
 					<td>${timeDetail.totalUv}</td>
 					<td>
-						<fmt:formatNumber type="number" value="${timeDetail.totalPv / timeDetail.totalUv }" pattern="0.00" maxFractionDigits="2"/>
+						<c:if test="${timeDetail.totalPv == 0 || timeDetail.totalUv == 0}">0</c:if>
+						<c:if test="${timeDetail.totalPv != 0 && timeDetail.totalUv != 0}">
+							<fmt:formatNumber type="number" value="${timeDetail.totalPv / timeDetail.totalUv }" pattern="0.00" maxFractionDigits="2"/>
+						</c:if>
 					</td>
 					<td>${timeDetail.enterPv}</td>
 					<td>${timeDetail.enterUv}</td>
 					<td>
-						<fmt:formatNumber type="number" value="${timeDetail.enterPv / timeDetail.enterUv }" pattern="0.00" maxFractionDigits="2"/>
+						<c:if test="${timeDetail.enterPv == 0 || timeDetail.enterUv == 0}">0</c:if>
+						<c:if test="${timeDetail.enterPv != 0 && timeDetail.enterUv != 0}">
+							<fmt:formatNumber type="number" value="${timeDetail.enterPv / timeDetail.enterUv }" pattern="0.00" maxFractionDigits="2"/>
+						</c:if>
 					</td>
 					<td>${timeDetail.listPv}</td>
 					<td>${timeDetail.listUv}</td>
 					<td>
-						<fmt:formatNumber type="number" value="${timeDetail.listPv / timeDetail.listUv }" pattern="0.00" maxFractionDigits="2"/>
+						<c:if test="${timeDetail.listPv == 0 || timeDetail.listUv == 0}">0</c:if>
+						<c:if test="${timeDetail.listPv != 0 && timeDetail.listUv != 0}">
+							<fmt:formatNumber type="number" value="${timeDetail.listPv / timeDetail.listUv }" pattern="0.00" maxFractionDigits="2"/>
+						</c:if>
 					</td>
 					<td>${timeDetail.detailPv}</td>
 					<td>${timeDetail.detailUv}</td>
 					<td>
-						<fmt:formatNumber type="number" value="${timeDetail.detailPv / timeDetail.detailUv }" pattern="0.00" maxFractionDigits="2"/>
+						<c:if test="${timeDetail.detailPv == 0 || timeDetail.detailUv == 0}">0</c:if>
+						<c:if test="${timeDetail.detailPv != 0 && timeDetail.detailUv != 0}">
+							<fmt:formatNumber type="number" value="${timeDetail.detailPv / timeDetail.detailUv }" pattern="0.00" maxFractionDigits="2"/>
+						</c:if>
 					</td>
 					<td>${timeDetail.newUserPv}</td>
 					<td>${timeDetail.newUserUv}</td>
