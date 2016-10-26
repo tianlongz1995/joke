@@ -104,7 +104,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	</tr>
 			</thead>
 		</table>
-		<button id="updateChannel" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+		<button id="updateChannel" type="button" class="btn btn-default btn-sm" data-dismiss="modal">提交</button>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->

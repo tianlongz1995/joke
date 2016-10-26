@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<input type="radio" name="type" value="2" <c:if test="${type == 2 }">checked</c:if>>只看频道
 						</label>
 						<label style="padding-right:30px;">
-							<input type="button" id="btnClick" class="btn btn-submit" onclick="turnPage()" value="查询"/>
+							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
 						</label>
 					</div>
 				</div>

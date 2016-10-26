@@ -68,7 +68,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<label style="padding-right:30px;">
 				<span>动图:<c:out value="${type2}"></c:out></span>
 			</label>
-				
 		</div>
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter" style="margin: 15px 5px;">
@@ -90,28 +89,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${endDay}" style="max-width: 160px;"/>
 					</c:if>
 				</label>
-				<label style="padding-right:10px;">
-					<span >格式</span>
-					<select id="type">
+				<div class="form-group" style="padding-right:10px;display: inline-block;">
+					<label>格式</label>
+					<select id="type" class="form-control input-sm" >
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty type && type == 0}">selected</c:if> >文字</option>
 						<option value="1" <c:if test="${!empty type && type == 1}">selected</c:if> >图片</option>
 						<option value="2" <c:if test="${!empty type && type == 2}">selected</c:if> >动图</option>
 					</select>
-				</label>
-				<label style="padding-right:10px;">
-					<span >状态</span>
-					<select id="status">
+				</div>
+				<div  class="form-group" style="padding-right:10px;display: inline-block;">
+					<label >状态</label>
+					<select id="status" class="form-control input-sm">
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >未审核</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
 						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
 						<option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
 					</select>
-				</label>
-				<label style="padding-right:10px;">
+				</div>
+				<div style="padding-right:10px;display: inline-block;">
 					<span >数据源</span>
-					<select id="source">
+					<select id="source" class="form-control input-sm">
 						<c:if test="${empty source || source == 0}">
 							<option value="" selected="selected" >全部</option>
 						</c:if>
@@ -122,7 +121,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="${sources.id}" <c:if test="${!empty source && source == sources.id}">selected</c:if> >${sources.name}</option>
 						</c:forEach>
 					</select>
-				</label>
+				</div>
 				<label style="padding-right:10px;">
 					<a class="btn btn-primary btn-sm" href="#" id="selectVerifyJokeList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>

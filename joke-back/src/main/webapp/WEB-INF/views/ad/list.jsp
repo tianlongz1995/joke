@@ -49,7 +49,6 @@
                 </ul>
             </div>
 
-
             <div class="row">
                 <div class="box col-md-12">
                     <div class="box-inner">
@@ -66,8 +65,8 @@
                                         <p style="padding: 8px 0px;margin: 0px;">投放渠道：</p>
                                     </div>
                                     <div class="col-md-10" style="margin-left: 0px;">
-                                        <div style="padding: 8px 0px;">
-                                            <select id="distributors" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                        <div>
+                                            <select id="distributors" class="form-control input-sm" style="width: 150px;margin: 5px;" >
                                                 <c:if test="${empty distributorId}">
                                                     <option value="" selected>全部</option>
                                                 </c:if>
@@ -86,7 +85,7 @@
                                         <p style="padding: 8px 0px;margin: 0px;">广告位置 ：</p>
                                     </div>
                                     <div class="col-md-10" style="margin-left: 0px;">
-                                        <select id="pagePos" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                        <select id="pagePos"  class="form-control input-sm" style="width: 150px;margin: 5px;" >
                                             <c:if test="${empty pos}">
                                                 <option value="" selected>全部</option>
                                             </c:if>
@@ -107,7 +106,7 @@
                                         <p style="padding: 8px 0px;margin: 0px;">广告状态 ：</p>
                                     </div>
                                     <div class="col-md-10" style="margin-left: 0px;">
-                                        <select id="status" style="font-size: 20px;width: 150px;margin: 5px;" >
+                                        <select id="status" class="form-control input-sm" style="width: 150px;margin: 5px;" >
                                             <c:if test="${empty status}">
                                                 <option value="" selected>全部</option>
                                             </c:if>
@@ -127,7 +126,7 @@
                                         <p style="padding: 8px 0px;margin: 0px;">广告位ID ：</p>
                                     </div>
                                     <div class="col-md-3" style="margin-left: 0px;line-height: 38px;">
-                                        <input id="myslotId" type="text" style="padding: 8px 0px;margin:5px;width: 100%;" class=" input-sm col-xs-4" placeholder="输入广告链接ID" value="${slotId}"/>
+                                        <input id="myslotId" type="text" style="padding: 8px 0px;margin:5px;width: 100%;" class="input-sm col-xs-4" placeholder="输入广告链接ID" value="${slotId}"/>
                                     </div>
                                     <div class="col-md-7" style="text-align: left;line-height: 38px;">
                                         <a class="btn btn-primary btn-sm" href="#" id="selectadList" style="text-align: center;">
@@ -135,7 +134,6 @@
                                         </a>
                                     </div>
                                 </div>
-                                <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>广告位ID</th>
@@ -147,8 +145,6 @@
                                     <th>更新时间</th>
                                     <th>操作</th>
                                 </tr>
-                                </thead>
-                                <tbody>
                                 <c:forEach items="${list}" var="ad">
                                     <tr>
                                         <td><c:out value="${ad.id}"/></td>
@@ -182,22 +178,21 @@
                                         </td>
                                         <td>
                                             <c:if test="${ad.status == 0}">
-                                                <a class="btn btn-success btn-xs" href="#" onclick="modifyStatus(1,${ad.id})">
+                                                <a class="btn btn-success  btn-sm" href="#" onclick="modifyStatus(1,${ad.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>上线
                                                 </a>
                                             </c:if>
                                             <c:if test="${ad.status == 1}">
-                                                <a class="btn btn-danger btn-xs" href="#" onclick="modifyStatus(0,${ad.id})">
+                                                <a class="btn btn-danger  btn-sm" href="#" onclick="modifyStatus(0,${ad.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                             </c:if>
-                                            <a class="btn btn-info btn-xs" href="ad/modify?id=${ad.id}">
+                                            <a class="btn btn-info  btn-sm" href="ad/modify?id=${ad.id}">
                                                 <i class="glyphicon glyphicon-edit icon-white"></i>编辑
                                             </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
-                                </tbody>
                             </table>
 
                             <div class="row">
@@ -226,7 +221,7 @@
                                 <tr>
                                     <th>投放渠道</th>
                                     <td>
-                                        <select id="did" style="font-size: 16px;width: 150px;margin: 2px;" class="form-control">
+                                        <select id="did" style="width: 150px;margin: 2px;" class="form-control input-sm">
                                             <c:forEach items="${dList}" var="distributor" varStatus="status">
                                                 <option value='<c:out value="${distributor.id}"/>'><c:out value="${distributor.name}"/></option>
                                             </c:forEach>
@@ -240,7 +235,7 @@
                                 <tr>
                                     <th>广告状态</th>
                                     <td>
-                                        <select id="addstatus" class="form-control">
+                                        <select id="addstatus" class="form-control input-sm">
                                             <option value="0">下线</option>
                                             <option value="1" selected>上线</option>
                                         </select>
@@ -249,7 +244,7 @@
                                 <tr id="adStatusTr">
                                     <th>投放位置</th>
                                     <td>
-                                        <select id="pos" class="form-control">
+                                        <select id="pos" class="form-control input-sm">
                                             <option value="1" selected>列表页中间</option>
                                             <option value="2">详情页插屏</option>
                                             <option value="3">详情页上方</option>
@@ -260,13 +255,13 @@
                                 </tr>
                                 <tr>
                                     <th>投放频率</th>
-                                    <td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+ 1（广告）</td>
+                                    <td><input id="slide" type="text" class="btn-sm" style="width:50px;" />（内容）+ 1（广告）</td>
                                 </tr>
                             </table>
 
                         </div>
                         <div class="modal-footer" style="text-align: center;vertical-align: middle;">
-                            <button id="addNewad" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+                            <button id="addNewad" type="button" class="btn btn-success btn-sm" data-dismiss="modal">提交</button>
                         </div>
                     </div>
                 </div>
@@ -386,7 +381,7 @@
                     var pos = $("#pos").val();
                     if(pos == 1){
                         $("#adStatusTr").next().remove();
-                        $("#adStatusTr").after('<tr><th>投放频率</th><td><input id="slide" type="text" class="input-sm" style="width:50px;" />（内容）+ 1（广告）</td></tr>');
+                        $("#adStatusTr").after('<tr><th>投放频率</th><td><input id="slide" type="text" class="btn-sm" style="width:50px;" />（内容）+ 1（广告）</td></tr>');
                     }else{
                         $("#adStatusTr").next().remove();
                     }

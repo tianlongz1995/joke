@@ -56,7 +56,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="box-header well" data-original-title="">
 		<h2><i class="glyphicon glyphicon-user"></i> 专题编辑</h2>
 	</div>
-	<div class="box-content">
+	<div class="box-content"  style="text-align: center;" >
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<input id="image" type="hidden" value="${topic.img}"/>
 							<img id="imgPriview" style="display: none" src="${topic.img}" >
 						</c:if>
-						<input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除" />
+						<input id="imgDelButton" type="button" class="btn btn-danger btn-sm" style="display: none" value="删除" />
 			  		</td>
 			  	</tr>
 				<tr>
@@ -113,7 +113,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	</tr>
 			</thead>
 		</table>
-		<button id="updateTopic" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+		<button id="updateTopic" type="button" class="btn btn-success btn-sm" data-dismiss="modal">提交</button>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->

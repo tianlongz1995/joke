@@ -79,14 +79,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input type="text" class="form-control" disabled="disabled" value="${ad.dName}"/>
 						<input type="hidden" id="distributors" value="${ad.did}"/>
 					</td>
-					<%--<td>
-						&lt;%&ndash;<input id="dName" type="text" class="form-control" value="${ad.dName}"/>&ndash;%&gt;
-						<select id="distributors" class="form-control" style="font-size: 16px;width: 300px;margin: 3px;" >
-							<c:forEach items="${dList}" var="distributor" varStatus="status">
-								<option value='<c:out value="${distributor.id}"/>' <c:if test="${!empty ad.did && ad.did == distributor.id}">selected</c:if> ><c:out value="${distributor.name}"/></option>
-							</c:forEach>
-						</select>
-					</td>--%>
 				</tr>
 				<tr id="adStatusTr">
 					<th>广告位位置</th>
@@ -109,7 +101,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</thead>
 		</table>
 		<div style="text-align: center;">
-			<button id="updateAd" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
+			<button id="updateAd" type="button" class="btn btn-info btn-sm" data-dismiss="modal">提交</button>
 		</div>
 	</div>
 </div>

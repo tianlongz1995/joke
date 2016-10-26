@@ -62,37 +62,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a type="button" class="btn btn-danger btn-sm" href="<%=basePath%>channel/weight?code=10001" >推荐频道权重管理</a>
 			</div>
 		</div>
+
 		<table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
-				<label style="padding-right:30px;">
-					<span >状态</span>
-					<select id="status">
+				<div class="form-group" style="padding-right:30px;display: inline-block;">
+					<label>状态: </label>
+					<select id="status" class="form-control input-sm" style="width: 100px;display: inline-block;">
 						<option value="">全部</option>
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >下线</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >上线</option>
 					</select>
-				</label>
+				</div>
 				<label style="padding-right:30px;">
 					<a class="btn btn-primary btn-sm" href="#" id="selectChannelList">
 						<span class="glyphicon glyphicon-search icon-white" >查询</span>
 					</a>
 				</label>
 			</div>
-		
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>名称</th>
-					<th>内容属性</th>
-					<th>类型</th>
-					<th>有趣/吐槽</th>
-					<th>发布数量</th>
-					<th>状态</th>
-					<th>操作</th>
-				</tr>
-			</thead>
-	
-			<tbody>
+			<tr>
+				<th>ID</th>
+				<th>名称</th>
+				<th>内容属性</th>
+				<th>类型</th>
+				<th>有趣/吐槽</th>
+				<th>发布数量</th>
+				<th>状态</th>
+				<th>操作</th>
+			</tr>
+
 				<c:forEach items="${list}" var="channel">
 					<tr>
 						<td><c:out value="${channel.id}"/> </td>
@@ -126,32 +123,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${channel.status == 0}">
-								<a class="btn btn-info" href="channel/edit?id=${channel.id}">
+								<a class="btn btn-info btn-sm" href="channel/edit?id=${channel.id}">
 						        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 						        </a>
-								<a class="btn btn-success" href="#" onclick="verifyChannel(1,${channel.id})">
+								<a class="btn btn-success btn-sm" href="#" onclick="verifyChannel(1,${channel.id})">
 						        	 <i class="glyphicon glyphicon-ok icon-white"></i>上线
 						        </a>
 							</c:if>
 							<c:if test="${channel.status == 1}">
-								<a class="btn btn-danger" href="#" onclick="verifyChannel(0,${channel.id})">
+								<a class="btn btn-danger btn-sm" href="#" onclick="verifyChannel(0,${channel.id})">
 						        	 <i class="glyphicon glyphicon-remove icon-white"></i>下线
 						        </a>
 							</c:if>
-					        <a class="btn btn-warning" href="channel/joke?channelId=${channel.id}">
+					        <a class="btn btn-warning btn-sm" href="channel/joke?channelId=${channel.id}">
 					        	<i class="glyphicon glyphicon-arrow-right"></i>删除内容
 					        </a>
                             <c:if test="${channel.type == 0}">
-                                <a class="btn btn-success" href="#" onclick="editSize(${channel.id},'${channel.name}',${channel.size})">
+                                <a class="btn btn-success btn-sm" href="#" onclick="editSize(${channel.id},'${channel.name}',${channel.size})">
                                     <i class="glyphicon glyphicon-ok icon-white"></i>修改发布数量
                                 </a>
                             </c:if>
 					    </td>
 					</tr>
 				</c:forEach>
-			</tbody>
 		</table>
-		
+
 	</div>
 </div>
 </div><!-- box col-md-12 end -->
@@ -224,9 +220,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </table>
             </div>
             <div class="modal-footer" style="text-align: center;">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-danger" onclick="publishConfirm()">确定</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="publishConfirm()">确定</button>
             </div>
         </div>
     </div>

@@ -93,9 +93,6 @@
                                             <a class="btn btn-info btn-sm" onclick="weightEidt('${dictionary.id}')" >
                                                 <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                             </a>
-                                            <%--<a class="btn btn-warning btn-sm" onclick="weightDel('${dictionary.id}')" >
-                                                <i class="glyphicon glyphicon-arrow-right"></i> 删除
-                                            </a>--%>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -147,7 +144,7 @@
                             </table>
                         </div>
                         <div class="modal-footer" style="text-align: center;">
-                            <button id="addNewItem" type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+                            <button id="addNewItem" type="button" class="btn btn-primary btn-sm" data-dismiss="modal">提交</button>
                         </div>
                     </div>
                 </div>
@@ -188,7 +185,7 @@
                             </table>
                         </div>
                         <div class="modal-footer" style="text-align: center;">
-                            <button id="editNewItem" type="button" class="btn btn-default" onclick="editConfirm()" >提交</button>
+                            <button id="editNewItem" type="button" class="btn btn-primary btn-sm" onclick="editConfirm()" >提交</button>
                         </div>
                     </div>
                 </div>
@@ -206,9 +203,9 @@
                             <input id="deleteId" type="hidden"/>
                         </div>
                         <div class="modal-footer" style="text-align: center;">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button type="button" class="btn btn-danger" onclick="delConfirm()">确定</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="delConfirm()">确定</button>
                         </div>
                     </div>
                 </div>

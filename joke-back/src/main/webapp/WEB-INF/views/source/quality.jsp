@@ -98,7 +98,6 @@
                                                         <option value="0" <c:if test="${!empty sourceType && sourceType == 0}">selected='selected'</c:if> >格式:</option>
                                                         <option value="1" <c:if test="${empty sourceType || sourceType == 1}">selected='selected'</c:if>>数据源:</option>
                                                     </select>
-                                                    <%-- <label for="endTime" style="display: inline-block;">格式:</label>--%>
                                                 </label>
                                             </div>
                                             <div class="checkbox" style="display: inline-block; " >

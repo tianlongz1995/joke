@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</label>
 					
 						<label style="padding-right:30px;">
-							<input type="button" id="btnClick" class="btn btn-submit" onclick="turnPage()" value="查询"/>
+							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
 						</label>
 					</div>
 				</div>

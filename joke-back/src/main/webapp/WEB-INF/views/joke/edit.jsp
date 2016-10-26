@@ -89,7 +89,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<input id="height" type="hidden" value="${joke.height}"/>
 		<input id="imgUrl" type="hidden" value="${joke.img}"/>
 		<input id="gifUrl" type="hidden" value="${joke.gif}"/>
-		<button id="updateJoke" type="button" class="btn btn-default" data-dismiss="modal">通过</button>
+		<button id="updateJoke" type="button" class="btn btn-primary btn-sm" data-dismiss="modal">通过</button>
 	</div>
 </div>
 </div><!-- box col-md-12 end -->

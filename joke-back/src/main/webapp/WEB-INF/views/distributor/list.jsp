@@ -119,16 +119,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</td>
 						<td>
 							<c:if test="${distributor.status == 0}">
-								<a class="btn btn-success btn-xs" href="#" onclick="modifyStatus(1,${distributor.id})">
+								<a class="btn btn-success btn-sm" href="#" onclick="modifyStatus(1,${distributor.id})">
 									<i class="glyphicon glyphicon-ok icon-white"></i>上线
 								</a>
 							</c:if>
 							<c:if test="${distributor.status == 1}">
-								<a class="btn btn-danger btn-xs" href="#" onclick="modifyStatus(0,${distributor.id})">
+								<a class="btn btn-danger btn-sm" href="#" onclick="modifyStatus(0,${distributor.id})">
 									<i class="glyphicon glyphicon-remove icon-white"></i>下线
 								</a>
 							</c:if>
-							<a class="btn btn-info btn-xs" href="distributor/edit?id=${distributor.id}">
+							<a class="btn btn-info btn-sm" href="distributor/edit?id=${distributor.id}">
 								<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 							</a>
 						</td>
@@ -193,8 +193,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 												<c:out value="${channel.name}"/>
 											</th>
 											<th>
-												<button class="btn btn-default btn-xs" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
-												<button class="btn btn-default btn-xs" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
+												<button class="btn btn-primary btn-sm" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
+												<button class="btn btn-primary btn-sm" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
 											</th>
 										</tr>
 									</c:forEach>

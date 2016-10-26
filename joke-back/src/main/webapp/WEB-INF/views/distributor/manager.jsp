@@ -68,8 +68,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<input id="managerId" type="text" class="form-control" placeholder="数据管理中心密码"/>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" id="dataManager">更新缓存!</button>
+				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary btn-sm" id="dataManager">更新缓存!</button>
 			</div>
 		</div>
 	</div>

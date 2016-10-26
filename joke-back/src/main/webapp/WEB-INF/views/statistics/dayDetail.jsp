@@ -39,11 +39,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <!-- content start -->
 <div id="content" class="col-lg-10 col-sm-10">
-<div>
-	<!-- <ul class="breadcrumb">
-		<li><a href="statistics/dayTotal">总日报</a></li>
-	</ul> -->
-</div>
 <div class="row">
 <div class="box col-md-12">
 
@@ -54,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="box-content">
 		<table  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="row">
-				<div class="col-md-15">
+				<div class="col-md-12">
 					<div class="dataTables_filter" id="DataTables_Table_0_filter">
 						<label style="padding-right:30px;">
 							<span >开始日期</span>
@@ -98,8 +93,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<input type="radio" name="type" value="2" <c:if test="${type == 2 }">checked</c:if>>只看频道
 						</label>
 						<label style="padding-right:30px;">
-							<input type="button" id="btnClick" class="btn btn-submit" onclick="turnPage()" value="查询"/>
-							<button id="export" type="button" class="btn btn-default" data-dismiss="modal">导出</button>
+							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="turnPage()" value="查询"/>
+							<button id="export" type="button" class="btn btn-danger btn-sm" data-dismiss="modal">导出</button>
 						</label>
 					</div>
 				</div>

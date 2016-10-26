@@ -1,19 +1,20 @@
 package com.oupeng.joke.back.conf;
 
-import java.util.Properties;
-
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import java.util.Properties;
+
 @Configurable
-@PropertySource(value={"classpath:back.properties"})
+@PropertySources(value={@PropertySource("classpath:back.properties")})
 public class BackConfig {
 	
 	@Value(value="${email.encoding}")

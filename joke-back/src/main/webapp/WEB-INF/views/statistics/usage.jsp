@@ -76,7 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</label>
 						<label style="padding-right:30px;">
 							<span>日志类型</span>
-							<select id="logType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+							<select id="logType" class="form-control input-sm" style="margin: 1px;padding: 5px;">
 								<option value="0" <c:if test="${empty logType || logType == 0}">selected</c:if> >长图展开日志</option>
 								<option value="1" <c:if test="${!empty logType && logType == 1}">selected</c:if> >上拉刷新日志</option>
 								<option value="2" <c:if test="${!empty logType &&  logType == 2}">selected</c:if> >下拉刷新日志</option>
@@ -84,7 +84,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</label>
 						<label style="padding-right:30px;">
 							<span>渠道</span>
-							<select id="distributorId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+							<select id="distributorId" class="form-control input-sm" style="margin: 1px;padding: 5px;">
 								<option value="" >全选</option>
 								<c:if test="${!empty distributorList}">
 									<c:forEach items="${distributorList}" var="distributor">
@@ -95,7 +95,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</label>
 						<label style="padding-right:30px;">
 							<span >频道</span>
-							<select id="channelId" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+							<select id="channelId" class="form-control input-sm" style="margin: 1px;padding: 5px;">
 								<option value="" >全选</option>
 								<c:if test="${!empty channelList}">
 									<c:forEach items="${channelList}" var="channel">
@@ -105,14 +105,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</select>
 						</label>
 						<label style="padding-right:30px;" id="dateTypeLabel" >
-							<select id="dateType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+							<select id="dateType" class="form-control input-sm" style="margin: 1px;padding: 5px;">
 								<option value="0" <c:if test="${empty dateType || dateType == 0}">selected</c:if> >日报</option>
 								<option value="1" <c:if test="${!empty dateType && dateType == 1}">selected</c:if> >周报</option>
 								<option value="2" <c:if test="${!empty dateType &&  dateType == 2}">selected</c:if> >月报</option>
 							</select>
 						</label>
 						<label style="padding-right:30px;" id="typeLabel" >
-							<select id="reportType" style="font-size: 16px;width: 100px;margin: 1px;padding: 5px;">
+							<select id="reportType" class="form-control input-sm" style="margin: 1px;padding: 5px;">
 								<option value="0" <c:if test="${empty reportType || reportType == 0}">selected</c:if> >总报</option>
 								<option value="1" <c:if test="${!empty reportType && reportType == 1}">selected</c:if> >渠道</option>
 								<option value="2" <c:if test="${!empty reportType && reportType == 2}">selected</c:if> >频道</option>
@@ -122,7 +122,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 						<label style="padding-right:30px;">
 							<input type="button" id="btnClick" class="btn btn-primary btn-sm" onclick="query()" value="查询"/>
-							<%--<button id="export" type="button" class="btn btn-warning btn-sm" data-dismiss="modal">导出</button>--%>
 						</label>
 					</div>
 				</div>

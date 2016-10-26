@@ -94,8 +94,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										<c:out value="${channel.name}"/>
 									</th>
 									<th>
-										<button class="btn btn-default btn-xs" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
-										<button class="btn btn-default btn-xs" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
+										<button class="btn btn-info btn-sm" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
+										<button class="btn btn-info btn-sm" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移</button>
 									</th>
 								</tr>
 							</c:forEach>

@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<table id="table_list"  class="table table-striped table-bordered bootstrap-datatable responsive">
 			<div class="dataTables_filter" id="DataTables_Table_0_filter">
 			    <label style="padding-right:30px;">
-			        <a class="btn btn-danger" href="#" onclick="verifyJoke('batch')">
+			        <a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke('batch')">
 			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
 			        </a>
 				</label>
@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<fmt:formatDate value="${joke.verifyTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
 						<td>
-							<a class="btn btn-danger" href="#" onclick="verifyJoke(${joke.id})">
+							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(${joke.id})">
 					        	 <i class="glyphicon glyphicon-remove icon-white"></i>删除
 					        </a>
 					    </td>
