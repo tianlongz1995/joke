@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.HeaderWriterFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @EnableWebSecurity
@@ -37,8 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
 				.formLogin().defaultSuccessUrl("/home").and().formLogin().failureUrl("/?error=1");
-		http.logout().logoutUrl("/logout").and().logout().logoutSuccessUrl("/").and().logout()
-				.deleteCookies("JSESSIONID");
+		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 		http.rememberMe().tokenValiditySeconds(1209600).and().rememberMe().rememberMeParameter("remember-me");
 		CharacterEncodingFilter encodeFilter = new CharacterEncodingFilter();
 		encodeFilter.setEncoding("utf-8");
