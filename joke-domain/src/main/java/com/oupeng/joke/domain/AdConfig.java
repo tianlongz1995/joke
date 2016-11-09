@@ -19,7 +19,8 @@ public class AdConfig {
     private Integer dc;
     /**	详情页底部 detailsBottom	*/
     private Integer db;
-
+    /**	详情页插屏 detailsInterstitial	*/
+    private Integer di;
     public AdConfig() {
     }
 
@@ -39,6 +40,8 @@ public class AdConfig {
                 dc = ad.getSlotId();
             } else if(ad.getPos() == 5){
                 db = ad.getSlotId();
+            } else if(ad.getPos() == 6){
+                di = ad.getSlotId();
             }
         }
     }
@@ -89,5 +92,13 @@ public class AdConfig {
 
     public void setDb(Integer db) {
         this.db = db;
+    }
+
+    public Integer getDi() {
+        return di;
+    }
+
+    public void setDi(Integer di) {
+        this.di = di;
     }
 }

@@ -7,7 +7,7 @@ public class Ad {
 	private Integer id;
 	/**	广告位编号	*/
 	private Integer slotId;
-	/**	位置 1:列表页中间 2:列表页底部 3:详情页上方 4:详情页中部 5:详情页底部	*/
+	/**	位置 1:列表页中间 6:列表页底部 3:详情页上方 4:详情页中部 5:详情页底部 、2:详情页插屏	*/
 	private Integer pos;
 	/**	pos=1时，广告插入间隔	*/
 	private Integer slide;

@@ -93,10 +93,11 @@
                                                 <option value="">全部</option>
                                             </c:if>
                                             <option value="1" <c:if test="${!empty pos && pos == 1}">selected</c:if> >列表页中间</option>
-                                            <option value="2" <c:if test="${!empty pos && pos == 2}">selected</c:if> >详情页插屏</option>
+                                            <option value="6" <c:if test="${!empty pos && pos == 6}">selected</c:if> >列表页底部</option>
                                             <option value="3" <c:if test="${!empty pos && pos == 3}">selected</c:if> >详情页上方</option>
                                             <option value="4" <c:if test="${!empty pos && pos == 4}">selected</c:if> >详情页中部</option>
                                             <option value="5" <c:if test="${!empty pos && pos == 5}">selected</c:if> >详情页底部</option>
+                                            <option value="2" <c:if test="${!empty pos && pos == 2}">selected</c:if> >详情页插屏</option>
                                         </select>
 
                                     </div>
@@ -151,10 +152,11 @@
                                         <td><c:out value="${ad.slotId}"/></td>
                                         <td>
                                             <c:if test="${ad.pos == 1}">列表页中间</c:if>
-                                            <c:if test="${ad.pos == 2}">详情页插屏</c:if>
+                                            <c:if test="${ad.pos == 6}">列表页底部</c:if>
                                             <c:if test="${ad.pos == 3}">详情页上方</c:if>
                                             <c:if test="${ad.pos == 4}">详情页中部</c:if>
                                             <c:if test="${ad.pos == 5}">详情页底部</c:if>
+                                            <c:if test="${ad.pos == 2}">详情页插屏</c:if>
                                         </td>
                                         <td>
                                             <c:if test="${ad.pos == 1}">
@@ -246,10 +248,11 @@
                                     <td>
                                         <select id="pos" class="form-control input-sm">
                                             <option value="1" selected>列表页中间</option>
-                                            <option value="2">详情页插屏</option>
+                                            <option value="6">列表页底部</option>
                                             <option value="3">详情页上方</option>
                                             <option value="4">详情页中部</option>
                                             <option value="5">详情页底部</option>
+                                            <option value="2">详情页插屏</option>
                                         </select>
                                     </td>
                                 </tr>
