@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -47,4 +46,5 @@ public class CacheConfig {
         config.setTestWhileIdle(true);
         return new JedisPool(config, readHost, port, timeout);
     }
+
 }
