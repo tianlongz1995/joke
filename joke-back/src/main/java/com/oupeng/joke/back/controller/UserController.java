@@ -78,7 +78,7 @@ public class UserController {
         try {
         	return userService.addUserAndAuthority(username, password, authority);
         } catch (Exception e) {
-        	return new Failed(e.toString());
+        	return new Failed("用户新增失败!");
         }
     }
     

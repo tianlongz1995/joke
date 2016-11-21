@@ -111,6 +111,6 @@ public class UserService {
      */
     private boolean checkUserInfo(String username, String password) {
 		return !(username == null || username.isEmpty()
-				|| password == null || password.isEmpty() || password.length() != 6);
+				|| password == null || password.isEmpty() || password.length() < 8);
     }
 }
