@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 public class JokeService {
 	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
 
+	private static final String ADMIN_PASS = "admin@joke.com";
 	@Autowired
 	private JokeMapper jokeMapper;
 	@Autowired
@@ -450,4 +451,27 @@ public class JokeService {
 		return jokeMapper.editPublishSize(id, size);
 	}
 
+	/**
+	 * 刷新频道缓存
+	 * @param id
+	 * @param pass
+	 * @return
+	 */
+    public boolean flushCache(Integer id, String pass) {
+    	if(pass.equals(ADMIN_PASS)){
+			jedisCache.lpush(JedisKey.JOKE_LIST_FLUSH_CACHE, String.valueOf(id));
+			return true;
+		}
+    	return false;
+    }
+
+	/**
+	 * 获取段子数据
+	 * @param type	段子类型: 0:文字、1:图片、2:动图
+	 * @param count	获取段子数量
+	 * @return
+	 */
+	public List<Joke> getPublishJokeListByType(Integer type, Integer count) {
+		return jokeMapper.getPublishJokeListByType(type, count);
+	}
 }

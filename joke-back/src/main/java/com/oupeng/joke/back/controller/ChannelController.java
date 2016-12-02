@@ -266,4 +266,19 @@ public class ChannelController {
 		return new Failed();
 	}
 
+	/**
+	 * 刷新频道缓存
+	 * @param id
+	 * @param pass
+	 * @return
+	 */
+	@RequestMapping(value="/flushCache", produces = {"application/json"})
+	@ResponseBody
+	public Result flushCache(@RequestParam(value="id") Integer id,@RequestParam(value="pass") String pass) {
+		if(jokeService.flushCache(id, pass)){
+			return new Success("成功!");
+		}
+		return new Failed("失败!");
+	}
+
 }

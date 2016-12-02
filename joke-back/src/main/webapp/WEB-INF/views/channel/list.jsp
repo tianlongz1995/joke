@@ -143,6 +143,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <i class="glyphicon glyphicon-ok icon-white"></i>修改发布数量
                                 </a>
                             </c:if>
+							<a class="btn btn-warning btn-sm" href="#" onclick="flushCacheShow('${channel.id}')">
+								<i class="glyphicon glyphicon-arrow-right"></i> 刷新缓存
+							</a>
 					    </td>
 					</tr>
 				</c:forEach>
@@ -208,7 +211,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 id="editTitle" class="modal-title" id="editModalLabel">修改发布数量</h4>
+                <h4 class="modal-title" id="editModalLabel">修改发布数量</h4>
             </div>
             <div class="modal-body">
                 <table id="size-table" class="table table-hover">
@@ -226,6 +229,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="flushModal" tabindex="-1" role="dialog" aria-labelledby="flushTitle" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+				<h4 id="flushTitle" class="modal-title">刷新缓存</h4>
+			</div>
+			<div class="modal-body">
+					<h4>请输入管理密码:</h4>
+				<input type="hidden" id="flushChannelId" value=""/>
+					<input type="text" id="flushPassword"/>
+			</div>
+			<div class="modal-footer" style="text-align: center;">
+				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn btn-danger btn-sm" onclick="flushCache()">确定</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -312,7 +336,28 @@ function post(url, data, success, error) {
 		type: 'POST', url: url, data: data, success: success, error: error,
 		headers: {'X-CSRF-TOKEN': csrfToken}
 	});
-}
+};
+function flushCacheShow(id) {
+	$('#flushModal').modal('show');
+	$('#flushChannelId').val(id);
+};
+function flushCache() {
+	var id = $('#flushChannelId').val();
+	var pass = $('#flushPassword').val();
+	post('channel/flushCache',
+			'id='+id+'&pass='+pass,
+			function (data) {
+				if(data.status == 1) {
+					$('#flushModal').modal('hide');
+					alert('刷新完成:'+data.data);
+				}else {
+					alert('操作失败:'+data.data);
+				}
+			},
+			function () {
+				alert('请求失败，请检查网络环境');
+			});
+};
 </script>
 
 </div><!-- content end -->
