@@ -386,4 +386,23 @@ public class JokeSqlProvider {
 		}
 		return sql.toString();
 	}
+
+	/**
+	 * 获取段子列表
+	 * @param map
+	 * @return
+	 */
+	public static String getPublishJokeListByType(Map<String,Object> map){
+		Object type = map.get("type");
+		Object count = map.get("count");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select id, update_time as updateTime from joke t1 where type = ").append(type);
+		sql.append(" and status = 3 order by update_time desc ");
+		if(count != null){
+			sql.append(" limit ").append(count);
+		}
+		return sql.toString();
+	}
+
+
 }

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +34,8 @@ public class JokeService {
 	private static final String PNG = ".png";
 	private static final String JPG = ".jpg";
 
+	@Autowired
+	private MailService mailService;
     @Autowired
     private JedisCache jedisCache;
 	@Autowired
@@ -42,13 +45,52 @@ public class JokeService {
 	private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();/** 踩信息列表    */
 	private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();/** 反馈信息列表    */
 	
-	private static Integer PUBLISH_SIZE = null;
-	private static String IMG_REAL_SERVER_URL = null;
-    
+	private static int PUBLISH_SIZE = 500;
+	private static String IMG_REAL_SERVER_URL = "http://joke-img.adbxb.cn/";
+	/**	发送邮件间隔	*/
+	private static long SEND_EMAIL_INTERVAL = 3 * 60 * 1000;
+	/**	最后发送邮件时间	*/
+	private long lastSendEmailTime = System.currentTimeMillis();
+	/**	收件人	*/
+	private String RECIPIENT = "shuangh@oupeng.com";
+	/**	抄送	*/
+	private String CC = "shuangh@oupeng.com";
+
 	@PostConstruct
 	public void initConstants(){
-		PUBLISH_SIZE = Integer.valueOf(env.getProperty("publish.size"));
-		IMG_REAL_SERVER_URL = env.getProperty("img.real.server.url");
+		String size = env.getProperty("publish.size");
+		String url = env.getProperty("img.real.server.url");
+		String interval = env.getProperty("send.email.interval");
+
+		if(StringUtils.isNumeric(size)){
+			PUBLISH_SIZE = Integer.valueOf(size);
+		}else{
+			logger.error("getProperty(\"publish.size\") is null:{}", size);
+		}
+		if(StringUtils.isNotBlank(url)){
+			IMG_REAL_SERVER_URL = url;
+		}else{
+			logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+		}
+		if(StringUtils.isNumeric(interval)){
+			long sendEmailInterval = Long.valueOf(interval);
+//			发送间隔不能小于1分钟
+			if (sendEmailInterval >= 1){
+				SEND_EMAIL_INTERVAL = sendEmailInterval * 60 * 1000;
+			}
+		}else{
+			logger.error("getProperty(\"send.email.interval\") is null:{}", interval);
+		}
+
+		String recipient = env.getProperty("data.publish.recipient");
+		String cc = env.getProperty("data.publish.cc");
+		if(StringUtils.isNotBlank(recipient)){
+			RECIPIENT = recipient;
+		}
+		if(StringUtils.isNotBlank(cc)){
+			CC = recipient;
+		}
+
 	}
     
     
@@ -148,28 +190,50 @@ public class JokeService {
 	 * @param actionType	动作类型: 0:首次请求; 1:上拉刷新; 2:下拉刷新
 	 * @return
 	 */
-    public Result getJokeList(Integer distributorId, Integer channelId, Integer topicId, Integer listType, Long start, Long end, Integer actionType){
-    	Object result = null;
-    	if(Constants.LIST_TYPE_COMMON_CHANNEL == listType){ 		// 普通频道列表页 lt = 0
-			if(actionType == 1){  	// 获取普通频道历史记录列表页
+    public Result getJokeList(Integer distributorId, Integer channelId, Integer topicId, Integer listType, Long start, Long end, int actionType) {
+		List<?> result = null;
+		if (Constants.LIST_TYPE_COMMON_CHANNEL == listType) {        // 普通频道列表页 lt = 0
+			if (actionType == 1) {    // 获取普通频道历史记录列表页
 				result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start + PUBLISH_SIZE, end + PUBLISH_SIZE);
-			}else {
-				if(end > PUBLISH_SIZE){ // 下拉刷新超过 publishSize 条就停止刷新
+			} else {
+				if (end > PUBLISH_SIZE) { // 下拉刷新超过 publishSize 条就停止刷新
 					result = Lists.newArrayList();
-				}else {
+				} else {
 					result = getJokeCacheList(JedisKey.SORTEDSET_COMMON_CHANNEL + channelId, start, end);
 				}
 			}
 
-    	}else if(Constants.LIST_TYPE_TOPIC_CHANNEL == listType){	// 专题标签页 lt = 1
-    		result = getTopicList4TopicChannel(start, end);
-    	}else if(Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType){// 推荐频道列表页  lt = 2
-    		result = getJokeList4RecommendChannel(start, end, actionType);
-    	}else if(Constants.LIST_TYPE_TOPIC == listType){			// 专题详情页	lt = 9
+		} else if (Constants.LIST_TYPE_TOPIC_CHANNEL == listType) {    // 专题标签页 lt = 1
+			result = getTopicList4TopicChannel(start, end);
+		} else if (Constants.LIST_TYPE_RECOMMEND_CHANNEL == listType) {// 推荐频道列表页  lt = 2
+			result = getJokeList4RecommendChannel(start, end, actionType);
+		} else if (Constants.LIST_TYPE_TOPIC == listType) {            // 专题详情页	lt = 9
 			result = getJokeList4TopicChannel(topicId, start, end);
-    	}
-    	return new Success(result);
-    }
+		}
+
+		if (actionType == 0) {
+			if (CollectionUtils.isEmpty(result)) {
+				long currentTime = System.currentTimeMillis();
+				if ((currentTime - lastSendEmailTime) > SEND_EMAIL_INTERVAL) {
+					mailService.sendMail(RECIPIENT, CC,
+							"【段子】【前台】 数据获取失败",
+							"【段子】【前台】获取列表页数据失败: 渠道编号:" + distributorId
+									+ ", 频道编号:" + channelId
+									+ ", 专题编号:" + topicId
+									+ "\r\n(listType:" + listType
+									+ ", start:" + start
+									+ ", end:" + end
+									+ ", actionType:" + actionType + ")"
+					);
+					jedisCache.lpush(JedisKey.JOKE_LIST_FLUSH_CACHE, JSON.toJSONString(new Channel(channelId, listType)));
+					logger.error("【段子】【前台】获取列表页数据失败!渠道编号:{}, 频道编号:{}, 专题编号:{}, (listType:{}, start:{}, end:{}, actionType:{})", distributorId, channelId, topicId, listType, start, end, actionType);
+					lastSendEmailTime = System.currentTimeMillis();
+				}
+			}
+		}
+
+		return new Success(result);
+	}
 
 	/**
 	 * 获取专题列表
@@ -204,7 +268,7 @@ public class JokeService {
     private List<Joke> getJokeList4RecommendChannel(Long start,Long end, Integer actionType){
     	String key = JedisKey.SORTEDSET_RECOMMEND_CHANNEL;
 		if(actionType == 1){
-			return getJokeCacheList(key, start + 500, end + 500);
+			return getJokeCacheList(key, start + PUBLISH_SIZE, end + PUBLISH_SIZE);
 		} else {
 			return getJokeCacheList(key, start, end);
 		}

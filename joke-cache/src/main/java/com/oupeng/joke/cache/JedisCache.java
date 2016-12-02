@@ -357,4 +357,20 @@ public class JedisCache {
 			}
 		}
 	}
+
+	/**
+	 * 获取集合中元素数量
+	 * @param setKey
+	 */
+	public Long zcard(String setKey) {
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.zcard(setKey);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
 }

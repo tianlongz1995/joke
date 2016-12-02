@@ -245,4 +245,12 @@ public interface JokeMapper {
 	@Update("update channel set size = #{size} where id = #{id}")
     int editPublishSize(@Param("id")String id, @Param("size")Integer size);
 
+	/**
+	 * 查询段子列表
+	 * @param type	段子类型: 0:文字、1:图片、2:动图
+	 * @param count	获取段子数量
+	 * @return
+	 */
+	@SelectProvider(method = "getPublishJokeListByType", type = JokeSqlProvider.class)
+	List<Joke> getPublishJokeListByType(@Param("type")Integer type, @Param("count")Integer count);
 }

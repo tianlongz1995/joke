@@ -33,4 +33,9 @@ public class JedisKey {
     public static final String SET_RECOMMEDN_JOKE_TEXT = "set.recommend.joke.text";
     /** 段子最后发布时间    */
     public static final String JOKE_LAST_PUBLISH_TIME = "joke.last.publish.time";
+    /** 段子缓存刷新消息频道    */
+    public static final String JOKE_LIST_FLUSH_CACHE = "list.joke.flush.cache";
+
+    /** 段子缓存刷新最近时间    */
+    public static final String JOKE_STRING_LAST_FLUSH_CACHE_TIME = "joke.string.last.flush.cache.time";
 }

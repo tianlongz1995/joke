@@ -21,6 +21,9 @@ public class AppExceptionHandler {
     @ResponseBody
     public void handleException(HttpServletRequest req, Exception e) {
         logger.error("请求[" + req.getRequestURI() +
-                (StringUtils.isBlank(req.getQueryString()) ? "" : "?" + req.getQueryString()) + "]处理异常", e);
+                (StringUtils.isBlank(req.getQueryString()) ? "" : "?" + req.getQueryString()) + "]处理异常:" + e.getMessage());
+        if(logger.isDebugEnabled()){
+            logger.error(e.getMessage(), e);
+        }
     }
 }

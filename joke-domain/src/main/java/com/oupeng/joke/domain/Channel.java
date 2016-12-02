@@ -23,7 +23,20 @@ public class Channel {
 	private Date updateTime;
 	/**	定时发布数量	*/
 	private Integer size;
-	
+
+	public Channel() {
+	}
+
+	/**
+	 *
+	 * @param id 	编号
+	 * @param type	频道类型  0:普通 1:专题 2:推荐
+	 */
+	public Channel(Integer id, Integer type) {
+		this.id = id;
+		this.type = type;
+	}
+
 	public Integer getId() {
 		return id;
 	}
