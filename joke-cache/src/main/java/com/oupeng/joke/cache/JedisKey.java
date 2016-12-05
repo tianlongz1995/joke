@@ -38,4 +38,12 @@ public class JedisKey {
 
     /** 段子缓存刷新最近时间    */
     public static final String JOKE_STRING_LAST_FLUSH_CACHE_TIME = "joke.string.last.flush.cache.time";
+
+    /** 段子预计邮件间隔时间    */
+    public static final String  JOKE_HASH_SEND_EMAIL_TIME = "joke.hash.send.email.time";
+
+    /** 段子频道表    */
+    public static final String JOKE_STRING_CHANNEL_MAP = "joke.string.channel.map";
+    /** 段子渠道表    */
+    public static final String JOKE_STRING_DISTRIBUTOR_MAP = "joke.string.distributor.map";
 }

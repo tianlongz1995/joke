@@ -2,6 +2,7 @@ package com.oupeng.joke.front.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.*;
@@ -23,38 +24,51 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 @Service
 public class JokeService {
-    private static Logger logger = LoggerFactory.getLogger(JokeService.class);
-
 	private static final String PNG = ".png";
 	private static final String JPG = ".jpg";
+    private static Logger logger = LoggerFactory.getLogger(JokeService.class);
+private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
+/** 赞信息列表    */
+	private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();
+/** 踩信息列表    */
+	private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();
+/** 反馈信息列表    */
 
-	@Autowired
+	private static int PUBLISH_SIZE = 500;	private static String IMG_REAL_SERVER_URL = "http://joke-img.adbxb.cn/";	/**	发送邮件间隔	*/
+	private static long SEND_EMAIL_INTERVAL = 3 * 60 * 1000;	@Autowired
 	private MailService mailService;
     @Autowired
     private JedisCache jedisCache;
 	@Autowired
 	private Environment env;
-
-	private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();/** 赞信息列表    */
-	private static List<String> addStepIds = Lists.newCopyOnWriteArrayList();/** 踩信息列表    */
-	private static List<String> feedbackList = Lists.newCopyOnWriteArrayList();/** 反馈信息列表    */
-	
-	private static int PUBLISH_SIZE = 500;
-	private static String IMG_REAL_SERVER_URL = "http://joke-img.adbxb.cn/";
-	/**	发送邮件间隔	*/
-	private static long SEND_EMAIL_INTERVAL = 3 * 60 * 1000;
 	/**	最后发送邮件时间	*/
 	private long lastSendEmailTime = System.currentTimeMillis();
 	/**	收件人	*/
 	private String RECIPIENT = "shuangh@oupeng.com";
 	/**	抄送	*/
 	private String CC = "shuangh@oupeng.com";
+	/**	抄送	*/
+	private Integer ALARM_VALUE = 5;
+	/**	渠道表	*/
+	private Map<String, String> distributorMap;
+	/**	频道表	*/
+	private Map<String, String> channelMap;
+
+	/**
+	 * 修改图片后缀
+	 * @param img
+	 * @return
+	 */
+	private static String png2jpg(String img) {
+		return img.replace(PNG, JPG);
+	}
 
 	@PostConstruct
 	public void initConstants(){
@@ -88,13 +102,32 @@ public class JokeService {
 			RECIPIENT = recipient;
 		}
 		if(StringUtils.isNotBlank(cc)){
-			CC = recipient;
+			CC = cc;
+		}
+		String distributor = jedisCache.get(JedisKey.JOKE_STRING_DISTRIBUTOR_MAP);
+		String channel = jedisCache.get(JedisKey.JOKE_STRING_CHANNEL_MAP);
+		if(StringUtils.isNotBlank(distributor)){
+			distributorMap = (Map<String, String>) JSON.parse(distributor);
+			if(distributorMap == null){
+				distributorMap = Maps.newHashMap();
+			}
+		}
+		if(StringUtils.isNotBlank(channel)){
+			channelMap = (Map<String, String>) JSON.parse(channel);
+			if(channelMap == null){
+				channelMap = Maps.newHashMap();
+			}
 		}
 
+
+
+		String alarm = env.getProperty("alarm.value");
+		if(StringUtils.isNumeric(alarm)){
+			ALARM_VALUE = Integer.valueOf(alarm);
+		}
 	}
-    
-    
-    /**
+
+	/**
      * 获取渠道配置
      * @param did
      * @return
@@ -138,6 +171,7 @@ public class JokeService {
             logger.error("增加点赞数失败",e);
         }
     }
+
     /**
      * 定时将踩列表中数据存储到缓存中
      */
@@ -153,6 +187,7 @@ public class JokeService {
             logger.error("增加踩数失败",e);
         }
     }
+
     /**
      * 缓存反馈信息
      * @param feedback
@@ -163,6 +198,7 @@ public class JokeService {
                 feedbackList.add(feedbackJson);
             }
     }
+
     /**
      * 定时将反馈信息列表中数据存储到缓存中
      */
@@ -212,27 +248,83 @@ public class JokeService {
 		}
 
 		if (actionType == 0) {
-			if (CollectionUtils.isEmpty(result)) {
-				long currentTime = System.currentTimeMillis();
-				if ((currentTime - lastSendEmailTime) > SEND_EMAIL_INTERVAL) {
-					mailService.sendMail(RECIPIENT, CC,
-							"【段子】【前台】 数据获取失败",
-							"【段子】【前台】获取列表页数据失败: 渠道编号:" + distributorId
-									+ ", 频道编号:" + channelId
-									+ ", 专题编号:" + topicId
-									+ "\r\n(listType:" + listType
-									+ ", start:" + start
-									+ ", end:" + end
-									+ ", actionType:" + actionType + ")"
-					);
-					jedisCache.lpush(JedisKey.JOKE_LIST_FLUSH_CACHE, JSON.toJSONString(new Channel(channelId, listType)));
-					logger.error("【段子】【前台】获取列表页数据失败!渠道编号:{}, 频道编号:{}, 专题编号:{}, (listType:{}, start:{}, end:{}, actionType:{})", distributorId, channelId, topicId, listType, start, end, actionType);
-					lastSendEmailTime = System.currentTimeMillis();
+			if(start.intValue() != 0 || end.intValue() != 9){
+				logger.info("分页参数错误action:0, start:{}, end:{}", start, end);
+				return new Failed("分页参数错误",null);
+			}
+			if(listType.intValue() == 0 || listType.intValue() == 2){
+				if (CollectionUtils.isEmpty(result)) {
+  					if(!distributorMap.isEmpty() && !channelMap.isEmpty()){
+  						if(distributorMap.keySet().contains(String.valueOf(distributorId)) && channelMap.keySet().contains(String.valueOf(channelId))){
+							String alarmCount = jedisCache.hget(JedisKey.JOKE_HASH_SEND_EMAIL_TIME, String.valueOf(channelId));
+							Integer count;
+							if(StringUtils.isNumeric(alarmCount)){
+								count = Integer.valueOf(alarmCount) + 1;
+							} else {
+								count = 1;
+							}
+							jedisCache.hset(JedisKey.JOKE_HASH_SEND_EMAIL_TIME, String.valueOf(channelId), String.valueOf(count));
+							long currentTime = System.currentTimeMillis();
+							if ((currentTime - lastSendEmailTime) > SEND_EMAIL_INTERVAL && count >= ALARM_VALUE) {
+								String dName = getDistributorName(String.valueOf(distributorId));
+								String cName = getChannelName(String.valueOf(channelId));
+								mailService.sendMail(RECIPIENT, CC,
+										"【段子】【前台】 数据获取失败",
+										"【段子】【前台】获取列表页数据失败: 渠道:" + dName
+												+ ", 频道:" + cName
+												+ ", 专题编号:" + topicId
+												+ "\r\n(listType:" + listType
+												+ ", start:" + start
+												+ ", end:" + end
+												+ ", actionType:" + actionType + ")"
+								);
+								jedisCache.lpush(JedisKey.JOKE_LIST_FLUSH_CACHE, JSON.toJSONString(new Channel(channelId, listType)));
+								logger.error("【段子】【前台】获取列表页数据失败!渠道编号:{}, 频道编号:{}, 专题编号:{}, (listType:{}, start:{}, end:{}, actionType:{})", distributorId, channelId, topicId, listType, start, end, actionType);
+								lastSendEmailTime = System.currentTimeMillis();
+								jedisCache.hset(JedisKey.JOKE_HASH_SEND_EMAIL_TIME, String.valueOf(channelId), String.valueOf(0));
+							}
+						} else {
+							logger.info("【段子】【前台】 数据获取失败:没有这个渠道[{}]或者频道[{}]", distributorId, channelId);
+						}
+					}else{
+						logger.error("【段子】【前台】 渠道、频道缓存表空:渠道[{}]、频道[{}]", distributorMap.size(), channelMap.size());
+					}
 				}
 			}
 		}
-
 		return new Success(result);
+	}
+
+	/**
+	 * 获取频道名称
+	 * @param channelId
+	 * @return
+	 */
+	private String getChannelName(String channelId) {
+		if(channelMap != null && !channelMap.isEmpty()){
+			for(Map.Entry<String, String> map : channelMap.entrySet()){
+				if(map.getKey() == channelId){
+					return map.getValue();
+				}
+			}
+		}
+		return String.valueOf(channelId);
+	}
+
+	/**
+	 * 获取渠道名称
+	 * @param distributorId
+	 * @return
+	 */
+	private String getDistributorName(String distributorId) {
+		if(distributorMap != null && !distributorMap.isEmpty()){
+			for(Map.Entry<String, String> map : distributorMap.entrySet()){
+				if(map.getKey() == distributorId){
+					return map.getValue();
+				}
+			}
+		}
+		return String.valueOf(distributorId);
 	}
 
 	/**
@@ -335,7 +427,7 @@ public class JokeService {
     	}
 		return joke;
     }
-
+    
 	/**
 	 * 处理段子详情中推荐段子
 	 * @param jokeDetail
@@ -361,7 +453,7 @@ public class JokeService {
     		jokeDetail.setRelatedImg(relatedImgList);
     	}
     }
-    
+
 	/**
 	 * 获取段子缓存列表
 	 * @param key
@@ -394,15 +486,6 @@ public class JokeService {
 			}
 		}
 		return list;
-	}
-
-	/**
-	 * 修改图片后缀
-	 * @param img
-	 * @return
-	 */
-	private static String png2jpg(String img) {
-		return img.replace(PNG, JPG);
 	}
 
 	/**
