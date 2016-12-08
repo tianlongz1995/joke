@@ -88,7 +88,7 @@ public class JokeService {
 			RECIPIENT = recipient;
 		}
 		if(StringUtils.isNotBlank(cc)){
-			CC = recipient;
+			CC = cc;
 		}
 
 	}
