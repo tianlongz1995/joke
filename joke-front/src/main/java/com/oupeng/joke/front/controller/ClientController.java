@@ -1,0 +1,223 @@
+package com.oupeng.joke.front.controller;
+
+
+import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.Topic;
+import com.oupeng.joke.domain.log.ClickLog;
+import com.oupeng.joke.domain.log.ImprLog;
+import com.oupeng.joke.domain.response.Result;
+import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.front.service.ClientService;
+import com.oupeng.joke.front.util.Constants;
+import com.oupeng.joke.front.util.CookieUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+@Controller
+@RequestMapping(value = "/client")
+public class ClientController {
+
+    /**
+     * 访问日志
+     */
+    private static final Logger impr = LoggerFactory.getLogger("impr");
+    /**
+     * 详情点击日志
+     */
+    private static final Logger clk = LoggerFactory.getLogger("clk");
+    /**
+     * 下拉刷新日志
+     */
+    private static final Logger dfl = LoggerFactory.getLogger("dfl");
+    /**
+     * 上拉刷新日志
+     */
+    private static final Logger ufl = LoggerFactory.getLogger("ufl");
+
+    @Autowired
+    private ClientService clientService;
+
+    /**
+     * 推荐接口
+     *
+     * @param did  渠道id
+     * @param uid  用户id
+     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+     * @return
+     */
+    @RequestMapping(value = "recommend")
+    @ResponseBody
+    public Result getRecommendList(@RequestParam(value = "did") Integer did,
+                                   @RequestParam(value = "uid") String uid,
+                                   @RequestParam(value = "at") Integer at,
+                                   @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+        addLog(did, 20, uid, at, sort, 4);
+        List<Joke> recommendList = clientService.getRecommendList(uid, at, sort);
+        return new Success(recommendList);
+    }
+
+    /**
+     * 文字接口
+     *
+     * @param did  渠道id
+     * @param uid  用户id
+     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+     * @return
+     */
+    @RequestMapping(value = "text")
+    @ResponseBody
+    public Result getTextList(@RequestParam(value = "did") Integer did,
+                              @RequestParam(value = "uid") String uid,
+                              @RequestParam(value = "at") Integer at,
+                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+        addLog(did, 14, uid, at, sort, 0);
+        List<Joke> textList = clientService.getTextList(14, uid, at, sort);
+        return new Success(textList);
+    }
+
+    /**
+     * 动图接口
+     *
+     * @param did  渠道id
+     * @param uid  用户id
+     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+     * @return
+     */
+    @RequestMapping(value = "gift")
+    @ResponseBody
+    public Result getGiftList(@RequestParam(value = "did") Integer did,
+                              @RequestParam(value = "uid") String uid,
+                              @RequestParam(value = "at") Integer at,
+                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+        addLog(did, 16, uid, at, sort, 1);
+        List<Joke> giftList = clientService.getGiftList(16, uid, at, sort);
+        return new Success(giftList);
+    }
+
+    /**
+     * 图片接口
+     *
+     * @param did  渠道id
+     * @param uid  用户id
+     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+     * @return
+     */
+    @RequestMapping(value = "image")
+    @ResponseBody
+    public Result getImageList(@RequestParam(value = "did") Integer did,
+                               @RequestParam(value = "uid") String uid,
+                               @RequestParam(value = "at") Integer at,
+                               @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+        addLog(did, 18, uid, at, sort, 2);
+        List<Joke> imageList = clientService.getImageList(18, uid, at, sort);
+        return new Success(imageList);
+    }
+
+    /**
+     * 专题接口
+     *
+     * @param did  渠道id
+     * @param uid  用户id
+     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+     * @return
+     */
+    @RequestMapping(value = "topic")
+    @ResponseBody
+    public Result getTopicList(@RequestParam(value = "did") Integer did,
+                               @RequestParam(value = "uid") String uid,
+                               @RequestParam(value = "at") Integer at,
+                               @RequestParam(value = "sort", required = false) Integer sort) {
+        addLog(did, 22, uid, at, sort, 3);
+        List<Topic> topicList = clientService.getTopicList(uid, at, sort);
+        return new Success(topicList);
+    }
+
+    /**
+     * 专题详情接口
+     *
+     * @param did 渠道id
+     * @param uid 用户id
+     * @param tid 专题id
+     * @return
+     */
+    @RequestMapping(value = "topicDetail")
+    @ResponseBody
+    public Result geTopicDetailList(@RequestParam(value = "did") Integer did,
+                                    @RequestParam(value = "uid") String uid,
+                                    @RequestParam(value = "tid") Integer tid) {
+        impr.info(new ImprLog(did, 22, uid, Constants.IMPR_LOG_TYPE_LIST).toString());
+        List<Joke> topicDetailList = clientService.getTopicDetailList(tid);
+        return new Success(topicDetailList);
+    }
+
+    /**
+     * 踩接口
+     *
+     * @param id joke id
+     * @return
+     */
+    @RequestMapping(value = "click")
+    @ResponseBody
+    public Result addClick(@RequestParam(value = "id") Integer id,
+                           HttpServletRequest request) {
+        String uid = CookieUtil.getCookie(request);
+        clk.info(new ClickLog(id, uid, 2).toString());
+        clientService.addClick(id);
+        return new Success();
+    }
+
+    /**
+     * 赞接口
+     *
+     * @param id joke id
+     * @return
+     */
+    @RequestMapping(value = "like")
+    @ResponseBody
+    public Result addLike(@RequestParam(value = "id") Integer id,
+                          HttpServletRequest request) {
+        String uid = CookieUtil.getCookie(request);
+        clk.info(new ClickLog(id, uid, 1).toString());
+        clientService.addLike(id);
+        return new Success();
+    }
+
+    /**
+     * 记录日志
+     *
+     * @param did         渠道编号
+     * @param cid         频道编号
+     * @param uid         用户编号
+     * @param at          0 首次访问,1 上拉,2 下拉
+     * @param sort        上拉请求编号
+     * @param requestType 0 文字 1 动图 2 图片 3 专题 4 推荐
+     */
+    public void addLog(int did, int cid, String uid, int at, int sort, int requestType) {
+        int type = Constants.IMPR_LOG_TYPE_LIST; //pv类型：列表页
+        boolean flag = clientService.haveDropedDown(uid, requestType);
+        //下拉和上拉 首次请求
+        if (at == 1 && sort == 0 || !flag) {
+            type = Constants.IMPR_LOG_TYPE_CHANNEL; //pv类型 频道入口
+        }
+        impr.info(new ImprLog(did, cid, uid, type).toString());
+        if (at == 2) {
+            dfl.info(new ImprLog(did, cid, uid, type, null).toString());
+        }
+        if (at == 1) {
+            ufl.info(new ImprLog(did, cid, uid, type, null).toString());
+        }
+    }
+}

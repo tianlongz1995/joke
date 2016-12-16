@@ -357,6 +357,40 @@ public class JedisCache {
 			}
 		}
 	}
+	/**
+	 * 获取元素个数
+	 * @param key
+	 * @return
+	 */
+	public Long zcard(String key){
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.zcard(key);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+
+	/**
+	 * 删除置顶区间内的成员
+	 * @param key
+	 * @param start
+	 * @param end
+	 */
+	public  void  zremrangebyrank(String key,long start,long end){
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			jedis.zremrangeByRank(key,start,end);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
 
 	/**
 	 * 获取集合中元素数量
