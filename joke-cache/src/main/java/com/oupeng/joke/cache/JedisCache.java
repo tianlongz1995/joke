@@ -358,7 +358,7 @@ public class JedisCache {
 		}
 	}
 	/**
-	 * 获取元素个数
+	 * 获取有序集合元素个数
 	 * @param key
 	 * @return
 	 */
@@ -396,11 +396,11 @@ public class JedisCache {
 	 * 获取集合中元素数量
 	 * @param setKey
 	 */
-	public Long zcard(String setKey) {
+	public Long scard(String setKey) {
 		Jedis jedis = null;
 		try{
 			jedis = jedisReadPool.getResource();
-			return jedis.zcard(setKey);
+			return jedis.scard(setKey);
 		}finally{
 			if(jedis != null){
 				jedis.close();

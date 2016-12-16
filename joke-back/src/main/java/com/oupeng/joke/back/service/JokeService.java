@@ -26,9 +26,8 @@ import javax.annotation.PostConstruct;
 
 @Service
 public class JokeService {
-	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
-
 	private static final String ADMIN_PASS = "admin@joke.com";
+	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
 	@Autowired
 	private JokeMapper jokeMapper;
 	@Autowired
@@ -115,7 +114,7 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void jokeLikeCountUpdate(){
-		logger.info("jokeLikeCountUpdate init...");
+		logger.debug("jokeLikeCountUpdate init...");
 		new Thread(){
 			public void run() {
 				while(true){
@@ -124,7 +123,7 @@ public class JokeService {
 						logger.info("jokeLikeCountUpdate receved size:[{}]", likeIdList == null ? 0 : likeIdList.size());
 						if(!CollectionUtils.isEmpty(likeIdList)){
 							String likeId = likeIdList.get(1);
-							logger.info("update joke Like Count id:" + likeId);
+							logger.debug("update joke Like Count id:" + likeId);
 							jokeMapper.updatejokeLikeCount(Integer.valueOf(likeId));
 							updateJokeLikeCache(likeId);
 						}
@@ -142,16 +141,16 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void jokeStepCountUpdate(){
-		logger.info("jokeStepCountUpdate init...");
+		logger.debug("jokeStepCountUpdate init...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
 						List<String> stepIdList = jedisCache.brpop(JedisKey.JOKE_LIST_STEP, 60*5);
-						logger.info("jokeStepCountUpdate receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
+						logger.debug("jokeStepCountUpdate receved size:[{}]", stepIdList == null ? 0 : stepIdList.size());
 						if(!CollectionUtils.isEmpty(stepIdList)){
 							String stepId = stepIdList.get(1);
-							logger.info("update joke step Count id:" + stepId);
+							logger.debug("update joke step Count id:" + stepId);
 							jokeMapper.updateJokeStepCount(Integer.valueOf(stepId));
 							updateJokeStepCache(stepId);
 						}
@@ -167,16 +166,16 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void insertJokeFeedback(){
-		logger.info("insertJokeFeedback init...");
+		logger.debug("insertJokeFeedback init...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
 						List<String> feedbackList = jedisCache.brpop(JedisKey.JOKE_LIST_FEEDBACK, 60*5);
-						logger.info("insertJokeFeedback receved size:[{}]", feedbackList == null ? 0 : feedbackList.size());
+						logger.debug("insertJokeFeedback receved size:[{}]", feedbackList == null ? 0 : feedbackList.size());
 						if(!CollectionUtils.isEmpty(feedbackList)){
 							String feedbackStr = feedbackList.get(1);
-							logger.info("update joke feedback String:" + feedbackStr);
+							logger.debug("update joke feedback String:" + feedbackStr);
 							Feedback feedback = JSON.parseObject(feedbackStr, Feedback.class);
 							if(feedback != null){
 								jokeMapper.insertJokeFeedback(feedback);
