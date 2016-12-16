@@ -1,9 +1,9 @@
 package com.oupeng.joke.domain;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.Date;
 
 public class Joke {
 	@JsonInclude(Include.NON_NULL)
@@ -42,6 +42,8 @@ public class Joke {
 	private Date updateTime;
 	@JsonInclude(Include.NON_NULL)
 	private String uuid;
+	@JsonInclude(Include.NON_NULL)
+	private Integer sort;
 
 	public Integer getId() {
 		return id;
@@ -155,5 +157,13 @@ public class Joke {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 }

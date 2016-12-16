@@ -1,16 +1,15 @@
 package com.oupeng.joke.cache;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.Tuple;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class JedisCache {
@@ -351,6 +350,40 @@ public class JedisCache {
 		try{
 			jedis = jedisReadPool.getResource();
 			return jedis.zrevrank(key, member);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+	/**
+	 * 获取元素个数
+	 * @param key
+	 * @return
+	 */
+	public Long zcard(String key){
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			return jedis.zcard(key);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+
+	/**
+	 * 删除置顶区间内的成员
+	 * @param key
+	 * @param start
+	 * @param end
+	 */
+	public  void  zremrangebyrank(String key,long start,long end){
+		Jedis jedis = null;
+		try{
+			jedis = jedisReadPool.getResource();
+			jedis.zremrangeByRank(key,start,end);
 		}finally{
 			if(jedis != null){
 				jedis.close();

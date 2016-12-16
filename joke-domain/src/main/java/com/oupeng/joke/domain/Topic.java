@@ -1,13 +1,12 @@
 package com.oupeng.joke.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class Topic {
 	@JsonInclude(Include.NON_NULL)
@@ -32,6 +31,8 @@ public class Topic {
 	public String publishTimeString;
 	@JsonInclude(Include.NON_NULL)
 	public Integer type;
+	@JsonInclude(Include.NON_NULL)
+	private Integer sort;
 
 	public Integer getId() {
 		return id;
@@ -110,4 +111,11 @@ public class Topic {
 		this.type = type;
 	}
 
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
 }
