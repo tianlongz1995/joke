@@ -1,11 +1,10 @@
 package com.oupeng.joke.dao.sqlprovider;
 
-import java.util.Map;
-
 import com.oupeng.joke.domain.Dictionary;
+import com.oupeng.joke.domain.Joke;
 import org.apache.commons.lang3.StringUtils;
 
-import com.oupeng.joke.domain.Joke;
+import java.util.Map;
 
 public class JokeSqlProvider {
 
@@ -404,5 +403,40 @@ public class JokeSqlProvider {
 		return sql.toString();
 	}
 
+	/**
+	 * 查询推荐频道下数据内容
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeListForPublishRecommend(Map<String,Object> map){
+		Object type = map.get("type");
+		Object num = map.get("num");
+		StringBuffer sql = new StringBuffer();
+		sql.append("select id FROM joke t where `status` = 3 and `type` =  ").append(type);
+		sql.append(" and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) ");
+		sql.append(" and not EXISTS ( select 1 from topic_joke where j_id = t.id) ORDER BY good desc ");
+		if(num != null){
+			sql.append(" limit ").append(num);
+		}
+		return sql.toString();
+	}
+
+	/**
+	 * 查询最近审核通过的数据
+	 * @param map
+	 * @return
+	 */
+	public static String getJokeForPublishChannel(Map<String,Object> map){
+		Object contentType = map.get("contentType");
+		Object size        = map.get("size");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select t.id,t.verify_time as verifyTime from joke t where t.`status` = 1 and ");
+		sql.append(" t.type in ( ").append(contentType).append(" )");
+		sql.append(" and not EXISTS ( select 1 from topic_joke where j_id = t.id) order by t.verify_time desc ");
+		if(size != null) {
+			sql.append(" limit ").append(size);
+		}
+		return sql.toString();
+	}
 
 }

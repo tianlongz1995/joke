@@ -1,21 +1,10 @@
 package com.oupeng.joke.dao.mapper;
 
-import java.util.List;
-
-
-
 import com.oupeng.joke.dao.sqlprovider.JokeSqlProvider;
 import com.oupeng.joke.domain.*;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 public interface JokeMapper {
 	/**
@@ -105,9 +94,9 @@ public interface JokeMapper {
 	 * @param size		发布数量
 	 * @return
 	 */
-	@Select(value="select t.id,t.verify_time as verifyTime from joke t where t.`status` = 1 and "
-			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) order by t.verify_time desc limit #{size} ")
-	List<Joke> getJokeForPublishChannel(@Param(value = "contentType") String contentType, @Param(value = "size")Integer size);
+	@SelectProvider(method = "getJokeForPublishChannel",type=JokeSqlProvider.class)
+	List<Joke> getJokeForPublishChannel(@Param(value = "contentType") String contentType,
+										@Param(value = "size")Integer size);
 	
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
@@ -129,8 +118,9 @@ public interface JokeMapper {
 	 * </pre>
 	 * @return
 	 */
-	@Select(value = "select id FROM joke t where `status` = 3 and `type` = #{type} and DATE_FORMAT(update_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ORDER BY good desc limit #{num} ")
-	List<String> getJokeListForPublishRecommend(@Param(value="type")Integer type,@Param(value="num")Integer num);
+	@SelectProvider(method = "getJokeListForPublishRecommend", type = JokeSqlProvider.class)
+	List<String> getJokeListForPublishRecommend(@Param(value="type")Integer type,
+												@Param(value="num")Integer num);
 	
 	@Select(value=" select t1.source_id as soureId,t1.validNum as validNum,case when t2.inValidNum is null then 0 else t2.inValidNum end as inValidNum from "
 			+ " (select source_id,count(1) as validNum,0 as inValidNum from joke where `status` = 1 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t1 "
@@ -160,7 +150,9 @@ public interface JokeMapper {
 	 * @param user
 	 */
 	@UpdateProvider(method="updateJokeStatus",type=JokeSqlProvider.class)
-	void updateJokeStatus(@Param(value="status")Integer status,@Param(value="ids")String ids,@Param(value="user")String user);
+	void updateJokeStatus(@Param(value="status")Integer status,
+						  @Param(value="ids")String ids,
+						  @Param(value="user")String user);
 
 	/**
 	 * 获取字典记录总条数
