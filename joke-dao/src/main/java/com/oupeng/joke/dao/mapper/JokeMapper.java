@@ -245,4 +245,12 @@ public interface JokeMapper {
 	 */
 	@SelectProvider(method = "getPublishJokeListByType", type = JokeSqlProvider.class)
 	List<Joke> getPublishJokeListByType(@Param("type")Integer type, @Param("count")Integer count);
+
+	/**
+	 * 自动发布段子
+	 * @param type
+	 * @param limit
+	 */
+	@Update("update joke set update_time =now(),status=1,verify_time=now(),verify_user='admin' where id in (select t.id from (select id from joke where type=#{type} and status = 0 order by create_time limit #{limit}) as t)")
+	void autoAuditJoke(@Param("type")int type, @Param("limit")int limit);
 }

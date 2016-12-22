@@ -473,4 +473,13 @@ public class JokeService {
 	public List<Joke> getPublishJokeListByType(Integer type, Integer count) {
 		return jokeMapper.getPublishJokeListByType(type, count);
 	}
+
+	/**
+	 * 自动发布段子
+	 * @param type
+	 * @param limit
+	 */
+	public void autoAuditJoke(int type, int limit) {
+		jokeMapper.autoAuditJoke(type, limit);
+	}
 }
