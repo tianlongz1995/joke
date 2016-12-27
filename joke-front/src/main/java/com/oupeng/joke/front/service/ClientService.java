@@ -32,6 +32,7 @@ public class ClientService {
     private static final String JPG = ".jpg";
     private static String IMG_REAL_SERVER_URL = null;
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
+    private static final String SHAREURLPREFIX = "http://joke.oupeng.com/#!";
     /**
      * 赞信息列表
      */
@@ -164,6 +165,8 @@ public class ClientService {
                     joke.setContent(joke.getContent().substring(0, 184));
                 }
                 list.add(joke);
+                //专题分享
+                joke.setShareUrl(SHAREURLPREFIX+"/cid/22/tid/"+tid);
             }
         }
         return list;
@@ -253,6 +256,8 @@ public class ClientService {
                         joke.setContent(joke.getContent().substring(0, 184));
                     }
                     list.add(joke);
+                    //设置分享url
+                    setShareUrl(joke,cacheType);
                 }
             }
         } else {
@@ -319,6 +324,8 @@ public class ClientService {
                     }
                     //设置排序值，便于下次请求，请求旧数据
                     joke.setSort(sort--);
+                    //设置分享url
+                    setShareUrl(joke,cacheType);
                     list.add(joke);
                 }
             }
@@ -600,5 +607,26 @@ public class ClientService {
             key = "score_recommend_" + uid;
         }
         return key;
+    }
+
+    /**
+     * 设置分享url
+     * @param joke
+     * @param cacheType
+     */
+    public void setShareUrl(Joke joke,Integer cacheType){
+        if(0 == cacheType) {
+            //文字分享
+            joke.setShareUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 14 + "/tid/-1");
+        }else if(1 == cacheType){
+            //动图分享
+            joke.setShareUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 16 + "/tid/-1");
+        }else if(2 == cacheType){
+            //静图分享
+            joke.setShareUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 18 + "/tid/-1");
+        }else{
+            //推荐分享
+            joke.setShareUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 20 + "/tid/-1");
+        }
     }
 }
