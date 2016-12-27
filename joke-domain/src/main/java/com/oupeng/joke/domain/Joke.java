@@ -44,6 +44,8 @@ public class Joke {
 	private String uuid;
 	@JsonInclude(Include.NON_NULL)
 	private Integer sort;
+	@JsonInclude(Include.NON_NULL)
+	private String shareUrl;
 
 	public Integer getId() {
 		return id;
@@ -165,5 +167,13 @@ public class Joke {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public String getShareUrl() {
+		return shareUrl;
+	}
+
+	public void setShareUrl(String shareUrl) {
+		this.shareUrl = shareUrl;
 	}
 }
