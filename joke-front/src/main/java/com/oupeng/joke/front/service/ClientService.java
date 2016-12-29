@@ -255,9 +255,22 @@ public class ClientService {
                     if (StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184) {
                         joke.setContent(joke.getContent().substring(0, 184));
                     }
-                    list.add(joke);
                     //设置分享url
                     setShareUrl(joke,cacheType);
+                    //文字joke的title
+                    if (cacheType == 0) {
+                        if (StringUtils.isEmpty(joke.getTitle())) {
+                            if (StringUtils.isNotEmpty(joke.getContent())) {
+                                int length = joke.getContent().length();
+                                int end = length > 25 ? 25 : (length / 2);
+                                String title = joke.getContent().substring(0, end);
+                                title = title + "...";
+                                joke.setTitle(title);
+                            }
+                        }
+                    }
+                    list.add(joke);
+
                 }
             }
         } else {
@@ -326,6 +339,18 @@ public class ClientService {
                     joke.setSort(sort--);
                     //设置分享url
                     setShareUrl(joke,cacheType);
+                    //文字joke的title
+                    if (cacheType == 0) {
+                        if (StringUtils.isEmpty(joke.getTitle())) {
+                            if (StringUtils.isNotEmpty(joke.getContent())) {
+                                int length = joke.getContent().length();
+                                int end = length > 25 ? 25 : (length / 2);
+                                String title = joke.getContent().substring(0, end);
+                                title = title + "...";
+                                joke.setTitle(title);
+                            }
+                        }
+                    }
                     list.add(joke);
                 }
             }
