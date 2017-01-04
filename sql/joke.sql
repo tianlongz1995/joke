@@ -260,3 +260,22 @@ CREATE TABLE `stat_drop_detail_day` (
   `pv` int(11) NOT NULL DEFAULT '0' COMMENT '列表页下拉刷新PV',
   `uv` int(11) NOT NULL DEFAULT '0' COMMENT '列表页下拉刷新UV'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT '列表页下拉刷新日统计明细表';
+
+
+--banner表 2017-01-03
+DROP TABLE IF EXISTS `banner`;
+CREATE TABLE `banner` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '标题',
+  `img` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '静态图片地址',
+  `jid` int(11) DEFAULT NULL COMMENT '段子id',
+  `cid` int(11) DEFAULT NULL COMMENT '频道id',
+  `adid` int(11) DEFAULT NULL COMMENT '广告位id',
+  `sort` int(11) DEFAULT '0' COMMENT '排序值',
+  `type` int(11) DEFAULT '0' COMMENT '0 内容， 1 广告',
+  `status` int(11) DEFAULT '0' COMMENT '状态 0:下线 1:上线',
+  `content` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '描述',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT 'banner表';

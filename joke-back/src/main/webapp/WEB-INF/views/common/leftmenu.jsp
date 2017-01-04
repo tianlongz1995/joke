@@ -46,6 +46,14 @@
                         <span> 专题管理</span>
                     </a>
                 </li>
+
+				<li>
+					<a class="ajax-link" href="banner/list">
+						<i class="glyphicon glyphicon-th"></i>
+						<span>banner管理</span>
+					</a>
+				</li>
+
                 <li>
                 	<a class="ajax-link" href="ad/list">
                 		<i class="glyphicon glyphicon-picture"></i>
