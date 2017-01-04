@@ -54,7 +54,7 @@ public class JedisKey {
     public static final String JOKE_RESOURCE_CONFIG_BACK = "joke.resource.config.back";
 
     /** 段子资源配置 - 生产环境   */
-    public static final String JOKE_RESOURCE_CONFIG_PRO = "joke.resource.config.pro";
+    public static final String JOKE_RESOURCE_CONFIG_INDEX = "joke.resource.config.index";
 
 //    /** 渠道菜单配置信息Key    */
 //    public static final String JOKE_HASH_DISTRIBUTOR_MENU_CONFIG = "hash.joke.distributor.menu.config";
@@ -63,4 +63,22 @@ public class JedisKey {
     public static final String STRING_BANNER = "string.banner.";
     /** 频道下banner列表*/
     public static final String SET_BANNER = "set.banner.";
+    /** 段子首页缓存刷新队列前缀    */
+    public static final String JOKE_INDEX_CACHE_FLUSH_QUEUE_PREFIX = "joke.index.cache.flush.queue.prefix.";
+    /** 段子首页缓存刷新队列前缀    */
+    public static final String JOKE_INDEX_CACHE_FLUSH_SIGN = "joke.index.cache.flush.sign";
+    /** 暗号  */
+    public static final String INDEX_SIGN = "TWGDH";
+    /** 首页缓存配置刷新前缀  */
+    public static final String INDEX_CACHE_FLUSH_PREFIX_CONFIG = "CONFIG";
+    /** 首页缓存资源刷新前缀  */
+    public static final String INDEX_CACHE_FLUSH_PREFIX_RESOURCE = "RESOURCE";
+    /** 首页缓存-首页Key */
+    public static final String INDEX_CACHE_INDEX = "index";
+    /** 首页缓存-配置Key */
+    public static final String INDEX_CACHE_CONFIG = "config";
+    /** 首页缓存-备份Key */
+    public static final String INDEX_CACHE_BACK= "back";
+    /** 首页缓存-测试Key */
+    public static final String INDEX_CACHE_TEST = "test";
 }

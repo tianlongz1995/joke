@@ -46,6 +46,16 @@ public class Joke {
 	private Integer sort;
 	@JsonInclude(Include.NON_NULL)
 	private String shareUrl;
+	/**
+	 * 批量数量
+	 */
+	@JsonInclude(Include.NON_NULL)
+	private Integer c;
+	/**
+	 * 神评论内容
+	 */
+	@JsonInclude(Include.NON_NULL)
+	private String bc;
 
 	public Integer getId() {
 		return id;

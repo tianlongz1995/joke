@@ -325,7 +325,7 @@ public class JedisCache {
 	public void del(String ... keys){
 		Jedis jedis = null;
 		try{
-			jedis = jedisReadPool.getResource();
+			jedis = jedisWritePool.getResource();
 			jedis.del(keys);
 		}finally{
 			if(jedis != null){
