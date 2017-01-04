@@ -32,4 +32,6 @@ public class Constants {
 	/**	内容源审核质量统计报告表头	*/
 	public static final String[] STATIS_SOURCE_QUALITY = {"统计日期","数据源名称","URL","格式","审核总数","通过数","未通过数","审核通过率","最近一次抓取时间"};
 
+    /**banner已发布状态 0 下线 1 上线 */
+	public static final Integer Banner_STATUS_VALID = 1;
 }

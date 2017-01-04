@@ -58,4 +58,9 @@ public class JedisKey {
 
 //    /** 渠道菜单配置信息Key    */
 //    public static final String JOKE_HASH_DISTRIBUTOR_MENU_CONFIG = "hash.joke.distributor.menu.config";
+
+    /** banner 缓存*/
+    public static final String STRING_BANNER = "string.banner.";
+    /** 频道下banner列表*/
+    public static final String SET_BANNER = "set.banner.";
 }
