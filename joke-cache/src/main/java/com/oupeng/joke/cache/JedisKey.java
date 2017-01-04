@@ -46,4 +46,16 @@ public class JedisKey {
     public static final String JOKE_STRING_CHANNEL_MAP = "joke.string.channel.map";
     /** 段子渠道表    */
     public static final String JOKE_STRING_DISTRIBUTOR_MAP = "joke.string.distributor.map";
+
+    /** 段子资源配置 - 测试环境   */
+    public static final String JOKE_RESOURCE_CONFIG_TEST = "joke.resource.config.test";
+
+    /** 段子资源配置 - 备份   */
+    public static final String JOKE_RESOURCE_CONFIG_BACK = "joke.resource.config.back";
+
+    /** 段子资源配置 - 生产环境   */
+    public static final String JOKE_RESOURCE_CONFIG_PRO = "joke.resource.config.pro";
+
+//    /** 渠道菜单配置信息Key    */
+//    public static final String JOKE_HASH_DISTRIBUTOR_MENU_CONFIG = "hash.joke.distributor.menu.config";
 }

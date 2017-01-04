@@ -1,7 +1,7 @@
 package com.oupeng.joke.domain;
 
 /**
- * 渠道
+ * 频道
  * Created by hushuang on 16/7/1.
  */
 public class ChannelMenu {

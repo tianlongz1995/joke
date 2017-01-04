@@ -60,6 +60,14 @@
 						<li><a href="source/quality?sourceType=1"><span> 审核质量统计</span></a></li>
 					</ul>
                 </li>
+				<li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-link"></i><span> 资源管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="resource/index"><span> 首页升级</span></a></li>
+						<li><a href="resource/banner"><span> 横幅管理</span></a></li>
+						<li><a href="resource/select"><span> 精选管理</span></a></li>
+					</ul>
+				</li>
                 <li>
                 	<a class="ajax-link" href="feedback/monitor">
                 		<i class="glyphicon glyphicon-envelope"></i>
