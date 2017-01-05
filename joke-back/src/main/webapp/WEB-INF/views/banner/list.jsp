@@ -422,8 +422,7 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                }
-                ;
+                };
                 /**    分页方法    */
                 function turnPage() {
                     location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();

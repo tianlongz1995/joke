@@ -388,7 +388,7 @@ public class ClientService {
                 //未浏览过
                 if (!viewedJokeIdSet.contains(topicId)) {
                     //获取10条
-                    if (flag > 9)
+                    if (flag > 0)
                         break;
                     noRepeatedList.add(topicId);
                     flag++;
@@ -398,7 +398,7 @@ public class ClientService {
             int flag = 0;
             for (String topicId : topicIdSet) {
                 //获取10条
-                if (flag > 9)
+                if (flag > 0)
                     break;
                 noRepeatedList.add(topicId);
                 flag++;

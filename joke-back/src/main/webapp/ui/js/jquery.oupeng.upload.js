@@ -10,7 +10,6 @@
  * onUploadError - 校验失败或者上传失败回调
  */
 (function ($) {
-
     var uuid = 0;
 
     $.fn.OupengUpload = function (file, options) {

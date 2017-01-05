@@ -239,7 +239,6 @@
         </div><!-- content end -->
     </div><!-- row end -->
 </div><!-- ch-container end -->
-
 <hr>
 <%@ include file="../common/footer.html"%>
 <%@ include file="../common/js.html"%>

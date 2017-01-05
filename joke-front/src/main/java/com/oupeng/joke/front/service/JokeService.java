@@ -246,10 +246,10 @@ private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
 		}
 
 		if (actionType == 0) {
-			if(start.intValue() != 0 || end.intValue() != 9){
-				logger.info("分页参数错误action:0, start:{}, end:{}", start, end);
-				return new Failed("分页参数错误",null);
-			}
+//			if(start.intValue() != 0 || end.intValue() != 9){
+//				logger.info("分页参数错误distributorId:{}, channelId:{}, topicId:{}, listType:{}, action:0, start:{}, end:{}", distributorId, channelId, topicId, listType, start, end);
+////				return new Failed("分页参数错误",null);
+//			}
 			if(listType.intValue() == 0 || listType.intValue() == 2){
 				if (CollectionUtils.isEmpty(result)) {
   					if(distributorMap != null && !distributorMap.isEmpty() && channelMap != null && !channelMap.isEmpty()){
