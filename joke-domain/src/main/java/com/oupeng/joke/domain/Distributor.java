@@ -3,11 +3,20 @@ package com.oupeng.joke.domain;
 import java.util.Date;
 
 public class Distributor {
+	/**	编号	*/
 	private Integer id;
+	/**	名称	*/
 	private String name;
+	/**	状态(0:无效、1:有效、2:删除)	*/
 	private Integer status;
+	/**	创建时间	*/
 	private Date createTime;
+	/**	创建人	*/
+	private String createBy;
+	/**	更新时间	*/
 	private Date updateTime;
+	/**	更新人	*/
+	private String updateBy;
 	/**	分页开始条数Index	*/
 	private Integer offset;
 	/**	当前页数	*/
@@ -41,6 +50,10 @@ public class Distributor {
 		return updateTime;
 	}
 
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	public Integer getOffset() {
 		return offset;
 	}
@@ -57,7 +70,19 @@ public class Distributor {
 		this.pageSize = pageSize;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
 	}
 }

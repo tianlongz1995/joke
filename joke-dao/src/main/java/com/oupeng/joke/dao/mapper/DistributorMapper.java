@@ -91,4 +91,20 @@ public interface DistributorMapper {
 	
 	@Select(value="SELECT id FROM distributor WHERE name like '%${name}%'")
 	public List<Integer> getDistributorIdListByName(@Param(value = "name")String name);
+	/** -----------------------------------JOKE 2.0-------------------------------------------**/
+	/**
+	 * 获取渠道总数
+	 * @param distributor
+	 * @return
+	 */
+	@SelectProvider(method="getCount",type=DistributorSqlProvider.class)
+	int getCount(Distributor distributor);
+
+	/**
+	 * 获取渠道列表
+	 * @param distributor
+	 * @return
+	 */
+	@SelectProvider(method="getCount",type=DistributorSqlProvider.class)
+	List<Distributor> getList(Distributor distributor);
 }
