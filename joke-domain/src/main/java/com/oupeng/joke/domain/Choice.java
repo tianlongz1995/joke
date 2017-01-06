@@ -2,8 +2,6 @@ package com.oupeng.joke.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import java.util.Date;
-
 /**
  * 精选
  */
@@ -17,9 +15,9 @@ public class Choice {
     @JsonInclude(Include.NON_NULL)
     private Integer status;
     @JsonInclude(Include.NON_NULL)
-    private Date createTime;
+    private String createTime;
     @JsonInclude(Include.NON_NULL)
-    private Date updateTime;
+    private String updateTime;
 
     public Integer getId() {
         return id;
@@ -53,19 +51,19 @@ public class Choice {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 }

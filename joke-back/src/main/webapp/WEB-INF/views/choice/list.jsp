@@ -6,7 +6,7 @@
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 %>
-<!DOCTYPE html>
+
 <html lang="zh">
 <head>
     <meta charset="utf-8">
@@ -41,7 +41,7 @@
     }
     .container {
         width: 100%;
-        height: 400px;
+        height: 200px;
         margin: 0 auto;
         position: relative;
     }
@@ -105,6 +105,8 @@
                                     <th>id</th>
                                     <th>标题</th>
                                     <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>更新时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -118,13 +120,15 @@
                                             <c:if test="${choice.status == 0}">下线</c:if>
                                             <c:if test="${choice.status == 1}">上线</c:if>
                                         </td>
+                                        <td><c:out value="${choice.createTime}"/></td>
+                                        <td><c:out value="${choice.updateTime}"/></td>
                                         <td>
                                                 <%--下线--%>
                                             <c:if test="${choice.status == 0}">
-                                                <button class="btn btn-warning btn-sm" href="#"
-                                                   onclick="$('#reviewModalContent').html(${choice.content})">
+                                                <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#reviewContent"
+                                                   onclick="review(${choice.id})">
                                                     <i class="glyphicon glyphicon-zoom-in"></i> 预览
-                                                </button>
+                                                </a>
                                                 <a class="btn btn-info btn-sm"
                                                    href="choice/edit?id=${choice.id}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
@@ -140,10 +144,6 @@
                                             </c:if>
                                                 <%--上线--%>
                                             <c:if test="${choice.status == 1}">
-                                                <a class="btn btn-warning btn-sm" href="#"
-                                                   onclick="content()">
-                                                    <i class="glyphicon glyphicon-zoom-in"></i> 预览
-                                                </a>
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(0,${choice.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
@@ -203,18 +203,17 @@
                     </div>
                 </div>
             </div>
-
-            <%--预览模态框--%>
-            <div class="modal fade bs-example-modal-lg" id="review" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <%--新增choice 模态框--%>
+            <div class="modal fade bs-example-modal-lg" id="reviewContent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal"><span
                                     aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                            <h4 class="modal-title" >预览精选内容</h4>
+                            <h4 class="modal-title" id="choiceContentId"></h4>
                         </div>
-                        <div class="modal-body" id="reviewModalContent">
+                        <div class="modal-body" id="reviewModalContent" style="height: 400px;overflow-y: scroll">
 
                         </div>
                         <div class="modal-footer" style="text-align: center;">
@@ -224,6 +223,10 @@
                 </div>
             </div>
             <script type="text/javascript">
+
+                var editor = new wangEditor('editor-container');
+
+
                 $('#allcheck').on('click', function () {
                     if ($(this).prop("checked")) {
                         $(":checkbox").prop("checked", true);
@@ -235,22 +238,26 @@
                 $('#addNewChoice').click(function (event) {
                     $('#addNewChoice').attr("disabled", "disabled");
                     var cTitle = $("#cTitle").val();
-                    var content = $("#editor-container").html();
+                    // 获取编辑器纯文本内容
+                    var onlyText = editor.$txt.text();
                     //去除空格
+                    var content = $("#editor-container").html();
                     content = $.trim(content);
+                    console.log(content);
                     if (cTitle == "") {
                         alert("请填写标题");
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
+                    onlyText = $.trim(onlyText);
                     //不排除多个换行内容为空的情况
-                    if (content=="<p><br></p>") {
-                        alert("请编辑内容");
+                    if (onlyText == "") {
+                        alert("请编辑内容,添加文字");
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
                     post('choice/add',
-                            'title=' + cTitle + '&content=' + content,
+                            'title=' + cTitle + '&content=' + encodeURI(content),
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
@@ -288,11 +295,11 @@
                 //上线 下线
                 function offlineOnline(status, id) {
                     if (confirm("确认操作?")) {
-                        post('banner/offlineOnline',
+                        post('choice/offlineOnline',
                                 'id=' + id + '&status=' + status,
                                 function (data) {
                                     if (data['status']) {
-                                        location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
+                                        location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                     } else {
                                         alert('操作失败. info:' + data['info']);
                                     }
@@ -318,13 +325,12 @@
 
              <%--wangEditor 富文本编辑器--%>
                 $(function () {
-                    var editor = new wangEditor('editor-container');
                     //图片上传地址
                     editor.config.uploadImgUrl = "upload/richText?${_csrf.parameterName}=${_csrf.token}";
                     // 自定义load事件
                     editor.config.uploadImgFns.onload = function (resultText) {
                         var data = eval('(' + resultText + ')');
-                        var imgUrl = data.info;
+                        var  imgUrl = data.info;
                         if (data.status == 0) {
                             alert("图片上传失败")
                         } else {
@@ -351,12 +357,18 @@
 
                     editor.create();
                 });
-
-
-                function review(content){
-                    alert("ddddd");
-//                    $("#reviewModalContent").html("");
-//                    $("#reviewModalContent").html(content);
+              //预览
+                function review(cid){
+                    $("#reviewModalContent").html("");
+                    $("#choiceContentId").html("精选内容预览，ID:"+cid);
+                     post('choice/review',
+                            'id=' + cid,
+                            function (data) {
+                                $("#reviewModalContent").html(data.data);
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
                 }
             </script>
 

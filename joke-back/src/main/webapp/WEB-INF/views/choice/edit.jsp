@@ -118,37 +118,41 @@
             </div><!-- row end -->
 
             <script type="text/javascript">
+                var editor = new wangEditor('editor-container');
                 //更新Banner
                 $('#updateChoice').click(function(event) {
+                    // 获取编辑器纯文本内容
+                    var onlyText = editor.$txt.text();
                     $('#updateChoice').attr("disabled","disabled");
                     var title = $("#title").val();
                     var content = $("#editor-container").html();
                     //去除空格
                     content = $.trim(content);
+                    onlyText = $.trim(onlyText);
                     if (title == "") {
                         alert("请填写标题");
-                        $('#updateChoice').attr("disabled","disabled");
+                        $('#updateChoice').removeAttr("disabled");
                         return false;
                     }
                     //不排除多个换行内容为空的情况
-                    if (content=="<p><br></p>") {
-                        alert("请编辑内容");
-                        $('#updateChoice').attr("disabled","disabled");
+                    if (onlyText == "") {
+                        alert("请编辑内容,填写文字");
+                        $('#updateChoice').removeAttr("disabled");
                         return false;
                     }
                     post('choice/update',
-                            'id='+$("#choiceId").val()+'&title='+title+'&content='+content,
+                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content),
                             function (data) {
                                 if(data['status']) {
                                     location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                 } else {
                                     alert('更新失败. info:'+data['info']);
-                                    $('#updateChoice').attr("disabled","disabled");
+                                    $('#updateChoice').removeAttr("disabled");
                                 }
                             },
                             function () {
                                 alert('更新请求失败，请检查网络环境');
-                                $('#updateChoice').attr("disabled","disabled");
+                                $('#updateChoice').removeAttr("disabled");
                             });
                 });
 
@@ -164,7 +168,7 @@
 
                 <%--wangEditor 富文本编辑器--%>
                 $(function () {
-                    var editor = new wangEditor('editor-container');
+
                     //图片上传地址
                     editor.config.uploadImgUrl = "upload/richText?${_csrf.parameterName}=${_csrf.token}";
                     // 自定义load事件
@@ -196,6 +200,8 @@
 //                    ];
 
                     editor.create();
+
+
                 });
 
 

@@ -3,8 +3,6 @@ package com.oupeng.joke.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import java.util.Date;
-
 public class Banner {
     @JsonInclude(Include.NON_NULL)
     private Integer id;
@@ -23,9 +21,9 @@ public class Banner {
     @JsonInclude(Include.NON_NULL)
     private Integer status;
     @JsonInclude(Include.NON_NULL)
-    private Date createTime;
+    private String createTime;
     @JsonInclude(Include.NON_NULL)
-    private Date updateTime;
+    private String updateTime;
     @JsonInclude(Include.NON_NULL)
     private Integer adid;
     @JsonInclude(Include.NON_NULL)
@@ -63,19 +61,19 @@ public class Banner {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

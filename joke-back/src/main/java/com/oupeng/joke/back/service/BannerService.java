@@ -38,7 +38,6 @@ public class BannerService {
     public boolean addBanner(String title,String img, Integer cid,String content,Integer jid,Integer type,Integer adid){
         Banner banner = new Banner();
         banner.setContent(content);
-        //TODO 图片上传处理屏蔽掉了
         //内容上传图片
         if(type == 0){
             String newImg = handleImg(img);
@@ -173,12 +172,6 @@ public class BannerService {
                 bannerMapper.updateBannerSort(list.get(i + 1).getId(), sort);
             }
         }
-        //删除缓存
-        Banner banner = bannerMapper.getBannerById(id);
-        String bannerKey = JedisKey.STRING_BANNER + id;
-        String bannerListKey = JedisKey.SET_BANNER + banner.getCid();
-        jedisCache.del(bannerKey);
-        jedisCache.zrem(bannerListKey, Integer.toString(id));
         //删除记录
         bannerMapper.delBanner(id);
     }

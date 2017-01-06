@@ -63,4 +63,10 @@ public class JedisKey {
     public static final String STRING_BANNER = "string.banner.";
     /** 频道下banner列表*/
     public static final String SET_BANNER = "set.banner.";
+
+    /**choice 缓存*/
+    public static final String STRING_CHOICE = "string.choice.";
+    /** choice 列表*/
+    public static final String SORTEDSET_CHOICE_LIST = "sortedset.choice.list";
+
 }

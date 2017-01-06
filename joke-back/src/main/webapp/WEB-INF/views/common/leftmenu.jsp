@@ -46,9 +46,6 @@
                         <span> 专题管理</span>
                     </a>
                 </li>
-<<<<<<< Updated upstream
-=======
-
 				<li>
 					<a class="ajax-link" href="banner/list">
 						<i class="glyphicon glyphicon-th"></i>
@@ -63,7 +60,6 @@
 					</a>
 				</li>
 
->>>>>>> Stashed changes
                 <li>
                 	<a class="ajax-link" href="ad/list">
                 		<i class="glyphicon glyphicon-picture"></i>

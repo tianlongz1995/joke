@@ -161,9 +161,26 @@ public class ChoiceController {
     }
 
 
+    /**
+     * 上线下线
+     * @param id
+     * @param status
+     * @return
+     */
 
+    @RequestMapping(value = "offlineOnline")
+    @ResponseBody
+    public Result offlineOnline(@RequestParam(value = "id") Integer id,
+                                @RequestParam(value = "status")Integer status){
 
-//    @RequestMapping(value = "offlineOnline")
+       choiceService.updateChoiceStatus(id, status);
+       return new Success("上线/下线成功");
+    }
 
-
+    @RequestMapping(value = "review")
+    @ResponseBody
+    public Result getChoiceContent(@RequestParam(value = "id") Integer id) {
+        String content = choiceService.getChoiceById(id).getContent();
+        return  new Success(content);
+    }
 }

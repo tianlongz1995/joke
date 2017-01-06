@@ -51,7 +51,7 @@ public interface ChoiceMapper {
      * @param id
      * @return
      */
-    @Select(value = "select id,title,status,content from choice where id = #{id}")
+    @Select(value = "select id,title,status,content,create_time,update_time from choice where id = #{id}")
     Choice getChoiceById(Integer id);
 
 
@@ -59,4 +59,13 @@ public interface ChoiceMapper {
     void updateChoice(@Param(value = "id") Integer id,
                       @Param(value = "title") String title,
                       @Param(value = "content")String content) ;
+
+    /**
+     * 更新状态
+     * @param id
+     * @param status
+     */
+    @Update(value = "update choice set update_time=now(),status = #{status} where id = #{id}")
+    void updateChoiceStatus(@Param(value = "id") Integer id,
+                            @Param(value = "status") Integer status);
 }

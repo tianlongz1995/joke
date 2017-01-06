@@ -1,5 +1,8 @@
 package com.oupeng.joke.back.service;
 
+import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
 import org.apache.commons.io.FilenameUtils;
@@ -29,6 +32,8 @@ public class ChoiceService {
     private ChoiceMapper choiceMapper;
     @Autowired
     private Environment env;
+    @Autowired
+    private JedisCache jedisCache;
 
     /**
      * 统计精选总条数
@@ -98,8 +103,8 @@ public class ChoiceService {
                 // 输出的文件流
                 newFileName = newFileName + imgType;
                 //TODO 修改图片上传地址
-//                String path = FilenameUtils.concat(env.getProperty("upload_image_path"), newFileName);
-                String path ="C:/Users/rainy/joke/"+newFileName;
+                String path = FilenameUtils.concat(env.getProperty("upload_image_path"), newFileName);
+//                String path ="C:/Users/rainy/joke/"+newFileName;
                 //保存路径
                  os = new FileOutputStream(path);
                 while ((len = is.read(bs)) != -1) {
@@ -130,7 +135,6 @@ public class ChoiceService {
      * @param id
      */
     public void delChoice(Integer id){
-        //TODO 删除缓存
         choiceMapper.delChoice(id);
     }
 
@@ -166,5 +170,26 @@ public class ChoiceService {
 
     public void updateChoice(Integer id,String title,String content){
       choiceMapper.updateChoice(id,title,content);
+    }
+
+    /**
+     * 更新精选状态
+     * @param id
+     * @param status
+     */
+    public void updateChoiceStatus(Integer id,Integer status){
+        Choice choice = choiceMapper.getChoiceById(id);
+        String choiceKey = JedisKey.STRING_CHOICE + id;
+        String choiceListKey = JedisKey.SORTEDSET_CHOICE_LIST;
+        // 下线删除缓存
+        if (status == 0) {
+            jedisCache.del(choiceKey);
+            jedisCache.zrem(choiceListKey,Integer.toString(id));
+        }else{
+            //增加缓存
+            jedisCache.set(choiceKey, JSON.toJSONString(choice));
+            jedisCache.zadd(choiceListKey,System.currentTimeMillis(),id.toString());
+        }
+         choiceMapper.updateChoiceStatus(id,status);
     }
 }
