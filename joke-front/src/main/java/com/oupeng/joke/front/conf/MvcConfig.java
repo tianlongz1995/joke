@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @EnableScheduling
-@ComponentScan(basePackages = {"com.oupeng.joke.front.controller", "com.oupeng.joke.front.service"})
+@ComponentScan(basePackages = {"com.oupeng.joke.front.controller", "com.oupeng.joke.front.service", "com.oupeng.joke.front.task"})
 public class MvcConfig extends WebMvcConfigurerAdapter {
  
     @Override

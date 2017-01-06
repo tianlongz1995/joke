@@ -79,12 +79,14 @@ public class IndexCacheFlushService {
                     /** ----------------------- 更新首页缓存任务 --------------------- */
                     IndexItem indexItem = queue.take();
                     if (indexItem != null && indexItem.getType() != null) {
+                        logger.info("收到更新首页缓存任务:{}", JSON.toJSONString(indexItem));
                         int type = indexItem.getType();
                         String value = indexItem.getValue();
                         if(type >= 0 && type <=3){
                             flushResource(type, value);
+                        } else {
+                            logger.error("更新首页缓存任务: 非法更新参数:{}", JSON.toJSONString(indexItem));
                         }
-                        logger.error("更新首页缓存任务: 非法更新参数:{}", JSON.toJSONString(indexItem));
                     }
                 } catch (Exception e) {
                     logger.error("更新首页缓存任务异常:" + e.getMessage(), e);

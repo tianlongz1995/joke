@@ -59,6 +59,7 @@ public class ResourceService {
             indexResource.setBuildJs(buildJs);
             indexResource.setBuildCss(buildCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_INDEX, JSON.toJSONString(indexResource));
+
 //        更新首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_INDEX, type));
         } else if(type == 2){

@@ -55,8 +55,6 @@ public class DistributorsService {
 		distributorsMapper.add(distributors);
 		DistributorsConfig d = new DistributorsConfig();
 		List<Channels> channels;
-
-
 		//		修改频道
 		int length = 0;
 		if(distributors.getId() != null && channelIds != null && channelIds.length > 0){
@@ -67,7 +65,6 @@ public class DistributorsService {
 			channels = distributorsMapper.getDistributorChannels(distributors.getId());
 			d.setChannels(channels);
 		}
-
 		//		处理广告
 		if(distributors.getId() != null){
 			Ads ad = new Ads();
@@ -81,9 +78,13 @@ public class DistributorsService {
 			ad.setDid(distributors.getId());
 			ad.setCreateBy(username);
 			distributorsMapper.addAd(ad);
-			d.setAds(ad);
+			if(status == 1){ // 新增上线才缓存
 //			缓存渠道菜单
-			jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, distributors.getId().toString(), JSON.toJSONString(d));
+				ad.setCreateBy(null);
+				ad.setCreateTime(null);
+				d.setAds(ad);
+				jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, distributors.getId().toString(), JSON.toJSONString(d));
+			}
 		}
 
 		logger.info("新增渠道[{}], 频道关联[{}]条", distributors.getId(), length);
@@ -154,11 +155,22 @@ public class DistributorsService {
 		ad.setDid(id);
 		ad.setUpdateBy(username);
 		distributorsMapper.editAd(ad);
-		d.setAds(ad);
+		if(status == 1){
 //		缓存渠道菜单
-		jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, distributors.getId().toString(), JSON.toJSONString(d));
+			ad.setCreateBy(null);
+			ad.setCreateTime(null);
+			ad.setUpdateBy(null);
+			ad.setUpdateTime(null);
+			d.setAds(ad);
+			jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, id.toString(), JSON.toJSONString(d));
 //		删除应用内缓存 - 用来刷新
-		indexCacheFlushService.updateIndex(new IndexItem(id.toString(), 0));
+			indexCacheFlushService.updateIndex(new IndexItem(id.toString(), 0));
+		} else if(status == 0){
+//			处理缓存 - 下线后删除缓存
+			jedisCache.hdel(JedisKey.JOKE_DISTRIBUTOR_CONFIG, id.toString());
+//			删除应用内缓存
+			indexCacheFlushService.updateIndex(new IndexItem(id.toString(), 0));
+		}
 
 		logger.info("修改渠道[{} - {}], 频道关联删除[{}]条, 新增[{}]条", id, name, count, length);
 	}
@@ -189,15 +201,18 @@ public class DistributorsService {
 				if(status == 1){ // 上线
 					DistributorsConfig d = new DistributorsConfig();
 					List<Channels> channels = distributorsMapper.getDistributorChannels(did);
-					Ads ads = distributorsMapper.getAds(did);
+					Ads ad = distributorsMapper.getAds(did);
 					d.setChannels(channels);
-					d.setAds(ads);
+					ad.setCreateBy(null);
+					ad.setCreateTime(null);
+					ad.setUpdateBy(null);
+					ad.setUpdateTime(null);
+					d.setAds(ad);
 //					缓存渠道菜单
 					jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, did.toString(), JSON.toJSONString(d));
 				} else if (status == 0){ // 下线
 //					处理缓存 - 下线后删除缓存
 					jedisCache.hdel(JedisKey.JOKE_DISTRIBUTOR_CONFIG, did.toString());
-
 //					删除应用内缓存
 					indexCacheFlushService.updateIndex(new IndexItem(did.toString(), 0));
 				}

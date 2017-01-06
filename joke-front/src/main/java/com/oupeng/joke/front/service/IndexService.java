@@ -69,7 +69,7 @@ public class IndexService {
             if(did.equals(DEFAULT_DID)){
                 IndexResource testResource = resourceMap.get(JedisKey.INDEX_CACHE_TEST);
                 if(testResource == null){
-                    testResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_TEST), IndexResource.class);;
+                    testResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_TEST), IndexResource.class);
                     if(testResource != null){
                         resourceMap.put(JedisKey.INDEX_CACHE_TEST, testResource);
                     }
@@ -81,14 +81,15 @@ public class IndexService {
                 if(indexResource == null){
                     indexResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_INDEX), IndexResource.class);
                     if(indexResource == null){
-                        IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_INDEX);
-                        if(indexResource == null){
-                            indexResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
+                        IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
+                        if(backResource == null){
+                            backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
                             resourceMap.put(JedisKey.INDEX_CACHE_BACK, indexResource);
                         }
                         indexResource = backResource;
                         log.error("{}的首页请求失效,正在使用备用内容!", did);
                     }
+                    resourceMap.put(JedisKey.INDEX_CACHE_INDEX, indexResource);
                 }
                 String config = configMap.get(did);
                 if(config == null){
@@ -101,7 +102,7 @@ public class IndexService {
                 model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, config);
             }
         } else {
-            IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_INDEX);
+            IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
             if(backResource == null){
                 backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
                 resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
@@ -109,7 +110,7 @@ public class IndexService {
             model.addAttribute(JedisKey.INDEX_CACHE_INDEX, backResource);
             model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, configMap.get(DEFAULT_DID));
 
-            log.error("非法请求参数:{}", did);
+            log.error("已使用备用配置替代处理, 非法请求参数:{}", did);
         }
 
         if(log.isDebugEnabled()){

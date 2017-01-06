@@ -50,7 +50,7 @@ public class IndexFlushCacheTask {
                         List<String> list = jedisCache.brpop(QUEUE_NAME, 60 * 5);
                         long start = System.currentTimeMillis();
                         if (!CollectionUtils.isEmpty(list)) {
-                            logger.debug("【首页缓存刷新任务】Received:[{}] process start ...", list.get(1));
+                            logger.info("【首页缓存刷新任务】收到请求:[{}] process start ...", list.get(1));
                             String content = list.get(1);
 //                            确认队列有效
                             if(StringUtils.isNotBlank(content)){
