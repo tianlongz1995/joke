@@ -27,7 +27,7 @@
 					<a href="#"><i class="glyphicon glyphicon-road"></i><span> 渠道管理</span></a>
 					<ul class="nav nav-pills nav-stacked">
 						<li><a href="distributor/list?status=1"><span> 1.0渠道管理</span></a></li>
-						<li><a href="distributor/manager"><span> 2.0渠道管理</span></a></li>
+						<li><a href="distributors/list"><span> 2.0渠道管理</span></a></li>
 					</ul>
 				</li>
 				<li class="accordion">

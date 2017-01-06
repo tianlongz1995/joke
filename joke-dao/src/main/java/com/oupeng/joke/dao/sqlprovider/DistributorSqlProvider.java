@@ -59,39 +59,6 @@ public class DistributorSqlProvider {
     }
 
     /**
-     * 获取渠道总数SQL
-     *
-     * @param distributor
-     * @return
-     */
-    public static String getCount(Distributor distributor) {
-        StringBuffer sql = new StringBuffer();
-        sql.append("select count(1) from distributors where 1 = 1 ");
-        if (distributor.getStatus() != null) {
-            sql.append(" and status = ").append(distributor.getStatus());
-        }
-        return sql.toString();
-    }
-
-    /**
-     * 获取渠道列表
-     * @param distributor
-     * @return
-     */
-    public static String getList(Distributor distributor) {
-        StringBuffer sql = new StringBuffer();
-        sql.append("select id, name, status, create_time as createTime, update_time as updateTime, create_by as createBy, update_by as updateBy from distributors where 1 = 1 ");
-        if (distributor.getStatus() != null) {
-            sql.append(" and status = ").append(distributor.getStatus());
-        }
-        sql.append(" order by create_time desc ");
-        sql.append(" limit ").append(distributor.getOffset()).append(",").append(distributor.getPageSize());
-        return sql.toString();
-    }
-
-    /** -----------------------------------JOKE 2.0-------------------------------------------**/
-
-    /**
      * 更新渠道信息
      *
      * @param distributor
@@ -132,4 +99,5 @@ public class DistributorSqlProvider {
         }
         return sql.substring(0, sql.length() - 1);
     }
+
 }

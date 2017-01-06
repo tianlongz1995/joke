@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 public class FormatUtil {
 	public static Double getRoundHalfUp4Double(Integer i1,Integer i2){
@@ -102,5 +103,13 @@ public class FormatUtil {
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * 获取随机验证码
+	 * @return
+	 */
+	public static String getRandomValidationCode(){
+		return String.valueOf((new Random().nextInt(8999) + 1000));
 	}
 }

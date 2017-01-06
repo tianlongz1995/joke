@@ -2,6 +2,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.ChannelService;
 import com.oupeng.joke.back.service.DistributorService;
+import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -27,6 +28,7 @@ public class DistributorController {
 	private DistributorService distributorService;
 	@Autowired
 	private ChannelService channelService;
+
 
 	/**
 	 * 渠道列表
@@ -166,54 +168,4 @@ public class DistributorController {
 		return distributorService.updateDistributorAdConfigCache(managerKey);
 	}
 
-
-	/** -----------------------------------JOKE 2.0-------------------------------------------**/
-	/**
-	 * 渠道列表
-	 * @param status
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value="/manager")
-	public String manager(@RequestParam(value="status",required=false, defaultValue = "1")Integer status,
-						  @RequestParam(value="pageNo",required=false, defaultValue = "1")Integer pageNo,
-						  @RequestParam(value="limit",required=false, defaultValue = "10")Integer limit,
-						  Model model){
-		try {
-			Distributor distributor = new Distributor();
-			distributor.setStatus(status);
-			List<Distributor> list = null;
-			int pageCount = 0;//总页数
-			int offset = 0 ;//开始条数index
-			int count = distributorService.getCount(distributor);//总条数
-			if(count > 0){
-				if (count % limit == 0) {
-					pageCount = count / limit;
-				} else {
-					pageCount = count / limit + 1;
-				}
-
-				if (pageNo > pageCount) {
-					pageNo = pageCount;
-				}
-				if (pageNo < 1) {
-					pageNo = 1;
-				}
-				offset = (pageNo - 1) * limit;
-				distributor.setOffset(offset);
-				distributor.setPageSize(limit);
-				list = distributorService.getList(distributor);
-			}
-			model.addAttribute("count", count);
-			model.addAttribute("pageNumber", pageNo);
-			model.addAttribute("pageSize", limit);
-			model.addAttribute("pageCount", pageCount);
-
-			model.addAttribute("list", list);
-			model.addAttribute("status", status);
-		}catch (Exception e){
-			logger.error(e.getMessage(), e);
-		}
-		return "/distributors/list";
-	}
 }

@@ -33,7 +33,26 @@ public class JedisCache {
 			}
 		}
 	}
-	
+
+	/**
+	 * 保存并设置过期时间
+	 * @param key
+	 * @param value
+	 * @param seconds	单位:秒
+	 */
+	public void setAndExpire(String key,String value, int seconds){
+		Jedis jedis = null;
+		try{
+			jedis = jedisWritePool.getResource();
+			jedis.set(key, value);
+			jedis.expire(key, seconds);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
+
 	public void mset(String ... keysvalues){
 		Jedis jedis = null;
 		try{

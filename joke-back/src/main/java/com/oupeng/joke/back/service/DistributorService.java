@@ -197,24 +197,4 @@ public class DistributorService {
 		return TransformUtil.listToString(distributorMapper.getDistributorIdListByName(name));
 	}
 
-
-
-	/** -----------------------------------JOKE 2.0-------------------------------------------**/
-	/**
-	 * 获取渠道总数
-	 * @param distributor
-	 * @return
-	 */
-	public int getCount(Distributor distributor) {
-		return distributorMapper.getCount(distributor);
-	}
-
-	/**
-	 * 获取渠道列表
-	 * @param distributor
-	 * @return
-	 */
-	public List<Distributor> getList(Distributor distributor) {
-		return distributorMapper.getList(distributor);
-	}
 }
