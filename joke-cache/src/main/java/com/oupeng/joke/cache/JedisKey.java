@@ -59,6 +59,10 @@ public class JedisKey {
 //    /** 渠道菜单配置信息Key    */
 //    public static final String JOKE_HASH_DISTRIBUTOR_MENU_CONFIG = "hash.joke.distributor.menu.config";
 
+
+    /** 渠道配置信息Hash表key    */
+    public static final String JOKE_DISTRIBUTOR_CONFIG = "joke.distributor.config";
+
     /** banner 缓存*/
     public static final String STRING_BANNER = "string.banner.";
     /** 频道下banner列表*/
@@ -81,4 +85,7 @@ public class JedisKey {
     public static final String INDEX_CACHE_BACK= "back";
     /** 首页缓存-测试Key */
     public static final String INDEX_CACHE_TEST = "test";
+
+    /** 验证码前缀 */
+    public static final String VALIDATION_CODE_PREFIX = "validation.code.prefix.";
 }

@@ -34,7 +34,7 @@ public class MailService {
                 try {
                     SimpleMailMessage message = new SimpleMailMessage();
                     message.setFrom(MAIL_FROM);
-                    message.setTo(recipient);
+                    message.setTo(recipient.split(";"));
                     message.setSubject(subject);
                     message.setText(content);
                     javaMailSender.send(message);

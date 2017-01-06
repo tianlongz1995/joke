@@ -48,9 +48,9 @@ public class IndexService {
             resourceMap.put(JedisKey.INDEX_CACHE_TEST, testResource);
         }
 //        更新所以缓存
-        Set<String> keys = jedisCache.hkeys(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG);
+        Set<String> keys = jedisCache.hkeys(JedisKey.JOKE_DISTRIBUTOR_CONFIG);
         for(String key : keys){
-            String config = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, key);
+            String config = jedisCache.hget(JedisKey.JOKE_DISTRIBUTOR_CONFIG, key);
             if(StringUtils.isNotBlank(config)){
                 configMap.put(key, config);
             }
@@ -92,7 +92,7 @@ public class IndexService {
                 }
                 String config = configMap.get(did);
                 if(config == null){
-                    config = jedisCache.hget(JedisKey.JOKE_HASH_DISTRIBUTOR_CONFIG, did);
+                    config = jedisCache.hget(JedisKey.JOKE_DISTRIBUTOR_CONFIG, did);
                     if(config != null){
                         configMap.put(did, config);
                     }

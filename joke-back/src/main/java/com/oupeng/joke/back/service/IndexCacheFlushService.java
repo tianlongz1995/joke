@@ -120,6 +120,8 @@ public class IndexCacheFlushService {
 //              确认暗号
                 if(sign.equals(s)){
                     jedisCache.lpush(key, prefix + value);
+                } else {
+                    jedisCache.hdel(JedisKey.JOKE_INDEX_CACHE_FLUSH_SIGN, key);
                 }
             }
         }

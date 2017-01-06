@@ -40,12 +40,6 @@
 
         <!-- content start -->
         <div id="content" class="col-lg-10 col-sm-10">
-            <div>
-                <ul class="breadcrumb">
-                    <li><a href="distributor/list">渠道管理</a></li>
-                </ul>
-            </div>
-
             <div class="row">
                 <div class="box col-md-12">
 
@@ -126,7 +120,7 @@
                                                 <th><input type="checkbox" name="ads" <c:if test="${!empty ads.lc}">checked="checked"</c:if> ></th>
                                                 <th>列表页中间</th>
                                                 <th><input id="listCenter" type="text" name="adsValue" class="form-control input-sm" value="${ads.lc}"/></th>
-                                                <th><input id="interval" type="text" class="form-control input-sm" value="${ads.interval}"/></th>
+                                                <th><input id="interval" type="text" class="form-control input-sm" value="${ads.s}"/></th>
                                             </tr>
                                             <tr>
                                                 <th><input type="checkbox" name="ads" <c:if test="${!empty ads.lb}">checked="checked"</c:if> ></th>
@@ -158,6 +152,8 @@
                                 </tr>
                             </table>
                             <div style="width: 100%;text-align: center;">
+                                <button type="button" class="btn btn-default" onclick="javascript:window.history.go(-1)" >返回</button>
+                                &nbsp;&nbsp;
                                 <button id="updateDistributor" type="button" class="btn btn-primary" data-dismiss="modal">提交</button>
                             </div>
                         </div>
@@ -190,8 +186,10 @@
                     var id = document.getElementsByName('ads');
                     var adsValue = document.getElementsByName('adsValue');
                     var ads = '';
+                    var index = 0;
                     for (var i = 0; i < id.length; i++) {
                         if (id[i].checked){
+                            index++;
                             if(adsValue[i].value == null || adsValue[i].value.length < 1){
                                 alert("选中的广告编号不能为空!");
                                 $('#updateDistributor').removeAttr("disabled");
@@ -220,6 +218,11 @@
                                 ads = ads + '&di=' + adsValue[i].value;
                             }
                         }
+                    }
+                    if(index < 1){
+                        alert("必须设置广告默认值!");
+                        $('#updateDistributor').removeAttr("disabled");
+                        return false;
                     }
 
                     post('distributors/edit',

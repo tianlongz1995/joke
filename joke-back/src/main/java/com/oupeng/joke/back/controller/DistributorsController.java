@@ -4,6 +4,7 @@ import com.oupeng.joke.back.service.DistributorsService;
 import com.oupeng.joke.back.service.MailService;
 import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.AdConfig;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Failed;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -64,6 +66,7 @@ public class DistributorsController {
 						  @RequestParam(value="pageNo",required=false, defaultValue = "1")Integer pageNo,
 						  @RequestParam(value="limit",required=false, defaultValue = "10")Integer limit,
 						  Model model){
+
 		try {
 			Distributor distributor = new Distributor();
 			distributor.setStatus(status);
@@ -93,7 +96,7 @@ public class DistributorsController {
 			model.addAttribute("pageNumber", pageNo);
 			model.addAttribute("pageSize", limit);
 			model.addAttribute("pageCount", pageCount);
-
+			model.addAttribute("channels", distributorsService.getChannels());
 			model.addAttribute("list", list);
 			model.addAttribute("status", status);
 		}catch (Exception e){
@@ -113,12 +116,19 @@ public class DistributorsController {
 	@ResponseBody
 	public Result add(@RequestParam(value="name") String name,
 					  @RequestParam(value="status") Integer status,
-					  @RequestParam(value="channelIds", required=false)Integer[] channelIds){
+					  @RequestParam(value="channelIds", required=false)Integer[] channelIds,
+					  @RequestParam(value="lc", required=false)Integer lc,
+					  @RequestParam(value="lb", required=false)Integer lb,
+					  @RequestParam(value="dt", required=false)Integer dt,
+					  @RequestParam(value="dc", required=false)Integer dc,
+					  @RequestParam(value="db", required=false)Integer db,
+					  @RequestParam(value="di", required=false)Integer di,
+					  @RequestParam(value="s", required=false)Integer s){
 		String username = getUserName();
 		if(username == null){
 			return new Failed("登录信息失效,请重新登录!");
 		}
-		distributorsService.add(name, status, username, channelIds);
+		distributorsService.add(name, status, username, channelIds, s, lc, lb, dt, dc, db, di);
 		return new Success();
 	}
 
@@ -133,26 +143,73 @@ public class DistributorsController {
 	@RequestMapping(value="/editPage")
 	public String edit(@RequestParam(value="id")Integer id, Model model){
 		model.addAttribute("distributors", distributorsService.getDistributors(id));
-		model.addAttribute("channels", distributorsService.getChannels(id));
+		model.addAttribute("channels", distributorsService.getChannelSelected(id));
+		model.addAttribute("ads", distributorsService.getAds(id));
 		return "/distributors/edit";
 	}
 
 	/**
-	 *
-	 * @param id
+	 * 获取验证码
 	 * @return
 	 */
 	@RequestMapping(value="/getValidationCode", produces = {"application/json"})
 	@ResponseBody
-	public Result getValidationCode(@RequestParam(value="id")Integer id){
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public Result getValidationCode(){
 		String username = getUserName();
 		if(username == null){
 			return new Failed("登录信息失效,请重新登录!");
 		}
 		String code = FormatUtil.getRandomValidationCode();
-		jedisCache.setAndExpire(username, code, 60 * 5);
+		jedisCache.setAndExpire(JedisKey.VALIDATION_CODE_PREFIX + username, code, 60 * 5);
 		mailService.sendMail(recipient, "段子后台验证码", "验证码:【"+code+"】;您正在使用段子后台修改数据。");
-		return new Success();
+		return new Success("验证码发送成功!", null);
+	}
+
+	/**
+	 * 修改上下线状态
+	 * @param did
+	 * @param code
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value="/editStatus", produces = {"application/json"})
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public Result editStatus(@RequestParam(value="did")Integer did,
+							 @RequestParam(value="code")Integer code,
+			   				 @RequestParam(value="status")Integer status){
+		String username = getUserName();
+		if(username == null){
+			return new Failed("登录信息失效,请重新登录!");
+		}
+		if(distributorsService.editStatus(did, String.valueOf(code), status, username)){
+			return new Success();
+		} else {
+			return new Failed("验证码已失效,请重新输入!");
+		}
+	}
+
+	/**
+	 * 删除渠道
+	 * @param did
+	 * @param code
+	 * @return
+	 */
+	@RequestMapping(value="/del", produces = {"application/json"})
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public Result editStatus(@RequestParam(value="did")Integer did,
+							 @RequestParam(value="code")Integer code){
+		String username = getUserName();
+		if(username == null){
+			return new Failed("登录信息无效,请重新登录!");
+		}
+		if(distributorsService.del(did, String.valueOf(code), username)){
+			return new Success();
+		} else {
+			return new Failed("验证码已失效,请重新输入!");
+		}
 	}
 
 	/**
@@ -162,7 +219,7 @@ public class DistributorsController {
 	 * @param status
 	 * @return
 	 */
-	@RequestMapping(value="/edit")
+	@RequestMapping(value="/edit", produces = {"application/json"})
 	@ResponseBody
 	public Result edit(@RequestParam(value="id")Integer id,
 					   @RequestParam(value="status")Integer status,

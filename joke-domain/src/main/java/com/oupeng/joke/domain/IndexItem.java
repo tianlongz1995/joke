@@ -34,6 +34,10 @@ public class IndexItem {
         return type;
     }
 
+    /**
+     * 类型(0:配置更新、1:线上资源、2:备份资源、3:测试资源)
+     * @param type
+     */
     public void setType(Integer type) {
         this.type = type;
     }
