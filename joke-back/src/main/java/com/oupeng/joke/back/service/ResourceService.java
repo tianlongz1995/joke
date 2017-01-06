@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ResourceMapper;
+import com.oupeng.joke.domain.IndexItem;
 import com.oupeng.joke.domain.IndexResource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ResourceService {
     private ResourceMapper resourceMapper;
     @Autowired
     private JedisCache jedisCache;
+
+    @Autowired
+    private IndexCacheFlushService indexCacheFlushService;
 
     public IndexResource getIndexResource() {
         return resourceMapper.getIndexResource();
@@ -54,7 +58,9 @@ public class ResourceService {
             indexResource.setLibJs(libJs);
             indexResource.setBuildJs(buildJs);
             indexResource.setBuildCss(buildCss);
-            jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_PRO, JSON.toJSONString(indexResource));
+            jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_INDEX, JSON.toJSONString(indexResource));
+//        更新首页缓存
+            indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_INDEX, type));
         } else if(type == 2){
             resourceMapper.updateIndex(libJs, "10021", "10020");
             resourceMapper.updateIndex(buildJs, "10022", "10020");
@@ -63,6 +69,8 @@ public class ResourceService {
             indexResource.setBuildJs(buildJs);
             indexResource.setBuildCss(buildCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_BACK, JSON.toJSONString(indexResource));
+//        更新首页缓存
+            indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_BACK, type));
         } else if(type == 3){
             resourceMapper.updateIndex(libJs, "10031", "10030");
             resourceMapper.updateIndex(buildJs, "10032", "10030");
@@ -71,6 +79,8 @@ public class ResourceService {
             indexResource.setBuildJs(buildJs);
             indexResource.setBuildCss(buildCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_TEST, JSON.toJSONString(indexResource));
+//        更新首页缓存
+            indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_TEST, type));
         }
         return true;
     }

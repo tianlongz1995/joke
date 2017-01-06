@@ -1,9 +1,7 @@
 package com.oupeng.joke.front.controller;
 
 
-import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.front.service.IndexService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +46,9 @@ public class IndexController {
      */
     @RequestMapping(value = "/index.html")
     public String getRecommendList(@RequestParam(value = "did", required = false, defaultValue = "0") String did, Model model) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]的请求!", did);
+        }
         indexService.getIndexConfig(did, model);
         return "index";
     }

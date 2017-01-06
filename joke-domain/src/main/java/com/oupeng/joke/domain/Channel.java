@@ -9,7 +9,7 @@ public class Channel {
 	private String name;
 	/**	频道类型  0:普通 1:专题 2:推荐	*/
 	private Integer type;
-	/**	频道状态 0:下线 1:上线	*/
+	/**	频道状态 0:下线、 1:上线、2:删除	*/
 	private Integer status;
 	/**	频道内容类型(笑话属性，多个用逗号分隔 0:纯文;1:图片;2:动图) */
 	private String contentType;

@@ -196,4 +196,5 @@ public class DistributorService {
 	public String getDistributorIdListByName(String name){
 		return TransformUtil.listToString(distributorMapper.getDistributorIdListByName(name));
 	}
+
 }

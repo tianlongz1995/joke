@@ -2,6 +2,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.ChannelService;
 import com.oupeng.joke.back.service.DistributorService;
+import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -27,6 +28,7 @@ public class DistributorController {
 	private DistributorService distributorService;
 	@Autowired
 	private ChannelService channelService;
+
 
 	/**
 	 * 渠道列表
@@ -165,4 +167,5 @@ public class DistributorController {
 	public Result updateDistributorAdConfigCache(@RequestParam(value="managerKey",required=true)String managerKey){
 		return distributorService.updateDistributorAdConfigCache(managerKey);
 	}
+
 }

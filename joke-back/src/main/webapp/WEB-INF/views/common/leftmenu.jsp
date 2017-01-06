@@ -16,30 +16,27 @@
                 		<span> 用户管理</span>
                 	</a>
                 </li>
-                <li>
-                	<a class="ajax-link" href="joke/search">
-                		<i class="glyphicon glyphicon-search"></i>
-                		<span> 快捷查找</span>
-                	</a>
-                </li>
-                <li>
-                	<a class="ajax-link" href="joke/list?status=0">
-                		<i class="glyphicon glyphicon-list-alt"></i>
-                		<span> 内容审核</span>
-                	</a>
-                </li>
-                <li>
-                	<a class="ajax-link" href="distributor/list?status=1">
-                		<i class="glyphicon glyphicon-road"></i>
-                		<span> 渠道管理</span>
-                	</a>
-                </li>
-                <li>
-                	<a class="ajax-link" href="channel/list">
-                		<i class="glyphicon glyphicon-th-large"></i>
-                		<span> 频道管理</span>
-                	</a>
-                </li>
+				<li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-list-alt"></i><span> 内容管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="joke/search"><span> 快捷查找</span></a></li>
+						<li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
+					</ul>
+				</li>
+				<li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-road"></i><span> 渠道管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="distributor/list?status=1"><span> 1.0渠道管理</span></a></li>
+						<li><a href="distributors/list"><span> 2.0渠道管理</span></a></li>
+					</ul>
+				</li>
+				<li class="accordion">
+					<a href="#"><i class="glyphicon glyphicon-th-large"></i><span> 频道管理</span></a>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="channel/list"><span> 1.0频道管理</span></a></li>
+						<li><a href="channel/list"><span> 2.0频道审核</span></a></li>
+					</ul>
+				</li>
                 <li>
                     <a class="ajax-link" href="topic/list">
                         <i class="glyphicon glyphicon-th"></i>
