@@ -369,7 +369,7 @@ public class ClientService {
      */
     private List<Topic> getNewTopicCacheList(String key, String uid, Integer cacheType) {
         //请求最新的500条数据
-        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 499L);
+        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 0L);
 
         if (CollectionUtils.isEmpty(topicIdSet)) {
             return null;
