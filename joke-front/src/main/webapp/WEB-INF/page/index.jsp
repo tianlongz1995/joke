@@ -17,24 +17,22 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
-    <link href="http://s-ad.oupeng.com/joke_new/prd/${index.libJs}.css" rel='stylesheet' type='text/css'>
+    <link href="http://s.opfed.com/joke_new/prd/${index.buildCss}.css" rel='stylesheet' type='text/css'>
     <script>
         var _czc = _czc || [];
         _czc.push(["_setAccount", "1260890126"]);
-
-        var distributorConfig = ${config};
     </script>
 </head>
 <body>
-<div class="ball-loader-home"><div class="loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 <div id="app"></div>
-<script src="http://s-ad.oupeng.com/joke_new/prd/${index.buildJs}.js"></script>
-<script src="http://s-ad.oupeng.com/joke_new/prd/${index.buildCss}.js"></script>
+<script>
+    var distributorConfig = ${config};
+</script>
+<script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
+<script src="http://s.opfed.com/joke_new/prd/${index.buildJs}.js"></script>
+<script src="http://s.opfed.com/joke_new/prd/${index.libJs}.js"></script>
 <div style="display: none;">
     <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260890126'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1260890126' type='text/javascript'%3E%3C/script%3E"));</script>
 </div>
-<!--WAP版-->
-<!-- <script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=cysJuKDhQ&conf=prod_3c0523d73f93d97d6e4254f55aa83e3e"> </script>-->
-
 </body>
 </html>

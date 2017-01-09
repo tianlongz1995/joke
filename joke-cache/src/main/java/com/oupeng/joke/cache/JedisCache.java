@@ -402,7 +402,7 @@ public class JedisCache {
 	public  void  zremrangebyrank(String key,long start,long end){
 		Jedis jedis = null;
 		try{
-			jedis = jedisReadPool.getResource();
+			jedis = jedisWritePool.getResource();
 			jedis.zremrangeByRank(key,start,end);
 		}finally{
 			if(jedis != null){

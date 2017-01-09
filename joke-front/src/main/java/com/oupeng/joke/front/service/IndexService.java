@@ -32,7 +32,6 @@ public class IndexService {
     /** 资源集合 */
     private ConcurrentHashMap<String, IndexResource> resourceMap = new ConcurrentHashMap<>();
 
-
     @PostConstruct
     public void initConstants() {
         IndexResource indexResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_INDEX), IndexResource.class);
@@ -133,5 +132,15 @@ public class IndexService {
      */
     public void flushResourceCache(String environment) {
         resourceMap.remove(environment);
+    }
+
+    /**
+     * 获取图片列表
+     * @param did
+     */
+    public void getPictures(String did, long limit) {
+        Set<String> joke = jedisCache.zrevrange(JedisKey.SORTEDSET_ALL, 0L , limit);
+
+
     }
 }

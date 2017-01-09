@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class IndexController {
@@ -53,5 +54,69 @@ public class IndexController {
         return "index";
     }
 
+    /**
+     * 趣图列表
+     * @param did
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/pictures")
+    @ResponseBody
+    public String pictures(@RequestParam(value = "did", required = false, defaultValue = "0") String did,
+                           @RequestParam(value = "did", required = false, defaultValue = "0") String cid,
+                           Model model) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]的请求!", did);
+        }
+        indexService.getPictures(did);
+        return "index";
+    }
+    /**
+     * 段子列表
+     * @param did
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/jokes")
+    @ResponseBody
+    public String jokes(@RequestParam(value = "did", required = false, defaultValue = "0") String did, Model model) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]的请求!", did);
+        }
+        indexService.getIndexConfig(did, model);
+        return "index";
+    }
+
+    /**
+     * 推荐
+     * @param did
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/recommends")
+    @ResponseBody
+    public String recommends(@RequestParam(value = "did", required = false, defaultValue = "0") String did, Model model) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]的请求!", did);
+        }
+        indexService.getIndexConfig(did, model);
+        return "index";
+    }
+
+    /**
+     * 精选
+     * @param did
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/selects")
+    @ResponseBody
+    public String selects(@RequestParam(value = "did", required = false, defaultValue = "0") String did, Model model) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]的请求!", did);
+        }
+        indexService.getIndexConfig(did, model);
+        return "index";
+    }
 
 }
