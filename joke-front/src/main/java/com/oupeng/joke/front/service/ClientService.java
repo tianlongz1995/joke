@@ -415,7 +415,7 @@ public class ClientService {
         checkViewedJokeNum(userViewRecordKey);
         List<Topic> list = Lists.newArrayList();
         Topic topic;
-        System.out.println(CollectionUtils.isEmpty(noRepeatedList));
+//        System.out.println(CollectionUtils.isEmpty(noRepeatedList));
         if (!CollectionUtils.isEmpty(noRepeatedList)) {
             for (String topicId : noRepeatedList) {
                 topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId), Topic.class);
