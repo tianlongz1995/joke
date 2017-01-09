@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+        updateCheck="false">
+    <diskStore path="java.io.tmpdir" />
+
+    <cache name="pictures"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           diskPersistent="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="3600"
+           diskExpiryThreadIntervalSeconds="600"
+           memoryStoreEvictionPolicy="LFU" />
+
+    <!-- 定义缓存策略
+		eternal="false"   				// 元素是否永恒,如果是就永不过期(必须设置)
+		maxElementsOnDisk="10000000" 在硬盘上最大的对象个数, 硬盘管理的缓存元素数量最大限值。默认值为0，就是没有限制
+		maxEntriesLocalDisk=0            //指定允许在硬盘上存放元素的最大数量，0表示不限制。这个属性我们也可以在运行期通过CacheConfiguration来更改。
+		maxEntriesInCache：指定缓存中允许存放元素的最大数量。这个属性也可以在运行期动态修改。但是这个属性只对Terracotta分布式缓存有用。
+	  	maxEntriesLocalHeap="1000" 		// 堆内存中最大缓存对象数,0没有限制(必须设置)
+	  	overflowToDisk="false"  		// 当缓存达到maxElementsInMemory值是,是否允许溢出到磁盘(必须设置)
+	  	diskPersistent="false"  		// 磁盘缓存在VM重新启动时是否保持(默认为false)
+	  	diskSpoolBufferSizeMB：当往磁盘上写入缓存信息时缓冲区的大小，单位是MB，默认是30。
+	  	timeToIdleSeconds="0" 			// 导致元素过期的访问间隔(秒为单位). 也就是说一个元素在不被请求的情况下允许在缓存中待的最大时间。默认是0，表示不限制。
+	  	timeToLiveSeconds="600" 		// 元素在缓存里存在的时间(秒为单位). 0 表示永远存在不过期.表示无论一个元素闲置与否，其允许在Cache中存在的最大时间。
+	  	diskExpiryThreadIntervalSeconds ：单位是秒，表示多久检查元素是否过期的线程多久运行一次，默认是120秒。
+	  	memoryStoreEvictionPolicy="LFU" // 当达到maxElementsInMemory时,如何强制进行驱逐默认使用"最近使用(LRU)"策略,其它还有先入先出FIFO,最少使用LFU,最近使用LRU
+
+   -->
+
+</ehcache>

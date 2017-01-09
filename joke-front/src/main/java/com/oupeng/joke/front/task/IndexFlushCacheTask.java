@@ -69,13 +69,13 @@ public class IndexFlushCacheTask {
                                     }
                                 }
                             } else {
-                                logger.error("Received:[{}] content null", content);
+                                logger.debug("【首页缓存刷新任务】接收数据异常:[{}]", content);
                             }
+                            long end = System.currentTimeMillis();
+                            logger.info("【首页缓存刷新任务】处理完成, 耗时:[{}]", FormatUtil.getTimeStr(end-start));
                         } else {
-                            logger.error("Received:[{}] null", list);
+                            logger.debug("Received:[{}] null", list);
                         }
-                        long end = System.currentTimeMillis();
-                        logger.info("【首页缓存刷新任务】处理完成, 耗时:[{}]", FormatUtil.getTimeStr(end-start));
                     } else {
 //                        发邮件,暂停3分钟
                         logger.error("【首页缓存刷新任务】Redis缓存服务为空, 无法操作缓存!");

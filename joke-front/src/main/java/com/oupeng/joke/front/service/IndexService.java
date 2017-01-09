@@ -1,18 +1,25 @@
 package com.oupeng.joke.front.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.IndexResource;
+import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.front.util.FormatUtil;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,6 +38,10 @@ public class IndexService {
     private ConcurrentHashMap<String, String> configMap = new ConcurrentHashMap<>();
     /** 资源集合 */
     private ConcurrentHashMap<String, IndexResource> resourceMap = new ConcurrentHashMap<>();
+    @Autowired
+    private CacheManager cacheManager;
+
+    private Cache pictures;
 
     @PostConstruct
     public void initConstants() {
@@ -54,6 +65,8 @@ public class IndexService {
                 configMap.put(key, config);
             }
         }
+
+        pictures = cacheManager.getCache("pictures");
     }
 
     /**
@@ -135,12 +148,51 @@ public class IndexService {
     }
 
     /**
-     * 获取图片列表
+     * 获取列表
      * @param did
+     * @param cid 1:趣图、2:段子、3:推荐、4:精选
+     * @param page
+     * @param limit
+     * @return
      */
-    public void getPictures(String did, long limit) {
-        Set<String> joke = jedisCache.zrevrange(JedisKey.SORTEDSET_ALL, 0L , limit);
-
+    public List<Joke> list(Integer did, Integer cid, Integer page, Integer limit) {
+        long start = System.currentTimeMillis();
+        long s = (page - 1) * limit;
+        long e = page * limit - 1;
+        Set<String> keys = jedisCache.zrevrange(JedisKey.SORTEDSET_COMMON_CHANNEL + cid, s , e);
+        List<Joke> list = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(keys)){
+            for(String id : keys){
+                Joke joke = getJoke(id, cid);
+                if(joke != null){
+                    list.add(joke);
+                }
+            }
+        }
+        long end = System.currentTimeMillis();
+        log.info("getPictures 总耗时:{}, 获取key:{}, 获取value:{}", FormatUtil.getTimeStr(end-start));
+        return list;
 
     }
+    /**
+     * 获取趣图
+     * @param id
+     * @return
+     */
+    public Joke getJoke(String id, Integer cid) {
+        Element element = pictures.get(cid+id);
+        Joke joke;
+        if(element == null){
+            joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
+            if(joke != null){
+                pictures.put(new Element(cid+id, joke));
+            }
+//            log.info("------getPicture-----:{} - {}", id, JSON.toJSONString(joke));
+        } else {
+            joke = (Joke) element.getObjectValue();
+        }
+        return joke;
+    }
+
+
 }
