@@ -60,7 +60,7 @@
                         <div class="box-content">
                             <div class="alert alert-info">
                                 需要添加新的Banner点击:
-                                <a href="#" data-toggle="modal" data-target="#newBanner">新增Banner</a>
+                                <a href="#" data-toggle="modal" data-target="#newBanner" onclick="init()">新增Banner</a>
                             </div>
 
                             <table id="table_list"
@@ -217,27 +217,36 @@
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
                                 <tr>
+                                    <th>内容类型</th>
+                                    <td>
+                                        <select class="form-control" id="type" onchange="hideOthers()">
+                                            <option value="0">内容</option>
+                                            <option value="1">广告</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>标题</th>
                                     <td>
                                         <input id="addTitle" class="form-control" type="text" maxlength="8"
                                                style="width:100%;" value=""/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="jokeIdTr">
                                     <th>段子id</th>
                                     <td>
                                         <input id="jokeId" class="form-control" type="number" style="width:100%;"
                                                value=""/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="adIdTr">
                                     <th>广告位id</th>
                                     <td>
                                         <input id="adId" class="form-control" type="number" style="width:100%;"
                                                value=""/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="cidTr">
                                     <th>频道类型</th>
                                     <td>
                                         <select class="form-control" id="cid">
@@ -248,16 +257,8 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>内容类型</th>
-                                    <td>
-                                        <select class="form-control" id="type">
-                                            <option value="0">内容</option>
-                                            <option value="1">广告</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
+
+                                <tr id="imgTr">
                                     <th>图片</th>
                                     <td>
                                         <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png"
@@ -271,7 +272,7 @@
                                 <tr>
                                     <th>描述</th>
                                     <td>
-                                        <input id="addContent" type="text" class="form-control" maxlength="10"></input>
+                                        <input id="addContent" type="text" class="form-control" maxlength="10"/>
                                     </td>
                                 </tr>
                             </table>
@@ -413,8 +414,7 @@
                             function () {
                                 alert('移动请求失败，请检查网络环境');
                             });
-                }
-                ;
+                };
                 function post(url, data, success, error) {
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -426,8 +426,27 @@
                 /**    分页方法    */
                 function turnPage() {
                     location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
+                };
+                //初始化新增模态框显示
+                function init(){
+                    $("#adIdTr").hide();
                 }
-                ;
+                //控制新增模态框显示内容
+                function hideOthers(){
+                    var flag = $("#type").val();
+                    if(flag == 1){
+                        $("#cidTr").hide();
+                        $("#imgTr").hide();
+                        $("#jokeIdTr").hide();
+                        $("#adIdTr").show();
+                    }else{
+                        $("#cidTr").show();
+                        $("#imgTr").show();
+                        $("#jokeIdTr").show();
+                        $("#adIdTr").hide();
+                    }
+
+                }
             </script>
 
         </div><!-- content end -->

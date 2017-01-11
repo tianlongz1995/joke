@@ -1,8 +1,6 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
@@ -39,16 +37,7 @@ public class BannerService {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
-        if(type == 0){
-            String newImg = handleImg(img);
-            if(StringUtils.isBlank(newImg)){
-                return false;
-            }
-            banner.setImg(newImg);
-        }else{
-            //广告可不上传
-            banner.setImg(img);
-        }
+        banner.setImg(img);
         banner.setTitle(title);
         banner.setCid(cid);
         banner.setJid(jid);
@@ -121,16 +110,7 @@ public class BannerService {
         banner.setCid(cid);
         //TODO 禁止图片处理
         //内容上传图片
-        if(type == 0){
-            String newImg = handleImg(img);
-            if(StringUtils.isBlank(newImg)){
-                return false;
-            }
-            banner.setImg(newImg);
-        }else{
-            //广告可不上传
-            banner.setImg(img);
-        }
+        banner.setImg(img);
         banner.setContent(content);
         banner.setJid(jid);
         banner.setType(type);
@@ -139,15 +119,15 @@ public class BannerService {
         return true;
     }
 
-    public String handleImg(String imgUrl){
-        if(StringUtils.isNotBlank(imgUrl)){
-            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
-            if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
-                return imgRespDto.getImgUrl();
-            }
-        }
-        return null;
-    }
+//    public String handleImg(String imgUrl){
+//        if(StringUtils.isNotBlank(imgUrl)){
+//            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
+//            if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+//                return imgRespDto.getImgUrl();
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 删除banner
