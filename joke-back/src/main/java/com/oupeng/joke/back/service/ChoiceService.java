@@ -72,11 +72,11 @@ public class ChoiceService {
     public List<String> downloadImg(List<String> imgUrlList) {
         //服务器上的图片地址
         List<String> realUrl= new ArrayList<>() ;
-        //新的文件名
-        String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()+ FilenameUtils.EXTENSION_SEPARATOR_STR;
         OutputStream os = null;
         InputStream is = null;
         for(String imgUrl:imgUrlList) {
+            //新的文件名
+            String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()+ FilenameUtils.EXTENSION_SEPARATOR_STR;
             try {
                 //文件类型
                 String imgType;
