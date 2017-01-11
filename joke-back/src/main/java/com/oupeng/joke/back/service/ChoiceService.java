@@ -60,8 +60,8 @@ public class ChoiceService {
      * @param title
      * @param content
      */
-    public void addChoice(String title,String content){
-         choiceMapper.addChoice(title,content);
+    public void addChoice(String title,String content,String image){
+         choiceMapper.addChoice(title,content,image);
     }
 
     /**
@@ -72,11 +72,11 @@ public class ChoiceService {
     public List<String> downloadImg(List<String> imgUrlList) {
         //服务器上的图片地址
         List<String> realUrl= new ArrayList<>() ;
-        //新的文件名
-        String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()+ FilenameUtils.EXTENSION_SEPARATOR_STR;
         OutputStream os = null;
         InputStream is = null;
         for(String imgUrl:imgUrlList) {
+            //新的文件名
+            String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()+ FilenameUtils.EXTENSION_SEPARATOR_STR;
             try {
                 //文件类型
                 String imgType;
@@ -168,8 +168,8 @@ public class ChoiceService {
         return tempUrl;
     }
 
-    public void updateChoice(Integer id,String title,String content){
-      choiceMapper.updateChoice(id,title,content);
+    public void updateChoice(Integer id,String title,String content,String image){
+      choiceMapper.updateChoice(id,title,content,image);
     }
 
     /**
@@ -180,7 +180,8 @@ public class ChoiceService {
     public void updateChoiceStatus(Integer id,Integer status){
         Choice choice = choiceMapper.getChoiceById(id);
         String choiceKey = JedisKey.STRING_CHOICE + id;
-        String choiceListKey = JedisKey.SORTEDSET_CHOICE_LIST;
+        //精选id列表，缓存key
+        String choiceListKey = JedisKey.STRING_JOKE + 4;
         // 下线删除缓存
         if (status == 0) {
             jedisCache.del(choiceKey);

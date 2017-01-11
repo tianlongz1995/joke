@@ -11,6 +11,8 @@ public class Choice {
     @JsonInclude(Include.NON_NULL)
     private String title;
     @JsonInclude(Include.NON_NULL)
+    private String img;
+    @JsonInclude(Include.NON_NULL)
     private String content;
     @JsonInclude(Include.NON_NULL)
     private Integer status;
@@ -65,5 +67,13 @@ public class Choice {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

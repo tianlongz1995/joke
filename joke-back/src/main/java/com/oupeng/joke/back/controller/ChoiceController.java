@@ -73,7 +73,8 @@ public class ChoiceController {
     @RequestMapping(value = "add")
     @ResponseBody
     public Result addChoice(@RequestParam(value = "title") String title,
-                            @RequestParam(value = "content") String content) {
+                            @RequestParam(value = "content") String content,
+                            @RequestParam(value = "image") String image) {
         List<String> tempUrl = choiceService.getImgUrl(content);
         List<String> realUrl;
         if (!CollectionUtils.isEmpty(tempUrl)) {
@@ -89,7 +90,7 @@ public class ChoiceController {
             }
         }
         // 2.添加到数据库
-        choiceService.addChoice(title, content);
+        choiceService.addChoice(title, content,image);
         return new Success("添加成功!");
     }
 
@@ -140,7 +141,8 @@ public class ChoiceController {
     @ResponseBody
     public Result update(@RequestParam(value = "id")      Integer id,
                          @RequestParam(value = "title")   String title,
-                         @RequestParam(value = "content") String content){
+                         @RequestParam(value = "content") String content,
+                         @RequestParam(value = "image") String image){
        List<String> tempUrl = choiceService.getImgUrl(content);
        List<String> realUrl;
         if (!CollectionUtils.isEmpty(tempUrl)) {
@@ -156,7 +158,7 @@ public class ChoiceController {
             }
         }
         // 2.更新到数据库
-        choiceService.updateChoice(id,title,content);
+        choiceService.updateChoice(id,title,content,image);
         return new Success("更新成功!");
     }
 

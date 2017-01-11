@@ -104,6 +104,7 @@
                                 <tr>
                                     <th>id</th>
                                     <th>标题</th>
+                                    <th>图片</th>
                                     <th>状态</th>
                                     <th>创建时间</th>
                                     <th>更新时间</th>
@@ -116,6 +117,9 @@
                                     <tr>
                                         <td><c:out value="${choice.id}"/></td>
                                         <td><c:out value="${choice.title}"/></td>
+                                        <td>
+                                            <img src="${choice.img}" style="width: 176px;height: 100px;">
+                                        </td>
                                         <td>
                                             <c:if test="${choice.status == 0}">下线</c:if>
                                             <c:if test="${choice.status == 1}">上线</c:if>
@@ -184,7 +188,17 @@
                                                style="width:100%;" value=""/>
                                     </td>
                                 </tr>
-
+                                <tr>
+                                    <th>图片</th>
+                                    <td>
+                                        <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png"
+                                               class="form-control"/>
+                                        <input id="image" type="hidden"/>
+                                        <img id="imgPriview" style="display: none;width:100%;height:200px;" src=""/>
+                                        <input id="imgDelButton" type="button" class="btn btn-default"
+                                               style="display: none" value="删除"/>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>内容</th>
                                     <td>
@@ -203,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            <%--新增choice 模态框--%>
+            <%--预览--%>
             <div class="modal fade bs-example-modal-lg" id="reviewContent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -223,9 +237,13 @@
                 </div>
             </div>
             <script type="text/javascript">
-
+                $(document).ready(function () {
+                    if('${banner.img}' != ''){
+                        $("#imgPriview").css('display','block');
+                        $("#imgDelButton").css('display','block');
+                    }
+                });
                 var editor = new wangEditor('editor-container');
-
 
                 $('#allcheck').on('click', function () {
                     if ($(this).prop("checked")) {
@@ -240,6 +258,8 @@
                     var cTitle = $("#cTitle").val();
                     // 获取编辑器纯文本内容
                     var onlyText = editor.$txt.text();
+
+                    var img = $("#imgPriview").attr("src");
                     //去除空格
                     var content = $("#editor-container").html();
                     content = $.trim(content);
@@ -256,8 +276,13 @@
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
+                    if(img == ""){
+                        alert("必须上传图片");
+                        $('#addNewBanner').removeAttr("disabled");
+                        return false;
+                    }
                     post('choice/add',
-                            'title=' + cTitle + '&content=' + encodeURI(content),
+                            'title=' + cTitle + '&content=' + encodeURI(content) +'&image='+img,
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
@@ -369,7 +394,30 @@
                             function () {
                                 alert('请求失败，请检查网络环境');
                             });
-                }
+                };
+                $('#imgDelButton').click(function () {
+                    $('#img').val('');
+                    $('#image').val('');
+                    $("#imgPriview").hide();
+                });
+
+                $('#img').change(function () {
+                    var file = $(this)[0].files[0];
+                    $(this).OupengUpload(file, {
+                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+                        acceptFileTypes: 'image/*',
+                        maxFileSize: 1024 * 1024 * 5,
+                        minFileSize: 0,
+                        onUploadSuccess: function (data) {
+                            $("#image").val(data);
+                            $("#imgPriview").attr('src', data).show();
+                            $("#imgDelButton").show();
+                        },
+                        onUploadError: function (data) {
+                            alert(data);
+                        }
+                    });
+                });
             </script>
 
         </div><!-- content end -->
