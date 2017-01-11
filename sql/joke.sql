@@ -288,3 +288,12 @@ INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `se
 INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `seq`, `create_time`, `update_time`) VALUES ( '10042', '0', '10042', '', '趣图发布规则', NULL, now(), now());
 
 INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `seq`, `create_time`, `update_time`) VALUES ( '10043', '0', '10043', '', '推荐发布规则', NULL, now(), now());
+
+
+
+
+--joke表 2017-01-10
+alter table joke add COLUMN comment_number int(11) DEFAULT 0 COMMENT '评论数量';
+alter table joke add COLUMN comment varchar(255) DEFAULT NULL COMMENT '神评论内容';
+alter table joke add COLUMN avata varchar(255) DEFAULT NULL COMMENT '用户头像URL';
+alter table joke add COLUMN nick varchar(64) DEFAULT NULL COMMENT '昵称';

@@ -1,5 +1,6 @@
 package com.oupeng.joke.back.conf;
 
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +53,16 @@ public class BackConfig {
 	public SchedulerFactoryBean schedulerFactoryBean(){
 		return new SchedulerFactoryBean();
 	}
-	
+
+	/**
+	 * Quartz定时任务工厂
+	 * @return
+	 */
+	@Bean(name="stdSchedulerFactory")
+	public StdSchedulerFactory stdSchedulerFactory() {
+		return new StdSchedulerFactory();
+	}
+
 	@Bean(name="javaMailSender")
 	public JavaMailSender javaMailSender(){
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();

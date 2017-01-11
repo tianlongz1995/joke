@@ -18,6 +18,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.collect.Maps;
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
+import com.oupeng.joke.dao.mapper.JokeMapper;
+
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
@@ -513,5 +519,42 @@ public class JokeService {
 	 */
 	public String getPublishRole(int code){
 		return jokeMapper.getPublishRole(code);
+	}
+
+	/**
+	 * 新增评论数量记录
+	 * @param jid
+	 * @return  TODO
+	 */
+    public boolean incrementComment(Integer jid) {
+//    	更新数据库中段子评论数
+		jokeMapper.incrementComment(jid);
+
+//		更新缓存中的段子评论数
+		Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),Joke.class);
+		if(joke.getCn() == null){
+			joke.setCn(0);
+		} else {
+			joke.setCn(joke.getCn() + 1);
+		}
+		jedisCache.set(JedisKey.STRING_JOKE + jid, JSON.toJSONString(joke));
+    	return true;
+    }
+
+	/**
+	 * 获取段子2.0文字段子发布列表
+	 * @param limit
+	 * @return
+	 */
+	public List<String> getJoke2PublishTextList(int type, int limit) {
+		return jokeMapper.getJoke2PublishTextList(type, limit);
+    }
+
+	/**
+	 * 更新段子2.0文字段子状态
+	 * @param idsStr
+	 */
+	public void updateJoke2PublishTextStatus(String idsStr) {
+		jokeMapper.updateJoke2PublishTextStatus(idsStr);
 	}
 }

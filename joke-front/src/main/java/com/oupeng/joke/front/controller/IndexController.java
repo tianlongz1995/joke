@@ -2,6 +2,7 @@ package com.oupeng.joke.front.controller;
 
 
 import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -52,7 +53,7 @@ public class IndexController {
      * @param limit
      * @return
      */
-    @RequestMapping(value = "/joke/list")
+    @RequestMapping(value = "/joke2/list")
     @ResponseBody
     public Result list(@RequestParam(value = "did", required = false, defaultValue = "0") Integer did,
                        @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
@@ -66,6 +67,28 @@ public class IndexController {
             return new Failed("获取失败!");
         }
         return new Success(list);
+    }
+
+    /**
+     * 获取段子详情页
+     * @param did
+     * @param cid
+     * @param jid
+     * @return
+     */
+    @RequestMapping(value = "/joke2/details")
+    @ResponseBody
+    public Result details(@RequestParam(value = "did", required = false, defaultValue = "0") Integer did,
+                          @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                          @RequestParam(value = "jid", required = false, defaultValue = "10") Integer jid) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]-[{}]-[{}]的请求!", did, cid, jid);
+        }
+        JokeDetail detail = indexService.getJokeDetail(did, cid, jid);
+        if(detail == null){
+            return new Failed("获取失败!");
+        }
+        return new Success(detail);
     }
 
 }

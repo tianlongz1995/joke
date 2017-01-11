@@ -46,16 +46,18 @@ public class Joke {
 	private Integer sort;
 	@JsonInclude(Include.NON_NULL)
 	private String shareUrl;
-	/**
-	 * 批量数量
-	 */
+	/** 评论数量(commentNumber)	*/
 	@JsonInclude(Include.NON_NULL)
-	private Integer c;
-	/**
-	 * 神评论内容
-	 */
+	private Integer cn;
+	/** 评论内容	*/
 	@JsonInclude(Include.NON_NULL)
-	private String bc;
+	private String c;
+	/** 用户头像URL	*/
+	@JsonInclude(Include.NON_NULL)
+	private String a;
+	/** 昵称	*/
+	@JsonInclude(Include.NON_NULL)
+	private String n;
 
 	public Integer getId() {
 		return id;
@@ -185,5 +187,37 @@ public class Joke {
 
 	public void setShareUrl(String shareUrl) {
 		this.shareUrl = shareUrl;
+	}
+
+	public Integer getCn() {
+		return cn;
+	}
+
+	public void setCn(Integer cn) {
+		this.cn = cn;
+	}
+
+	public String getC() {
+		return c;
+	}
+
+	public void setC(String c) {
+		this.c = c;
+	}
+
+	public String getA() {
+		return a;
+	}
+
+	public void setA(String a) {
+		this.a = a;
+	}
+
+	public String getN() {
+		return n;
+	}
+
+	public void setN(String n) {
+		this.n = n;
 	}
 }

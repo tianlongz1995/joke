@@ -6,6 +6,8 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.IndexResource;
 import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.JokeDetail;
+import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.FormatUtil;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -32,6 +34,9 @@ public class IndexService {
     private static final Logger log = LoggerFactory.getLogger(IndexService.class);
     /** 默认did */
     private static final String DEFAULT_DID = "0";
+    /** 图片前缀 */
+    private static String IMG_PREFIX = "http://joke-img.adbxb.cn/";
+
     @Autowired
     private JedisCache jedisCache;
     /** 配置集合 */
@@ -41,7 +46,7 @@ public class IndexService {
     @Autowired
     private CacheManager cacheManager;
 
-    private Cache pictures;
+    private Cache picturesCache;
 
     @PostConstruct
     public void initConstants() {
@@ -66,7 +71,7 @@ public class IndexService {
             }
         }
 
-        pictures = cacheManager.getCache("pictures");
+        picturesCache = cacheManager.getCache("pictures");
     }
 
     /**
@@ -180,19 +185,92 @@ public class IndexService {
      * @return
      */
     public Joke getJoke(String id, Integer cid) {
-        Element element = pictures.get(cid+id);
+        Element element = picturesCache.get(cid+id);
         Joke joke;
         if(element == null){
             joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
             if(joke != null){
-                pictures.put(new Element(cid+id, joke));
+                picturesCache.put(new Element(cid+id, joke));
             }
-//            log.info("------getPicture-----:{} - {}", id, JSON.toJSONString(joke));
         } else {
             joke = (Joke) element.getObjectValue();
         }
         return joke;
     }
 
+    /**
+     * 获取段子详情页
+     * @param did
+     * @param cid
+     * @param jid
+     * @return
+     */
+    public JokeDetail getJokeDetail(Integer did, Integer cid, Integer jid) {
+        JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),JokeDetail.class);
+        if(joke != null){
+            if(joke.getType() == Constants.JOKE_TYPE_IMG){
+                joke.setImg(IMG_PREFIX + joke.getImg());
+            }else if(joke.getType() == Constants.JOKE_TYPE_GIF){
+                joke.setImg(IMG_PREFIX + joke.getImg());
+                joke.setGif(IMG_PREFIX + joke.getGif());
+            }
+            String key = JedisKey.JOKE_CHANNEL + cid;
+            Long index = jedisCache.zrevrank(key, String.valueOf(jid));
+            if(index != null){
+//    			获取上一条段子和下一条编号
+                if(index > 0){
+                    Set<String> jokeLastIds = jedisCache.zrevrange(key, index -1, index + 1);
+                    if(!CollectionUtils.isEmpty(jokeLastIds)){
+                        int seq = 0;
+                        for(String jokeLastId : jokeLastIds){
+                            if(seq == 0){
+                                joke.setLastId(Integer.valueOf(jokeLastId));
+                            }
+                            seq++;
+                            if(seq == 2){
+                                joke.setNextId(Integer.valueOf(jokeLastId));
+                            }
+                        }
+                    }
+                } else {
+//        		    获取下一条段子编号
+                    Set<String> jokeNextIds = jedisCache.zrevrange(key, index + 1, index + 1);
+                    if (!CollectionUtils.isEmpty(jokeNextIds)) {
+                        for (String jokeNextId : jokeNextIds) {
+                            joke.setNextId(Integer.valueOf(jokeNextId));
+                        }
+                    }
+                }
+            }
+            handleJokeDetail(joke); // 处理段子推荐信息
+        }
+        return joke;
+    }
 
+    /**
+     * 处理段子详情中推荐段子
+     *
+     * @param jokeDetail
+     */
+    private void handleJokeDetail(JokeDetail jokeDetail) {
+        //随机获取相关图片段子
+        List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 4);
+        if (!CollectionUtils.isEmpty(relatedImgIdList)) {
+            List<Joke> relatedImgList = Lists.newArrayList();
+            Joke joke = null;
+            for (String jokeId : relatedImgIdList) {
+                joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId), Joke.class);
+                if (joke != null) {
+                    if (joke.getImg() != null) {
+                        joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
+                        joke.setImg(IMG_PREFIX + joke.getImg());
+                        joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
+                        joke.setWidth(200);
+                    }
+                    relatedImgList.add(joke);
+                }
+            }
+            jokeDetail.setRelatedImg(relatedImgList);
+        }
+    }
 }

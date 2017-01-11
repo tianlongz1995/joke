@@ -24,12 +24,8 @@ public class JokeDetail {
 	private Integer nextId;
 	@JsonInclude(Include.NON_NULL)
 	private Integer lastId;
-//	@JsonInclude(Include.NON_NULL)
-//	private List<Joke> relatedText;
-//	@JsonInclude(Include.NON_NULL)
 	private List<Joke> relatedImg;
-//	private List<Joke> recommend;
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -84,18 +80,6 @@ public class JokeDetail {
 	public void setLastId(Integer lastId) {
 		this.lastId = lastId;
 	}
-//	public List<Joke> getRecommend() {
-//		return recommend;
-//	}
-//	public void setRecommend(List<Joke> recommend) {
-//		this.recommend = recommend;
-//	}
-//	public List<Joke> getRelatedText() {
-//		return relatedText;
-//	}
-//	public void setRelatedText(List<Joke> relatedText) {
-//		this.relatedText = relatedText;
-//	}
 	public List<Joke> getRelatedImg() {
 		return relatedImg;
 	}

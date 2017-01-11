@@ -269,4 +269,28 @@ public interface JokeMapper {
 	 */
 	@Select(value = "select value from dictionary where code = #{code}")
 	String getPublishRole(Integer code);
+
+	/**
+	 * 更新神评数量
+	 * @param jid
+	 */
+	@Update("update joke set comment_number = comment_number + 1 where id = #{jid}")
+    void incrementComment(@Param("jid")Integer jid);
+
+
+	/**
+	 * 获取段子2.0文字段子发布列表
+	 * @param type
+	 * @param limit
+	 * @return
+	 */
+	@Select("select id from joke where audit = 0 and type = #{type} order by update_time desc limit #{limit}")
+    List<String> getJoke2PublishTextList(@Param("type")int type, @Param("limit")int limit);
+
+	/**
+	 * 更新段子2.0文字段子已发布状态
+	 * @param idsStr
+	 */
+	@Update("update joke set update_time =now(), audit = 1, verify_time=now(), verify_user= systemTask where id in (${idsStr})")
+	void updateJoke2PublishTextStatus(@Param("idsStr")String idsStr);
 }
