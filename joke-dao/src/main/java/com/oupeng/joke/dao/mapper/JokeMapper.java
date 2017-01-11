@@ -253,4 +253,11 @@ public interface JokeMapper {
 	 */
 	@Update("update joke set update_time =now(),status=1,verify_time=now(),verify_user='admin' where id in (select t.id from (select id from joke where type=#{type} and status = 0 order by create_time limit #{limit}) as t)")
 	void autoAuditJoke(@Param("type")int type, @Param("limit")int limit);
+
+	/**
+	 * 更新神评数量
+	 * @param jid
+	 */
+	@Update("update joke set comment_number = comment_number + 1 where id = #{jid}")
+    void incrementComment(@Param("jid")Integer jid);
 }

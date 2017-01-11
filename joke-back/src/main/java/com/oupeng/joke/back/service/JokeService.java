@@ -2,6 +2,7 @@ package com.oupeng.joke.back.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
@@ -482,4 +483,24 @@ public class JokeService {
 	public void autoAuditJoke(int type, int limit) {
 		jokeMapper.autoAuditJoke(type, limit);
 	}
+
+	/**
+	 * 新增评论数量记录
+	 * @param jid
+	 * @return  TODO
+	 */
+    public boolean incrementComment(Integer jid) {
+//    	更新数据库中段子评论数
+		jokeMapper.incrementComment(jid);
+
+//		更新缓存中的段子评论数
+		Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),Joke.class);
+		if(joke.getCn() == null){
+			joke.setCn(0);
+		} else {
+			joke.setCn(joke.getCn() + 1);
+		}
+		jedisCache.set(JedisKey.STRING_JOKE + jid, JSON.toJSONString(joke));
+    	return true;
+    }
 }

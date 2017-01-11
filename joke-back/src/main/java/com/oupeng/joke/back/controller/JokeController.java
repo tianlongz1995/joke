@@ -146,5 +146,21 @@ public class JokeController {
 		model.addAttribute("jokeid", jokeid);
 		model.addAttribute("content", content);
 		return "/joke/search";
-	} 
+	}
+
+	/**
+	 * 新增评论数量记录
+	 * @param jid
+	 * @return
+	 */
+	@RequestMapping(value="/incrementComment")
+	@ResponseBody
+	public Result incrementComment(@RequestParam(value="jid")Integer jid){
+		if(jokeService.incrementComment(jid)){
+			return new Success();
+		}else{
+			return new Failed();
+		}
+	}
+
 }

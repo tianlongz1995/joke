@@ -92,5 +92,6 @@ public class JedisKey {
     public static final String SORTEDSET_CHOICE_LIST = "sortedset.choice.list";
     /** 验证码前缀 */
     public static final String VALIDATION_CODE_PREFIX = "validation.code.prefix.";
-
+    /** 段子缓存 */
+    public static final String JOKE_CHANNEL = "joke.channel.";
 }

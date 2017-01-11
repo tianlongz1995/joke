@@ -265,7 +265,7 @@ public class ClientService {
                     setShareUrl(joke,cacheType);
                     //文字joke的title
                     if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle())) {
+                        if (StringUtils.isEmpty(joke.getTitle().trim())) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -340,7 +340,7 @@ public class ClientService {
                     setShareUrl(joke,cacheType);
                     //文字joke的title
                     if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle())) {
+                        if (StringUtils.isEmpty(joke.getTitle().trim())) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);

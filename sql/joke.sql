@@ -279,3 +279,12 @@ CREATE TABLE `banner` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT 'banner表';
+
+
+
+
+--joke表 2017-01-10
+alter table joke add COLUMN comment_number int(11) DEFAULT 0 COMMENT '评论数量';
+alter table joke add COLUMN comment varchar(255) DEFAULT NULL COMMENT '神评论内容';
+alter table joke add COLUMN avata varchar(255) DEFAULT NULL COMMENT '用户头像URL';
+alter table joke add COLUMN nick varchar(64) DEFAULT NULL COMMENT '昵称';
