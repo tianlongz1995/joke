@@ -60,6 +60,15 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
+                                    <th width="207px">内容类型</th>
+                                    <td>
+                                        <select class="form-control input" id="type" onclick="hideOthers()">
+                                            <option value="0" <c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >内容</option>
+                                            <option value="1" <c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >广告</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>ID</th>
                                     <td><input id="bannerId" type="text" class="form-control" disabled="disabled" value="${banner.id}"/></td>
                                 </tr>
@@ -74,19 +83,19 @@
                                         </c:if>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="jokeIdTr">
                                     <th>段子id</th>
                                     <td>
                                             <input id="jokeId" type="number" style="width:100%;"  value="${banner.jid}" class="form-control"/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="adIdTr">
                                     <th>广告位id</th>
                                     <td>
                                         <input id="adId" type="number" style="width:100%;"  value="${banner.adid}" class="form-control"/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="cidTr">
                                     <th>频道类型</th>
                                     <td>
                                         <select class="form-control input" id="cid">
@@ -97,15 +106,7 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>内容类型</th>
-                                    <td>
-                                        <select class="form-control input" id="type">
-                                            <option value="0" <c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >内容</option>
-                                            <option value="1" <c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >广告</option>
-                                        </select>
-                                    </td>
-                                </tr>
+
                                 <tr>
                                     <th>状态</th>
                                     <td>
@@ -118,7 +119,7 @@
 
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="imgTr">
                                     <th>图片</th>
                                     <td>
                                         <input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png" class="form-control"/>
@@ -155,6 +156,18 @@
 
             <script type="text/javascript">
                 $(document).ready(function () {
+
+                    var flag = $("#type").val();
+                    if(flag == 1){
+                        $("#cidTr").hide();
+                        $("#imgTr").hide();
+                        $("#jokeIdTr").hide();
+                    }else{
+                        $("#adIdTr").hide();
+                    }
+
+
+
                     if('${banner.img}' != ''){
                         $("#imgPriview").css('display','block');
                         $("#imgDelButton").css('display','block');
@@ -233,7 +246,22 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                }
+                };
+                //控制新增模态框显示内容
+                function hideOthers(){
+                    var flag = $("#type").val();
+                    if(flag == 1){
+                        $("#cidTr").hide();
+                        $("#imgTr").hide();
+                        $("#jokeIdTr").hide();
+                        $("#adIdTr").show();
+                    }else{
+                        $("#cidTr").show();
+                        $("#imgTr").show();
+                        $("#jokeIdTr").show();
+                        $("#adIdTr").hide();
+                    }
+                };
             </script>
 
         </div><!-- content end -->

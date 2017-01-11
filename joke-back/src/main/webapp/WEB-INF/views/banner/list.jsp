@@ -445,8 +445,7 @@
                         $("#jokeIdTr").show();
                         $("#adIdTr").hide();
                     }
-
-                }
+                };
             </script>
 
         </div><!-- content end -->
