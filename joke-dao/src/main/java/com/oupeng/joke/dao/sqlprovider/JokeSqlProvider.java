@@ -439,4 +439,23 @@ public class JokeSqlProvider {
 		return sql.toString();
 	}
 
+	/**
+	 * 添加发布规则
+	 * @param map
+	 * @return
+	 */
+	public static String addPublishRole(Map<String,Object> map){
+		Object code = map.get("code");
+		Object value = map.get("value");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" update dictionary set update_time = now(),");
+		if(null != value){
+			sql.append("  value= '").append(value).append("' ");
+		}else{
+			sql.append(" value = null,");
+		}
+		sql.append("where code = ").append(code);
+		System.out.println("================"+sql.toString());
+		return sql.toString();
+	}
 }

@@ -253,4 +253,20 @@ public interface JokeMapper {
 	 */
 	@Update("update joke set update_time =now(),status=1,verify_time=now(),verify_user='admin' where id in (select t.id from (select id from joke where type=#{type} and status = 0 order by create_time limit #{limit}) as t)")
 	void autoAuditJoke(@Param("type")int type, @Param("limit")int limit);
+
+	/**
+	 * 添加发布规则
+	 * @param code
+	 * @param value
+	 */
+	@UpdateProvider(method = "addPublishRole",type = JokeSqlProvider.class)
+	void addPublishRole(@Param(value = "code") Integer code,
+						@Param(value = "value") String value);
+
+	/**
+	 * 获取发布规则
+	 * @param code
+	 */
+	@Select(value = "select value from dictionary where code = #{code}")
+	String getPublishRole(Integer code);
 }

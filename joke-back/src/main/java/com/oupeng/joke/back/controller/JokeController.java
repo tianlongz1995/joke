@@ -1,20 +1,21 @@
 package com.oupeng.joke.back.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.back.service.SourceService;
-import com.oupeng.joke.domain.Dictionary;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
+import com.oupeng.joke.domain.response.Result;
+import com.oupeng.joke.domain.response.Success;
+import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.oupeng.joke.back.service.JokeService;
-import com.oupeng.joke.domain.response.Result;
-import com.oupeng.joke.domain.response.Success;
 
 import java.util.List;
 
@@ -146,5 +147,61 @@ public class JokeController {
 		model.addAttribute("jokeid", jokeid);
 		model.addAttribute("content", content);
 		return "/joke/search";
-	} 
+	}
+
+	/**
+	 * 段子发布规则页面
+	 * @return
+	 */
+	@RequestMapping(value = "publish")
+	public String publishRole(Model model){
+		String textRole = jokeService.getPublishRole(10041);
+		String qutuRole = jokeService.getPublishRole(10042);
+		String recommendRole = jokeService.getPublishRole(10043);
+		if (!StringUtils.isEmpty(textRole)) {
+			JSONObject textRoleJson = JSONObject.parseObject(textRole);
+			model.addAttribute("trole",textRoleJson.get("role"));
+			model.addAttribute("textNum",textRoleJson.get("textNum"));
+		}
+		if (!StringUtils.isEmpty(qutuRole)) {
+			JSONObject qutuRoleJson = JSONObject.parseObject(qutuRole);
+			model.addAttribute("qrole",qutuRoleJson.get("role"));
+			model.addAttribute("qImageNum",qutuRoleJson.get("imageNum"));
+			model.addAttribute("qGiftNum",qutuRoleJson.get("giftNum"));
+		}
+		if (!StringUtils.isEmpty(recommendRole)) {
+			JSONObject recommendRoleJson = JSONObject.parseObject(recommendRole);
+			model.addAttribute("rrole",recommendRoleJson.get("role"));
+			model.addAttribute("rTextNum",recommendRoleJson.get("textNum"));
+			model.addAttribute("rImageNum",recommendRoleJson.get("imageNum"));
+			model.addAttribute("rGiftNum",recommendRoleJson.get("giftNum"));
+		}
+		return "/joke/publish";
+	}
+
+    /**
+     *添加发布规则
+
+     * @param role
+     * @param textNum
+     * @param type 1 纯文 10041，2 趣图 10042， 3 推荐 10043
+     * @param imageNum
+     * @param giftNum
+     * @return
+     */
+	@RequestMapping(value = "addPublishRole")
+	@ResponseBody
+	public Result addPublishRole( @RequestParam(value = "role")   String role,
+                                  @RequestParam(value = "type")   Integer type,
+								  @RequestParam(value = "textNum",required = false) Integer textNum,
+								  @RequestParam(value = "imageNum",required = false)  Integer imageNum,
+								  @RequestParam(value = "giftNum",required = false)  Integer giftNum){
+		//验证cron表达式
+		if(!CronExpression.isValidExpression(role)){
+			return new Failed("发布时间验证不通过!");
+		}else{
+             jokeService.addPublishRole(type,role,textNum,imageNum,giftNum);
+			return new Success("添加成功");
+		}
+	}
 }

@@ -279,3 +279,12 @@ CREATE TABLE `banner` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT 'banner表';
+
+
+/** 发布规则 dictionary表 2017_01_11*/
+
+INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `seq`, `create_time`, `update_time`) VALUES ( '10041', '0', '10041', '', '纯文发布规则', NULL, now(), now());
+
+INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `seq`, `create_time`, `update_time`) VALUES ( '10042', '0', '10042', '', '趣图发布规则', NULL, now(), now());
+
+INSERT INTO dictionary ( `code`, `parent_code`, `type`, `value`, `describe`, `seq`, `create_time`, `update_time`) VALUES ( '10043', '0', '10043', '', '推荐发布规则', NULL, now(), now());

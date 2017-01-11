@@ -1,12 +1,14 @@
 package com.oupeng.joke.back.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,13 +18,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Maps;
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
-import com.oupeng.joke.dao.mapper.JokeMapper;
-
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class JokeService {
@@ -481,5 +480,38 @@ public class JokeService {
 	 */
 	public void autoAuditJoke(int type, int limit) {
 		jokeMapper.autoAuditJoke(type, limit);
+	}
+
+
+	/**
+	 * 添加发布规则
+	 * @param type
+	 * @param textNum
+	 * @param imageNum
+	 * @param giftNum
+	 */
+	public void addPublishRole(Integer type,String role,Integer textNum,Integer imageNum,Integer giftNum){
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("role",role);
+		jsonObject.put("textNum",textNum);
+		jsonObject.put("imageNum",imageNum);
+		jsonObject.put("giftNum",giftNum);
+		if(type == 1){ //纯文
+            jokeMapper.addPublishRole(10041,jsonObject.toString());
+		}else if (type == 2){ //趣图
+			jokeMapper.addPublishRole(10042,jsonObject.toString());
+		}else if(type == 3){ //推荐
+			jokeMapper.addPublishRole(10043,jsonObject.toString());
+		}
+	}
+
+	/**
+	 * 获取发布规则
+	 * @param code
+	 * @return
+	 */
+	public String getPublishRole(int code){
+		return jokeMapper.getPublishRole(code);
 	}
 }
