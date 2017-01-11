@@ -88,7 +88,23 @@
                                         </c:if>
                                     </td>
                                 </tr>
-
+                                <tr>
+                                    <th>图片</th>
+                                    <td>
+                                        <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png"
+                                               class="form-control"/>
+                                        <c:if test="${empty choice.img}">
+                                            <input id="image" type="hidden"/>
+                                            <img id="imgPriview" style="display: none" src="">
+                                        </c:if>
+                                        <c:if test="${!empty choice.img}">
+                                            <input id="image" type="hidden" value="${choice.img}"/>
+                                            <img id="imgPriview" src="${choice.img}">
+                                            <input id="imgDelButton" type="button" class="btn btn-danger btn"
+                                                   value="删除"/>
+                                        </c:if>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>状态</th>
                                     <td>
@@ -126,6 +142,7 @@
                     $('#updateChoice').attr("disabled","disabled");
                     var title = $("#title").val();
                     var content = $("#editor-container").html();
+                    var img = $("#imgPriview").attr("src");
                     //去除空格
                     content = $.trim(content);
                     onlyText = $.trim(onlyText);
@@ -140,8 +157,13 @@
                         $('#updateChoice').removeAttr("disabled");
                         return false;
                     }
+                    if(img == ""){
+                        alert("必须上传图片");
+                        $('#addNewBanner').removeAttr("disabled");
+                        return false;
+                    }
                     post('choice/update',
-                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content),
+                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content)+ '&image='+img,
                             function (data) {
                                 if(data['status']) {
                                     location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
@@ -168,7 +190,6 @@
 
                 <%--wangEditor 富文本编辑器--%>
                 $(function () {
-
                     //图片上传地址
                     editor.config.uploadImgUrl = "upload/richText?${_csrf.parameterName}=${_csrf.token}";
                     // 自定义load事件
@@ -204,6 +225,39 @@
 
                 });
 
+
+
+//图片上传处理
+                $(document).ready(function () {
+                    if('${banner.img}' != ''){
+                        $("#imgPriview").css('display','block');
+                        $("#imgDelButton").css('display','block');
+                    }
+                });
+
+                $('#imgDelButton').click(function () {
+                    $('#img').val('');
+                    $('#image').val('');
+                    $("#imgPriview").hide();
+                });
+                //文件上传
+                $('#img').change(function () {
+                    var file = $(this)[0].files[0];
+                    $(this).OupengUpload(file, {
+                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+                        acceptFileTypes: 'image/*',
+                        maxFileSize: 1024*1024*5,
+                        minFileSize: 0,
+                        onUploadSuccess: function (data) {
+                            $("#image").val(data);
+                            $("#imgPriview").attr('src',data).show();
+                            $("#imgDelButton").show();
+                        },
+                        onUploadError: function (data) {
+                            alert(data);
+                        }
+                    });
+                });
 
             </script>
 

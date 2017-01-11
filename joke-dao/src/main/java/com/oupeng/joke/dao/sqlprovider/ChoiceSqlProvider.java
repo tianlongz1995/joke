@@ -32,7 +32,7 @@ public class ChoiceSqlProvider {
         Object offset = map.get("offset");
         Object pageSize = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select id,title,content,status,");
+        sql.append(" select id,title,img,content,status,");
         sql.append(" create_time as createTime,update_time as updateTime from choice where 1 = 1 ");
         if (null != status) {
             sql.append(" and status = ").append(status);
@@ -55,11 +55,17 @@ public class ChoiceSqlProvider {
     public static String addChoice(Map<String, Object> map) {
         Object title = map.get("title");
         Object content = map.get("content");
+        Object image = map.get("image");
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into choice(title,status,content,create_time, update_time) value (");
+        sql.append(" insert into choice(title,img,status,content,create_time, update_time) value (");
         if (null != title) {
             sql.append("'").append(title).append("',");
         } else {
+            sql.append("null,");
+        }
+        if(null != image){
+            sql.append("'").append(image).append("',");
+        } else{
             sql.append("null,");
         }
         //status
@@ -84,6 +90,7 @@ public class ChoiceSqlProvider {
         Object id = map.get("id");
         Object title = map.get("title");
         Object content = map.get("content");
+        Object image = map.get("image");
         StringBuffer sql = new StringBuffer();
         sql.append(" update choice set update_time=now(),title = ");
 
@@ -94,7 +101,13 @@ public class ChoiceSqlProvider {
         }
         sql.append(" content=");
         if (null != content) {
-            sql.append("'").append(content).append("'");
+            sql.append("'").append(content).append("',");
+        } else {
+            sql.append("null,");
+        }
+        sql.append(" img = ");
+        if (null != image) {
+            sql.append("'").append(image).append("'");
         } else {
             sql.append("null");
         }

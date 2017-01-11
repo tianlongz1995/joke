@@ -37,7 +37,8 @@ public interface ChoiceMapper {
      */
    @InsertProvider(method = "addChoice",type = ChoiceSqlProvider.class)
     void addChoice(@Param(value = "title") String title,
-                   @Param(value = "content") String content);
+                   @Param(value = "content") String content,
+                   @Param(value = "image") String image);
 
     /**
      * 删除
@@ -51,14 +52,15 @@ public interface ChoiceMapper {
      * @param id
      * @return
      */
-    @Select(value = "select id,title,status,content,create_time,update_time from choice where id = #{id}")
+    @Select(value = "select id,title,img,status,content,create_time,update_time from choice where id = #{id}")
     Choice getChoiceById(Integer id);
 
 
     @UpdateProvider(method = "updateChoice",type = ChoiceSqlProvider.class)
     void updateChoice(@Param(value = "id") Integer id,
                       @Param(value = "title") String title,
-                      @Param(value = "content")String content) ;
+                      @Param(value = "content")String content,
+                      @Param(value = "image")String image) ;
 
     /**
      * 更新状态
