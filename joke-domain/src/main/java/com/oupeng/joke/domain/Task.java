@@ -1,4 +1,6 @@
-package com.oupeng.joke.back.util;
+package com.oupeng.joke.domain;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 渠道频道删除任务
@@ -7,10 +9,16 @@ package com.oupeng.joke.back.util;
 public class Task {
     /** 主键 */
     private String id;
+    /** 名称 */
+    private String name;
+    /** 规则 */
+    private String policy;
     /** 任务执行规则 */
     private String cron;
     /** 任务类型(1:文字段子、2:趣图、3:推荐、4:精选) */
     private Integer type;
+
+    private JSONObject object;
 
     public Task(){
     }
@@ -37,5 +45,29 @@ public class Task {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public JSONObject getObject() {
+        return object;
+    }
+
+    public void setObject(JSONObject object) {
+        this.object = object;
     }
 }

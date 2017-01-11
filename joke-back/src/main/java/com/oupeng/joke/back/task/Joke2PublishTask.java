@@ -2,7 +2,7 @@ package com.oupeng.joke.back.task;
 
 import com.oupeng.joke.back.service.TaskService;
 import com.oupeng.joke.back.util.FormatUtil;
-import com.oupeng.joke.back.util.Task;
+import com.oupeng.joke.domain.Task;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

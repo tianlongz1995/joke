@@ -293,4 +293,11 @@ public interface JokeMapper {
 	 */
 	@Update("update joke set update_time =now(), audit = 1, verify_time=now(), verify_user= systemTask where id in (${idsStr})")
 	void updateJoke2PublishTextStatus(@Param("idsStr")String idsStr);
+
+	/**
+	 * 获取段子2.0发布任务
+	 * @return
+	 */
+	@Select("select id, `describe` as name, `type`, `value` as policy from dictionary where code in('10041','10042','10043')")
+	List<Task> getJoke2PublishTask();
 }

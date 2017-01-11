@@ -1,16 +1,13 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.task.Joke2PublishTask;
-import com.oupeng.joke.back.util.JobInfo;
-import com.oupeng.joke.back.util.Task;
+import com.oupeng.joke.domain.JobInfo;
+import com.oupeng.joke.domain.Task;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.Joke;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
@@ -29,10 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 定时任务服务
+ * 1:趣图、2:段子、3:推荐、4:精选
  * Created by hushuang on 2016/11/15.
  */
 @Service
@@ -57,8 +54,6 @@ public class TaskService {
     private JokeService jokeService;
     @Autowired
     private JedisCache jedisCache;
-//    @Autowired
-//    private DistributorChannelService distributorChannelService;
     @Autowired
     private Environment env;
     @Autowired
@@ -76,8 +71,17 @@ public class TaskService {
             sched = stdSchedulerFactory.getScheduler();
             sched.start();
 //            初始化任务
-
-
+            List<Task> tasks = jokeService.getJoke2PublishTask();
+            if(!CollectionUtils.isEmpty(tasks)){
+                for(Task task : tasks){
+                    if(task.getPolicy() != null){
+                        JSONObject jsonObject = JSON.parseObject(task.getPolicy());
+                        task.setObject(jsonObject);
+                        task.setCron(jsonObject.getString("role"));
+                        addJob(task);
+                    }
+                }
+            }
 
 
         } catch (SchedulerException e) {
@@ -159,6 +163,9 @@ public class TaskService {
     public void publishText(Task task){
         Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
         Map<String,Double> map = Maps.newHashMap();
+        if(task.getObject().getInteger("textNum") != null){
+            PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
+        }
         List<String> list = jokeService.getJoke2PublishTextList(0, PUBLISH_TEXT_SIZE);
         StringBuffer ids = new StringBuffer();
         if(!CollectionUtils.isEmpty(list)){
@@ -168,7 +175,7 @@ public class TaskService {
                 map.put(list.get(i - 1), baseScore + Double.valueOf(i));
                 ids.append(list.get(i - 1)).append(",");
             }
-            jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL + 1, map);
+            jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL + 2, map);
             // 更新已发布状态
             jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
         }
@@ -177,6 +184,13 @@ public class TaskService {
     public void publishImage(Task task){
         Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
         Map<String,Double> map = Maps.newHashMap();
+        if(task.getObject().getInteger("gifNum") != null){
+            PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
+        }
+        if(task.getObject().getInteger("imageNum") != null){
+            PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
+        }
+
         List<String> imgList = jokeService.getJoke2PublishTextList(1, PUBLISH_IMG_SIZE);
         List<String> gifList = jokeService.getJoke2PublishTextList(2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
@@ -222,7 +236,70 @@ public class TaskService {
 
     }
     public void publishRecommend(Task task){
+        Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
+        if(task.getObject().getInteger("gifNum") != null){
+            PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
+        }
+        if(task.getObject().getInteger("imageNum") != null){
+            PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
+        }
+        if(task.getObject().getInteger("textNum") != null){
+            PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
+        }
 
+        Map<String,Double> map = Maps.newHashMap();
+        List<String> textList = jokeService.getJoke2PublishTextList(1, PUBLISH_TEXT_SIZE);
+        List<String> imgList = jokeService.getJoke2PublishTextList(1, PUBLISH_IMG_SIZE);
+        List<String> gifList = jokeService.getJoke2PublishTextList(2, PUBLISH_GIF_SIZE);
+        StringBuffer ids = new StringBuffer();
+        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
+        int textSize = textList.size();
+        int imgSize = imgList.size();
+        int gifSize = gifList.size();
+        int img = IMG_WEIGHT;
+        int gif = GIF_WEIGHT;
+        int text = TEXT_WEIGHT;
+        int total = img + gif + text;
+        for(int i = max; i > 0; i--){
+//			按照段子审核时间进行权重
+            if(text > 0){
+                if(imgSize > 0){
+                    String id = textList.get(textSize - 1);
+                    map.put(id, baseScore + Double.valueOf(max));
+                    ids.append(id).append(",");
+                }
+                textSize--;
+                text--;
+            }
+            if(img > 0){
+                if(imgSize > 0){
+                    String id = imgList.get(imgSize - 1);
+                    map.put(id, baseScore + Double.valueOf(max));
+                    ids.append(id).append(",");
+                }
+                imgSize--;
+                img--;
+            }
+            if(gif > 0){ // 频道权重是否用完
+                if(gifSize > 0){
+                    String id = gifList.get(gifSize - 1);
+                    map.put(id, baseScore + Double.valueOf(max));
+                    ids.append(id).append(",");
+                }
+                gifSize--;
+                gif--;
+            }
+            if(gif == 0 && img == 0 && text == 0){
+                gif = GIF_WEIGHT;
+                img = IMG_WEIGHT;
+                text = TEXT_WEIGHT;
+            }
+            //			map中数量与总数对应上说明数据记录完成;
+            if(map.size() == total ){
+                break;
+            }
+        }
+        jedisCache.zadd(JedisKey.SORTEDSET_COMMON_CHANNEL + 1, map);
     }
 
     @PreDestroy

@@ -1,4 +1,4 @@
-package com.oupeng.joke.back.util;
+package com.oupeng.joke.domain;
 
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;

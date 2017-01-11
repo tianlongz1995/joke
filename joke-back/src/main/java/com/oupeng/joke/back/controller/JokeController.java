@@ -204,7 +204,6 @@ public class JokeController {
 			return new Success("添加成功");
 		}
 	}
-	}
 
 	/**
 	 * 新增评论数量记录
