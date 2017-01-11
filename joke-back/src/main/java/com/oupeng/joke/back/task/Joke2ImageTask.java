@@ -1,13 +1,11 @@
 package com.oupeng.joke.back.task;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Dictionary;
-import com.oupeng.joke.domain.Joke;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +13,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 推荐频道数据发布任务
+ * 段子2.0 趣图定时发布任务
  */
 @Component
-public class Joke2RecommendTask {
-	private static Logger logger = LoggerFactory.getLogger(Joke2RecommendTask.class);
+public class Joke2ImageTask {
+	private static Logger logger = LoggerFactory.getLogger(Joke2ImageTask.class);
 	/**	发布文字数量	*/
 	private static Integer PUBLISH_TEXT_SIZE = 200;
 	/**	发布静图数量	*/
@@ -43,8 +42,11 @@ public class Joke2RecommendTask {
 	@Autowired
 	private JedisCache jedisCache;
 
-	//	@PostConstruct
-	public void initParam(){
+	@PostConstruct
+	public void init(){
+//		获取段子配置
+
+
 		List<Dictionary> dictionarys = jokeService.getDictionaryRecordList("10001", 0, 3);
 		if(!CollectionUtils.isEmpty(dictionarys)){
 			for(Dictionary dictionary : dictionarys){
@@ -64,6 +66,8 @@ public class Joke2RecommendTask {
 		logger.info("publish text:{}|{}, img:{}|{}, gif:{}|{}", PUBLISH_TEXT_SIZE, TEXT_WEIGHT, PUBLISH_IMG_SIZE, IMG_WEIGHT, PUBLISH_GIF_SIZE, GIF_WEIGHT);
 
 	}
+
+
 	/**
 	 * 发布推荐频道下的段子数据，每天凌晨1点时候发布，按动图：静图：文字=1:2:2规则随机发布  200, 做到web页面,自己配置
 	 * <li>动图取点赞数TOP20条数据</li>
@@ -74,7 +78,7 @@ public class Joke2RecommendTask {
 	public void publishRecommendChannelJoke(){
 		logger.info("Recommend Publish start...");
 //		初始化参数
-		initParam();
+//		initParam();
 
 		List<String> gifJokeList = jokeService.getJokeListForPublishRecommend(Constants.JOKE_TYPE_GIF, PUBLISH_GIF_SIZE);
 		if(CollectionUtils.isEmpty(gifJokeList) || gifJokeList.size() != PUBLISH_GIF_SIZE){

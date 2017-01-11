@@ -503,4 +503,21 @@ public class JokeService {
 		jedisCache.set(JedisKey.STRING_JOKE + jid, JSON.toJSONString(joke));
     	return true;
     }
+
+	/**
+	 * 获取段子2.0文字段子发布列表
+	 * @param limit
+	 * @return
+	 */
+	public List<String> getJoke2PublishTextList(int type, int limit) {
+		return jokeMapper.getJoke2PublishTextList(type, limit);
+    }
+
+	/**
+	 * 更新段子2.0文字段子状态
+	 * @param idsStr
+	 */
+	public void updateJoke2PublishTextStatus(String idsStr) {
+		jokeMapper.updateJoke2PublishTextStatus(idsStr);
+	}
 }
