@@ -264,8 +264,8 @@ public class ClientService {
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle().trim())) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -339,8 +339,8 @@ public class ClientService {
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle().trim())) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
