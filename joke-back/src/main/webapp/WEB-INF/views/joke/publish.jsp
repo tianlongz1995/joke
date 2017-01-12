@@ -91,7 +91,7 @@
                                 </tr>
                                 <tr>
                                     <th>静图发布权重:</th>
-                                    <td><input id="qImageWeight" type="number" class="form-control" value="${qImageWeigth}" disabled="disabled"/></td>
+                                    <td><input id="qImageWeight" type="number" class="form-control" value="${qImageWeight}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
                                     <th>动图发布数量:</th>
