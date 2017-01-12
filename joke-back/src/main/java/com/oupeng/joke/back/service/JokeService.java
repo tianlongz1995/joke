@@ -18,13 +18,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Maps;
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
-import com.oupeng.joke.dao.mapper.JokeMapper;
-
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageWriteParam;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -496,13 +491,16 @@ public class JokeService {
 	 * @param imageNum
 	 * @param giftNum
 	 */
-	public void addPublishRole(Integer type,String role,Integer textNum,Integer imageNum,Integer giftNum){
+	public void addPublishRole(Integer type,String role,Integer textNum,Integer imageNum,Integer giftNum,Integer textWeight,Integer imageWeight,Integer giftWeight){
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("role",role);
 		jsonObject.put("textNum",textNum);
 		jsonObject.put("imageNum",imageNum);
 		jsonObject.put("giftNum",giftNum);
+		jsonObject.put("textWeight",textWeight);
+		jsonObject.put("imageWeight", imageWeight);
+		jsonObject.put("giftWeight",giftWeight);
 		if(type == 1){ //纯文
             jokeMapper.addPublishRole(10041,jsonObject.toString());
 		}else if (type == 2){ //趣图

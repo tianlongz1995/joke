@@ -168,6 +168,9 @@ public class JokeController {
 			model.addAttribute("qrole",qutuRoleJson.get("role"));
 			model.addAttribute("qImageNum",qutuRoleJson.get("imageNum"));
 			model.addAttribute("qGiftNum",qutuRoleJson.get("giftNum"));
+			model.addAttribute("qGiftWeight",qutuRoleJson.get("giftWeight"));
+			model.addAttribute("qImageWeight",qutuRoleJson.get("imageWeight"));
+
 		}
 		if (!StringUtils.isEmpty(recommendRole)) {
 			JSONObject recommendRoleJson = JSONObject.parseObject(recommendRole);
@@ -175,6 +178,10 @@ public class JokeController {
 			model.addAttribute("rTextNum",recommendRoleJson.get("textNum"));
 			model.addAttribute("rImageNum",recommendRoleJson.get("imageNum"));
 			model.addAttribute("rGiftNum",recommendRoleJson.get("giftNum"));
+			model.addAttribute("rTextWeight",recommendRoleJson.get("textWeight"));
+			model.addAttribute("rImageWeight",recommendRoleJson.get("imageWeight"));
+			model.addAttribute("rGiftWeight",recommendRoleJson.get("giftWeight"));
+
 		}
 		return "/joke/publish";
 	}
@@ -187,6 +194,9 @@ public class JokeController {
      * @param type 1 纯文 10041，2 趣图 10042， 3 推荐 10043
      * @param imageNum
      * @param giftNum
+	 * @param giftWeight
+	 * @param imageWeight
+	 * @param textWeight
      * @return
      */
 	@RequestMapping(value = "addPublishRole")
@@ -195,12 +205,15 @@ public class JokeController {
                                   @RequestParam(value = "type")   Integer type,
 								  @RequestParam(value = "textNum",required = false) Integer textNum,
 								  @RequestParam(value = "imageNum",required = false)  Integer imageNum,
-								  @RequestParam(value = "giftNum",required = false)  Integer giftNum){
+								  @RequestParam(value = "giftNum",required = false)  Integer giftNum,
+								  @RequestParam(value = "textWeight",required = false) Integer textWeight,
+								  @RequestParam(value = "imageWeight",required = false)Integer imageWeight,
+								  @RequestParam(value = "giftWeight",required = false)Integer giftWeight){
 		//验证cron表达式
 		if(!CronExpression.isValidExpression(role)){
 			return new Failed("发布时间验证不通过!");
 		}else{
-             jokeService.addPublishRole(type,role,textNum,imageNum,giftNum);
+             jokeService.addPublishRole(type,role,textNum,imageNum,giftNum,textWeight,imageWeight,giftWeight);
 			return new Success("添加成功");
 		}
 	}

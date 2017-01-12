@@ -228,7 +228,7 @@
                                 <tr>
                                     <th>标题</th>
                                     <td>
-                                        <input id="addTitle" class="form-control" type="text" maxlength="8"
+                                        <input id="addTitle" class="form-control" type="text"
                                                style="width:100%;" value=""/>
                                     </td>
                                 </tr>
@@ -272,7 +272,7 @@
                                 <tr>
                                     <th>描述</th>
                                     <td>
-                                        <input id="addContent" type="text" class="form-control" maxlength="10"/>
+                                        <input id="addContent" type="text" class="form-control"/>
                                     </td>
                                 </tr>
                             </table>

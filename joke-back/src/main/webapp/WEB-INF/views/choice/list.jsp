@@ -184,7 +184,7 @@
                                 <tr>
                                     <th>标题</th>
                                     <td>
-                                        <input id="cTitle" class="form-control" type="text" maxlength="8"
+                                        <input id="cTitle" class="form-control" type="text"
                                                style="width:100%;" value=""/>
                                     </td>
                                 </tr>
