@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.domain.Banner;
 import com.oupeng.joke.domain.IndexResource;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -286,5 +288,26 @@ public class IndexService {
             }
         }
         return relatedList;
+    }
+
+    /**
+     * 获取banner
+     * @param cid
+     * @return
+     */
+    public List<Banner> getBannerList(Integer cid) {
+        String key = JedisKey.JOKE_BANNER + cid;
+        Set<String> bannerSet = jedisCache.zrange(key, 0, -1);
+        List<Banner> bannerList = new ArrayList<>();
+        Banner banner;
+        if(!CollectionUtils.isEmpty(bannerSet)){
+            for(String b:bannerSet){
+                banner = JSON.parseObject(jedisCache.get(JedisKey.STRING_BANNER + b),Banner.class);
+                if(null != banner){
+                    bannerList.add(banner);
+                }
+            }
+        }
+        return bannerList;
     }
 }

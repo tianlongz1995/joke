@@ -1,6 +1,7 @@
 package com.oupeng.joke.front.controller;
 
 
+import com.oupeng.joke.domain.Banner;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.Relate;
@@ -112,5 +113,25 @@ public class IndexController {
             return new Failed("获取失败!");
         }
         return new Success(relates, relates.size());
+    }
+    /**
+     * 获取banner列表
+     * @param cid 1 段子 2趣图 3推荐 4 精选
+     * @return
+     */
+    @RequestMapping(value = "/joke2/banner")
+    @ResponseBody
+    public Result getBannerList(@RequestParam(value = "cid") Integer cid){
+
+        List<Banner> bannerList = indexService.getBannerList(cid);
+        return new Success(bannerList);
+    }
+
+    @RequestMapping(value = "/joke2/relate")
+    @ResponseBody
+    public Result getRelateList(@RequestParam(value = "did") Integer did,
+                                @RequestParam(value = "jid") Integer jid,
+                                @RequestParam(value = "cid") Integer cid){
+        return new Success();
     }
 }

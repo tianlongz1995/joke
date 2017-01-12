@@ -90,4 +90,6 @@ public class JedisKey {
     public static final String VALIDATION_CODE_PREFIX = "validation.code.prefix.";
     /** 段子缓存(1:趣图、2:段子、3:推荐、4:精选) */
     public static final String JOKE_CHANNEL = "joke.channel.";
+    /** 精选缓存*/
+    public static final String JOKE_BANNER = "joke.banner.";
 }

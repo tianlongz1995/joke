@@ -165,7 +165,7 @@ public class BannerService {
     public boolean updateBannerStatus(Integer id, Integer status) {
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
-        String bannerListKey = JedisKey.SET_BANNER + banner.getCid();
+        String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
         // 下线删除缓存
         if (status == 0) {
             //更新状态
