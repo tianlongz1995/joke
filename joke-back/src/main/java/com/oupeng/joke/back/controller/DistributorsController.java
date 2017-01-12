@@ -163,7 +163,7 @@ public class DistributorsController {
 		String code = FormatUtil.getRandomValidationCode();
 		jedisCache.setAndExpire(JedisKey.VALIDATION_CODE_PREFIX + username, code, 60 * 5);
 		mailService.sendMail(recipient, "段子后台验证码", "验证码:【"+code+"】;您正在使用段子后台修改数据。");
-		return new Success("验证码发送成功!", null);
+		return new Success("验证码发送成功!");
 	}
 
 	/**

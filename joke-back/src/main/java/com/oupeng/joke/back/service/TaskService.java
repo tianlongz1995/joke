@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.task.Joke2PublishTask;
-import com.oupeng.joke.domain.JobInfo;
-import com.oupeng.joke.domain.Task;
+import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.domain.JobInfo;
+import com.oupeng.joke.domain.Task;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
@@ -15,7 +16,6 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,7 +35,7 @@ import java.util.Map;
 @Service
 public class TaskService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
     /**	文字权重	*/
     private static Integer TEXT_WEIGHT = 2;
     /**	静图权重	*/
@@ -54,12 +54,7 @@ public class TaskService {
     private JokeService jokeService;
     @Autowired
     private JedisCache jedisCache;
-    @Autowired
-    private Environment env;
-    @Autowired
-    private MailService mailService;
 
-    private int channnelMinSize = 10;
     /**
      * 任务调度器
      */
@@ -74,7 +69,7 @@ public class TaskService {
             List<Task> tasks = jokeService.getJoke2PublishTask();
             if(!CollectionUtils.isEmpty(tasks)){
                 for(Task task : tasks){
-                    if(task.getPolicy() != null && task.getType() == 1){
+                    if(task.getPolicy() != null && task.getType() == 3){ // TODO task.getType() == 1 是测试用
                         JSONObject jsonObject = JSON.parseObject(task.getPolicy());
                         task.setObject(jsonObject);
                         task.setCron(jsonObject.getString("role"));
@@ -85,9 +80,9 @@ public class TaskService {
 
 
         } catch (SchedulerException e) {
-            logger.error("任务服务启动异常:" + e.getMessage(), e);
+            log.error("任务服务启动异常:" + e.getMessage(), e);
         }
-        logger.info("-------TaskService init ---------");
+        log.info("-------TaskService init ---------");
     }
 
     /**
@@ -116,51 +111,46 @@ public class TaskService {
             jobInfo.setCronTrigger(cronTrigger);
             sched.scheduleJob(jobDetail, cronTrigger);
         } catch (ParseException e) {
-            logger.error("初始化定时任务， 解析任务规则异常:" + e.getMessage(), e);
+            log.error("初始化定时任务， 解析任务规则异常:" + e.getMessage(), e);
         } catch (SchedulerException e) {
-            logger.error("初始化定时任务， 解析任务规则异常:" + e.getMessage(), e);
+            log.error("初始化定时任务， 解析任务规则异常:" + e.getMessage(), e);
         }
     }
 
 
     /**
-     * 是否存在
-     *
-     * @param id
-     */
-    public boolean containsKey(String id) {
-        try {
-            JobKey jobKey = new JobKey(id);
-            return sched.getJobDetail(jobKey) != null;
-        } catch (Exception e) {
-            logger.error("判断任务是否存在异常:" + e.getMessage(), e);
-            return false;
-        }
-    }
-
-    /**
-     * 删除任务
-     * @param taskId
+     * 更新任务
+     * @param task
      * @return
      */
-    public boolean deleteTask(String taskId){
+    public boolean updateTask(Task task){
         try {
-            JobKey jobKey = new JobKey(taskId);
+            JobKey jobKey = new JobKey(task.getId());
             JobDetail jobDetail = sched.getJobDetail(jobKey);
             if (jobDetail != null) {
-                return sched.deleteJob(jobKey);
+                boolean del = sched.deleteJob(jobKey);
+                if(del){
+                    log.info("更新定时任务[{}]完成:[{}]", jobDetail.getKey(), task.getObject());
+                } else {
+                    log.error("更新定时任务[{}]异常:[{}]", jobDetail.getKey(), task.getObject());
+                }
+                addJob(task);
+                return true;
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return false;
     }
 
     /**
-     * 段子2.0 发布段子(文字)
+     * 发布段子(文字)
+     * 段子2.0
      * @param task
      */
     public void publishText(Task task){
+        long start = System.currentTimeMillis();
+        int count = 0;
         Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
         Map<String,Double> map = Maps.newHashMap();
         if(task.getObject().getInteger("textNum") != null){
@@ -173,14 +163,25 @@ public class TaskService {
             for(int i = size; i > 0; i--){
                 map.put(list.get(i - 1), baseScore + Double.valueOf(i));
                 ids.append(list.get(i - 1)).append(",");
+                count++;
             }
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 2, map);
             // 更新已发布状态
             jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
         }
+        long end = System.currentTimeMillis();
+        log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
 
     }
+
+    /**
+     * 发布趣图
+     * 段子2.0
+     * @param task
+     */
     public void publishImage(Task task){
+        long start = System.currentTimeMillis();
+        int imgCount = 0, gifCount = 0;
         Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
         Map<String,Double> map = Maps.newHashMap();
         if(task.getObject().getInteger("gifNum") != null){
@@ -201,11 +202,17 @@ public class TaskService {
         List<String> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
-        int imgSize = imgList.size();
-        int gifSize = gifList.size();
+        int imgSize = 0;
+        if(!CollectionUtils.isEmpty(imgList)){
+            imgSize = imgList.size();
+        }
+        int gifSize = 0;
+        if(!CollectionUtils.isEmpty(gifList)){
+            gifSize = gifList.size();
+        }
         int img = IMG_WEIGHT;
         int gif = GIF_WEIGHT;
-        int total = img + gif;
+        int total = imgSize + gifSize;
         for(int i = total; i > 0; i--){
 //			按照段子审核时间进行权重
             if(img > 0){
@@ -213,6 +220,7 @@ public class TaskService {
                     String id = imgList.get(imgSize - 1);
                     map.put(id, baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
+                    imgCount++;
                 }
                 imgSize--;
                 img--;
@@ -222,6 +230,7 @@ public class TaskService {
                     String id = gifList.get(gifSize - 1);
                     map.put(id, baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
+                    gifCount++;
                 }
                 gifSize--;
                 gif--;
@@ -235,13 +244,24 @@ public class TaskService {
                 break;
             }
         }
-        jedisCache.zadd(JedisKey.JOKE_CHANNEL + 1, map);
-        // 更新已发布状态
-        jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
-
-
+        log.debug(JSON.toJSONString(map));
+        if(map != null && map.size() > 0){
+            jedisCache.zadd(JedisKey.JOKE_CHANNEL + 1, map);
+            // 更新已发布状态
+            jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
+        }
+        long end = System.currentTimeMillis();
+        log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount+gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());
     }
+
+    /**
+     * 发布推荐消息
+     * 段子2.0
+     * @param task
+     */
     public void publishRecommend(Task task){
+        long start = System.currentTimeMillis();
+        int imgCount = 0, gifCount = 0, textCount = 0;
         Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
         if(task.getObject().getInteger("gifNum") != null){
             PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
@@ -267,9 +287,18 @@ public class TaskService {
         List<String> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
-        int textSize = textList.size();
-        int imgSize = imgList.size();
-        int gifSize = gifList.size();
+        int imgSize = 0;
+        if(!CollectionUtils.isEmpty(imgList)){
+            imgSize = imgList.size();
+        }
+        int gifSize = 0;
+        if(!CollectionUtils.isEmpty(gifList)){
+            gifSize = gifList.size();
+        }
+        int textSize = 0;
+        if(!CollectionUtils.isEmpty(textList)){
+            textSize = textList.size();
+        }
         int img = IMG_WEIGHT;
         int gif = GIF_WEIGHT;
         int text = TEXT_WEIGHT;
@@ -277,10 +306,11 @@ public class TaskService {
         for(int i = total; i > 0; i--){
 //			按照段子审核时间进行权重
             if(text > 0){
-                if(imgSize > 0){
+                if(textSize > 0){
                     String id = textList.get(textSize - 1);
                     map.put(id, baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
+                    textCount++;
                 }
                 textSize--;
                 text--;
@@ -290,6 +320,7 @@ public class TaskService {
                     String id = imgList.get(imgSize - 1);
                     map.put(id, baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
+                    imgCount++;
                 }
                 imgSize--;
                 img--;
@@ -299,6 +330,7 @@ public class TaskService {
                     String id = gifList.get(gifSize - 1);
                     map.put(id, baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
+                    gifCount++;
                 }
                 gifSize--;
                 gif--;
@@ -313,7 +345,11 @@ public class TaskService {
                 break;
             }
         }
-        jedisCache.zadd(JedisKey.JOKE_CHANNEL + 3, map);
+        if(map != null && map.size() > 0){
+            jedisCache.zadd(JedisKey.JOKE_CHANNEL + 3, map);
+        }
+        long end = System.currentTimeMillis();
+        log.info("发布趣图[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
     }
 
     @PreDestroy
@@ -322,7 +358,7 @@ public class TaskService {
             sched.clear();
             sched.shutdown();
         } catch (SchedulerException e) {
-           logger.error("关闭任务调度器异常:" + e.getMessage(), e);
+            log.error("关闭任务调度器异常:" + e.getMessage(), e);
         }
     }
 }

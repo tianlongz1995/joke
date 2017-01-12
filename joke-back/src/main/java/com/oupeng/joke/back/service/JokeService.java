@@ -33,6 +33,8 @@ public class JokeService {
 	@Autowired
 	private JedisCache jedisCache;
 	@Autowired
+	private TaskService taskService;
+	@Autowired
 	private Environment env;
 
 	/**
@@ -505,12 +507,38 @@ public class JokeService {
 		jsonObject.put("imageWeight", imageWeight);
 		jsonObject.put("gifWeight",gifWeight);
 		if(type == 1){ //纯文
+//			更新数据库
 			jokeMapper.addPublishRole(10041,jsonObject.toString());
+//			更新定时任务
+			updateTask(10041, "14", role, 2, jsonObject);
 		}else if (type == 2){ //趣图
+//			更新数据库
 			jokeMapper.addPublishRole(10042,jsonObject.toString());
+//			更新定时任务
+			updateTask(10042, "15", role, 1, jsonObject);
 		}else if(type == 3){ //推荐
+//			更新数据库
 			jokeMapper.addPublishRole(10043,jsonObject.toString());
+//			更新定时任务
+			updateTask(10043, "16", role, 3, jsonObject);
 		}
+	}
+
+	/**
+	 * 更新定时任务
+	 * @param code
+	 * @param id
+	 * @param role
+	 * @param type
+	 * @param jsonObject
+	 */
+	private void updateTask(int code, String id, String role, int type, JSONObject jsonObject) {
+		Task task = new Task();
+		task.setCron(role);
+		task.setId(id);
+		task.setType(type);
+		task.setObject(jsonObject);
+		taskService.updateTask(task);
 	}
 
 	/**

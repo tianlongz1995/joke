@@ -24,6 +24,7 @@ public class JokeDetail {
 	private Integer nextId;
 	@JsonInclude(Include.NON_NULL)
 	private Integer lastId;
+	@JsonInclude(Include.NON_NULL)
 	private List<Joke> relatedImg;
 
 	public String getTitle() {

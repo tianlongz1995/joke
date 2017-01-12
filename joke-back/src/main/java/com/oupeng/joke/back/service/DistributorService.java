@@ -175,7 +175,7 @@ public class DistributorService {
 			sb.append("耗时:[").append(end-start).append("]ms");
 			result = sb.toString();
 			logger.info(result);
-			return new Success(result, null);
+			return new Success(result);
 		}else{
 			sb.append("手动更新渠道广告配置缓存[").append(ids).append("]完成，");
 			sb.append("更新失败！");
