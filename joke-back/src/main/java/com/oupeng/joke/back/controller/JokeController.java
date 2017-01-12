@@ -167,8 +167,8 @@ public class JokeController {
 			JSONObject qutuRoleJson = JSONObject.parseObject(qutuRole);
 			model.addAttribute("qrole",qutuRoleJson.get("role"));
 			model.addAttribute("qImageNum",qutuRoleJson.get("imageNum"));
-			model.addAttribute("qGiftNum",qutuRoleJson.get("giftNum"));
-			model.addAttribute("qGiftWeight",qutuRoleJson.get("giftWeight"));
+			model.addAttribute("qGiftNum",qutuRoleJson.get("gifNum"));
+			model.addAttribute("qGiftWeight",qutuRoleJson.get("gifWeight"));
 			model.addAttribute("qImageWeight",qutuRoleJson.get("imageWeight"));
 
 		}
@@ -177,10 +177,10 @@ public class JokeController {
 			model.addAttribute("rrole",recommendRoleJson.get("role"));
 			model.addAttribute("rTextNum",recommendRoleJson.get("textNum"));
 			model.addAttribute("rImageNum",recommendRoleJson.get("imageNum"));
-			model.addAttribute("rGiftNum",recommendRoleJson.get("giftNum"));
+			model.addAttribute("rGiftNum",recommendRoleJson.get("gifNum"));
 			model.addAttribute("rTextWeight",recommendRoleJson.get("textWeight"));
 			model.addAttribute("rImageWeight",recommendRoleJson.get("imageWeight"));
-			model.addAttribute("rGiftWeight",recommendRoleJson.get("giftWeight"));
+			model.addAttribute("rGiftWeight",recommendRoleJson.get("gifWeight"));
 
 		}
 		return "/joke/publish";
