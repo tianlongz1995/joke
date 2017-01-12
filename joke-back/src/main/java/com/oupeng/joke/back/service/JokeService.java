@@ -486,7 +486,7 @@ public class JokeService {
 
 	/**
 	 * 添加发布规则
-	 * @param type
+	 * @param type  1:趣图、2:段子、3:推荐、4:精选
 	 * @param textNum
 	 * @param imageNum
 	 * @param giftNum
@@ -499,7 +499,7 @@ public class JokeService {
 		jsonObject.put("imageNum",imageNum);
 		jsonObject.put("giftNum",giftNum);
 		if(type == 1){ //纯文
-            jokeMapper.addPublishRole(10041,jsonObject.toString());
+			jokeMapper.addPublishRole(10041,jsonObject.toString());
 		}else if (type == 2){ //趣图
 			jokeMapper.addPublishRole(10042,jsonObject.toString());
 		}else if(type == 3){ //推荐
@@ -541,8 +541,8 @@ public class JokeService {
 	 * @param limit
 	 * @return
 	 */
-	public List<String> getJoke2PublishTextList(int type, int limit) {
-		return jokeMapper.getJoke2PublishTextList(type, limit);
+	public List<String> getJoke2PublishList(int type, int limit) {
+		return jokeMapper.getJoke2PublishList(type, limit);
     }
 
 	/**

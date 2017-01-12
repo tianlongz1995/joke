@@ -285,13 +285,13 @@ public interface JokeMapper {
 	 * @return
 	 */
 	@Select("select id from joke where audit = 0 and type = #{type} order by update_time desc limit #{limit}")
-    List<String> getJoke2PublishTextList(@Param("type")int type, @Param("limit")int limit);
+    List<String> getJoke2PublishList(@Param("type")int type, @Param("limit")int limit);
 
 	/**
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time =now(), audit = 1, verify_time=now(), verify_user= systemTask where id in (${idsStr})")
+	@Update("update joke set update_time =now(), audit = 1, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
 	void updateJoke2PublishTextStatus(@Param("idsStr")String idsStr);
 
 	/**

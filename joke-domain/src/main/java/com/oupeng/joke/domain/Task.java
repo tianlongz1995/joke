@@ -15,7 +15,7 @@ public class Task {
     private String policy;
     /** 任务执行规则 */
     private String cron;
-    /** 任务类型(1:文字段子、2:趣图、3:推荐、4:精选) */
+    /** 任务类型(1:趣图、2:文字段子、3:推荐、4:精选) */
     private Integer type;
 
     private JSONObject object;

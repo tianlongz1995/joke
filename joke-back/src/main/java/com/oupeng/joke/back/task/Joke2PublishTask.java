@@ -32,11 +32,11 @@ public class Joke2PublishTask implements Job{
 			Task task = (Task) context.getJobDetail().getJobDataMap().get("task");
 			TaskService taskService = (TaskService) context.getJobDetail().getJobDataMap().get("taskService");
 			switch (task.getType()){
-				case 1: // 发布文字段子
-					taskService.publishText(task);
-					break;
-				case 2: // 发布趣图
+				case 1: // 发布趣图
 					taskService.publishImage(task);
+					break;
+				case 2: // 发布文字段子
+					taskService.publishText(task);
 					break;
 				case 3: // 发布推荐数据
 					taskService.publishRecommend(task);
