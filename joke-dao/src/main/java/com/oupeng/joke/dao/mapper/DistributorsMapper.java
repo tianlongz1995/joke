@@ -131,4 +131,13 @@ public interface DistributorsMapper {
 	 */
 	@Select("select c.id, c.name, dc.sort from channels c left join distributors_channels dc on c.id = dc.c_id where dc.d_id = #{id} order by dc.sort asc")
 	List<Channels> getDistributorChannels(Integer id);
+
+
+	/**
+	 * 更新banner 显示不显示
+	 * @param bannerStatus
+	 */
+	@Update(value = "update channels set banner = #{bannerStatus} where id = #{id}")
+	void updateChannelsBanner(@Param(value = "bannerStatus") Integer bannerStatus,
+							  @Param(value = "id") Integer id);
 }
