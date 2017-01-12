@@ -3,9 +3,6 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
@@ -18,8 +15,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
+
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageWriteParam;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -554,5 +554,13 @@ public class JokeService {
 	 */
 	public void updateJoke2PublishTextStatus(String idsStr) {
 		jokeMapper.updateJoke2PublishTextStatus(idsStr);
+	}
+
+	/**
+	 * 获取段子2.0发布任务
+	 * @return
+	 */
+	public List<Task> getJoke2PublishTask() {
+		return jokeMapper.getJoke2PublishTask();
 	}
 }
