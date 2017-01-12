@@ -489,15 +489,21 @@ public class JokeService {
 	 * @param type  1:趣图、2:段子、3:推荐、4:精选
 	 * @param textNum
 	 * @param imageNum
-	 * @param giftNum
+	 * @param gifNum
+	 * @param textWeight
+	 * @param imageWeight
+	 * @param gifWeight
 	 */
-	public void addPublishRole(Integer type,String role,Integer textNum,Integer imageNum,Integer giftNum){
+	public void addPublishRole(Integer type,String role,Integer textNum,Integer imageNum,Integer gifNum,Integer textWeight,Integer imageWeight,Integer gifWeight){
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("role",role);
 		jsonObject.put("textNum",textNum);
 		jsonObject.put("imageNum",imageNum);
-		jsonObject.put("giftNum",giftNum);
+		jsonObject.put("gifNum",gifNum);
+		jsonObject.put("textWeight",textWeight);
+		jsonObject.put("imageWeight", imageWeight);
+		jsonObject.put("gifWeight",gifWeight);
 		if(type == 1){ //纯文
 			jokeMapper.addPublishRole(10041,jsonObject.toString());
 		}else if (type == 2){ //趣图

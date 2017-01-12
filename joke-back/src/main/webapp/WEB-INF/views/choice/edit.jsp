@@ -81,10 +81,10 @@
                                     <th>标题</th>
                                     <td>
                                         <c:if test="${empty choice.title}">
-                                            <input id="title" type="text" value="" style="width:100%;"  maxlength="10" class="form-control"/>
+                                            <input id="title" type="text" value="" style="width:100%;"   class="form-control"/>
                                         </c:if>
                                         <c:if test="${!empty choice.title}">
-                                            <input id="title" type="text" style="width:100%;"  value="${choice.title}" maxlength="10" class="form-control"/>
+                                            <input id="title" type="text" style="width:100%;"  value="${choice.title}"  class="form-control"/>
                                         </c:if>
                                     </td>
                                 </tr>

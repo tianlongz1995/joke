@@ -9,7 +9,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>内容源编辑</title>
+    <title>发布规则</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
@@ -89,6 +89,16 @@
                                         <input id="qGiftNum" type="number" class="form-control" value="${qGiftNum}" disabled="disabled"/>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>静图发布权重:</th>
+                                    <td><input id="qImageWeight" type="number" class="form-control" value="${qImageWeight}" disabled="disabled"/></td>
+                                </tr>
+                                <tr>
+                                    <th>动图发布数量:</th>
+                                    <td>
+                                        <input id="qGiftWeight" type="number" class="form-control" value="${qGiftWeight}" disabled="disabled"/>
+                                    </td>
+                                </tr>
                                 </thead>
                             </table>
                             <div id="qutuAdd" style="text-align: center;display: none;">
@@ -117,17 +127,35 @@
                                     <td><input id="tTextNum" type="number" class="form-control" value="${rTextNum}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>静图发布数量</th>
+                                    <th>静图发布数量:</th>
                                     <td>
                                         <input id="tImageNum" type="number" class="form-control" value="${rImageNum}" disabled="disabled"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>动图发布数量</th>
+                                    <th>动图发布数量:</th>
                                     <td>
                                         <input id="tGiftNum" type="number" class="form-control" value="${rGiftNum}" disabled="disabled"/>
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <th>纯文发布权重:</th>
+                                    <td><input id="tTextWeight" type="number" class="form-control" value="${rTextWeight}" disabled="disabled"/></td>
+                                </tr>
+                                <tr>
+                                    <th>静图发布权重:</th>
+                                    <td>
+                                        <input id="tImageWeight" type="number" class="form-control" value="${rImageWeight}" disabled="disabled"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>动图发布权重:</th>
+                                    <td>
+                                        <input id="tGiftWeight" type="number" class="form-control" value="${rGiftWeight}" disabled="disabled"/>
+                                    </td>
+                                </tr>
+
                                 </thead>
                             </table>
                             <div id="recommendAdd" style="text-align: center;display: none;">
@@ -192,24 +220,32 @@
                     var qTime = $("#qTime").val();
                     var qImageNum = $("#qImageNum").val();
                     var qGiftNum = $("#qGiftNum").val();
+                    var qImageWeight = $("#qImageWeight").val();
+                    var qGiftWeight = $("#qGiftWeight").val();
 
-                   if(qTime == ""){
-                       alert("趣图发布时间不能为空");
-                       return false;
-                   }
-                   if(qImageNum == "" || qImageNum < 0)
-                   {
-                       alert("静图发布数量不能为空,或者小于0");
-                       return false;
-                   }
-                    if(qGiftNum == "" || qGiftNum < 0)
-                    {
+                    if (qTime == "") {
+                        alert("趣图发布时间不能为空");
+                        return false;
+                    }
+                    if (qImageNum == "" || qImageNum < 0) {
+                        alert("静图发布数量不能为空,或者小于0");
+                        return false;
+                    }
+                    if (qGiftNum == "" || qGiftNum < 0) {
                         alert("动图发布数量不能为空,或者小于0");
+                        return false;
+                    }
+                    if(qImageWeight == "" || qImageNum < 0){
+                        alert("静图发布权重不能为空,或者小于0");
+                        return false;
+                    }
+                    if(qGiftWeight == "" || qGiftWeight < 0){
+                        alert("动图发布权重不能为空,或者小于0");
                         return false;
                     }
 
                     post('joke/addPublishRole',
-                            'type=2&role=' + qTime + '&imageNum=' + qImageNum + '&giftNum=' + qGiftNum,
+                            'type=2&role=' + qTime + '&imageNum=' + qImageNum + '&giftNum=' + qGiftNum +'&imageWeight=' +qImageWeight +'&giftWeight='+ qGiftWeight,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
@@ -230,6 +266,8 @@
                     $("#qTime").removeAttr('disabled');
                     $("#qImageNum").removeAttr('disabled');
                     $("#qGiftNum").removeAttr('disabled');
+                    $("#qGiftWeight").removeAttr('disabled');
+                    $("#qImageWeight").removeAttr('disabled');
                 };
 
                 function qutuHide() {
@@ -239,7 +277,9 @@
 
                     $("#qTime").attr('disabled','disabled');
                     $("#qImageNum").attr('disabled','disabled');
+                    $("#qImageWeight").attr('disabled','disabled');
                     $("#qGiftNum").attr('disabled','disabled');
+                    $("#qGiftWeight").attr('disabled','disabled');
                 };
 
                 /** --------------------推荐发布规则------------------ **/
@@ -249,6 +289,10 @@
                     var tTextNum = $("#tTextNum").val();
                     var tImageNum = $("#tImageNum").val();
                     var tGiftNum = $("#tGiftNum").val();
+
+                    var tTextWeight = $("#tTextWeight").val();
+                    var tImageWeight = $("#tImageWeight").val();
+                    var tGiftWeight = $("#tGiftWeight").val();
 
                     if(tTime == ""){
                         alert("推荐发布时间不能为空");
@@ -266,9 +310,21 @@
                         alert("动图发布数量不能为空,或者小于0");
                         return false;
                     }
+                    if(tTextWeight == "" || tTextWeight < 0){
+                        alert("纯文发布权重不能为空，或者小于0");
+                        return false;
+                    }
+                    if(tImageWeight == "" || tImageWeight < 0){
+                        alert("静图发布权重不能为空，或者小于0");
+                        return false;
+                    }
+                    if(tGiftNum == "" || tGiftWeight < 0){
+                        alert("动图发布权重不能为空，或者小于0")
+                        return false;
+                    }
 
                     post('joke/addPublishRole',
-                            'type=3&role=' + tTime + '&textNum=' + tTextNum + '&imageNum=' + tImageNum +'&giftNum=' +tGiftNum,
+                            'type=3&role=' + tTime + '&textNum=' + tTextNum + '&imageNum=' + tImageNum +'&giftNum=' +tGiftNum + "&imageWeight="+tImageWeight +'&textWeight='+tTextWeight+'&giftWeight='+tGiftWeight,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
@@ -288,8 +344,11 @@
 
                     $("#tTime").removeAttr('disabled');
                     $("#tTextNum").removeAttr('disabled');
+                    $("#tTextWeight").removeAttr('disabled');
                     $("#tImageNum").removeAttr('disabled');
+                    $("#tImageWeight").removeAttr('disabled');
                     $("#tGiftNum").removeAttr('disabled');
+                    $("#tGiftWeight").removeAttr('disabled');
                 };
 
                 function recommendHide() {
@@ -299,8 +358,11 @@
 
                     $("#tTime").attr('disabled','disabled');
                     $("#tTextNum").attr('disabled','disabled');
+                    $("#tTextWeight").attr('disabled','disabled');
                     $("#tImageNum").attr('disabled','disabled');
+                    $("#tImageWeight").attr('disabled','disabled');
                     $("#tGiftNum").attr('disabled','disabled');
+                    $("#tGiftWeight").attr('disabled','disabled');
                 };
 
                 function post(url, data, success, error) {
