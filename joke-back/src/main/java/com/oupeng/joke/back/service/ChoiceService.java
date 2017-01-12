@@ -179,9 +179,9 @@ public class ChoiceService {
      */
     public void updateChoiceStatus(Integer id,Integer status){
         Choice choice = choiceMapper.getChoiceById(id);
-        String choiceKey = JedisKey.STRING_CHOICE + id;
+        String choiceKey = JedisKey.STRING_JOKE + id;
         //精选id列表，缓存key
-        String choiceListKey = JedisKey.STRING_JOKE + 4;
+        String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         // 下线删除缓存
         if (status == 0) {
             jedisCache.del(choiceKey);
