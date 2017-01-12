@@ -7,6 +7,7 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.IndexResource;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
+import com.oupeng.joke.domain.Relate;
 import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.FormatUtil;
 import net.sf.ehcache.Cache;
@@ -164,7 +165,7 @@ public class IndexService {
         long start = System.currentTimeMillis();
         long s = (page - 1) * limit;
         long e = page * limit - 1;
-        Set<String> keys = jedisCache.zrevrange(JedisKey.SORTEDSET_COMMON_CHANNEL + cid, s , e);
+        Set<String> keys = jedisCache.zrevrange(JedisKey.JOKE_CHANNEL + cid, s , e);
         List<Joke> list = Lists.newArrayList();
         if(!CollectionUtils.isEmpty(keys)){
             for(String id : keys){
@@ -241,36 +242,49 @@ public class IndexService {
                         }
                     }
                 }
+            } else {
+                List<String> randoms = jedisCache.srandmember(key, 2);
+                if(!CollectionUtils.isEmpty(randoms) && randoms.size() == 2){
+                    joke.setLastId(Integer.valueOf(randoms.get(0)));
+                    joke.setNextId(Integer.valueOf(randoms.get(1)));
+                } else {
+                    log.error("渠道[{}]随机获取[{}]频道2条数据异常!", did, key);
+                }
             }
-            handleJokeDetail(joke); // 处理段子推荐信息
         }
         return joke;
     }
 
     /**
-     * 处理段子详情中推荐段子
-     *
-     * @param jokeDetail
+     * 获取推荐段子信息
+     * @param did
+     * @param cid
+     * @param jid
+     * @return
      */
-    private void handleJokeDetail(JokeDetail jokeDetail) {
-        //随机获取相关图片段子
+    public List<Relate> getJokeRelate(Integer did, Integer cid, Integer jid) {
+        List<Relate> relatedList = Lists.newArrayList();
         List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 4);
         if (!CollectionUtils.isEmpty(relatedImgIdList)) {
-            List<Joke> relatedImgList = Lists.newArrayList();
-            Joke joke = null;
+            Joke joke;
             for (String jokeId : relatedImgIdList) {
                 joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId), Joke.class);
                 if (joke != null) {
+                    Relate relate = new Relate();
+                    relate.setId(joke.getId());
+                    relate.setCid(1);
+                    relate.setType(joke.getType());
                     if (joke.getImg() != null) {
-                        joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
-                        joke.setImg(IMG_PREFIX + joke.getImg());
-                        joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
-                        joke.setWidth(200);
+                        relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
+//                        joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
+//                        joke.setImg(IMG_PREFIX + joke.getImg());
+//                        joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
+//                        joke.setWidth(200);
                     }
-                    relatedImgList.add(joke);
+                    relatedList.add(relate);
                 }
             }
-            jokeDetail.setRelatedImg(relatedImgList);
         }
+        return relatedList;
     }
 }

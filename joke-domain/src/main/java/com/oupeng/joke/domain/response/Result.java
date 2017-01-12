@@ -9,6 +9,7 @@ package com.oupeng.joke.domain.response;
 public class Result {
 	private int status;
 	private String info;
+	private String msg;
 	private Object data;
 	
 	public Result() {}
@@ -40,5 +41,13 @@ public class Result {
 
 	public void setData(Object data) {
 		this.data = data;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

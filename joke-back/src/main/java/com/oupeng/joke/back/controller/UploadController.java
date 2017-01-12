@@ -29,7 +29,7 @@ public class UploadController {
 		if(StringUtils.isBlank(result)){
 			return new Failed("图片上传失败");
 		}
-		return new Success(result, null);
+		return new Success(result);
 	}
 
 	@RequestMapping("/richText")
@@ -40,6 +40,6 @@ public class UploadController {
 		if(StringUtils.isBlank(result)){
 			return new Failed("图片上传失败");
 		}
-		return new Success(result, null);
+		return new Success(result);
 	}
 }

@@ -56,10 +56,6 @@ public class JedisKey {
     /** 段子资源配置 - 生产环境   */
     public static final String JOKE_RESOURCE_CONFIG_INDEX = "joke.resource.config.index";
 
-//    /** 渠道菜单配置信息Key    */
-//    public static final String JOKE_HASH_DISTRIBUTOR_MENU_CONFIG = "hash.joke.distributor.menu.config";
-
-
     /** 渠道配置信息Hash表key    */
     public static final String JOKE_DISTRIBUTOR_CONFIG = "joke.distributor.config";
 
@@ -92,6 +88,6 @@ public class JedisKey {
     public static final String SORTEDSET_CHOICE_LIST = "sortedset.choice.list";
     /** 验证码前缀 */
     public static final String VALIDATION_CODE_PREFIX = "validation.code.prefix.";
-    /** 段子缓存 */
+    /** 段子缓存(1:趣图、2:段子、3:推荐、4:精选) */
     public static final String JOKE_CHANNEL = "joke.channel.";
 }

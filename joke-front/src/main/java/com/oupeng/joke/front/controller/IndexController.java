@@ -3,6 +3,7 @@ package com.oupeng.joke.front.controller;
 
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
+import com.oupeng.joke.domain.Relate;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -55,7 +56,7 @@ public class IndexController {
      */
     @RequestMapping(value = "/joke2/list")
     @ResponseBody
-    public Result list(@RequestParam(value = "did", required = false, defaultValue = "0") Integer did,
+    public Result list(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                        @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
                        @RequestParam(value = "page", required = false, defaultValue = "10") Integer page,
                        @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
@@ -78,7 +79,7 @@ public class IndexController {
      */
     @RequestMapping(value = "/joke2/details")
     @ResponseBody
-    public Result details(@RequestParam(value = "did", required = false, defaultValue = "0") Integer did,
+    public Result details(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                           @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
                           @RequestParam(value = "jid", required = false, defaultValue = "10") Integer jid) {
         if(log.isDebugEnabled()){
@@ -91,4 +92,25 @@ public class IndexController {
         return new Success(detail);
     }
 
+    /**
+     * 段子推荐
+     * @param did
+     * @param cid
+     * @param jid
+     * @return
+     */
+    @RequestMapping(value = "/joke2/relate")
+    @ResponseBody
+    public Result relate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
+                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                         @RequestParam(value = "jid", required = false, defaultValue = "10") Integer jid) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]-[{}]-[{}]的请求!", did, cid, jid);
+        }
+        List<Relate> relates = indexService.getJokeRelate(did, cid, jid);
+        if(relates == null){
+            return new Failed("获取失败!");
+        }
+        return new Success(relates, relates.size());
+    }
 }
