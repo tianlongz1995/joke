@@ -52,13 +52,13 @@
                                     <td><input id="libJs" type="text" class="form-control" value="${index.libJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.js</th>
-                                    <td><input id="buildJs" type="text" class="form-control" value="${index.buildJs}" disabled="disabled"/></td>
+                                    <th>app.js</th>
+                                    <td><input id="appJs" type="text" class="form-control" value="${index.appJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.css</th>
+                                    <th>app.css</th>
                                     <td>
-                                        <input id="buildCss" type="text" class="form-control" value="${index.buildCss}" disabled="disabled"/>
+                                        <input id="appCss" type="text" class="form-control" value="${index.appCss}" disabled="disabled"/>
                                     </td>
                                 </tr>
                                 </thead>
@@ -86,13 +86,13 @@
                                     <td><input id="libJsBack" type="text" class="form-control" value="${back.libJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.js</th>
-                                    <td><input id="buildJsBack" type="text" class="form-control" value="${back.buildJs}" disabled="disabled"/></td>
+                                    <th>app.js</th>
+                                    <td><input id="appJsBack" type="text" class="form-control" value="${back.appJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.css</th>
+                                    <th>app.css</th>
                                     <td>
-                                        <input id="buildCssBack" type="text" class="form-control" value="${back.buildCss}" disabled="disabled"/>
+                                        <input id="appCssBack" type="text" class="form-control" value="${back.appCss}" disabled="disabled"/>
                                     </td>
                                 </tr>
                                 </thead>
@@ -120,13 +120,13 @@
                                     <td><input id="libJsTest" type="text" class="form-control" value="${test.libJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.js</th>
-                                    <td><input id="buildJsTest" type="text" class="form-control" value="${test.buildJs}" disabled="disabled"/></td>
+                                    <th>app.js</th>
+                                    <td><input id="appJsTest" type="text" class="form-control" value="${test.appJs}" disabled="disabled"/></td>
                                 </tr>
                                 <tr>
-                                    <th>build.css</th>
+                                    <th>app.css</th>
                                     <td>
-                                        <input id="buildCssTest" type="text" class="form-control" value="${test.buildCss}" disabled="disabled"/>
+                                        <input id="appCssTest" type="text" class="form-control" value="${test.appCss}" disabled="disabled"/>
                                     </td>
                                 </tr>
                                 </thead>
@@ -143,16 +143,16 @@
                 function indexAddSubmit() {
                     indexHide();
                     var libJs = $("#libJs").val();
-                    var buildJs = $("#buildJs").val();
-                    var buildCss = $("#buildCss").val();
+                    var appJs = $("#appJs").val();
+                    var appCss = $("#appCss").val();
 
-                    if(libJs == null || libJs.length < 1 || buildJs == null || buildJs.length < 1 || buildCss == null || buildCss.length < 1){
+                    if(libJs == null || libJs.length < 1 || appJs == null || appJs.length < 1 || appCss == null || appCss.length < 1){
                         alert("内容长度不符!");
                         return false;
                     }
 
                     post('resource/updateIndex',
-                            'type=1&libJs=' + libJs + '&buildJs=' + buildJs + '&buildCss=' + buildCss,
+                            'type=1&libJs=' + libJs + '&appJs=' + appJs + '&appCss=' + appCss,
                         function (data) {
                             if (data.status == 1) {
                                 alert("更新成功!");
@@ -170,8 +170,8 @@
                     $("#indexBtnHide").show();
                     $("#indexBtnEdit").hide();
                     $("#libJs").removeAttr('disabled');
-                    $("#buildJs").removeAttr('disabled');
-                    $("#buildCss").removeAttr('disabled');
+                    $("#appJs").removeAttr('disabled');
+                    $("#appCss").removeAttr('disabled');
                 };
 
                 function indexHide() {
@@ -179,23 +179,23 @@
                     $("#indexBtnEdit").show();
                     $("#indexBtnHide").hide();
                     $("#libJs").attr('disabled','disabled');
-                    $("#buildJs").attr('disabled','disabled');
-                    $("#buildCss").attr('disabled','disabled');
+                    $("#appJs").attr('disabled','disabled');
+                    $("#appCss").attr('disabled','disabled');
                 };
                 /** --------------------备份配置-2-------------------- **/
                 function indexBackAddSubmit() {
                     indexBackHide();
                     var libJs = $("#libJsBack").val();
-                    var buildJs = $("#buildJsBack").val();
-                    var buildCss = $("#buildCssBack").val();
+                    var appJs = $("#appJsBack").val();
+                    var appCss = $("#appCssBack").val();
 
-                    if(libJs == null || libJs.length < 1 || buildJs == null || buildJs.length < 1 || buildCss == null || buildCss.length < 1){
+                    if(libJs == null || libJs.length < 1 || appJs == null || appJs.length < 1 || appCss == null || appCss.length < 1){
                         alert("内容长度不符!");
                         return false;
                     }
 
                     post('resource/updateIndex',
-                            'type=2&libJs=' + libJs + '&buildJs=' + buildJs + '&buildCss=' + buildCss,
+                            'type=2&libJs=' + libJs + '&appJs=' + appJs + '&appCss=' + appCss,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
@@ -213,8 +213,8 @@
                     $("#indexBackBtnHide").show();
                     $("#indexBackBtnEdit").hide();
                     $("#libJsBack").removeAttr('disabled');
-                    $("#buildJsBack").removeAttr('disabled');
-                    $("#buildCssBack").removeAttr('disabled');
+                    $("#appJsBack").removeAttr('disabled');
+                    $("#appCssBack").removeAttr('disabled');
                 };
 
                 function indexBackHide() {
@@ -222,24 +222,24 @@
                     $("#indexBackBtnEdit").show();
                     $("#indexBackBtnHide").hide();
                     $("#libJsBack").attr('disabled','disabled');
-                    $("#buildJsBack").attr('disabled','disabled');
-                    $("#buildCssBack").attr('disabled','disabled');
+                    $("#appJsBack").attr('disabled','disabled');
+                    $("#appCssBack").attr('disabled','disabled');
                 };
 
                 /** --------------------测试配置--3------------------- **/
                 function indexTestAddSubmit() {
                     indexTestHide();
                     var libJs = $("#libJsTest").val();
-                    var buildJs = $("#buildJsTest").val();
-                    var buildCss = $("#buildCssTest").val();
+                    var appJs = $("#appJsTest").val();
+                    var appCss = $("#appCssTest").val();
 
-                    if(libJs == null || libJs.length < 1 || buildJs == null || buildJs.length < 1 || buildCss == null || buildCss.length < 1){
+                    if(libJs == null || libJs.length < 1 || appJs == null || appJs.length < 1 || appCss == null || appCss.length < 1){
                         alert("内容长度不符!");
                         return false;
                     }
 
                     post('resource/updateIndex',
-                            'type=3&libJs=' + libJs + '&buildJs=' + buildJs + '&buildCss=' + buildCss,
+                            'type=3&libJs=' + libJs + '&appJs=' + appJs + '&appCss=' + appCss,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
@@ -257,8 +257,8 @@
                     $("#indexTestBtnHide").show();
                     $("#indexTestBtnEdit").hide();
                     $("#libJsTest").removeAttr('disabled');
-                    $("#buildJsTest").removeAttr('disabled');
-                    $("#buildCssTest").removeAttr('disabled');
+                    $("#appJsTest").removeAttr('disabled');
+                    $("#appCssTest").removeAttr('disabled');
                 };
 
                 function indexTestHide() {
@@ -266,8 +266,8 @@
                     $("#indexTestBtnEdit").show();
                     $("#indexTestBtnHide").hide();
                     $("#libJsTest").attr('disabled','disabled');
-                    $("#buildJsTest").attr('disabled','disabled');
-                    $("#buildCssTest").attr('disabled','disabled');
+                    $("#appJsTest").attr('disabled','disabled');
+                    $("#appCssTest").attr('disabled','disabled');
                 };
 
                 function post(url, data, success, error) {

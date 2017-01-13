@@ -2,19 +2,15 @@ package com.oupeng.joke.front.controller;
 
 
 import com.oupeng.joke.domain.Banner;
-import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.Relate;
-import com.oupeng.joke.domain.response.Failed;
-import com.oupeng.joke.domain.response.Result;
-import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.domain.Result;
 import com.oupeng.joke.front.service.IndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,7 +35,7 @@ public class IndexController {
      * @return
      */
     @RequestMapping(value = "/joke/index.html")
-    public String getRecommendList(@RequestParam(value = "did", required = false, defaultValue = "0") String did, Model model) {
+    public String index(@RequestParam(value = "did", required = false, defaultValue = "2") String did, Model model) {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]的请求!", did);
         }
@@ -64,11 +60,7 @@ public class IndexController {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]的请求!", did);
         }
-        List<Joke> list = indexService.list(did, cid, page, limit);
-        if(CollectionUtils.isEmpty(list)){
-            return new Failed("获取失败!");
-        }
-        return new Success(list, list.size());
+        return indexService.list(did, cid, page, limit);
     }
 
     /**
@@ -88,9 +80,9 @@ public class IndexController {
         }
         JokeDetail detail = indexService.getJokeDetail(did, cid, jid);
         if(detail == null){
-            return new Failed("获取失败!");
+            return new Result("获取失败!", 1);
         }
-        return new Success(detail);
+        return new Result(detail);
     }
 
     /**
@@ -110,9 +102,9 @@ public class IndexController {
         }
         List<Relate> relates = indexService.getJokeRelate(did, cid, jid);
         if(relates == null){
-            return new Failed("获取失败!");
+            return new Result("获取失败!", 1);
         }
-        return new Success(relates, relates.size());
+        return new Result(relates);
     }
     /**
      * 获取banner列表
@@ -124,8 +116,7 @@ public class IndexController {
     public Result getBannerList(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                                 @RequestParam(value = "cid") Integer cid){
 
-        List<Banner> bannerList = indexService.getBannerList(cid);
-        return new Success(bannerList);
+        return indexService.getBannerList(cid);
     }
 
 }

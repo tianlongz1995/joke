@@ -8,12 +8,9 @@ public class IndexResource {
     /** libJs    */
     private String libJs;
     /** buildJs    */
-    private String buildJs;
+    private String appJs;
     /** buildCss    */
-    private String buildCss;
-//    /** IndexConfig String    */
-//    private String config;
-
+    private String appCss;
 
     public String getLibJs() {
         return libJs;
@@ -23,27 +20,19 @@ public class IndexResource {
         this.libJs = libJs;
     }
 
-    public String getBuildJs() {
-        return buildJs;
+    public String getAppJs() {
+        return appJs;
     }
 
-    public void setBuildJs(String buildJs) {
-        this.buildJs = buildJs;
+    public void setAppJs(String appJs) {
+        this.appJs = appJs;
     }
 
-    public String getBuildCss() {
-        return buildCss;
+    public String getAppCss() {
+        return appCss;
     }
 
-    public void setBuildCss(String buildCss) {
-        this.buildCss = buildCss;
+    public void setAppCss(String appCss) {
+        this.appCss = appCss;
     }
-
-//    public String getConfig() {
-//        return config;
-//    }
-//
-//    public void setConfig(String config) {
-//        this.config = config;
-//    }
 }

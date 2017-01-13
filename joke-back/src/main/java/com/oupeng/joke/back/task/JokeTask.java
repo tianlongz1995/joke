@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.oupeng.joke.domain.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,18 @@ public class JokeTask {
 				joke.setUpdateTime(null);
 				joke.setVerifyTime(null);
 				joke.setVerifyUser(null);
+
+				if(joke.getCommentNumber() != null
+						&& joke.getCommentContent() != null
+						&& joke.getAvata() != null
+						&& joke.getNick() != null){
+					joke.setComment(new Comment(joke.getCommentNumber(), joke.getCommentContent(), joke.getAvata(),joke.getNick()));
+					joke.setCommentNumber(null);
+					joke.setCommentContent(null);
+					joke.setAvata(null);
+					joke.setNick(null);
+				}
+
 				jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
 				if(joke.getType() == Constants.JOKE_TYPE_TEXT){
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_TEXT, String.valueOf(joke.getId()));

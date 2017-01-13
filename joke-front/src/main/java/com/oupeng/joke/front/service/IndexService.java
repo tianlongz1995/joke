@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.Banner;
-import com.oupeng.joke.domain.IndexResource;
-import com.oupeng.joke.domain.Joke;
-import com.oupeng.joke.domain.JokeDetail;
-import com.oupeng.joke.domain.Relate;
+import com.oupeng.joke.domain.*;
+import com.oupeng.joke.domain.response.Failed;
+import com.oupeng.joke.domain.response.Success;
 import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.FormatUtil;
 import net.sf.ehcache.Cache;
@@ -163,10 +161,11 @@ public class IndexService {
      * @param limit
      * @return
      */
-    public List<Joke> list(Integer did, Integer cid, Integer page, Integer limit) {
+    public Result list(Integer did, Integer cid, Integer page, Integer limit) {
         long start = System.currentTimeMillis();
         long s = (page - 1) * limit;
         long e = page * limit - 1;
+        Long size = jedisCache.zcard(JedisKey.JOKE_CHANNEL + cid);
         Set<String> keys = jedisCache.zrevrange(JedisKey.JOKE_CHANNEL + cid, s , e);
         List<Joke> list = Lists.newArrayList();
         if(!CollectionUtils.isEmpty(keys)){
@@ -176,10 +175,16 @@ public class IndexService {
                     list.add(joke);
                 }
             }
+            if(CollectionUtils.isEmpty(list)){
+                return new Result("获取数据为空!", 2);
+            }
+        } else {
+            return new Result("获取数据为空!", 1);
         }
+
         long end = System.currentTimeMillis();
-        log.info("getPictures 总耗时:{}, 获取key:{}, 获取value:{}", FormatUtil.getTimeStr(end-start));
-        return list;
+        log.debug("获取列表页数据 - 总耗时:{}, did:{}, cid:{}, page:{}, limit:{}", FormatUtil.getTimeStr(end-start), did, cid, page, limit);
+        return new Result(size.intValue(), list);
 
     }
     /**
@@ -296,19 +301,25 @@ public class IndexService {
      * @param cid
      * @return
      */
-    public List<Banner> getBannerList(Integer cid) {
+    public Result getBannerList(Integer cid) {
         String key = JedisKey.JOKE_BANNER + cid;
+        Long size = jedisCache.zcard(JedisKey.JOKE_BANNER + cid);
         Set<String> bannerSet = jedisCache.zrange(key, 0, -1);
         List<Banner> bannerList = new ArrayList<>();
         Banner banner;
         if(!CollectionUtils.isEmpty(bannerSet)){
-            for(String b:bannerSet){
+            for(String b: bannerSet){
                 banner = JSON.parseObject(jedisCache.get(JedisKey.STRING_BANNER + b),Banner.class);
                 if(null != banner){
                     bannerList.add(banner);
                 }
             }
+            if(CollectionUtils.isEmpty(bannerList)){
+                return new Result("获取数据为空!", 2);
+            }
+        } else {
+            return new Result("获取数据为空!", 1);
         }
-        return bannerList;
+        return new Result(size.intValue(), bannerList);
     }
 }

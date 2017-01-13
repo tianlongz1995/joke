@@ -39,46 +39,46 @@ public class ResourceService {
     /**
      * 更新配置项
      * @param libJs
-     * @param buildJs
-     * @param buildCss
+     * @param appJs
+     * @param appCss
      * @param type
      * @return
      */
-    public boolean updateIndex(String libJs, String buildJs, String buildCss, int type) {
+    public boolean updateIndex(String libJs, String appJs, String appCss, int type) {
         if(StringUtils.isBlank(libJs) || libJs.length() < 1 || libJs.length() > 30 ||
-                StringUtils.isBlank(buildJs) || buildJs.length() < 1 || buildJs.length() > 30 ||
-                StringUtils.isBlank(buildCss) || buildCss.length() < 1 || buildCss.length() > 30){
+                StringUtils.isBlank(appJs) || appJs.length() < 1 || appJs.length() > 30 ||
+                StringUtils.isBlank(appCss) || appCss.length() < 1 || appCss.length() > 30){
             return false;
         }
         IndexResource indexResource = new IndexResource();
         if(type == 1){
             resourceMapper.updateIndex(libJs, "10011", "10010");
-            resourceMapper.updateIndex(buildJs, "10012", "10010");
-            resourceMapper.updateIndex(buildCss, "10013", "10010");
+            resourceMapper.updateIndex(appJs, "10012", "10010");
+            resourceMapper.updateIndex(appCss, "10013", "10010");
             indexResource.setLibJs(libJs);
-            indexResource.setBuildJs(buildJs);
-            indexResource.setBuildCss(buildCss);
+            indexResource.setAppJs(appJs);
+            indexResource.setAppCss(appCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_INDEX, JSON.toJSONString(indexResource));
 
 //        更新首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_INDEX, type));
         } else if(type == 2){
             resourceMapper.updateIndex(libJs, "10021", "10020");
-            resourceMapper.updateIndex(buildJs, "10022", "10020");
-            resourceMapper.updateIndex(buildCss, "10023", "10020");
+            resourceMapper.updateIndex(appJs, "10022", "10020");
+            resourceMapper.updateIndex(appCss, "10023", "10020");
             indexResource.setLibJs(libJs);
-            indexResource.setBuildJs(buildJs);
-            indexResource.setBuildCss(buildCss);
+            indexResource.setAppJs(appJs);
+            indexResource.setAppCss(appCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_BACK, JSON.toJSONString(indexResource));
 //        更新首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_BACK, type));
         } else if(type == 3){
             resourceMapper.updateIndex(libJs, "10031", "10030");
-            resourceMapper.updateIndex(buildJs, "10032", "10030");
-            resourceMapper.updateIndex(buildCss, "10033", "10030");
+            resourceMapper.updateIndex(appJs, "10032", "10030");
+            resourceMapper.updateIndex(appCss, "10033", "10030");
             indexResource.setLibJs(libJs);
-            indexResource.setBuildJs(buildJs);
-            indexResource.setBuildCss(buildCss);
+            indexResource.setAppJs(appJs);
+            indexResource.setAppCss(appCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_TEST, JSON.toJSONString(indexResource));
 //        更新首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_TEST, type));

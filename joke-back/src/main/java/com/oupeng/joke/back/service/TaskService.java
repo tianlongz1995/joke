@@ -69,7 +69,7 @@ public class TaskService {
             List<Task> tasks = jokeService.getJoke2PublishTask();
             if(!CollectionUtils.isEmpty(tasks)){
                 for(Task task : tasks){
-                    if(task.getPolicy() != null && task.getType() == 3){ // TODO task.getType() == 1 是测试用
+                    if(task.getPolicy() != null){
                         JSONObject jsonObject = JSON.parseObject(task.getPolicy());
                         task.setObject(jsonObject);
                         task.setCron(jsonObject.getString("role"));
@@ -77,7 +77,6 @@ public class TaskService {
                     }
                 }
             }
-
 
         } catch (SchedulerException e) {
             log.error("任务服务启动异常:" + e.getMessage(), e);
@@ -167,7 +166,7 @@ public class TaskService {
             }
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 2, map);
             // 更新已发布状态
-            jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
+            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
         }
         long end = System.currentTimeMillis();
         log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
@@ -248,7 +247,7 @@ public class TaskService {
         if(map != null && map.size() > 0){
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 1, map);
             // 更新已发布状态
-            jokeService.updateJoke2PublishTextStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
+            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
         }
         long end = System.currentTimeMillis();
         log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount+gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());

@@ -48,16 +48,19 @@ public class Joke {
 	private String shareUrl;
 	/** 评论数量(commentNumber)	*/
 	@JsonInclude(Include.NON_NULL)
-	private Integer cn;
+	private Integer commentNumber;
 	/** 评论内容	*/
 	@JsonInclude(Include.NON_NULL)
-	private String c;
+	private String commentContent;
 	/** 用户头像URL	*/
 	@JsonInclude(Include.NON_NULL)
-	private String a;
+	private String avata;
 	/** 昵称	*/
 	@JsonInclude(Include.NON_NULL)
-	private String n;
+	private String nick;
+	/** 评论	*/
+	@JsonInclude(Include.NON_NULL)
+	private Comment comment;
 
 	public Integer getId() {
 		return id;
@@ -189,35 +192,43 @@ public class Joke {
 		this.shareUrl = shareUrl;
 	}
 
-	public Integer getCn() {
-		return cn;
+	public Integer getCommentNumber() {
+		return commentNumber;
 	}
 
-	public void setCn(Integer cn) {
-		this.cn = cn;
+	public void setCommentNumber(Integer commentNumber) {
+		this.commentNumber = commentNumber;
 	}
 
-	public String getC() {
-		return c;
+	public String getCommentContent() {
+		return commentContent;
 	}
 
-	public void setC(String c) {
-		this.c = c;
+	public void setCommentContent(String commentContent) {
+		this.commentContent = commentContent;
 	}
 
-	public String getA() {
-		return a;
+	public String getAvata() {
+		return avata;
 	}
 
-	public void setA(String a) {
-		this.a = a;
+	public void setAvata(String avata) {
+		this.avata = avata;
 	}
 
-	public String getN() {
-		return n;
+	public String getNick() {
+		return nick;
 	}
 
-	public void setN(String n) {
-		this.n = n;
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 }

@@ -284,7 +284,7 @@ public interface JokeMapper {
 	 * @param limit
 	 * @return
 	 */
-	@Select("select id from joke where audit = 0 and type = #{type} order by update_time desc limit #{limit}")
+	@Select("select id from joke where audit = 1 and type = #{type} order by update_time desc limit #{limit}")
     List<String> getJoke2PublishList(@Param("type")int type, @Param("limit")int limit);
 
 	/**
@@ -292,7 +292,7 @@ public interface JokeMapper {
 	 * @param idsStr
 	 */
 	@Update("update joke set update_time =now(), audit = 1, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
-	void updateJoke2PublishTextStatus(@Param("idsStr")String idsStr);
+	void updateJoke2PublishStatus(@Param("idsStr")String idsStr);
 
 	/**
 	 * 获取段子2.0发布任务

@@ -61,28 +61,6 @@ public class ResourceController {
 								@RequestParam(value="pageSize",required=false)Integer pageSize,
 								Model model){
 
-//		IndexResource index = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_PRO), IndexResource.class);
-//		if(index == null){
-//			index = resourceService.getIndexResource();
-//			if(index != null){
-//				jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_PRO, JSON.toJSONString(index));
-//			}
-//		}
-//		IndexResource back = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-//		if(back == null){
-//			back = resourceService.getIndexResourceBack();
-//			if(back != null){
-//				jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_BACK, JSON.toJSONString(back));
-//			}
-//		}
-//		IndexResource test = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_TEST), IndexResource.class);
-//		if(test == null){
-//			test = resourceService.getIndexResourceTest();
-//			if(test != null){
-//				jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_TEST, JSON.toJSONString(test));
-//			}
-//		}
-
 		IndexResource index = resourceService.getIndexResource();
 		IndexResource back = resourceService.getIndexResourceBack();
 		IndexResource test = resourceService.getIndexResourceTest();
@@ -99,13 +77,13 @@ public class ResourceController {
 	@ResponseBody
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Result updateIndex(@RequestParam(value="libJs")String libJs,
-						@RequestParam(value="buildJs")String buildJs,
-						@RequestParam(value="buildCss")String buildCss,
+						@RequestParam(value="appJs")String appJs,
+						@RequestParam(value="appCss")String appCss,
 						@RequestParam(value="type")Integer type){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		logger.debug("----------------------UserDetails:{}",userDetails.getUsername());
 		if(userDetails.getUsername().equals("admin")){
-			if(resourceService.updateIndex(libJs, buildJs, buildCss, type)){
+			if(resourceService.updateIndex(libJs, appJs, appCss, type)){
 				return new Success();
 			}
 			return new Failed("参数无效");

@@ -17,22 +17,15 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
-    <link href="http://s.opfed.com/joke_new/prd/${index.buildCss}.css" rel='stylesheet' type='text/css'>
-    <script>
-        var _czc = _czc || [];
-        _czc.push(["_setAccount", "1260890126"]);
-    </script>
+    <link href="http://s.opfed.com/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="app"></div>
 <script>
-    var config = ${config};
+    var navInfo = ${config};
 </script>
 <script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
-<script src="http://s.opfed.com/joke_new/prd/${index.buildJs}.js"></script>
-<script src="http://s.opfed.com/joke_new/prd/${index.libJs}.js"></script>
-<div style="display: none;">
-    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260890126'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1260890126' type='text/javascript'%3E%3C/script%3E"));</script>
-</div>
+<script src="http://s.opfed.com/joke_new/prd/${index.libJs}"></script>
+<script src="http://s.opfed.com/joke_new/prd/${index.appJs}"></script>
 </body>
 </html>
