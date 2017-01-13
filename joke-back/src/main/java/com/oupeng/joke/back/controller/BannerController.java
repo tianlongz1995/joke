@@ -149,11 +149,13 @@ public class BannerController {
                          @RequestParam(value = "jid")     Integer jid,
                          @RequestParam(value = "type")    Integer type,
                          @RequestParam(value = "adId")    Integer adId) {
-        boolean result = bannerService.updateBanner(id, title, cid, img, content,jid,type,adId);
-        if (result) {
+        Banner banner = bannerService.getBannerById(id);
+        //下线的banner可以编辑
+        if (banner.getStatus() == 0) {
+            bannerService.updateBanner(id, title, cid, img, content, jid, type, adId);
             return new Success("更新成功!");
         } else {
-            return new Failed("更新失败!");
+            return new Failed("更新失败!上线banner无法编辑");
         }
     }
 

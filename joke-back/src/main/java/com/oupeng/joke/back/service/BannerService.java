@@ -100,20 +100,17 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content,Integer jid,Integer type,Integer adId) {
+    public void updateBanner(Integer id, String title, Integer cid, String img, String content,Integer jid,Integer type,Integer adId) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
         banner.setCid(cid);
-        //TODO 禁止图片处理
-        //内容上传图片
         banner.setImg(img);
         banner.setContent(content);
         banner.setJid(jid);
         banner.setType(type);
         banner.setAdid(adId);
         bannerMapper.updateBanner(banner);
-        return true;
     }
 
 //    public String handleImg(String imgUrl){

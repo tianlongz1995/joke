@@ -143,23 +143,28 @@ public class ChoiceController {
                          @RequestParam(value = "title")   String title,
                          @RequestParam(value = "content") String content,
                          @RequestParam(value = "image") String image){
-       List<String> tempUrl = choiceService.getImgUrl(content);
-       List<String> realUrl;
-        if (!CollectionUtils.isEmpty(tempUrl)) {
-            // 下载图片
-            realUrl = choiceService.downloadImg(tempUrl);
-            if (realUrl.size() == tempUrl.size()) {
-                // 1.替换图片地址为服务器上图片地址
-                for (int i = 0; i < realUrl.size(); i++) {
-                    content = content.replace(tempUrl.get(i), realUrl.get(i));
-                }
-            } else {
-                return new Failed("更新失败");
-            }
-        }
-        // 2.更新到数据库
-        choiceService.updateChoice(id,title,content,image);
-        return new Success("更新成功!");
+        Choice choice = choiceService.getChoiceById(id);
+       if(choice.getStatus()== 0) {
+           List<String> tempUrl = choiceService.getImgUrl(content);
+           List<String> realUrl;
+           if (!CollectionUtils.isEmpty(tempUrl)) {
+               // 下载图片
+               realUrl = choiceService.downloadImg(tempUrl);
+               if (realUrl.size() == tempUrl.size()) {
+                   // 1.替换图片地址为服务器上图片地址
+                   for (int i = 0; i < realUrl.size(); i++) {
+                       content = content.replace(tempUrl.get(i), realUrl.get(i));
+                   }
+               } else {
+                   return new Failed("更新失败");
+               }
+           }
+           // 2.更新到数据库
+           choiceService.updateChoice(id, title, content, image);
+           return new Success("更新成功!");
+       }else{
+           return new Failed("更新失败,上线精选，不允许编辑");
+       }
     }
 
 
