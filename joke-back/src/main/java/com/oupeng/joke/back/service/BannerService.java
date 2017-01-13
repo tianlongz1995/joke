@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
+import com.oupeng.joke.dao.mapper.DistributorsMapper;
 import com.oupeng.joke.domain.Banner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class BannerService {
     private BannerMapper bannerMapper;
     @Autowired
     private JedisCache jedisCache;
+    @Autowired
+    private DistributorsMapper distributorsMapper;
 
     /**
      * 新增banner
@@ -182,6 +185,14 @@ public class BannerService {
             bannerMapper.updateBannerStatus(id, status);
             jedisCache.set(bannerKey, JSON.toJSONString(banner));
             jedisCache.zadd(bannerListKey,System.currentTimeMillis(),Integer.toString(id));
+        }
+        //修改channel中banner状态
+       Long bannerCount = jedisCache.zcard(bannerListKey);
+//        （0：不显示、1：显示）
+        if(bannerCount == 0){
+            distributorsMapper.updateChannelsBanner(0,banner.getCid());
+        }else{
+            distributorsMapper.updateChannelsBanner(1,banner.getCid());
         }
       return  true;
     }
