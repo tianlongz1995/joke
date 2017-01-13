@@ -59,8 +59,8 @@ public class IndexController {
     @ResponseBody
     public Result list(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                        @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
-                       @RequestParam(value = "page", required = false, defaultValue = "10") Integer page,
-                       @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+                       @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                       @RequestParam(value = "limit", required = false, defaultValue = "30") Integer limit) {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]的请求!", did);
         }
@@ -68,7 +68,7 @@ public class IndexController {
         if(CollectionUtils.isEmpty(list)){
             return new Failed("获取失败!");
         }
-        return new Success(list);
+        return new Success(list, list.size());
     }
 
     /**
@@ -121,17 +121,11 @@ public class IndexController {
      */
     @RequestMapping(value = "/joke2/banner")
     @ResponseBody
-    public Result getBannerList(@RequestParam(value = "cid") Integer cid){
+    public Result getBannerList(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
+                                @RequestParam(value = "cid") Integer cid){
 
         List<Banner> bannerList = indexService.getBannerList(cid);
         return new Success(bannerList);
     }
 
-    @RequestMapping(value = "/joke2/relate")
-    @ResponseBody
-    public Result getRelateList(@RequestParam(value = "did") Integer did,
-                                @RequestParam(value = "jid") Integer jid,
-                                @RequestParam(value = "cid") Integer cid){
-        return new Success();
-    }
 }

@@ -1,37 +1,47 @@
 package com.oupeng.joke.domain;
 
 public class Channels {
-	/**	主键	*/
-	private Integer id;
+	/**	主键	ID*/
+	private Integer i;
 	/**	频道名称	*/
-	private String name;
+	private String n;
 	/**	排序位置	*/
-	private Integer sort;
+	private Integer s;
+	/**	banner位置状态	*/
+	private Boolean b;
 
 	public Channels() {
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getI() {
+		return i;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setI(Integer i) {
+		this.i = i;
 	}
 
-	public String getName() {
-		return name;
+	public String getN() {
+		return n;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setN(String n) {
+		this.n = n;
 	}
 
-	public Integer getSort() {
-		return sort;
+	public Integer getS() {
+		return s;
 	}
 
-	public void setSort(Integer sort) {
-		this.sort = sort;
+	public void setS(Integer s) {
+		this.s = s;
+	}
+
+	public Boolean getB() {
+		return b;
+	}
+
+	public void setB(Boolean b) {
+		this.b = b;
 	}
 }

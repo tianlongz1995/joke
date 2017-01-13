@@ -129,7 +129,7 @@ public interface DistributorsMapper {
 	 * 获取渠道下频道已配置频道列表
 	 * @return
 	 */
-	@Select("select c.id, c.name, dc.sort from channels c left join distributors_channels dc on c.id = dc.c_id where dc.d_id = #{id} order by dc.sort asc")
+	@Select("select c.id as i, c.name as n, dc.sort as s, c.banner as b from channels c left join distributors_channels dc on c.id = dc.c_id where dc.d_id = #{id} order by dc.sort asc")
 	List<Channels> getDistributorChannels(Integer id);
 
 
