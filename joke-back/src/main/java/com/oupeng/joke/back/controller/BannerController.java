@@ -34,8 +34,8 @@ public class BannerController {
      * @return
      */
     @RequestMapping(value = "/list")
-    public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
-                                @RequestParam(value = "cid", required = false) Integer cid,
+    public String getBannerList(@RequestParam(value = "status", required = false,defaultValue = "1") Integer status,
+                                @RequestParam(value = "cid", required = false,defaultValue = "1") Integer cid,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
@@ -149,11 +149,13 @@ public class BannerController {
                          @RequestParam(value = "jid")     Integer jid,
                          @RequestParam(value = "type")    Integer type,
                          @RequestParam(value = "adId")    Integer adId) {
-        boolean result = bannerService.updateBanner(id, title, cid, img, content,jid,type,adId);
-        if (result) {
+        Banner banner = bannerService.getBannerById(id);
+        //下线的banner可以编辑
+        if (banner.getStatus() == 0) {
+            bannerService.updateBanner(id, title, cid, img, content, jid, type, adId);
             return new Success("更新成功!");
         } else {
-            return new Failed("更新失败!");
+            return new Failed("更新失败!上线banner无法编辑");
         }
     }
 
@@ -171,6 +173,14 @@ public class BannerController {
         return new Success("删除成功!");
     }
 
+    /**
+     * 上线下线
+     * 上线，1修改排序值，2增加缓存
+     * 下线，1重新排序，2删除缓存
+     * @param id
+     * @param status
+     * @return
+     */
     @RequestMapping(value = "offlineOnline")
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id")Integer id,

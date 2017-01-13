@@ -46,7 +46,7 @@ public interface BannerMapper {
      * @param id banner id
      * @return
      */
-    @Select(value="select id,title,jid,type,img,cid,adid,status,content,"
+    @Select(value="select id,title,jid,type,img,sort,cid,adid,status,content,"
             + "create_time as createTime,update_time as updateTime from banner where id = #{id}")
     Banner getBannerById(Integer id);
 
@@ -79,7 +79,8 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select(value = "SELECT id ,cid, sort FROM banner WHERE cid = #{cid} ORDER BY sort ASC")
+    @Select(value = "SELECT id,title,jid,type,sort,img,cid,adid,status,content,"
+            + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and status = 1 ORDER BY sort ASC")
     List<Banner> getBannerMoveList(Integer cid);
     /**
      * 更新banner排序值
@@ -91,11 +92,11 @@ public interface BannerMapper {
                           @Param(value = "sort")Integer sort);
 
     /**
-     * 获取频道下banner最大的排序值
+     * 获取频道下已上线的banner最大的排序值
      * @param cid
      * @return
      */
-    @Select("select sort from banner  WHERE cid = #{cid}  ORDER BY sort desc LIMIT 1")
+    @Select("select sort from banner  WHERE cid = #{cid} and status = 1 ORDER BY sort desc LIMIT 1")
     Integer getMaxSortByCid(Integer cid);
 
 }

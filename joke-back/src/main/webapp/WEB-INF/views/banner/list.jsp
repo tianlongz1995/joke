@@ -73,7 +73,7 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input" id="statusSearch" onchange="search()">
-                                            <option value="">全部</option>
+                                            <%--<option value="">全部</option>--%>
                                             <option value="0"
                                                     <c:if test="${!empty status && status == 0}">selected</c:if> >下线
                                             </option>
@@ -89,7 +89,7 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input" id="cidSearch" onchange="search()">
-                                            <option value="">全部</option>
+                                            <%--<option value="">全部</option>--%>
                                             <option value="1"
                                                     <c:if test="${!empty cid && cid == 1}">selected</c:if> >段子
                                             </option>
@@ -174,20 +174,21 @@
                                                    onclick="offlineOnline(0,${banner.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
-                                            </c:if>
-                                            <c:if test="${ not empty cid}">
-                                                <c:if test="${firstElement != banner.id}">
+                                                <c:if test="${ not empty cid}">
+                                                    <c:if test="${firstElement != banner.id}">
+                                                        <a class="btn btn-success btn-sm" href="#"
+                                                           onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
+                                                            <i class="glyphicon glyphicon-arrow-up"></i> 上移
+                                                        </a>
+                                                    </c:if>
+
                                                     <a class="btn btn-success btn-sm" href="#"
-                                                       onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
-                                                        <i class="glyphicon glyphicon-arrow-up"></i> 上移
+                                                       onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
+                                                        <i class="glyphicon glyphicon-arrow-down"></i> 下移
                                                     </a>
                                                 </c:if>
-
-                                                <a class="btn btn-success btn-sm" href="#"
-                                                   onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
-                                                    <i class="glyphicon glyphicon-arrow-down"></i> 下移
-                                                </a>
                                             </c:if>
+
                                         </td>
                                     </tr>
                                 </c:forEach>
