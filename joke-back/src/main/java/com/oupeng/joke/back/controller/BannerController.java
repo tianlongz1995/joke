@@ -34,8 +34,8 @@ public class BannerController {
      * @return
      */
     @RequestMapping(value = "/list")
-    public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
-                                @RequestParam(value = "cid", required = false) Integer cid,
+    public String getBannerList(@RequestParam(value = "status", required = false,defaultValue = "1") Integer status,
+                                @RequestParam(value = "cid", required = false,defaultValue = "1") Integer cid,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
@@ -171,6 +171,14 @@ public class BannerController {
         return new Success("删除成功!");
     }
 
+    /**
+     * 上线下线
+     * 上线，1修改排序值，2增加缓存
+     * 下线，1重新排序，2删除缓存
+     * @param id
+     * @param status
+     * @return
+     */
     @RequestMapping(value = "offlineOnline")
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id")Integer id,
