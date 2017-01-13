@@ -31,12 +31,11 @@
 						<li><a href="distributors/list"><span> 2.0渠道管理</span></a></li>
 					</ul>
 				</li>
-				<li class="accordion">
-					<a href="#"><i class="glyphicon glyphicon-th-large"></i><span> 频道管理</span></a>
-					<ul class="nav nav-pills nav-stacked">
-						<li><a href="channel/list"><span> 1.0频道管理</span></a></li>
-						<li><a href="channel/list"><span> 2.0频道审核</span></a></li>
-					</ul>
+				<li>
+					<a class="ajax-link" href="channel/list">
+						<i class="glyphicon glyphicon-th-large"></i>
+						<span> 频道管理</span>
+					</a>
 				</li>
                 <li>
                     <a class="ajax-link" href="topic/list">
@@ -57,6 +56,12 @@
 						<span>精选管理</span>
 					</a>
 				</li>
+				<li>
+					<a class="ajax-link" href="resource/index">
+						<i class="glyphicon glyphicon-link"></i>
+						<span> 首页配置</span>
+					</a>
+				</li>
 
                 <li>
                 	<a class="ajax-link" href="ad/list">
@@ -70,14 +75,6 @@
 						<li><a href="source/list"><span> 内容源列表</span></a></li>
 						<li><a href="source/crawl?sourceType=1"><span> 抓取统计</span></a></li>
 						<li><a href="source/quality?sourceType=1"><span> 审核质量统计</span></a></li>
-					</ul>
-                </li>
-				<li class="accordion">
-					<a href="#"><i class="glyphicon glyphicon-link"></i><span> 资源管理</span></a>
-					<ul class="nav nav-pills nav-stacked">
-						<li><a href="resource/index"><span> 首页升级</span></a></li>
-						<li><a href="resource/banner"><span> 横幅管理</span></a></li>
-						<li><a href="resource/select"><span> 精选管理</span></a></li>
 					</ul>
                 </li>
                 <li>

@@ -86,8 +86,15 @@ public class JokeService {
         }
     }
 
+	/**
+	 * 修改审核状态
+	 * @param status
+	 * @param ids
+	 * @param user
+	 */
 	public void verifyJoke(Integer status,String ids,String user){
 		if(status != Constants.JOKE_STATUS_VALID){
+//			审核不通过
 			String[] jokeIds = ids.split(",");
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
@@ -100,6 +107,7 @@ public class JokeService {
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
 		}
+//		审核通过
 		jokeMapper.updateJokeStatus(status, ids, user);
 	}
 	

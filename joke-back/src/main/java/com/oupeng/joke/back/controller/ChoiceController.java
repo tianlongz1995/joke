@@ -70,6 +70,13 @@ public class ChoiceController {
         return "/choice/list";
     }
 
+    /**
+     * 添加精选
+     * @param title
+     * @param content
+     * @param image
+     * @return
+     */
     @RequestMapping(value = "add")
     @ResponseBody
     public Result addChoice(@RequestParam(value = "title") String title,
