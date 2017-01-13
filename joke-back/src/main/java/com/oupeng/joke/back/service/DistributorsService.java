@@ -161,6 +161,7 @@ public class DistributorsService {
 			ad.setCreateTime(null);
 			ad.setUpdateBy(null);
 			ad.setUpdateTime(null);
+			ad.setDid(null);
 			d.setAds(ad);
 			jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, id.toString(), JSON.toJSONString(d));
 //		删除应用内缓存 - 用来刷新

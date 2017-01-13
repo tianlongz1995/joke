@@ -26,7 +26,7 @@
 <body>
 <div id="app"></div>
 <script>
-    var distributorConfig = ${config};
+    var config = ${config};
 </script>
 <script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
 <script src="http://s.opfed.com/joke_new/prd/${index.buildJs}.js"></script>

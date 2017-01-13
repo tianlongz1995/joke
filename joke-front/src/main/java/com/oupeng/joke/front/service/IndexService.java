@@ -276,6 +276,7 @@ public class IndexService {
                     relate.setId(joke.getId());
                     relate.setCid(1);
                     relate.setType(joke.getType());
+                    relate.setTxt(joke.getTitle());
                     if (joke.getImg() != null) {
                         relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
 //                        joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
