@@ -189,7 +189,7 @@ public class JokeSqlProvider {
 		Object currentUpdateTime = map.get("cut");
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select  id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime, ");
-		sql.append(" create_time as createTime,update_time as updateTime,good,bad,width,height,comment_number as cn, comment as c, avata as a, nick as n from joke where `status` not in (0,2) ");
+		sql.append(" create_time as createTime,update_time as updateTime,good,bad,width,height,comment_number as commentNumber, comment as commentContent, avata, nick from joke where `status` not in (0,2) ");
 		if(lastUpdateTime != null){
 			sql.append(" and update_time > '").append(lastUpdateTime).append("' ");
 		}

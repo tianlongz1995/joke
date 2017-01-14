@@ -569,10 +569,9 @@ public class JokeService {
 
 //		更新缓存中的段子评论数
 		Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),Joke.class);
-		if(joke.getCommentNumber() == null){
-			joke.setCommentNumber(0);
-		} else {
-			joke.setCommentNumber(joke.getCommentNumber() + 1);
+		if(joke.getComment() != null){
+		    Comment comment = joke.getComment();
+            comment.setTotal(comment.getTotal() + 1);
 		}
 		jedisCache.set(JedisKey.STRING_JOKE + jid, JSON.toJSONString(joke));
     	return true;

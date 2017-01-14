@@ -36,7 +36,7 @@ public class IndexService {
     /** 默认did */
     private static final String DEFAULT_DID = "0";
     /** 图片前缀 */
-    private static String IMG_PREFIX = "http://joke-img.adbxb.cn/";
+    private static String IMG_PREFIX = "http://joke-img.adbxb.cn";
 
     @Autowired
     private JedisCache jedisCache;
@@ -198,6 +198,11 @@ public class IndexService {
         if(element == null){
             joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
             if(joke != null){
+                if(joke.getComment() != null && joke.getComment().getAvata() != null){
+                    Comment comment = joke.getComment();
+                    comment.setAvata(IMG_PREFIX + comment.getAvata());
+//                    joke.setComment(comment);
+                }
                 picturesCache.put(new Element(cid+id, joke));
             }
         } else {
