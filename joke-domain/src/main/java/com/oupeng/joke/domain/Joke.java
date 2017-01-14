@@ -20,6 +20,7 @@ public class Joke {
 	private Integer width;
 	@JsonInclude(Include.NON_NULL)
 	private Integer height;
+    /** (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)     */
 	@JsonInclude(Include.NON_NULL)
 	private Integer type;
 	@JsonInclude(Include.NON_NULL)
@@ -44,8 +45,12 @@ public class Joke {
 	private String uuid;
 	@JsonInclude(Include.NON_NULL)
 	private Integer sort;
+    /** 分享网址 */
 	@JsonInclude(Include.NON_NULL)
 	private String shareUrl;
+    /** 来源网址	*/
+    @JsonInclude(Include.NON_NULL)
+    private String src;
 	/** 评论数量(commentNumber)	*/
 	@JsonInclude(Include.NON_NULL)
 	private Integer commentNumber;
@@ -231,4 +236,12 @@ public class Joke {
 	public void setComment(Comment comment) {
 		this.comment = comment;
 	}
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
 }

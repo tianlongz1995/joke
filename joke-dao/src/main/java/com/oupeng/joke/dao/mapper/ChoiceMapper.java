@@ -52,7 +52,7 @@ public interface ChoiceMapper {
      * @param id
      * @return
      */
-    @Select(value = "select id,title,img,status,content,create_time,update_time from choice where id = #{id}")
+    @Select(value = "select id, title, img, status, content, width, height, good, bad from choice where id = #{id}")
     Choice getChoiceById(Integer id);
 
 

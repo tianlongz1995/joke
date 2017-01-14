@@ -47,7 +47,7 @@ public class IndexService {
     @Autowired
     private CacheManager cacheManager;
 
-    private Cache picturesCache;
+//    private Cache picturesCache;
 
     @PostConstruct
     public void initConstants() {
@@ -72,7 +72,7 @@ public class IndexService {
             }
         }
 
-        picturesCache = cacheManager.getCache("pictures");
+//        picturesCache = cacheManager.getCache("pictures");
     }
 
     /**
@@ -193,21 +193,24 @@ public class IndexService {
      * @return
      */
     public Joke getJoke(String id, Integer cid) {
-        Element element = picturesCache.get(cid+id);
-        Joke joke;
-        if(element == null){
+//        Element element = picturesCache.get(cid+id);
+            Joke joke;
+//        if(element == null){
             joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
             if(joke != null){
+                joke.setImg(IMG_PREFIX + joke.getImg());
+                if(cid == 4){
+                    joke.setContent(null);
+                }
                 if(joke.getComment() != null && joke.getComment().getAvata() != null){
                     Comment comment = joke.getComment();
                     comment.setAvata(IMG_PREFIX + comment.getAvata());
-//                    joke.setComment(comment);
                 }
-                picturesCache.put(new Element(cid+id, joke));
+//                picturesCache.put(new Element(cid+id, joke));
             }
-        } else {
-            joke = (Joke) element.getObjectValue();
-        }
+//        } else {
+//            joke = (Joke) element.getObjectValue();
+//        }
         return joke;
     }
 
@@ -239,10 +242,10 @@ public class IndexService {
                             if(seq == 0){
                                 joke.setLastId(Integer.valueOf(jokeLastId));
                             }
-                            seq++;
                             if(seq == 2){
                                 joke.setNextId(Integer.valueOf(jokeLastId));
                             }
+                            seq++;
                         }
                     }
                 } else {
@@ -255,10 +258,14 @@ public class IndexService {
                     }
                 }
             } else {
-                List<String> randoms = jedisCache.srandmember(key, 2);
+                List<String> randoms = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 2);
                 if(!CollectionUtils.isEmpty(randoms) && randoms.size() == 2){
-                    joke.setLastId(Integer.valueOf(randoms.get(0)));
-                    joke.setNextId(Integer.valueOf(randoms.get(1)));
+                    if(!randoms.get(0).equals(String.valueOf(jid))){
+                        joke.setLastId(Integer.valueOf(randoms.get(0)));
+                    }
+                    if(!randoms.get(1).equals(String.valueOf(jid))){
+                        joke.setNextId(Integer.valueOf(randoms.get(1)));
+                    }
                 } else {
                     log.error("渠道[{}]随机获取[{}]频道2条数据异常!", did, key);
                 }
@@ -271,10 +278,9 @@ public class IndexService {
      * 获取推荐段子信息
      * @param did
      * @param cid
-     * @param jid
      * @return
      */
-    public List<Relate> getJokeRelate(Integer did, Integer cid, Integer jid) {
+    public List<Relate> getJokeRelate(Integer did, Integer cid) {
         List<Relate> relatedList = Lists.newArrayList();
         List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 4);
         if (!CollectionUtils.isEmpty(relatedImgIdList)) {
@@ -289,10 +295,6 @@ public class IndexService {
                     relate.setTxt(joke.getTitle());
                     if (joke.getImg() != null) {
                         relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
-//                        joke.setImg(joke.getImg().replace("_600x_", "_200x_"));
-//                        joke.setImg(IMG_PREFIX + joke.getImg());
-//                        joke.setHeight(FormatUtil.getHeight(joke.getHeight(), joke.getWidth(), 200));
-//                        joke.setWidth(200);
                     }
                     relatedList.add(relate);
                 }

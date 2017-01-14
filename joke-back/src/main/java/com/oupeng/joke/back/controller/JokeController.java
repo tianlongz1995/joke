@@ -2,14 +2,23 @@ package com.oupeng.joke.back.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.oupeng.joke.back.service.JokeService;
+import com.oupeng.joke.back.service.MailService;
 import com.oupeng.joke.back.service.SourceService;
+import com.oupeng.joke.back.util.FormatUtil;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.quartz.CronExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,16 +26,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Controller
 @RequestMapping(value="/joke")
 public class JokeController {
-	
-	@Autowired
+    private static final Logger log = LoggerFactory.getLogger(DistributorsController.class);
+
+    @Autowired
 	private JokeService jokeService;
 	@Autowired
 	private SourceService sourceService;
+    @Autowired
+    private JedisCache jedisCache;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private Environment env;
+
+    /**
+     * 验证码收件人
+     */
+    private String recipient;
+    @PostConstruct
+    public void init(){
+        String re = env.getProperty("joke.delete.recipient");
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(re)){
+            recipient = re;
+        }
+    }
 
 	/**
 	 * 待审核段子列表
@@ -201,7 +230,8 @@ public class JokeController {
      */
 	@RequestMapping(value = "addPublishRole")
 	@ResponseBody
-	public Result addPublishRole( @RequestParam(value = "role")   String role,
+	public Result addPublishRole( @RequestParam(value = "code")   String code,
+                                  @RequestParam(value = "role")   String role,
                                   @RequestParam(value = "type")   Integer type,
 								  @RequestParam(value = "textNum",required = false) Integer textNum,
 								  @RequestParam(value = "imageNum",required = false)  Integer imageNum,
@@ -209,15 +239,57 @@ public class JokeController {
 								  @RequestParam(value = "textWeight",required = false) Integer textWeight,
 								  @RequestParam(value = "imageWeight",required = false)Integer imageWeight,
 								  @RequestParam(value = "giftWeight",required = false)Integer giftWeight){
-		//验证cron表达式
+
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+	    //验证cron表达式
 		if(!CronExpression.isValidExpression(role)){
 			return new Failed("发布时间验证不通过!");
 		}else{
-             jokeService.addPublishRole(type,role,textNum,imageNum,giftNum,textWeight,imageWeight,giftWeight);
-			return new Success("添加成功");
+            String vCode = jedisCache.get(JedisKey.VALIDATION_CODE_PREFIX + username);
+            if(vCode != null && code.equals(vCode)){
+                //			删除验证码缓存
+                jedisCache.del(JedisKey.VALIDATION_CODE_PREFIX + username);
+                jokeService.addPublishRole(type,role,textNum,imageNum,giftNum,textWeight,imageWeight,giftWeight);
+                return new Success("添加成功");
+            } else {
+                return new Failed("验证码异常!");
+            }
 		}
 	}
 
+    /**
+     * 获取验证码
+     * @return
+     */
+    @RequestMapping(value="/getValidationCode", produces = {"application/json"})
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Result getValidationCode(){
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        String code = FormatUtil.getRandomValidationCode();
+        jedisCache.setAndExpire(JedisKey.VALIDATION_CODE_PREFIX + username, code, 60 * 5);
+        mailService.sendMail(recipient, "段子后台验证码", "验证码:【"+code+"】;您正在使用段子后台修改数据。");
+        log.info("用户[{}]使用段子后台发送验证码, 收件人:[{}]", username, recipient);
+        return new Success("验证码发送成功!");
+    }
+
+    /**
+     * 获取当前登录用户名
+     * @return
+     */
+    private String getUserName() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userDetails != null && userDetails.getUsername() != null){
+            return userDetails.getUsername();
+        }
+        return null;
+    }
 	/**
 	 * 新增评论数量记录
 	 * @param jid

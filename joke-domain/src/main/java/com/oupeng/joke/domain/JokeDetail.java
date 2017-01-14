@@ -14,6 +14,7 @@ public class JokeDetail {
 	private String img;
 	@JsonInclude(Include.NON_NULL)
 	private String gif;
+    /** (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)     */
 	@JsonInclude(Include.NON_NULL)
 	private Integer type;
 	@JsonInclude(Include.NON_NULL)

@@ -15,7 +15,17 @@ public class Choice {
     @JsonInclude(Include.NON_NULL)
     private String content;
     @JsonInclude(Include.NON_NULL)
+    private Integer type;
+    @JsonInclude(Include.NON_NULL)
     private Integer status;
+    @JsonInclude(Include.NON_NULL)
+    private Integer good;
+    @JsonInclude(Include.NON_NULL)
+    private Integer bad;
+    @JsonInclude(Include.NON_NULL)
+    private Integer width;
+    @JsonInclude(Include.NON_NULL)
+    private Integer height;
     @JsonInclude(Include.NON_NULL)
     private String createTime;
     @JsonInclude(Include.NON_NULL)
@@ -75,5 +85,45 @@ public class Choice {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getGood() {
+        return good;
+    }
+
+    public void setGood(Integer good) {
+        this.good = good;
+    }
+
+    public Integer getBad() {
+        return bad;
+    }
+
+    public void setBad(Integer bad) {
+        this.bad = bad;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }

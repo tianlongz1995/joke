@@ -58,7 +58,7 @@
                                 </thead>
                             </table>
                             <div id="textAdd" style="text-align: center;display: none;">
-                                <button onclick="addTextPublishRole()"  type="button" class="btn btn-info" data-dismiss="modal">提交</button>
+                                <button onclick="modifyStatus(1)"  type="button" class="btn btn-info" data-dismiss="modal">提交</button>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                                 </thead>
                             </table>
                             <div id="qutuAdd" style="text-align: center;display: none;">
-                                <button onclick="addQuTuPublishRole()" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
+                                <button onclick="modifyStatus(2)" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
                             </div>
                         </div>
                     </div>
@@ -159,17 +159,57 @@
                                 </thead>
                             </table>
                             <div id="recommendAdd" style="text-align: center;display: none;">
-                                <button onclick="addRecommendPublishRole()" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
+                                <button onclick="modifyStatus(3)" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
                             </div>
                         </div>
                     </div>
                 </div><!-- box col-md-12 end -->
             </div><!-- row end -->
 
+            <div class="modal fade" id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">修改渠道状态</h4>
+                        </div>
+                        <div class="modal-body form-inline">
+                            <input id="editType" type="hidden" value=""/>
+                            请输入验证码 : <input id="editCode" type="text" class="form-control input-sm" style="width: 150px;" placeholder="5分钟内有效"/>
+                            &nbsp;
+                            <button id="sendCode" type="button" class="btn btn-default btn-sm" onclick="sendValidationCode()">获取验证码</button>
+                        </div>
+                        <div class="modal-footer" style="text-align: center;">
+                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="confirmEdit()">修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script type="text/javascript">
 
+                function modifyStatus(type) {
+                    $("#sendCode").removeAttr("disabled");
+                    $("#editCode").val('');
+                    $("#editType").val(type);
+                    $('#editStatusModal').modal('show');
+                };
+
+                function confirmEdit() {
+                    var type = $("#editType").val();
+                    if(type == 1){
+                        addTextPublishRole();
+                    } else if (type == 2){
+                        addQuTuPublishRole();
+                    } else if (type == 3){
+                        addRecommendPublishRole();
+                    }
+                };
+                
                 /** --------------------纯文发布规则配置-------------------- **/
                 function addTextPublishRole() {
+                    var code = $("#editCode").val();
                     textHide();
                     var jTime = $("#jTime").val();
                     var jNum = $("#jNum").val();
@@ -185,10 +225,11 @@
                     }
 
                     post('joke/addPublishRole',
-                            'type=1&role=' + jTime + '&textNum=' + jNum,
+                            'type=1&role=' + jTime + '&textNum=' + jNum +'&code=' + code,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
+                                    $('#editStatusModal').modal('hide');
                                 } else {
                                     alert('更新失败:' + data.info);
                                 }
@@ -217,6 +258,7 @@
                 /** --------------------趣图发布规则配置-------------------- **/
                 function addQuTuPublishRole() {
                     qutuHide();
+                    var code = $("#editCode").val();
                     var qTime = $("#qTime").val();
                     var qImageNum = $("#qImageNum").val();
                     var qGiftNum = $("#qGiftNum").val();
@@ -245,12 +287,28 @@
                     }
 
                     post('joke/addPublishRole',
-                            'type=2&role=' + qTime + '&imageNum=' + qImageNum + '&giftNum=' + qGiftNum +'&imageWeight=' +qImageWeight +'&giftWeight='+ qGiftWeight,
+                            'type=2&role=' + qTime + '&imageNum=' + qImageNum + '&giftNum=' + qGiftNum +'&imageWeight=' +qImageWeight +'&giftWeight='+ qGiftWeight +'&code=' + code,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
+                                    $('#editStatusModal').modal('hide');
                                 } else {
                                     alert('更新失败:' + data.info);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
+                };
+
+                function sendValidationCode() {
+                    $("#sendCode").attr("disabled", "disabled");
+                    post('joke/getValidationCode', {},
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert(data.info);
+                                } else {
+                                    alert('操作失败:' + data.info);
                                 }
                             },
                             function () {
@@ -285,6 +343,7 @@
                 /** --------------------推荐发布规则------------------ **/
                 function addRecommendPublishRole() {
                     recommendHide();
+                    var code = $("#editCode").val();
                     var tTime = $("#tTime").val();
                     var tTextNum = $("#tTextNum").val();
                     var tImageNum = $("#tImageNum").val();
@@ -324,10 +383,11 @@
                     }
 
                     post('joke/addPublishRole',
-                            'type=3&role=' + tTime + '&textNum=' + tTextNum + '&imageNum=' + tImageNum +'&giftNum=' +tGiftNum + "&imageWeight="+tImageWeight +'&textWeight='+tTextWeight+'&giftWeight='+tGiftWeight,
+                            'type=3&role=' + tTime + '&textNum=' + tTextNum + '&imageNum=' + tImageNum +'&giftNum=' +tGiftNum + "&imageWeight="+tImageWeight +'&textWeight='+tTextWeight+'&giftWeight='+tGiftWeight +'&code=' + code,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("更新成功!");
+                                    $('#editStatusModal').modal('hide');
                                 } else {
                                     alert('更新失败:' + data.info);
                                 }

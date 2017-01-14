@@ -5,6 +5,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
+import com.oupeng.joke.domain.IndexItem;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -34,6 +35,8 @@ public class ChoiceService {
     private Environment env;
     @Autowired
     private JedisCache jedisCache;
+    @Autowired
+    private IndexCacheFlushService indexCacheFlushService;
 
     /**
      * 统计精选总条数
@@ -187,9 +190,10 @@ public class ChoiceService {
             jedisCache.del(choiceKey);
             jedisCache.zrem(choiceListKey,Integer.toString(id));
         }else{
-            //增加缓存
+            //增加缓存 - 上线
+            choice.setType(3);
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
-            jedisCache.zadd(choiceListKey,System.currentTimeMillis(),id.toString());
+            jedisCache.zadd(choiceListKey, System.currentTimeMillis(), id.toString());
         }
          choiceMapper.updateChoiceStatus(id,status);
     }

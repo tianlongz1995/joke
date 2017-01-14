@@ -1,7 +1,6 @@
 package com.oupeng.joke.front.controller;
 
 
-import com.oupeng.joke.domain.Banner;
 import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.Relate;
 import com.oupeng.joke.domain.Result;
@@ -29,7 +28,7 @@ public class IndexController {
     private IndexService indexService;
 
     /**
-     * 推荐接口
+     * 首页
      *
      * @param did  渠道id
      * @return
@@ -89,18 +88,16 @@ public class IndexController {
      * 段子推荐
      * @param did
      * @param cid
-     * @param jid
      * @return
      */
     @RequestMapping(value = "/joke2/relate")
     @ResponseBody
     public Result relate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
-                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
-                         @RequestParam(value = "jid", required = false, defaultValue = "10") Integer jid) {
+                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid) {
         if(log.isDebugEnabled()){
-            log.debug("收到来自渠道[{}]-[{}]-[{}]的请求!", did, cid, jid);
+            log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }
-        List<Relate> relates = indexService.getJokeRelate(did, cid, jid);
+        List<Relate> relates = indexService.getJokeRelate(did, cid);
         if(relates == null){
             return new Result("获取失败!", 1);
         }

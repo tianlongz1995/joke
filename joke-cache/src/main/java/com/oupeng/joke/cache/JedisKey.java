@@ -81,9 +81,6 @@ public class JedisKey {
     public static final String INDEX_CACHE_BACK= "back";
     /** 首页缓存-测试Key */
     public static final String INDEX_CACHE_TEST = "test";
-
-    /**choice 缓存*/
-    public static final String STRING_CHOICE = "string.choice.";
     /** choice 列表*/
     public static final String SORTEDSET_CHOICE_LIST = "sortedset.choice.list";
     /** 验证码前缀 */
