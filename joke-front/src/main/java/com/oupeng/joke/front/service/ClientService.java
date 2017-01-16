@@ -23,16 +23,11 @@ import java.util.*;
 @Service
 public class ClientService {
 
-    @Autowired
-    private JedisCache jedisCache;
-    @Autowired
-    private Environment env;
-
     private static final String PNG = ".png";
     private static final String JPG = ".jpg";
+    private static final String SHAREURLPREFIX = "http://joke.oupeng.com/#!";
     private static String IMG_REAL_SERVER_URL = null;
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
-    private static final String SHAREURLPREFIX = "http://joke.oupeng.com/#!";
     /**
      * 赞信息列表
      */
@@ -41,6 +36,20 @@ public class ClientService {
      * 踩信息列表
      */
     private static Logger logger = LoggerFactory.getLogger(ClientService.class);
+    @Autowired
+    private JedisCache jedisCache;
+    @Autowired
+    private Environment env;
+
+    /**
+     * 修改图片后缀
+     *
+     * @param img
+     * @return
+     */
+    private static String png2jpg(String img) {
+        return img.replace(PNG, JPG);
+    }
 
     @PostConstruct
     public void initConstants() {
@@ -161,9 +170,6 @@ public class ClientService {
                     joke.setImg(png2jpg(IMG_REAL_SERVER_URL + joke.getImg()));
                     joke.setGif(IMG_REAL_SERVER_URL + joke.getGif());
                 }
-                if (StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184) {
-                    joke.setContent(joke.getContent().substring(0, 184));
-                }
                 list.add(joke);
                 //专题分享
                 joke.setShareUrl(SHAREURLPREFIX+"/cid/22/tid/"+tid);
@@ -189,6 +195,9 @@ public class ClientService {
     public void addLike(int id) {
         addLikeIds.add(String.valueOf(id));
     }
+
+
+    //TODO 请求旧数据，保存排序值
 
     /**
      * 下拉操作：获取缓存最新数据
@@ -252,14 +261,11 @@ public class ClientService {
                         joke.setImg(png2jpg(IMG_REAL_SERVER_URL + joke.getImg()));
                         joke.setGif(IMG_REAL_SERVER_URL + joke.getGif());
                     }
-                    if (StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184) {
-                        joke.setContent(joke.getContent().substring(0, 184));
-                    }
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle())) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -278,10 +284,6 @@ public class ClientService {
         }
         return list;
     }
-
-
-    //TODO 请求旧数据，保存排序值
-
 
     /**
      * 上拉操作：获取缓存数据
@@ -332,16 +334,13 @@ public class ClientService {
                         joke.setImg(png2jpg(IMG_REAL_SERVER_URL + joke.getImg()));
                         joke.setGif(IMG_REAL_SERVER_URL + joke.getGif());
                     }
-                    if (StringUtils.isNotBlank(joke.getContent()) && joke.getContent().length() > 184) {
-                        joke.setContent(joke.getContent().substring(0, 184));
-                    }
                     //设置排序值，便于下次请求，请求旧数据
                     joke.setSort(sort--);
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        if (StringUtils.isEmpty(joke.getTitle())) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -360,7 +359,6 @@ public class ClientService {
         return list;
     }
 
-
     /**
      * 下拉操作：获取缓存最新数据
      *
@@ -371,7 +369,7 @@ public class ClientService {
      */
     private List<Topic> getNewTopicCacheList(String key, String uid, Integer cacheType) {
         //请求最新的500条数据
-        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 499L);
+        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 0L);
 
         if (CollectionUtils.isEmpty(topicIdSet)) {
             return null;
@@ -417,7 +415,7 @@ public class ClientService {
         checkViewedJokeNum(userViewRecordKey);
         List<Topic> list = Lists.newArrayList();
         Topic topic;
-        System.out.println(CollectionUtils.isEmpty(noRepeatedList));
+//        System.out.println(CollectionUtils.isEmpty(noRepeatedList));
         if (!CollectionUtils.isEmpty(noRepeatedList)) {
             for (String topicId : noRepeatedList) {
                 topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId), Topic.class);
@@ -487,16 +485,6 @@ public class ClientService {
         }
 
         return list;
-    }
-
-    /**
-     * 修改图片后缀
-     *
-     * @param img
-     * @return
-     */
-    private static String png2jpg(String img) {
-        return img.replace(PNG, JPG);
     }
 
     /**
