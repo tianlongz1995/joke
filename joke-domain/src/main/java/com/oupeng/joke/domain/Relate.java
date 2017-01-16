@@ -17,6 +17,8 @@ public class Relate {
     private String img;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String txt;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer slot;
 
     public Integer getId() {
         return id;
@@ -56,5 +58,13 @@ public class Relate {
 
     public void setTxt(String txt) {
         this.txt = txt;
+    }
+
+    public Integer getSlot() {
+        return slot;
+    }
+
+    public void setSlot(Integer slot) {
+        this.slot = slot;
     }
 }

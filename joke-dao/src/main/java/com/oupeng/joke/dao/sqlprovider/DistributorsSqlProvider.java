@@ -1,6 +1,5 @@
 package com.oupeng.joke.dao.sqlprovider;
 
-import com.oupeng.joke.domain.AdConfig;
 import com.oupeng.joke.domain.Ads;
 import com.oupeng.joke.domain.Distributor;
 import org.apache.commons.lang3.StringUtils;
@@ -149,6 +148,11 @@ public class DistributorsSqlProvider {
             sql.append(" db = ").append(ads.getDb()).append(",");
         } else {
             sql.append(" db = 0 ,");
+        }
+        if (ads.getDr() != null) {
+            sql.append(" dr = ").append(ads.getDr()).append(",");
+        } else {
+            sql.append(" dr = 0 ,");
         }
         if (ads.getDi() != null) {
             sql.append(" di = ").append(ads.getDi());

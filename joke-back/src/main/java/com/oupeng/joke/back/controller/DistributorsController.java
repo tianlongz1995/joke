@@ -5,7 +5,6 @@ import com.oupeng.joke.back.service.MailService;
 import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.AdConfig;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
@@ -232,12 +231,13 @@ public class DistributorsController {
 					   @RequestParam(value="dc", required=false)Integer dc,
 					   @RequestParam(value="db", required=false)Integer db,
 					   @RequestParam(value="di", required=false)Integer di,
-					   @RequestParam(value="s", required=false)Integer s){
+					   @RequestParam(value="s", required=false)Integer s,
+					   @RequestParam(value = "dr",required = false) Integer dr){
 		String username = getUserName();
 		if(username == null){
 			return new Failed("登录信息失效,请重新登录!");
 		}
-		distributorsService.edit(id, name, status, username, channelIds, s, lc, lb, dt, dc, db, di);
+		distributorsService.edit(id, name, status, username, channelIds, s, lc, lb, dt, dc, db, di,dr);
 		return new Success();
 	}
 

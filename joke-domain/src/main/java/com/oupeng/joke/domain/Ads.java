@@ -25,6 +25,8 @@ public class Ads {
     private Integer db;
     /**	详情页插屏 detailsInterstitial	*/
     private Integer di;
+    /**详情页推荐广告 detailsRecommendAd*/
+    private Integer dr;
     /**	创建时间	*/
     private Date createTime;
     /**	创建人	*/
@@ -137,5 +139,13 @@ public class Ads {
 
     public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public Integer getDr() {
+        return dr;
+    }
+
+    public void setDr(Integer dr) {
+        this.dr = dr;
     }
 }

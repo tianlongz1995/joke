@@ -122,7 +122,7 @@ public class DistributorsService {
 	 * @param status
 	 * @param channelIds
 	 */
-	public void edit(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di) {
+	public void edit(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dr) {
 		Distributor distributors = new Distributor();
 		distributors.setId(id);
 		distributors.setName(name);
@@ -151,6 +151,7 @@ public class DistributorsService {
 		ad.setDc(dc);
 		ad.setDb(db);
 		ad.setDi(di);
+		ad.setDr(dr);
 		ad.setS(s);
 		ad.setDid(id);
 		ad.setUpdateBy(username);

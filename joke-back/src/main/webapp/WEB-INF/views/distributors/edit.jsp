@@ -147,6 +147,13 @@
                                                 <th>详情页插屏</th>
                                                 <th colspan="2"><input id="detailsInterstitial" name="adsValue" type="text" class="form-control input-sm" value="${ads.di}"/></th>
                                             </tr>
+
+                                            <tr>
+                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.dr}">checked="checked"</c:if>></th>
+                                                <th>详情页推荐广告</th>
+                                                <th colspan="2"><input id="detailsRecommendAd" name="adsValue" type="text" class="form-control input-sm" value="${ads.dr}"/></th>
+
+                                            </tr>
                                         </table>
                                     </td>
                                 </tr>
@@ -216,6 +223,8 @@
                                 ads = ads + '&db=' + adsValue[i].value;
                             } else if(i == 5){
                                 ads = ads + '&di=' + adsValue[i].value;
+                            }else if(i == 6){
+                                ads = ads + '&dr=' + adsValue[i].value;
                             }
                         }
                     }
