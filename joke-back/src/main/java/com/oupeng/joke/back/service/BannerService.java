@@ -42,9 +42,11 @@ public class BannerService {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
-        String urlPrefix = env.getProperty("show_image_path");
-        img = img.replace(urlPrefix,"");
-        banner.setImg(img);
+        String newImg = handleImg(img);
+        if(StringUtils.isBlank(newImg)){
+            return false;
+        }
+        banner.setImg(newImg);
         banner.setTitle(title);
         banner.setCid(cid);
         banner.setJid(jid);
@@ -106,17 +108,29 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public void updateBanner(Integer id, String title, Integer cid, String img, String content,Integer jid,Integer type,Integer adId) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content,Integer jid,Integer type,Integer adId) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
         banner.setCid(cid);
-        banner.setImg(img);
+        //重新上传的图片
+        if(img.startsWith(env.getProperty("show_image_path"))){
+            String newImg = handleImg(img);
+            if(StringUtils.isEmpty(newImg)){
+                return false;
+            }
+            banner.setImg(newImg);
+        }else{
+          //已经上传的图片
+            img = img.replace(env.getProperty("img.real.server.url"),"");
+            banner.setImg(img);
+        }
         banner.setContent(content);
         banner.setJid(jid);
         banner.setType(type);
         banner.setAdid(adId);
         bannerMapper.updateBanner(banner);
+        return true;
     }
 
     public String handleImg(String imgUrl){

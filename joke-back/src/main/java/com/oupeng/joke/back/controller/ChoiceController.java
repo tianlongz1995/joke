@@ -6,7 +6,6 @@ import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -23,8 +22,6 @@ public class ChoiceController {
 
     @Autowired
     private ChoiceService choiceService;
-    @Autowired
-    private Environment env;
 
     /**
      * 精选列表
@@ -99,8 +96,13 @@ public class ChoiceController {
             }
         }
         // 2.添加到数据库
-        choiceService.addChoice(title, content,image,width,height);
-        return new Success("添加成功!");
+        boolean flag = choiceService.addChoice(title, content,image,width,height);
+        if(flag){
+            return new Success("添加成功!");
+        }else{
+            return new Failed("添加失败!");
+        }
+
     }
 
     /**
@@ -171,8 +173,12 @@ public class ChoiceController {
                }
            }
            // 2.更新到数据库
-           choiceService.updateChoice(id, title, content, image,width,height);
-           return new Success("更新成功!");
+           boolean flag = choiceService.updateChoice(id, title, content, image,width,height);
+          if(flag) {
+              return new Success("更新成功!");
+          }else{
+              return new Failed("更新失败");
+          }
        }else{
            return new Failed("更新失败,上线精选，不允许编辑");
        }

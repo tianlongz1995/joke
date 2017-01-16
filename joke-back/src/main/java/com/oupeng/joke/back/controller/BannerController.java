@@ -158,8 +158,12 @@ public class BannerController {
         Banner banner = bannerService.getBannerById(id);
         //下线的banner可以编辑
         if (banner.getStatus() == 0) {
-            bannerService.updateBanner(id, title, cid, img, content, jid, type, adId);
-            return new Success("更新成功!");
+           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId);
+            if(flag) {
+                return new Success("更新成功!");
+            }else{
+                return new Failed("更新失败");
+            }
         } else {
             return new Failed("更新失败!上线banner无法编辑");
         }
