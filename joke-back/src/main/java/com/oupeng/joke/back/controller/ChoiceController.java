@@ -81,7 +81,9 @@ public class ChoiceController {
     @ResponseBody
     public Result addChoice(@RequestParam(value = "title") String title,
                             @RequestParam(value = "content") String content,
-                            @RequestParam(value = "image") String image) {
+                            @RequestParam(value = "image") String image,
+                            @RequestParam(value = "width") Integer width,
+                            @RequestParam(value = "height") Integer height) {
         List<String> tempUrl = choiceService.getImgUrl(content);
         List<String> realUrl;
         if (!CollectionUtils.isEmpty(tempUrl)) {
@@ -97,7 +99,7 @@ public class ChoiceController {
             }
         }
         // 2.添加到数据库
-        choiceService.addChoice(title, content,image);
+        choiceService.addChoice(title, content,image,width,height);
         return new Success("添加成功!");
     }
 
@@ -149,7 +151,9 @@ public class ChoiceController {
     public Result update(@RequestParam(value = "id")      Integer id,
                          @RequestParam(value = "title")   String title,
                          @RequestParam(value = "content") String content,
-                         @RequestParam(value = "image") String image){
+                         @RequestParam(value = "image") String image,
+                         @RequestParam(value = "width") Integer width,
+                         @RequestParam(value = "height") Integer height){
         Choice choice = choiceService.getChoiceById(id);
        if(choice.getStatus()== 0) {
            List<String> tempUrl = choiceService.getImgUrl(content);
@@ -167,7 +171,7 @@ public class ChoiceController {
                }
            }
            // 2.更新到数据库
-           choiceService.updateChoice(id, title, content, image);
+           choiceService.updateChoice(id, title, content, image,width,height);
            return new Success("更新成功!");
        }else{
            return new Failed("更新失败,上线精选，不允许编辑");

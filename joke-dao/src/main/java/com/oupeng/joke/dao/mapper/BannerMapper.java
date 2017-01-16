@@ -46,7 +46,7 @@ public interface BannerMapper {
      * @param id banner id
      * @return
      */
-    @Select(value="select id,title,jid,type,img,sort,cid,adid,status,content,"
+    @Select(value="select id,title,jid,type,img,sort,cid,adid,status,content,width,height,"
             + "create_time as createTime,update_time as updateTime from banner where id = #{id}")
     Banner getBannerById(Integer id);
 

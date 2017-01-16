@@ -79,11 +79,15 @@ public class BannerController {
 
     /**
      * 新增banner
-     *
-     * @param title   标题
-     * @param img     静态图片地址
-     * @param cid     频道id
-     * @param content 描述
+     * @param title
+     * @param img
+     * @param cid
+     * @param content
+     * @param jid
+     * @param type
+     * @param adid
+     * @param width
+     * @param height
      * @return
      */
     @RequestMapping(value = "add")
@@ -94,8 +98,10 @@ public class BannerController {
                             @RequestParam(value = "content") String content,
                             @RequestParam(value = "jid")  Integer jid,
                             @RequestParam(value = "type") Integer type,
-                            @RequestParam(value = "adid") Integer adid) {
-        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid);
+                            @RequestParam(value = "adid") Integer adid,
+                            @RequestParam(value = "width") Integer width,
+                            @RequestParam(value = "height") Integer height) {
+        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height);
         if (result) {
             return new Success("添加成功!");
         } else {

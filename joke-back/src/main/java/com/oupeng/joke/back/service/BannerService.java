@@ -1,6 +1,8 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
@@ -36,10 +38,12 @@ public class BannerService {
      * @param type
      * @return
      */
-    public boolean addBanner(String title,String img, Integer cid,String content,Integer jid,Integer type,Integer adid){
+    public boolean addBanner(String title,String img, Integer cid,String content,Integer jid,Integer type,Integer adid,Integer width,Integer height){
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
+        String urlPrefix = env.getProperty("show_image_path");
+        img = img.replace(urlPrefix,"");
         banner.setImg(img);
         banner.setTitle(title);
         banner.setCid(cid);
@@ -48,6 +52,8 @@ public class BannerService {
         banner.setAdid(adid);
         //新建banner，设置sort值为0
         banner.setSort(0);
+        banner.setWidth(width);
+        banner.setHeight(height);
         bannerMapper.addBanner(banner);
         return true;
     }
@@ -113,15 +119,15 @@ public class BannerService {
         bannerMapper.updateBanner(banner);
     }
 
-//    public String handleImg(String imgUrl){
-//        if(StringUtils.isNotBlank(imgUrl)){
-//            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
-//            if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
-//                return imgRespDto.getImgUrl();
-//            }
-//        }
-//        return null;
-//    }
+    public String handleImg(String imgUrl){
+        if(StringUtils.isNotBlank(imgUrl)){
+            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
+            if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+                return imgRespDto.getImgUrl();
+            }
+        }
+        return null;
+    }
 
     /**
      * 删除banner
@@ -185,6 +191,7 @@ public class BannerService {
             }else{
                 bannerMapper.updateBannerSort(id, maxScore+1);
             }
+            banner.setImg(env.getProperty("img.real.server.url") + banner.getImg());
             //2.修改状态
             bannerMapper.updateBannerStatus(id, status);
             //3.增加缓存

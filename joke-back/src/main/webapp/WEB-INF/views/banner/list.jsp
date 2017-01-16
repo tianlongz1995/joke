@@ -266,6 +266,8 @@
                                                class="form-control"/>
                                         <input id="image" type="hidden"/>
                                         <img id="imgPriview" style="display: none;width:100%;height:200px;" src=""/>
+                                        <input type="hidden" id="imgWidth" value="">
+                                        <input type="hidden" id="imgHeight" value="">
                                         <input id="imgDelButton" type="button" class="btn btn-default"
                                                style="display: none" value="删除"/>
                                     </td>
@@ -322,7 +324,7 @@
                     }
 
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val(),
+                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val()+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
@@ -350,13 +352,16 @@
                 $('#img').change(function () {
                     var file = $(this)[0].files[0];
                     $(this).OupengUpload(file, {
-                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+                        url: 'upload/cbImg?${_csrf.parameterName}=${_csrf.token}',
                         acceptFileTypes: 'image/*',
                         maxFileSize: 1024 * 1024 * 5,
                         minFileSize: 0,
                         onUploadSuccess: function (data) {
-                            $("#image").val(data);
-                            $("#imgPriview").attr('src', data).show();
+                            var result = eval("(" + data + ")");
+                            $("#image").val(result.url);
+                            $("#imgPriview").attr('src', result.url).show();
+                            $("#imgWidth").val(result.width);
+                            $("#imgHeight").val(result.height);
                             $("#imgDelButton").show();
                         },
                         onUploadError: function (data) {

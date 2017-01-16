@@ -5,7 +5,6 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
-import com.oupeng.joke.domain.IndexItem;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -55,7 +54,11 @@ public class ChoiceService {
      * @return
      */
     public List<Choice> getChoiceList(Integer status,Integer offset,Integer pageSize){
-        return  choiceMapper.getBannerList(status, offset, pageSize);
+        List<Choice> list = choiceMapper.getBannerList(status, offset, pageSize);
+        for (Choice c:list){
+            c.setImg(env.getProperty("img.real.server.url")+c.getImg());
+        }
+        return list;
     }
 
     /**
@@ -63,8 +66,10 @@ public class ChoiceService {
      * @param title
      * @param content
      */
-    public void addChoice(String title,String content,String image){
-         choiceMapper.addChoice(title,content,image);
+    public void addChoice(String title,String content,String image,Integer width,Integer height){
+        String urlPrefix = env.getProperty("show_image_path");
+        image = image.replace(urlPrefix,"");
+        choiceMapper.addChoice(title,content,image,width,height);
     }
 
     /**
@@ -74,7 +79,7 @@ public class ChoiceService {
      */
     public List<String> downloadImg(List<String> imgUrlList) {
         //服务器上的图片地址
-        List<String> realUrl= new ArrayList<>() ;
+        List<String> realUrl= new ArrayList<>();
         OutputStream os = null;
         InputStream is = null;
         for(String imgUrl:imgUrlList) {
@@ -128,7 +133,8 @@ public class ChoiceService {
                 }
             }
             //服务器上图片地址
-            realUrl.add(env.getProperty("show_image_path") + newFileName);
+//            realUrl.add(env.getProperty("show_image_path") + newFileName);
+            realUrl.add(env.getProperty("img.real.server.url") + newFileName);
         }
         return realUrl;
     }
@@ -171,8 +177,8 @@ public class ChoiceService {
         return tempUrl;
     }
 
-    public void updateChoice(Integer id,String title,String content,String image){
-      choiceMapper.updateChoice(id,title,content,image);
+    public void updateChoice(Integer id,String title,String content,String image,Integer width,Integer height){
+      choiceMapper.updateChoice(id,title,content,image,width,height);
     }
 
     /**
@@ -192,6 +198,7 @@ public class ChoiceService {
         }else{
             //增加缓存 - 上线
             choice.setType(3);
+            choice.setImg(env.getProperty("img.real.server.url")+choice.getImg());
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), id.toString());
         }

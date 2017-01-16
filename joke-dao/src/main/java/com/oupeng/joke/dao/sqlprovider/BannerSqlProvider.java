@@ -18,7 +18,7 @@ public class BannerSqlProvider {
      */
     public static String addBanner(Banner banner) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into banner(title, img, cid,status,content,jid,type,adid,sort,create_time, update_time) value (");
+        sql.append(" insert into banner(title, img, cid,status,content,jid,type,adid,sort,width,height,create_time, update_time) value (");
         if (StringUtils.isNotBlank(banner.getTitle())) {
             sql.append("'").append(banner.getTitle().trim()).append("',");
         } else {
@@ -67,6 +67,17 @@ public class BannerSqlProvider {
             sql.append("'").append(banner.getSort()).append("',");
         } else {
             sql.append("null,");
+        }
+
+        if (null != banner.getWidth()) {
+            sql.append(banner.getWidth()).append(",");
+        } else {
+            sql.append("0,");
+        }
+        if (null != banner.getHeight()) {
+            sql.append(banner.getHeight()).append(",");
+        } else {
+            sql.append("0,");
         }
         sql.append("now(),now())");
         return sql.toString();

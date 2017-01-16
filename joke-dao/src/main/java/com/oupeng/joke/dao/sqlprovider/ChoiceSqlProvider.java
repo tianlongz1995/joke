@@ -56,8 +56,10 @@ public class ChoiceSqlProvider {
         Object title = map.get("title");
         Object content = map.get("content");
         Object image = map.get("image");
+        Object width = map.get("width");
+        Object height = map.get("height");
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into choice(title,img,status,content,create_time, update_time) value (");
+        sql.append(" insert into choice(title,img,status,content,width,height,create_time, update_time) value (");
         if (null != title) {
             sql.append("'").append(title).append("',");
         } else {
@@ -76,6 +78,17 @@ public class ChoiceSqlProvider {
         } else {
             sql.append("null,");
         }
+        if(null != width){
+            sql.append("'").append(width).append("',");
+        }else {
+            sql.append("0 ,");
+        }
+
+        if(null != height){
+            sql.append("'").append(height).append("',");
+        }else {
+            sql.append("0 ,");
+        }
         sql.append("now(),now())");
         return sql.toString();
     }
@@ -91,9 +104,10 @@ public class ChoiceSqlProvider {
         Object title = map.get("title");
         Object content = map.get("content");
         Object image = map.get("image");
+        Object width = map.get("width");
+        Object height = map.get("height");
         StringBuffer sql = new StringBuffer();
         sql.append(" update choice set update_time=now(),title = ");
-
         if (null != title) {
             sql.append("'").append(title).append("',");
         } else {
@@ -107,9 +121,21 @@ public class ChoiceSqlProvider {
         }
         sql.append(" img = ");
         if (null != image) {
-            sql.append("'").append(image).append("'");
+            sql.append("'").append(image).append("',");
         } else {
-            sql.append("null");
+            sql.append("null,");
+        }
+        sql.append(" width = ");
+        if (null != width) {
+            sql.append(width).append(",");
+        } else {
+            sql.append("0,");
+        }
+        sql.append(" height = ");
+        if (null != width) {
+            sql.append(height);
+        } else {
+            sql.append("0");
         }
         sql.append(" where id = ").append(id);
         return sql.toString();

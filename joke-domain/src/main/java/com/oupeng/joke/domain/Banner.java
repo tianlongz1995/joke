@@ -28,6 +28,10 @@ public class Banner {
     private Integer adid;
     @JsonInclude(Include.NON_NULL)
     private Integer sort;
+    private Integer width;
+    @JsonInclude(Include.NON_NULL)
+    private Integer height;
+    @JsonInclude(Include.NON_NULL)
 
     public Integer getId() {
         return id;
@@ -123,6 +127,22 @@ public class Banner {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }
 

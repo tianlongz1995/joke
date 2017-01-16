@@ -126,6 +126,8 @@
                                         <c:if test="${empty banner.img}">
                                             <input id="image" type="hidden"/>
                                             <img id="imgPriview" style="display: none" src="" >
+                                            <input type="hidden" value="${banner.width}" id="imgWidth">
+                                            <input type="hidden" value="${banner.height}" id="imgHeight">
                                         </c:if>
                                         <c:if test="${!empty banner.img}">
                                             <input id="image" type="hidden" value="${banner.img}"/>
@@ -183,13 +185,16 @@
                 $('#img').change(function () {
                     var file = $(this)[0].files[0];
                     $(this).OupengUpload(file, {
-                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+                        url: 'upload/cbImg?${_csrf.parameterName}=${_csrf.token}',
                         acceptFileTypes: 'image/*',
                         maxFileSize: 1024*1024*5,
                         minFileSize: 0,
                         onUploadSuccess: function (data) {
-                            $("#image").val(data);
-                            $("#imgPriview").attr('src',data).show();
+                            var result = eval("(" + data + ")");
+                            $("#image").val(result.url);
+                            $("#imgPriview").attr('src', result.url).show();
+                            $("#imgWidth").val(result.width);
+                            $("#imgHeight").val(result.height);
                             $("#imgDelButton").show();
                         },
                         onUploadError: function (data) {

@@ -195,6 +195,9 @@
                                                class="form-control"/>
                                         <input id="image" type="hidden"/>
                                         <img id="imgPriview" style="display: none;width:100%;height:200px;" src=""/>
+                                        <input type="hidden" id="imgWidth" value="">
+                                        <input type="hidden" id="imgHeight" value="">
+
                                         <input id="imgDelButton" type="button" class="btn btn-default"
                                                style="display: none" value="删除"/>
                                     </td>
@@ -282,7 +285,7 @@
                         return false;
                     }
                     post('choice/add',
-                            'title=' + cTitle + '&content=' + encodeURI(content) +'&image='+img,
+                            'title=' + cTitle + '&content=' + encodeURI(content) +'&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
@@ -339,7 +342,7 @@
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
                     $.ajax({
-                        type: 'POST', url: url, data: data, success: success, error: error,
+                        type: 'GET', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
                 };
@@ -404,13 +407,16 @@
                 $('#img').change(function () {
                     var file = $(this)[0].files[0];
                     $(this).OupengUpload(file, {
-                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
+                        url: 'upload/cbImg?${_csrf.parameterName}=${_csrf.token}',
                         acceptFileTypes: 'image/*',
                         maxFileSize: 1024 * 1024 * 5,
                         minFileSize: 0,
                         onUploadSuccess: function (data) {
-                            $("#image").val(data);
-                            $("#imgPriview").attr('src', data).show();
+                            var result = eval("(" + data + ")");
+                            $("#image").val(result.url);
+                            $("#imgPriview").attr('src', result.url).show();
+                            $("#imgWidth").val(result.width);
+                            $("#imgHeight").val(result.height);
                             $("#imgDelButton").show();
                         },
                         onUploadError: function (data) {
