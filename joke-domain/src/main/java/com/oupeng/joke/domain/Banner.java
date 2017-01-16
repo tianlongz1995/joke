@@ -25,7 +25,7 @@ public class Banner {
     @JsonInclude(Include.NON_NULL)
     private String updateTime;
     @JsonInclude(Include.NON_NULL)
-    private Integer adid;
+    private Integer slot;
     @JsonInclude(Include.NON_NULL)
     private Integer sort;
     private Integer width;
@@ -113,12 +113,12 @@ public class Banner {
         this.type = type;
     }
 
-    public Integer getAdid() {
-        return adid;
+    public Integer getSlot() {
+        return slot;
     }
 
-    public void setAdid(Integer adid) {
-        this.adid = adid;
+    public void setSlot(Integer slot) {
+        this.slot = slot;
     }
 
     public Integer getSort() {

@@ -46,7 +46,7 @@ public interface BannerMapper {
      * @param id banner id
      * @return
      */
-    @Select(value="select id,title,jid,type,img,sort,cid,adid,status,content,width,height,"
+    @Select(value="select id,title,jid,type,img,sort,cid,slot,status,content,width,height,"
             + "create_time as createTime,update_time as updateTime from banner where id = #{id}")
     Banner getBannerById(Integer id);
 
@@ -79,7 +79,7 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select(value = "SELECT id,title,jid,type,sort,img,cid,adid,status,content,"
+    @Select(value = "SELECT id,title,jid,type,sort,img,cid,slot,status,content,"
             + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and status = 1 ORDER BY sort ASC")
     List<Banner> getBannerMoveList(Integer cid);
     /**

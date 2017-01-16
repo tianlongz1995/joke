@@ -18,7 +18,7 @@ public class BannerSqlProvider {
      */
     public static String addBanner(Banner banner) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into banner(title, img, cid,status,content,jid,type,adid,sort,width,height,create_time, update_time) value (");
+        sql.append(" insert into banner(title, img, cid,status,content,jid,type,slot,sort,width,height,create_time, update_time) value (");
         if (StringUtils.isNotBlank(banner.getTitle())) {
             sql.append("'").append(banner.getTitle().trim()).append("',");
         } else {
@@ -57,8 +57,8 @@ public class BannerSqlProvider {
             sql.append("null,");
         }
         //adid 广告位id
-        if (null != banner.getAdid()) {
-            sql.append("'").append(banner.getAdid()).append("',");
+        if (null != banner.getSlot()) {
+            sql.append("'").append(banner.getSlot()).append("',");
         } else {
             sql.append("null,");
         }
@@ -115,7 +115,7 @@ public class BannerSqlProvider {
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select id,title,jid,img,cid,type,status,content,adid,sort,");
+        sql.append(" select id,title,jid,img,cid,type,status,content,slot,sort,");
         sql.append(" create_time as createTime,update_time as updateTime from banner where 1 = 1 ");
         if(status != null){
             sql.append(" and status = ").append(status);
@@ -160,9 +160,9 @@ public class BannerSqlProvider {
             sql.append("null,");
         }
 
-        sql.append(" adid=");
-        if(null !=banner.getAdid()){
-            sql.append("'").append(banner.getAdid()).append("',");
+        sql.append(" slot=");
+        if(null !=banner.getSlot()){
+            sql.append("'").append(banner.getSlot()).append("',");
         }else{
             sql.append("null,");
         }

@@ -92,7 +92,7 @@
                                 <tr id="adIdTr">
                                     <th>广告位id</th>
                                     <td>
-                                        <input id="adId" type="number" style="width:100%;"  value="${banner.adid}" class="form-control"/>
+                                        <input id="adId" type="number" style="width:100%;"  value="${banner.slot}" class="form-control"/>
                                     </td>
                                 </tr>
                                 <tr id="cidTr">

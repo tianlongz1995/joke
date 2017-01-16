@@ -42,16 +42,16 @@ public class BannerService {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
-        String newImg = handleImg(img);
-        if(StringUtils.isBlank(newImg)){
-            return false;
-        }
-        banner.setImg(newImg);
+//        String newImg = handleImg(img);
+////        if(StringUtils.isBlank(newImg)){
+////            return false;
+////        }
+        banner.setImg(img);
         banner.setTitle(title);
         banner.setCid(cid);
         banner.setJid(jid);
         banner.setType(type);
-        banner.setAdid(adid);
+        banner.setSlot(adid);
         //新建banner，设置sort值为0
         banner.setSort(0);
         banner.setWidth(width);
@@ -128,7 +128,7 @@ public class BannerService {
         banner.setContent(content);
         banner.setJid(jid);
         banner.setType(type);
-        banner.setAdid(adId);
+        banner.setSlot(adId);
         bannerMapper.updateBanner(banner);
         return true;
     }

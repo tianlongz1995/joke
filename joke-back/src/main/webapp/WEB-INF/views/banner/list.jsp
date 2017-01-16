@@ -132,7 +132,7 @@
                                         <td>
                                             <img src="${banner.img}" style="width: 176px;height: 100px;">
                                         </td>
-                                        <td><c:out value="${banner.adid}"/></td>
+                                        <td><c:out value="${banner.slot}"/></td>
                                         <td><c:out value="${banner.jid}"/></td>
                                         <td>
                                             <c:if test="${banner.cid == 1}">段子</c:if>

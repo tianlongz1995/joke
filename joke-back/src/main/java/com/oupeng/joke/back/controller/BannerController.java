@@ -99,8 +99,8 @@ public class BannerController {
                             @RequestParam(value = "jid")  Integer jid,
                             @RequestParam(value = "type") Integer type,
                             @RequestParam(value = "adid") Integer adid,
-                            @RequestParam(value = "width") Integer width,
-                            @RequestParam(value = "height") Integer height) {
+                            @RequestParam(value = "width",required = false) Integer width,
+                            @RequestParam(value = "height",required = false) Integer height) {
         boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height);
         if (result) {
             return new Success("添加成功!");
