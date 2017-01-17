@@ -42,11 +42,11 @@ public class BannerService {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
-//        String newImg = handleImg(img);
-////        if(StringUtils.isBlank(newImg)){
-////            return false;
-////        }
-        banner.setImg(img);
+        String newImg = handleImg(img);
+       if(StringUtils.isBlank(newImg)){
+            return false;
+        }
+        banner.setImg(newImg);
         banner.setTitle(title);
         banner.setCid(cid);
         banner.setJid(jid);

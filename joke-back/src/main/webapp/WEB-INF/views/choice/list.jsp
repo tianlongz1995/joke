@@ -281,7 +281,7 @@
                     }
                     if(img == ""){
                         alert("必须上传图片");
-                        $('#addNewBanner').removeAttr("disabled");
+                        $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
                     post('choice/add',
