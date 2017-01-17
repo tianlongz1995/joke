@@ -1,12 +1,5 @@
 package com.oupeng.joke.back.conf;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,6 +12,12 @@ import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -36,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport", "/joke/incrementComment").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
+		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport", "/joke/incrementComment", "/resources/*").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
 				.formLogin().defaultSuccessUrl("/home").and().formLogin().failureUrl("/?error=1");
 		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 		http.rememberMe().tokenValiditySeconds(1209600).and().rememberMe().rememberMeParameter("remember-me");
