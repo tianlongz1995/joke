@@ -99,7 +99,7 @@
                                         </c:if>
                                         <c:if test="${!empty choice.img}">
                                             <input id="image" type="hidden" value="${choice.img}"/>
-                                            <img id="imgPriview" src="${choice.img}">
+                                            <img id="imgPriview" style="display: none;width:60%;height:300px;" src="${choice.img}">
                                             <input type="hidden" value="${choice.width}" id="imgWidth">
                                             <input type="hidden" value="${choice.height}" id="imgHeight">
                                             <input id="imgDelButton" type="button" class="btn btn-danger btn"

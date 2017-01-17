@@ -125,7 +125,7 @@
                                         <input id="img" name ="img" type="file" accept=".jpg,.jpeg,.png" class="form-control"/>
                                         <c:if test="${empty banner.img}">
                                             <input id="image" type="hidden"/>
-                                            <img id="imgPriview" style="display: none" src="" >
+                                            <img id="imgPriview" style="display: none;width:60%;height:300px;" src="" >
                                             <input type="hidden" value="${banner.width}" id="imgWidth">
                                             <input type="hidden" value="${banner.height}" id="imgHeight">
                                         </c:if>
