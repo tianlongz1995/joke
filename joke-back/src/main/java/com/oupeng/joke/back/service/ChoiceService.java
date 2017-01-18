@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +42,31 @@ public class ChoiceService {
     @Autowired
     private IndexCacheFlushService indexCacheFlushService;
 
+    private String uploadPath;
+    private String showPath;
+    private String realPath;
+    private String cropPath;
+
+    @PostConstruct
+    public void initPath() {
+        String u = env.getProperty("upload_image_path");
+        String s = env.getProperty("show_image_path");
+        String r = env.getProperty("img.real.server.url");
+        String c = env.getProperty("remote.crop.img.server.url");
+        if(StringUtils.isNotEmpty(u)){
+            uploadPath = u;
+        }
+        if(StringUtils.isNotEmpty(s)){
+            showPath = s;
+        }
+        if(StringUtils.isNotEmpty(r)){
+            realPath = r;
+        }
+        if(StringUtils.isNotEmpty(c)){
+            cropPath = c;
+        }
+    }
+
     /**
      * 统计精选总条数
      *
@@ -64,7 +90,7 @@ public class ChoiceService {
         if (!CollectionUtils.isEmpty(list)) {
             for (Choice c : list) {
                 if (StringUtils.isNotBlank(c.getImg())) {
-                    c.setImg(env.getProperty("img.real.server.url") + c.getImg());
+                    c.setImg(realPath + c.getImg());
                 }
             }
         }
@@ -88,7 +114,7 @@ public class ChoiceService {
 
     public String handleImg(String imgUrl) {
         if (StringUtils.isNotBlank(imgUrl)) {
-            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"), imgUrl, false);
+            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
             if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
                 return imgRespDto.getImgUrl();
             }
@@ -136,7 +162,7 @@ public class ChoiceService {
                 // 输出的文件流
                 newFileName = newFileName + imgType;
                 //TODO 修改图片上传地址
-                String path = FilenameUtils.concat(env.getProperty("upload_image_path"), newFileName);
+                String path = FilenameUtils.concat(uploadPath, newFileName);
 //                String path ="C:/Users/rainy/joke/"+newFileName;
                 //保存路径
                 os = new FileOutputStream(path);
@@ -158,14 +184,14 @@ public class ChoiceService {
                 }
             }
             //服务器上图片地址
-            realUrl.add(env.getProperty("show_image_path") + newFileName);
+            realUrl.add(showPath + newFileName);
         }
 
         List<String> realUrl2 = new ArrayList<>();
         for (String u : realUrl) {
             String url = handleImg(u);
             if (StringUtils.isNotBlank(url)) {
-                realUrl2.add(env.getProperty("img.real.server.url")+url);
+                realUrl2.add(realPath + url);
             }
         }
         return realUrl2;
@@ -189,7 +215,7 @@ public class ChoiceService {
     public Choice getChoiceById(Integer id) {
         Choice choice = choiceMapper.getChoiceById(id);
         if (choice != null && StringUtils.isNotBlank(choice.getImg())) {
-            choice.setImg(env.getProperty("img.real.server.url") + choice.getImg());
+            choice.setImg(realPath + choice.getImg());
         }
         return choice;
     }
@@ -206,7 +232,7 @@ public class ChoiceService {
         String pattern = "(?<=src=\")[a-zA-z]+://[^\\s(?!\")$]*";
         Pattern pat = Pattern.compile(pattern);
         Matcher m = pat.matcher(content);
-        String prefix = env.getProperty("img.real.server.url");
+        String prefix = realPath;
         while (m.find()) {
             //不是服务器上的图片地址
             if (!(m.group().startsWith(prefix))) {
@@ -219,14 +245,14 @@ public class ChoiceService {
     public boolean updateChoice(Integer id, String title, String content, String image, Integer width, Integer height) {
         String newImg;
         //重新上传的图片
-        if (image.startsWith(env.getProperty("show_image_path"))) {
+        if (image.startsWith(showPath)) {
             newImg = handleImg(image);
             if (StringUtils.isEmpty(image)) {
                 return false;
             }
         } else {
             //已经上传的图片
-            newImg = image.replace(env.getProperty("img.real.server.url"), "");
+            newImg = image.replace(realPath, "");
         }
         choiceMapper.updateChoice(id, title, content, newImg, width, height);
         return true;
@@ -251,7 +277,7 @@ public class ChoiceService {
         } else {
             //增加缓存 - 上线
             choice.setType(3);
-            choice.setImg(env.getProperty("img.real.server.url") + choice.getImg());
+            choice.setImg(realPath + choice.getImg());
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), id.toString());
         }

@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -28,8 +29,36 @@ public class BannerService {
     @Autowired
     private DistributorsMapper distributorsMapper;
 
+
+    private String uploadPath = "/nh/java/back/resources/image/";
+    private String showPath = "http://joke-admin.oupeng.com/resources/image/";
+    private String realPath = "http://joke-img.adbxb.cn/";
+    private String cropPath = "http://192.168.12.151:3000/upload";
+
+    @PostConstruct
+    public void initPath() {
+        String u = env.getProperty("upload_image_path");
+        String s = env.getProperty("show_image_path");
+        String r = env.getProperty("img.real.server.url");
+        String c = env.getProperty("remote.crop.img.server.url");
+        if(StringUtils.isNotEmpty(u)){
+            uploadPath = u;
+        }
+        if(StringUtils.isNotEmpty(s)){
+            showPath = s;
+        }
+        if(StringUtils.isNotEmpty(r)){
+            realPath = r;
+        }
+        if(StringUtils.isNotEmpty(c)){
+            cropPath = c;
+        }
+    }
+
+
     /**
      * 新增banner
+     *
      * @param title
      * @param img
      * @param cid
@@ -38,12 +67,12 @@ public class BannerService {
      * @param type
      * @return
      */
-    public boolean addBanner(String title,String img, Integer cid,String content,Integer jid,Integer type,Integer adid,Integer width,Integer height){
+    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height) {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
         String newImg = handleImg(img);
-       if(StringUtils.isBlank(newImg)){
+        if (StringUtils.isBlank(newImg)) {
             return false;
         }
         banner.setImg(newImg);
@@ -63,41 +92,44 @@ public class BannerService {
 
     /**
      * 统计banner列表总数
+     *
      * @param status
      * @param cid
      * @return
      */
-    public Integer getBannerListCount(Integer status,Integer cid){
-        return bannerMapper.getBannerListCount(status,cid);
+    public Integer getBannerListCount(Integer status, Integer cid) {
+        return bannerMapper.getBannerListCount(status, cid);
     }
 
-   public List<Banner> getBannerList(Integer status,Integer cid,Integer offset,Integer pageSize){
-       List<Banner> bannerList = bannerMapper.getBannerList(status,cid, offset, pageSize);
-       if(!CollectionUtils.isEmpty(bannerList)){
-           for(Banner banner : bannerList){
-               if(StringUtils.isNotBlank(banner.getImg())){
-                   banner.setImg( env.getProperty("img.real.server.url") + banner.getImg());
-               }
-           }
-       }
-       return bannerList;
-   }
+    public List<Banner> getBannerList(Integer status, Integer cid, Integer offset, Integer pageSize) {
+        List<Banner> bannerList = bannerMapper.getBannerList(status, cid, offset, pageSize);
+        if (!CollectionUtils.isEmpty(bannerList)) {
+            for (Banner banner : bannerList) {
+                if (StringUtils.isNotBlank(banner.getImg())) {
+                    banner.setImg(realPath + banner.getImg());
+                }
+            }
+        }
+        return bannerList;
+    }
 
     /**
      * 根据id获取banner
+     *
      * @param id
      * @return
      */
-   public Banner getBannerById(Integer id){
-       Banner banner = bannerMapper.getBannerById(id);
-       if(banner != null && StringUtils.isNotBlank(banner.getImg())){
-           banner.setImg(env.getProperty("img.real.server.url") + banner.getImg());
-       }
-       return banner;
-   }
+    public Banner getBannerById(Integer id) {
+        Banner banner = bannerMapper.getBannerById(id);
+        if (banner != null && StringUtils.isNotBlank(banner.getImg())) {
+            banner.setImg(realPath + banner.getImg());
+        }
+        return banner;
+    }
 
     /**
      * banner 更新
+     *
      * @param id
      * @param title
      * @param cid
@@ -108,21 +140,21 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content,Integer jid,Integer type,Integer adId) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
         banner.setCid(cid);
         //重新上传的图片
-        if(img.startsWith(env.getProperty("show_image_path"))){
+        if (img.startsWith(showPath)) {
             String newImg = handleImg(img);
-            if(StringUtils.isEmpty(newImg)){
+            if (StringUtils.isEmpty(newImg)) {
                 return false;
             }
             banner.setImg(newImg);
-        }else{
-          //已经上传的图片
-            img = img.replace(env.getProperty("img.real.server.url"),"");
+        } else {
+            //已经上传的图片
+            img = img.replace(realPath, "");
             banner.setImg(img);
         }
         banner.setContent(content);
@@ -133,10 +165,10 @@ public class BannerService {
         return true;
     }
 
-    public String handleImg(String imgUrl){
-        if(StringUtils.isNotBlank(imgUrl)){
-            ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
-            if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
+    public String handleImg(String imgUrl) {
+        if (StringUtils.isNotBlank(imgUrl)) {
+            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
+            if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
                 return imgRespDto.getImgUrl();
             }
         }
@@ -145,10 +177,11 @@ public class BannerService {
 
     /**
      * 删除banner
+     *
      * @param id
      * @param cid
      */
-    public void delBanner(Integer id,Integer cid) {
+    public void delBanner(Integer id, Integer cid) {
 
         //删除记录
         bannerMapper.delBanner(id);
@@ -156,6 +189,7 @@ public class BannerService {
 
     /**
      * 更新banner状态
+     *
      * @param id
      * @param status 0 下线 1上线
      * @return
@@ -177,7 +211,7 @@ public class BannerService {
                 }
             }
             //banner大于1个,且下线的的不是最后一个元素,更新排序值,12345 删除 3 -》1234
-            if(list.size() > 1  && id != list.get(list.size() - 1).getId()) {
+            if (list.size() > 1 && id != list.get(list.size() - 1).getId()) {
                 for (int i = position; i < list.size() - 1; i++) {
                     //当前banner排序值
                     int sort = list.get(i).getSort();
@@ -189,80 +223,81 @@ public class BannerService {
             bannerMapper.updateBannerStatus(id, status);
             //3.删除缓存
             jedisCache.del(bannerKey);
-            jedisCache.zrem(bannerListKey,Integer.toString(id));
+            jedisCache.zrem(bannerListKey, Integer.toString(id));
 
 
         } else {
             // 判断上线banner个数
-            Integer bannerCount = bannerMapper.getBannerListCount(1,banner.getCid());
+            Integer bannerCount = bannerMapper.getBannerListCount(1, banner.getCid());
             if (bannerCount >= 5) {
                 return false;
             }
             //1.修改排序值
             Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
-            if(null == maxScore){
+            if (null == maxScore) {
                 bannerMapper.updateBannerSort(id, 1);
-            }else{
-                bannerMapper.updateBannerSort(id, maxScore+1);
+            } else {
+                bannerMapper.updateBannerSort(id, maxScore + 1);
             }
-            banner.setImg(env.getProperty("img.real.server.url") + banner.getImg());
+            banner.setImg(realPath + banner.getImg());
             //2.修改状态
             bannerMapper.updateBannerStatus(id, status);
             //3.增加缓存
             jedisCache.set(bannerKey, JSON.toJSONString(banner));
-            jedisCache.zadd(bannerListKey,System.currentTimeMillis(),Integer.toString(id));
+            jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
         }
         //修改channel中banner状态
-       Long bannerCount = jedisCache.zcard(bannerListKey);
+        Long bannerCount = jedisCache.zcard(bannerListKey);
         //（0：不显示、1：显示）
-        if(bannerCount == 0){
-            distributorsMapper.updateChannelsBanner(0,banner.getCid());
-        }else{
-            distributorsMapper.updateChannelsBanner(1,banner.getCid());
+        if (bannerCount == 0) {
+            distributorsMapper.updateChannelsBanner(0, banner.getCid());
+        } else {
+            distributorsMapper.updateChannelsBanner(1, banner.getCid());
         }
-      return  true;
+        return true;
     }
 
     /**
      * banner 移动 ，仅在上线的banner中有效
-     * @param id 频道id
+     *
+     * @param id   频道id
      * @param type 1
      * @param sort
      * @return
      */
-    public boolean bannerMove(Integer id, Integer cid,Integer type, Integer sort) {
+    public boolean bannerMove(Integer id, Integer cid, Integer type, Integer sort) {
         //获取频道下 ，已上线的banner
         List<Banner> list = bannerMapper.getBannerMoveList(cid);
-        if(!CollectionUtils.isEmpty(list)){
+        if (!CollectionUtils.isEmpty(list)) {
             Banner d = list.get(0);
             //第一个元素禁止上移
-            if(d.getId() == id && type ==1){
+            if (d.getId() == id && type == 1) {
                 return false;
             }
             // 1.更新排序值
-            if(type == 1){// 上移
+            if (type == 1) {// 上移
                 int lastIndex = 0;
                 int lastId = 0;
-                for(Banner b : list){
-                    if(b.getId() == id ){
+                for (Banner b : list) {
+                    if (b.getId() == id) {
                         break;
                     }
                     lastIndex = b.getSort();
-                    lastId    = b.getId();
+                    lastId = b.getId();
                 }
                 bannerMapper.updateBannerSort(id, lastIndex);
                 bannerMapper.updateBannerSort(lastId, sort);
-            } else if(type == 2){// 下移
+            } else if (type == 2) {// 下移
                 int lastIndex = 0;
                 int lastId = 0;
                 int end = 1;
-                for(Banner b : list){
+                for (Banner b : list) {
                     lastIndex = b.getSort();
                     lastId = b.getId();
-                    if(end == 0){
+                    if (end == 0) {
                         break;
                     }
-                    if(b.getId() == id){
+                    if (b.getId() == id) {
                         end--;
                     }
                 }
