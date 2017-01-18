@@ -126,14 +126,15 @@
                                         <c:if test="${empty banner.img}">
                                             <input id="image" type="hidden"/>
                                             <img id="imgPriview" style="display: none;width:60%;height:300px;" src="" >
-                                            <input type="hidden" value="${banner.width}" id="imgWidth">
-                                            <input type="hidden" value="${banner.height}" id="imgHeight">
                                         </c:if>
                                         <c:if test="${!empty banner.img}">
                                             <input id="image" type="hidden" value="${banner.img}"/>
-                                            <img id="imgPriview"  src="${banner.img}" >
+                                            <img id="imgPriview"  style=width:60%;height:300px;" src="${banner.img}" >
                                             <input id="imgDelButton" type="button" class="btn btn-danger btn" value="删除" />
                                         </c:if>
+
+                                        <input type="hidden" value="${banner.width}" id="imgWidth">
+                                        <input type="hidden" value="${banner.height}" id="imgHeight">
 
                                     </td>
                                 </tr>
@@ -158,7 +159,6 @@
 
             <script type="text/javascript">
                 $(document).ready(function () {
-
                     var flag = $("#type").val();
                     if(flag == 1){
                         $("#cidTr").hide();
@@ -167,9 +167,6 @@
                     }else{
                         $("#adIdTr").hide();
                     }
-
-
-
                     if('${banner.img}' != ''){
                         $("#imgPriview").css('display','block');
                         $("#imgDelButton").css('display','block');
