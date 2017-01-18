@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -139,8 +140,9 @@ public class ClientController {
                                @RequestParam(value = "uid") String uid,
                                @RequestParam(value = "at") Integer at,
                                @RequestParam(value = "sort", required = false) Integer sort) {
-        addLog(did, 22, uid, at, sort, 3);
-        List<Topic> topicList = clientService.getTopicList(uid, at, sort);
+//        addLog(did, 22, uid, at, sort, 3);
+//        List<Topic> topicList = clientService.getTopicList(uid, at, sort);
+        List<Topic> topicList = new ArrayList<>();
         return new Success(topicList);
     }
 
