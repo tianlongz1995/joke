@@ -164,8 +164,8 @@ public class ChoiceService {
         List<String> realUrl2 = new ArrayList<>();
         for (String u : realUrl) {
             String url = handleImg(u);
-            if (StringUtils.isBlank(env.getProperty("img.real.server.url") + url)) {
-                realUrl2.add(url);
+            if (StringUtils.isNotBlank(url)) {
+                realUrl2.add(env.getProperty("img.real.server.url")+url);
             }
         }
         return realUrl2;

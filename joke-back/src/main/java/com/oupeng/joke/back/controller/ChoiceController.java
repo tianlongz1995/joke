@@ -169,7 +169,7 @@ public class ChoiceController {
                        content = content.replace(tempUrl.get(i), realUrl.get(i));
                    }
                } else {
-                   return new Failed("更新失败");
+                   return new Failed("富文本中图片下载不成功，更新失败");
                }
            }
            // 2.更新到数据库
@@ -177,7 +177,7 @@ public class ChoiceController {
           if(flag) {
               return new Success("更新成功!");
           }else{
-              return new Failed("更新失败");
+              return new Failed("数据库插入,上传图片处理不成功，更新失败");
           }
        }else{
            return new Failed("更新失败,上线精选，不允许编辑");
