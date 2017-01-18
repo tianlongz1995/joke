@@ -392,7 +392,7 @@
                      post('choice/review',
                             'id=' + cid,
                             function (data) {
-                                $("#reviewModalContent").html(data.data);
+                                $("#reviewModalContent").html(data.info);
                             },
                             function () {
                                 alert('请求失败，请检查网络环境');
