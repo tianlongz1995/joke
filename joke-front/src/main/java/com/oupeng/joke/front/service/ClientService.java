@@ -264,9 +264,8 @@ public class ClientService {
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        String t = joke.getTitle();
-                        if (StringUtils.isEmpty(t)  || t.trim().length() < 3) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -340,9 +339,8 @@ public class ClientService {
                     //设置分享url
                     setShareUrl(joke,cacheType);
                     //文字joke的title
-                    if (cacheType == 0) {
-                        String t = joke.getTitle();
-                        if (StringUtils.isEmpty(t)  || t.trim().length() < 3) {
+                    if (joke.getType() == Constants.JOKE_TYPE_TEXT) {
+                        if (StringUtils.isEmpty(joke.getTitle()) || joke.getTitle().trim().length() < 2) {
                             if (StringUtils.isNotEmpty(joke.getContent())) {
                                 int length = joke.getContent().length();
                                 int end = length > 25 ? 25 : (length / 2);
@@ -361,6 +359,7 @@ public class ClientService {
         return list;
     }
 
+
     /**
      * 下拉操作：获取缓存最新数据
      *
@@ -371,7 +370,7 @@ public class ClientService {
      */
     private List<Topic> getNewTopicCacheList(String key, String uid, Integer cacheType) {
         //请求最新的500条数据
-        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 499L);
+        Set<String> topicIdSet = jedisCache.zrevrange(key, 0L, 0L);
 
         if (CollectionUtils.isEmpty(topicIdSet)) {
             return null;
@@ -417,7 +416,7 @@ public class ClientService {
         checkViewedJokeNum(userViewRecordKey);
         List<Topic> list = Lists.newArrayList();
         Topic topic;
-        logger.debug("CollectionUtils.isEmpty(noRepeatedList):{}" ,CollectionUtils.isEmpty(noRepeatedList));
+//        System.out.println(CollectionUtils.isEmpty(noRepeatedList));
         if (!CollectionUtils.isEmpty(noRepeatedList)) {
             for (String topicId : noRepeatedList) {
                 topic = JSON.parseObject(jedisCache.get(JedisKey.STRING_TOPIC + topicId), Topic.class);
