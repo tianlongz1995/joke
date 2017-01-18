@@ -69,6 +69,17 @@
         </encoder>
     </appender>
 
+    <!--  客户端调用日志  -->
+    <appender name="client" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/nh/logs/joke/client.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%-5level][%d{HH:mm:ss}] - [%logger{15}] - %msg%n</pattern>
@@ -94,6 +105,10 @@
 
     <logger name="iol" level="INFO" additivity="false">
         <appender-ref ref="iol"/>
+    </logger>
+
+    <logger name="client" level="INFO" additivity="false">
+        <appender-ref ref="client"/>
     </logger>
 
     <logger name="org.springframework.scheduling">
