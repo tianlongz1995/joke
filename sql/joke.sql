@@ -280,6 +280,24 @@ CREATE TABLE `banner` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT 'banner表';
 
+--精选表 2017-01-03
+DROP TABLE IF EXISTS `choice`;
+CREATE TABLE `choice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `title` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '标题',
+  `img` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `content` text CHARACTER SET utf8 COMMENT '内容',
+  `status` int(255) DEFAULT '0' COMMENT '状态 0 下线，1上线',
+  `width` int(11) DEFAULT '0' COMMENT '图片宽度',
+  `height` int(11) DEFAULT '0' COMMENT '图片高度',
+  `good` int(11) DEFAULT '0' COMMENT '点赞数',
+  `bad` int(11) DEFAULT '0' COMMENT '踩数量',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
 
 /** 发布规则 dictionary表 2017_01_11*/
 
@@ -297,3 +315,77 @@ alter table joke add COLUMN comment_number int(11) DEFAULT 0 COMMENT '评论数�
 alter table joke add COLUMN comment varchar(255) DEFAULT NULL COMMENT '神评论内容';
 alter table joke add COLUMN avata varchar(255) DEFAULT NULL COMMENT '用户头像URL';
 alter table joke add COLUMN nick varchar(64) DEFAULT NULL COMMENT '昵称';
+
+
+
+-- ads表 2017-01-19
+DROP TABLE IF EXISTS `ads`;
+CREATE TABLE `ads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `did` int(11) NOT NULL COMMENT '渠道id',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `create_by` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '更新人',
+  `s` int(11) NOT NULL DEFAULT '0' COMMENT '广告插入间隔',
+  `lc` int(11) NOT NULL DEFAULT '0' COMMENT '列表页中间',
+  `lb` int(11) NOT NULL DEFAULT '0' COMMENT '列表页底部',
+  `dt` int(11) NOT NULL DEFAULT '0' COMMENT '详情页上方',
+  `dc` int(11) NOT NULL DEFAULT '0' COMMENT '详情页中部',
+  `db` int(11) NOT NULL DEFAULT '0' COMMENT '详情页底部',
+  `di` int(11) NOT NULL DEFAULT '0' COMMENT '详情页插屏',
+  `dr` int(11) NOT NULL DEFAULT '0' COMMENT '详情推荐宫格广告',
+  PRIMARY KEY (`id`),
+  KEY `did_index` (`did`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Records of ads
+-- ----------------------------
+INSERT INTO `ads` VALUES ('1', '2', '2017-01-06 13:50:52', 'admin', '2017-01-16 14:48:59', 'admin', '5', '231136991', '-770750974', '1774397970', '2062249474', '-1149476927', '548972251', '4');
+INSERT INTO `ads` VALUES ('2', '13', '2017-01-06 13:56:19', 'admin', '2017-01-06 14:09:12', 'admin', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `ads` VALUES ('3', '14', '2017-01-06 14:06:38', 'admin', '2017-01-06 14:09:10', 'admin', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `ads` VALUES ('4', '15', '2017-01-06 14:06:51', 'admin', '2017-01-06 14:09:07', 'admin', '0', '0', '0', '0', '0', '0', '0', '0');
+
+
+-- channels表 2017-01-19
+DROP TABLE IF EXISTS `channels`;
+CREATE TABLE `channels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT '频道名称',
+  `type` int(11) NOT NULL DEFAULT '0' COMMENT '类型( 1:趣图 2:段子 3:推荐、4：精选)',
+  `banner` tinyint(1) DEFAULT '0' COMMENT 'banner横幅状态（0：不显示、1：显示）',
+  `status` int(11) DEFAULT '0' COMMENT '状态 0:下线 1:上线、2：删除',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Records of channels
+-- ----------------------------
+INSERT INTO `channels` VALUES ('1', '趣图', '1', '1', '1', '2016-07-29 15:09:08', 'admin', null, '');
+INSERT INTO `channels` VALUES ('2', '段子', '2', '1', '1', '2016-07-29 15:09:08', 'admin', null, null);
+INSERT INTO `channels` VALUES ('3', '推荐', '3', '1', '1', '2016-07-29 15:09:08', 'admin', null, null);
+INSERT INTO `channels` VALUES ('4', '精选', '4', '1', '1', '2016-07-29 15:09:08', 'admin', null, null);
+
+
+-- distributors表 2017-02-19
+DROP TABLE IF EXISTS `distributors`;
+CREATE TABLE `distributors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '名称',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态（0:下线、1:上线、2：删除）',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `create_by` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Records of distributors
+-- ----------------------------
+INSERT INTO `distributors` VALUES ('2', '默认频道', '1', '2017-01-05 16:56:32', 'admin', '2017-01-16 14:48:58', 'admin');
