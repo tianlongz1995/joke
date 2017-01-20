@@ -91,10 +91,10 @@
                                         <select class="form-control input" id="cidSearch" onchange="search()">
                                             <%--<option value="">全部</option>--%>
                                             <option value="1"
-                                                    <c:if test="${!empty cid && cid == 1}">selected</c:if> >段子
+                                                    <c:if test="${!empty cid && cid == 1}">selected</c:if> >趣图
                                             </option>
                                             <option value="2"
-                                                    <c:if test="${!empty cid && cid == 2}">selected</c:if> >趣图
+                                                    <c:if test="${!empty cid && cid == 2}">selected</c:if> >段子
                                             </option>
                                             <option value="3"
                                                     <c:if test="${!empty cid && cid == 3}">selected</c:if> >推荐
@@ -135,8 +135,8 @@
                                         <td><c:out value="${banner.slot}"/></td>
                                         <td><c:out value="${banner.jid}"/></td>
                                         <td>
-                                            <c:if test="${banner.cid == 1}">段子</c:if>
-                                            <c:if test="${banner.cid == 2}">趣图</c:if>
+                                            <c:if test="${banner.cid == 1}">趣图</c:if>
+                                            <c:if test="${banner.cid == 2}">段子</c:if>
                                             <c:if test="${banner.cid == 3}">推荐</c:if>
                                             <c:if test="${banner.cid == 4}">精选</c:if>
                                         </td>
@@ -251,8 +251,8 @@
                                     <th>频道类型</th>
                                     <td>
                                         <select class="form-control" id="cid">
-                                            <option value="1">段子</option>
-                                            <option value="2">趣图</option>
+                                            <option value="1">趣图</option>
+                                            <option value="2">段子</option>
                                             <option value="3">推荐</option>
                                             <option value="4">精选</option>
                                         </select>
@@ -310,12 +310,12 @@
                             $('#addNewBanner').removeAttr("disabled");
                             return false;
                         }
-                        if(img == ""){
+                        if (img == "") {
                             alert("必须上传图片");
                             $('#addNewBanner').removeAttr("disabled");
                             return false;
                         }
-                    }else{
+                    } else {
                         if (adId == "") {
                             alert("必须填写广告位id");
                             $('#addNewBanner').removeAttr("disabled");
@@ -324,9 +324,10 @@
                     }
 
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val()+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
+                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val(),
                             function (data) {
                                 if (data['status']) {
+                                    alert("添加成功");
                                     location.reload();
                                 } else {
                                     $('#addNewBanner').removeAttr("disabled");
@@ -420,7 +421,8 @@
                             function () {
                                 alert('移动请求失败，请检查网络环境');
                             });
-                };
+                }
+                ;
                 function post(url, data, success, error) {
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -428,30 +430,33 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                };
+                }
+                ;
                 /**    分页方法    */
                 function turnPage() {
                     location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
-                };
+                }
+                ;
                 //初始化新增模态框显示
-                function init(){
+                function init() {
                     $("#adIdTr").hide();
                 }
                 //控制新增模态框显示内容
-                function hideOthers(){
+                function hideOthers() {
                     var flag = $("#type").val();
-                    if(flag == 1){
+                    if (flag == 1) {
                         $("#cidTr").hide();
                         $("#imgTr").hide();
                         $("#jokeIdTr").hide();
                         $("#adIdTr").show();
-                    }else{
+                    } else {
                         $("#cidTr").show();
                         $("#imgTr").show();
                         $("#jokeIdTr").show();
                         $("#adIdTr").hide();
                     }
-                };
+                }
+                ;
             </script>
 
         </div><!-- content end -->

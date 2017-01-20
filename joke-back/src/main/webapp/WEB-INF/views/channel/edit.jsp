@@ -132,6 +132,7 @@ $('#updateChannel').click(function(event) {
 			'id='+$("#channelid").val()+'&name='+$("#name").val()+'&type='+$('#type').val()+'&contentType='+contentType.toString()+'&size='+size,
 			function (data) {
 				if(data['status']) {
+					alert("更新成功");
 					location.href = '<%=basePath%>channel/list';
 				} else {
 					alert('更新失败. info:'+data['info']);

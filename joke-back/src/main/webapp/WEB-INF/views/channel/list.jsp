@@ -274,6 +274,7 @@ $('#addNewChannel').click(function(event) {
 		'name='+$("#addname").val()+'&type='+$('#addtype').val()+'&contentType='+contentType.toString()+'&size='+size,
 		function (data) {
 			if(data['status']) {
+				alert("添加成功");
 				location.href = '<%=basePath%>channel/list?status='+$("#status").val();
 			}else {
 				alert('添加频道失败. info:'+data['info']);
