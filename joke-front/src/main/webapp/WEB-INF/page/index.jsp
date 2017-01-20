@@ -17,7 +17,7 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
-    <link href="http://s.opfed.com/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
+    <link href="/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="app"></div>
@@ -25,7 +25,7 @@
     var navInfo = ${config};
 </script>
 <script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
-<script src="http://s.opfed.com/joke_new/prd/${index.libJs}"></script>
-<script src="http://s.opfed.com/joke_new/prd/${index.appJs}"></script>
+<script src="/joke_new/prd/${index.libJs}"></script>
+<script src="/joke_new/prd/${index.appJs}"></script>
 </body>
 </html>
