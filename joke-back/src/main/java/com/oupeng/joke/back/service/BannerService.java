@@ -239,7 +239,7 @@ public class BannerService {
             } else {
                 bannerMapper.updateBannerSort(id, maxScore + 1);
             }
-            banner.setImg(realPath + banner.getImg());
+            banner.setImg(banner.getImg());
             //2.修改状态
             bannerMapper.updateBannerStatus(id, status);
             //3.增加缓存

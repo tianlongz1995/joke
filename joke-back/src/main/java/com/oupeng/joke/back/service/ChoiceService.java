@@ -277,7 +277,7 @@ public class ChoiceService {
         } else {
             //增加缓存 - 上线
             choice.setType(3);
-            choice.setImg(realPath + choice.getImg());
+            choice.setImg(choice.getImg());
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), id.toString());
         }
