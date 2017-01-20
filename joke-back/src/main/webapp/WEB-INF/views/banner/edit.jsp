@@ -99,8 +99,8 @@
                                     <th>频道类型</th>
                                     <td>
                                         <select class="form-control input" id="cid">
-                                            <option value="2" <c:if test="${!empty banner.cid && banner.cid == 1}">selected</c:if> >趣图</option>
-                                            <option value="1" <c:if test="${!empty banner.cid && banner.cid == 2}">selected</c:if> >段子</option>
+                                            <option value="1" <c:if test="${!empty banner.cid && banner.cid == 1}">selected</c:if> >趣图</option>
+                                            <option value="2" <c:if test="${!empty banner.cid && banner.cid == 2}">selected</c:if> >段子</option>
                                             <option value="3" <c:if test="${!empty banner.cid && banner.cid == 3}">selected</c:if> >推荐</option>
                                             <option value="4" <c:if test="${!empty banner.cid && banner.cid == 4}">selected</c:if> >精选</option>
                                         </select>
