@@ -1,9 +1,9 @@
 package com.oupeng.joke.domain;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.List;
 
 public class JokeDetail {
 	@JsonInclude(Include.NON_NULL)
@@ -27,6 +27,10 @@ public class JokeDetail {
 	private Integer lastId;
 	@JsonInclude(Include.NON_NULL)
 	private List<Joke> relatedImg;
+	/** 评论数量(commentNumber)	*/
+	@JsonInclude(Include.NON_NULL)
+	private Integer commentNumber;
+
 
 	public String getTitle() {
 		return title;
@@ -87,5 +91,13 @@ public class JokeDetail {
 	}
 	public void setRelatedImg(List<Joke> relatedImg) {
 		this.relatedImg = relatedImg;
+	}
+
+	public Integer getCommentNumber() {
+		return commentNumber;
+	}
+
+	public void setCommentNumber(Integer commentNumber) {
+		this.commentNumber = commentNumber;
 	}
 }

@@ -129,10 +129,7 @@
                                         <td>
                                                 <%--下线--%>
                                             <c:if test="${choice.status == 0}">
-                                                <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#reviewContent"
-                                                   onclick="review(${choice.id})">
-                                                    <i class="glyphicon glyphicon-zoom-in"></i> 预览
-                                                </a>
+
                                                 <a class="btn btn-info btn-sm"
                                                    href="choice/edit?id=${choice.id}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
@@ -153,6 +150,11 @@
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                             </c:if>
+
+                                             <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#reviewContent"
+                                                       onclick="review(${choice.id})">
+                                                        <i class="glyphicon glyphicon-zoom-in"></i> 预览
+                                              </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
