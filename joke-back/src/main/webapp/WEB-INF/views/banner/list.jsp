@@ -175,6 +175,7 @@
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                                 <c:if test="${ not empty cid}">
+                                                    <c:if test="${ status == 1}">
                                                     <c:if test="${firstElement != banner.id}">
                                                         <a class="btn btn-success btn-sm" href="#"
                                                            onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
@@ -186,6 +187,7 @@
                                                        onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
                                                         <i class="glyphicon glyphicon-arrow-down"></i> 下移
                                                     </a>
+                                                    </c:if>
                                                 </c:if>
                                             </c:if>
 

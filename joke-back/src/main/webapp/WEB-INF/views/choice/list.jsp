@@ -286,6 +286,7 @@
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
+                    alert("正在处理中，请耐心等待......");
                     post('choice/add',
                             'title=' + cTitle + '&content=' + encodeURI(content) +'&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
                             function (data) {

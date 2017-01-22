@@ -33,7 +33,7 @@ public class IndexService {
     /** 默认did */
     private static final String DEFAULT_DID = "0";
     /** 图片前缀 */
-    private static String IMG_PREFIX = "http://joke-img.adbxb.cn";
+    private static String IMG_PREFIX = "http://joke-img.adbxb.cn/";
 
     @Autowired
     private Environment env;
@@ -326,6 +326,7 @@ public class IndexService {
             for(String b: bannerSet){
                 banner = JSON.parseObject(jedisCache.get(JedisKey.STRING_BANNER + b),Banner.class);
                 if(null != banner){
+                    banner.setImg(IMG_PREFIX + banner.getImg());
                     bannerList.add(banner);
                 }
             }
