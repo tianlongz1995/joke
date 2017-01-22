@@ -73,7 +73,7 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input" id="statusSearch" onchange="search()">
-                                            <%--<option value="">全部</option>--%>
+                                            <option value="">全部</option>
                                             <option value="0"
                                                     <c:if test="${!empty status && status == 0}">selected</c:if> >下线
                                             </option>
@@ -89,7 +89,7 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input" id="cidSearch" onchange="search()">
-                                            <%--<option value="">全部</option>--%>
+                                            <option value="">全部</option>
                                             <option value="1"
                                                     <c:if test="${!empty cid && cid == 1}">selected</c:if> >趣图
                                             </option>

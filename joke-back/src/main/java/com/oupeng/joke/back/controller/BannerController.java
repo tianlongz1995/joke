@@ -34,8 +34,8 @@ public class BannerController {
      * @return
      */
     @RequestMapping(value = "/list")
-    public String getBannerList(@RequestParam(value = "status", required = false,defaultValue = "1") Integer status,
-                                @RequestParam(value = "cid", required = false,defaultValue = "1") Integer cid,
+    public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
+                                @RequestParam(value = "cid", required = false) Integer cid,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
