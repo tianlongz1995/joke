@@ -8,6 +8,7 @@ import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.JobInfo;
+import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Task;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
@@ -155,13 +156,14 @@ public class TaskService {
         if(task.getObject().getInteger("textNum") != null){
             PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
         }
-        List<String> list = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
+        List<Joke> list = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
         StringBuffer ids = new StringBuffer();
         if(!CollectionUtils.isEmpty(list)){
-            int size = list.size();
-            for(int i = size; i > 0; i--){
-                map.put(list.get(i - 1), baseScore + Double.valueOf(i));
-                ids.append(list.get(i - 1)).append(",");
+            for(Joke j:list){
+                int id = j.getId();
+                int weight = j.getWeight();
+                map.put(Integer.toString(id),baseScore+weight);
+                ids.append(id).append(",");
                 count++;
             }
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 2, map);
@@ -197,8 +199,8 @@ public class TaskService {
         if(task.getObject().getInteger("imageWeight") != null){
             IMG_WEIGHT = task.getObject().getInteger("imageWeight");
         }
-        List<String> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
-        List<String> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
+        List<Joke> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
+        List<Joke> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
         int imgSize = 0;
@@ -216,8 +218,9 @@ public class TaskService {
 //			按照段子审核时间进行权重
             if(img > 0){
                 if(imgSize > 0){
-                    String id = imgList.get(imgSize - 1);
-                    map.put(id, baseScore + Double.valueOf(i));
+                    String id = imgList.get(imgSize - 1).getId().toString();
+                    int weight = imgList.get(imgSize-1).getWeight();
+                    map.put(id, baseScore + weight);
                     ids.append(id).append(",");
                     imgCount++;
                 }
@@ -226,8 +229,9 @@ public class TaskService {
             }
             if(gif > 0){ // 频道权重是否用完
                 if(gifSize > 0){
-                    String id = gifList.get(gifSize - 1);
-                    map.put(id, baseScore + Double.valueOf(i));
+                    String id = gifList.get(gifSize - 1).getId().toString();
+                    int weight = gifList.get(imgSize-1).getWeight();
+                    map.put(id, baseScore + weight);
                     ids.append(id).append(",");
                     gifCount++;
                 }
@@ -281,9 +285,9 @@ public class TaskService {
             IMG_WEIGHT = task.getObject().getInteger("imageWeight");
         }
         Map<String,Double> map = Maps.newHashMap();
-        List<String> textList = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
-        List<String> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
-        List<String> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
+        List<Joke> textList = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
+        List<Joke> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
+        List<Joke> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
         int imgSize = 0;
@@ -306,8 +310,9 @@ public class TaskService {
 //			按照段子审核时间进行权重
             if(text > 0){
                 if(textSize > 0){
-                    String id = textList.get(textSize - 1);
-                    map.put(id, baseScore + Double.valueOf(i));
+                    String id = textList.get(textSize - 1).getId().toString();
+                    int weight = textList.get(textSize -1).getWeight();
+                    map.put(id, baseScore + weight);
                     ids.append(id).append(",");
                     textCount++;
                 }
@@ -316,8 +321,9 @@ public class TaskService {
             }
             if(img > 0){
                 if(imgSize > 0){
-                    String id = imgList.get(imgSize - 1);
-                    map.put(id, baseScore + Double.valueOf(i));
+                    String id = imgList.get(imgSize - 1).getId().toString();
+                    int weight = imgList.get(imgSize - 1).getWeight();
+                    map.put(id, baseScore + weight);
                     ids.append(id).append(",");
                     imgCount++;
                 }
@@ -326,8 +332,9 @@ public class TaskService {
             }
             if(gif > 0){ // 频道权重是否用完
                 if(gifSize > 0){
-                    String id = gifList.get(gifSize - 1);
-                    map.put(id, baseScore + Double.valueOf(i));
+                    String id = gifList.get(gifSize - 1).getId().toString();
+                    int weight = gifList.get(gifSize - 1).getWeight();
+                    map.put(id, baseScore + weight);
                     ids.append(id).append(",");
                     gifCount++;
                 }

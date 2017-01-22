@@ -66,6 +66,10 @@ public class Joke {
 	/** 评论	*/
 	@JsonInclude(Include.NON_NULL)
 	private Comment comment;
+    /**权重*/
+	@JsonInclude(Include.NON_NULL)
+	private Integer weight;
+
 
 	public Integer getId() {
 		return id;
@@ -244,4 +248,12 @@ public class Joke {
     public void setSrc(String src) {
         this.src = src;
     }
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
 }
