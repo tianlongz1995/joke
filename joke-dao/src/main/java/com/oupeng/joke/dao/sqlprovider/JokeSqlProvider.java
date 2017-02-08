@@ -467,4 +467,5 @@ public class JokeSqlProvider {
 		sql.append("where code = ").append(code);
 		return sql.toString();
 	}
+
 }

@@ -304,7 +304,7 @@ public class JokeController {
 	 */
 	@RequestMapping(value="/incrementComment")
 	@ResponseBody
-	public Result incrementComment(@RequestParam(value="jid")Integer jid){
+	public Result incrementComment(@RequestParam(value="jid")Integer[] jid){
 		if(jokeService.incrementComment(jid)){
 			return new Success();
 		}else{
