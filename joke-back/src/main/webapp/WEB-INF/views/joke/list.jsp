@@ -146,6 +146,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th style="width: 5%;text-align: center; vertical-align: middle;">格式</th>
 					<th style="width: 12%;text-align: center; vertical-align: middle;">来源</th>
 					<th style="width: 15%;text-align: center; vertical-align: middle;">抓取时间</th>
+					<th style="width: 15%;text-align: center; vertical-align: middle;">分值</th>
 					<th style="width: 6%;text-align: center; vertical-align: middle;">状态</th>
 					<th style="width: 22%;text-align: center; vertical-align: middle;">操作</th>
 				</tr>
@@ -179,6 +180,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 					<td>
 						<fmt:formatDate value="${joke.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					</td>
+					<td>
+							${joke.weight}
 					</td>
 					<td>
 						<c:if test="${joke.status == 0}">未审核</c:if>
@@ -276,7 +280,6 @@ function verifyJoke(status,id) {
 		}
 		id = ids.toString();
 	}
-	
 	post('joke/verify',
 			'ids='+id+'&status='+status, 
 			function (data) {

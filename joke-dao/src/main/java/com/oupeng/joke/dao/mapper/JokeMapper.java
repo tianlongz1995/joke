@@ -41,7 +41,7 @@ public interface JokeMapper {
 						   @Param(value="id")Integer id, @Param(value="content")String content, @Param(value="isTopic")boolean isTopic);
 	
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
-			+ "create_time as createTime,update_time as updateTime,good,bad,width,height from joke where id = ${id}")
+			+ "create_time as createTime,update_time as updateTime,good,bad,width,height,weight from joke where id = ${id}")
 	@ResultType(value=Joke.class)
 	Joke getJokeById(@Param(value="id")Integer id);
 	
