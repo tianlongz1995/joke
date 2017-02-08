@@ -68,7 +68,7 @@ public class JokeSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t1.source_id as sourceId,");
 		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
-		sql.append(" t1.update_time as updateTime,t1.good,t1.bad from joke t1 where 1 = 1 ");
+		sql.append(" t1.update_time as updateTime,t1.good,t1.bad,t1.weight from joke t1 where 1 = 1  ");
 		if(type != null){
 			sql.append(" and t1.type = ").append(type).append(" ");
 		}
@@ -84,7 +84,8 @@ public class JokeSqlProvider {
 		if(isTopic){
 			sql.append(" and t1.verify_time >= CURDATE() and not exists ( select 1 from topic_joke t2 where t2.j_id = t1.id)");
 		}
-		sql.append(" order by t1.create_time desc limit 12 ");
+//		t1.create_time desc ,
+		sql.append(" order by t1.weight desc limit 12 ");
 		return sql.toString();
 	}
 
@@ -116,7 +117,9 @@ public class JokeSqlProvider {
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update joke set update_time =now(),verify_time=now(), ");
-		sql.append(" status=1,type=").append(joke.getType()).append(",");
+//		getType 为 null
+//		sql.append(" status=1,type=").append(joke.getType()).append(",");
+		sql.append(" status=1,");
 		sql.append(" verify_user='").append(joke.getVerifyUser()).append("',");
 		if(StringUtils.isNotBlank(joke.getTitle())){
 			sql.append(" title='").append(joke.getTitle().trim()).append("',");
@@ -144,9 +147,14 @@ public class JokeSqlProvider {
 			sql.append(" width = 0, ");
 		}
 		if(joke.getHeight() != null){
-			sql.append(" height = ").append(joke.getHeight()).append(" ");
+			sql.append(" height = ").append(joke.getHeight()).append(",");
 		}else{
-			sql.append(" height = 0 ");
+			sql.append(" height = 0, ");
+		}
+		if (joke.getWeight() != null) {
+			sql.append(" weight = ").append(joke.getWeight());
+		}else{
+			sql.append(" weight = 0");
 		}
 		sql.append(" where id =").append(joke.getId());
 		return sql.toString();
@@ -334,7 +342,7 @@ public class JokeSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t2.name as sourceName,");
 		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
-		sql.append(" t1.update_time as updateTime from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
+		sql.append(" t1.update_time as updateTime,t1.weight from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
 		if(type != null){
 			sql.append(" and t1.type = ").append(type).append(" ");
 		}
@@ -350,7 +358,8 @@ public class JokeSqlProvider {
 		if(StringUtils.isNotBlank(endDay)){
 			sql.append(" and t1.`create_time` <= str_to_date('").append(endDay).append("', '%Y-%m-%d %H:%i:%s') ");
 		}
-		sql.append(" order by t1.create_time desc limit ");
+//		t1.create_time desc
+		sql.append(" order by  t1.weight desc limit ");
 		sql.append(offset).append(" , ").append(pageSize);
 		return sql.toString();
 	}

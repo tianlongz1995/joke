@@ -127,14 +127,20 @@ public class JokeController {
 	@RequestMapping(value="/verify", produces = {"application/json"})
 	@ResponseBody
 	public Result verify(@RequestParam(value="ids")String ids,
-			@RequestParam(value="status")Integer status){
+						 @RequestParam(value="status")Integer status){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		jokeService.verifyJoke(status, ids, username);
 		return new Success();
-	} 
-	
-	@RequestMapping(value="/edit")
-	public String edit(@RequestParam(value="id")Integer id,Model model){
+	}
+
+	/**
+	 * 转到编辑页
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/edit")
+	public String edit(@RequestParam(value = "id") Integer id, Model model) {
 		model.addAttribute("joke", jokeService.getJokeById(id));
 		return "/joke/edit";
 	}
@@ -152,15 +158,16 @@ public class JokeController {
 	 */
 	@RequestMapping(value="/update")
 	@ResponseBody
-	public Result update(@RequestParam(value="id")Integer id,
-			@RequestParam(value="title",required=false)String title,
-			@RequestParam(value="content",required=false)String content,
-			@RequestParam(value="img",required=false)String img,
-			@RequestParam(value="gif",required=false)String gif,
-			@RequestParam(value="width")Integer width,
-			@RequestParam(value="height")Integer height){
+	public Result update(@RequestParam(value = "id") Integer id,
+						 @RequestParam(value = "title", required = false) String title,
+						 @RequestParam(value = "content", required = false) String content,
+						 @RequestParam(value = "img", required = false) String img,
+						 @RequestParam(value = "gif", required = false) String gif,
+						 @RequestParam(value = "width") Integer width,
+						 @RequestParam(value = "height") Integer height,
+						 @RequestParam(value = "weight",required = false) Integer weight) {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		boolean result = jokeService.updateJoke(id, title, img, gif,width,height,content, username);
+		boolean result = jokeService.updateJoke(id, title, img, gif,width,height,content, weight,username);
 		if(result){
 			return new Success();
 		}else{
@@ -170,8 +177,8 @@ public class JokeController {
 	
 	@RequestMapping(value="/search")
 	public String searchJokeList(@RequestParam(value="jokeid",required=false)Integer jokeid,
-			@RequestParam(value="content",required=false)String content,
-			Model model){
+			                     @RequestParam(value="content",required=false)String content,
+								 Model model){
 		model.addAttribute("list", jokeService.getJokeListForSearch(jokeid, content));
 		model.addAttribute("jokeid", jokeid);
 		model.addAttribute("content", content);

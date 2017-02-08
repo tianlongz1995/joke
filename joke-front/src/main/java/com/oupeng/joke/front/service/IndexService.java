@@ -212,7 +212,7 @@ public class IndexService {
                 }
                 if(joke.getComment() != null && joke.getComment().getAvata() != null){
                     Comment comment = joke.getComment();
-                    comment.setAvata(IMG_PREFIX + comment.getAvata());
+                    comment.setAvata(comment.getAvata());
                 }
 //                picturesCache.put(new Element(cid+id, joke));
             }

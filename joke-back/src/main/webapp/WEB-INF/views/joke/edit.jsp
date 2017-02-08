@@ -82,6 +82,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<textarea id="content2" type="text" class="form-control" ROWS="10"  COLS="10"><c:out value="${joke.content}"/></textarea>
 			  		</td>
 			  	</tr>
+			    <tr>
+			        <th>分值</th>
+			       <td>
+					   <input type="text" id="weight" class="form-control" value="${joke.weight}">
+				   </td>
 			</thead>
 		</table>
 		<input id="id" type="hidden" value="${joke.id}"/>
@@ -142,7 +147,7 @@ $('#updateJoke').click(function(event) {
 	$('#updateJoke').attr("disabled","disabled");
 	post('joke/update',
 		'id='+$("#id").val()+'&title='+$("#title").val()+'&img='+$("#imgUrl").val()+'&content='+$("#content2").val()
-			+'&gif='+$("#gifUrl").val()+'&width='+$("#width").val()+'&height='+$("#height").val(),
+			+'&gif='+$("#gifUrl").val()+'&width='+$("#width").val()+'&height='+$("#height").val()+'&weight='+$("#weight").val(),
 		function (data) {
 			if(data['status']) {
 				location.href = '<%=basePath%>joke/list';

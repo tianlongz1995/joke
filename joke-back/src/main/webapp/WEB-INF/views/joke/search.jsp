@@ -101,6 +101,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<th style="width: 7%;">ID</th>
 					<th style="width: 68%;">内容</th>
 					<th style="width: 5%;">格式</th>
+					<th style="width: 5%;">分值</th>
 					<th style="width: 5%;">状态</th>
 					<th style="width: 8%;">操作</th>
 				</tr>
@@ -128,6 +129,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.type == 0}">文字</c:if>
 						<c:if test="${joke.type == 1}">图片</c:if>
 						<c:if test="${joke.type == 2}">动图</c:if>
+					</td>
+					<td>
+						${joke.weight}
 					</td>
 					<td class="idselect">
 						<c:if test="${joke.status == 0}">未审核</c:if>
