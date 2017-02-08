@@ -72,7 +72,7 @@ public class BannerService {
         banner.setContent(content);
         //内容上传图片
         String newImg = handleImg(img);
-        if (StringUtils.isBlank(newImg)) {
+        if (StringUtils.isBlank(newImg) && type ==0) {
             return false;
         }
         banner.setImg(newImg);
