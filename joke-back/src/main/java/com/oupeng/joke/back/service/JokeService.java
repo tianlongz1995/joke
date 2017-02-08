@@ -563,17 +563,22 @@ public class JokeService {
 	 * @param jid
 	 * @return  TODO
 	 */
-    public boolean incrementComment(Integer jid) {
+    public boolean incrementComment(Integer[] jid) {
 //    	更新数据库中段子评论数
-		jokeMapper.incrementComment(jid);
-
-//		更新缓存中的段子评论数
-		Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),Joke.class);
-		if(joke.getComment() != null){
-		    Comment comment = joke.getComment();
-            comment.setTotal(comment.getTotal() + 1);
-		}
-		jedisCache.set(JedisKey.STRING_JOKE + jid, JSON.toJSONString(joke));
+        for(Integer id : jid){
+            if(id != null){
+                jokeMapper.incrementComment(id);
+                //		更新缓存中的段子评论数
+                Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
+                if(joke != null && joke.getComment() != null){
+                    Comment comment = joke.getComment();
+                    comment.setTotal(comment.getTotal() + 1);
+                    jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
+                } else {
+                    logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);
+                }
+            }
+        }
     	return true;
     }
 

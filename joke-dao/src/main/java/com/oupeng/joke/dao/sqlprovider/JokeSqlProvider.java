@@ -456,7 +456,7 @@ public class JokeSqlProvider {
 			sql.append(" value = null,");
 		}
 		sql.append("where code = ").append(code);
-		System.out.println("================"+sql.toString());
 		return sql.toString();
 	}
+
 }

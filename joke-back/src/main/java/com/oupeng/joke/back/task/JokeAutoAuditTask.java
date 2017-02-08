@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
+//@Component
 public class JokeAutoAuditTask {
     private static Logger logger = LoggerFactory.getLogger(JokeAutoAuditTask.class);
     @Autowired
@@ -25,7 +25,7 @@ public class JokeAutoAuditTask {
     /** 运行状态    */
     private boolean running = false;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         String status = env.getProperty("joke.auto.audit.status");
         if (StringUtils.isNumeric(status) && status.equals("1")) {
@@ -44,7 +44,7 @@ public class JokeAutoAuditTask {
      * 自动发布段子
      *
      */
-    @Scheduled(cron = "0 0 17 * * ?")
+//    @Scheduled(cron = "0 0 17 * * ?")
     public void run() {
         try {
             if (running) {
