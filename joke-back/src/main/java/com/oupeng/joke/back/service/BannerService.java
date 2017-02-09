@@ -271,7 +271,7 @@ public class BannerService {
         if (!CollectionUtils.isEmpty(list)) {
             Banner d = list.get(0);
             //第一个元素禁止上移
-            if (d.getId() == id && type == 1) {
+            if (d.getId().equals(id) && type == 1) {
                 return false;
             }
             // 1.更新排序值
@@ -279,7 +279,7 @@ public class BannerService {
                 int lastIndex = 0;
                 int lastId = 0;
                 for (Banner b : list) {
-                    if (b.getId() == id) {
+                    if (b.getId().equals(id)) {
                         break;
                     }
                     lastIndex = b.getSort();
@@ -297,7 +297,7 @@ public class BannerService {
                     if (end == 0) {
                         break;
                     }
-                    if (b.getId() == id) {
+                    if (b.getId().equals(id)) {
                         end--;
                     }
                 }
