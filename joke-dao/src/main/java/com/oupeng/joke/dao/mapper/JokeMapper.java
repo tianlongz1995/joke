@@ -291,7 +291,7 @@ public interface JokeMapper {
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time =now(), audit = 3, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+	@Update("update joke set update_time =now(), audit = 3,status =3, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
 	void updateJoke2PublishStatus(@Param("idsStr")String idsStr);
 
 	/**

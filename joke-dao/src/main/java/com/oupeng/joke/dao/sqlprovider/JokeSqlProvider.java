@@ -101,7 +101,7 @@ public class JokeSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update joke set update_time =now(), ");
 		sql.append(" status= ").append(status);
-//		sql.append(" ,audit = ").append(status);
+		sql.append(" ,audit = ").append(status);
 		if(user != null && !"".equals(user)){
 			sql.append(",verify_time=now(),").append("verify_user= '").append(user).append("' ");
 		}
