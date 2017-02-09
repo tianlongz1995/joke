@@ -101,7 +101,7 @@ public class JokeSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update joke set update_time =now(), ");
 		sql.append(" status= ").append(status);
-		sql.append(" ,audit = ").append(status);
+//		sql.append(" ,audit = ").append(status);
 		if(user != null && !"".equals(user)){
 			sql.append(",verify_time=now(),").append("verify_user= '").append(user).append("' ");
 		}
@@ -361,6 +361,13 @@ public class JokeSqlProvider {
 //		t1.create_time desc
 		sql.append(" order by  t1.weight desc limit ");
 		sql.append(offset).append(" , ").append(pageSize);
+
+		System.out.println(sql.toString());
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
 		return sql.toString();
 	}
 
