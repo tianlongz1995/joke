@@ -69,6 +69,14 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>发布时间</th>
+                                    <td>
+                                        <input id="publishTime" type="text"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="form-control"
+                                               value="${banner.publishTimeString}"/>
+                                    </td>
+                                <tr/>
+                                <tr>
                                     <th>ID</th>
                                     <td><input id="bannerId" type="text" class="form-control" disabled="disabled" value="${banner.id}"/></td>
                                 </tr>
@@ -111,10 +119,16 @@
                                     <th>状态</th>
                                     <td>
                                         <c:if test="${banner.status == 0}">
-                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="下线"/>
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="新建"/>
                                         </c:if>
                                         <c:if test="${banner.status == 1}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="下线"/>
+                                        </c:if>
+                                        <c:if test="${banner.status == 2}">
                                             <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="上线"/>
+                                        </c:if>
+                                        <c:if test="${banner.status == 3}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="已发布"/>
                                         </c:if>
 
                                     </td>
@@ -226,7 +240,7 @@
                     $('#updateBanner').attr("disabled","disabled");
                     post('banner/update',
                             'id='+$("#bannerId").val()+'&title='+$("#title").val()+'&jid='+$("#jokeId").val()+'&cid='+$("#cid").val()+'&content='+$('#bannerContent').val()+'&type='+$("#type").val()
-                            +'&img='+$('#image').val() +'&adId='+$('#adId').val(),
+                            +'&img='+$('#image').val() +'&adId='+$('#adId').val()+'&publishTime='+$("#publishTime").val(),
                             function (data) {
                                 if(data['status']) {
                                     alert("更新成功");

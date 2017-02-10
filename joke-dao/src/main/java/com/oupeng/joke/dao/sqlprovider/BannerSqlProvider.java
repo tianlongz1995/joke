@@ -18,7 +18,7 @@ public class BannerSqlProvider {
      */
     public static String addBanner(Banner banner) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into banner(title, img, cid,status,content,jid,type,slot,sort,width,height,create_time, update_time) value (");
+        sql.append(" insert into banner(title, img, cid,status,content,jid,type,slot,sort,width,height,publish_time,create_time, update_time) value (");
         if (StringUtils.isNotBlank(banner.getTitle())) {
             sql.append("'").append(banner.getTitle().trim()).append("',");
         } else {
@@ -79,6 +79,11 @@ public class BannerSqlProvider {
         } else {
             sql.append("0,");
         }
+        if(null!=banner.getPublishTime()){
+            sql.append("'").append(banner.getPublishTimeString()).append("', ");
+        }else{
+            sql.append("null, ");
+        }
         sql.append("now(),now())");
         return sql.toString();
     }
@@ -116,11 +121,11 @@ public class BannerSqlProvider {
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
         sql.append(" select id,title,jid,img,cid,type,status,content,slot,sort,");
-        sql.append(" create_time as createTime,update_time as updateTime from banner where 1 = 1 ");
+        sql.append(" create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where 1 = 1 ");
         if(status != null){
             sql.append(" and status = ").append(status);
         } else {
-            sql.append(" and status != 2 ");
+            sql.append(" and status != 4 ");
         }
         if(null != cid){
             sql.append(" and cid = ").append(cid);
@@ -179,12 +184,19 @@ public class BannerSqlProvider {
         }else{
             sql.append("null,");
         }
+        sql.append(" publish_time=");
+        if(null !=banner.getPublishTime()){
+            sql.append("'").append(banner.getPublishTimeString()).append("', ");
+        }else{
+            sql.append("null, ");
+        }
         sql.append(" content=");
         if(StringUtils.isNotBlank(banner.getContent())){
             sql.append("'").append(banner.getContent().trim()).append("' ");
         }else{
             sql.append("null");
         }
+
         sql.append(" where id = ").append(banner.getId());
         return sql.toString();
     }

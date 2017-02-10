@@ -29,7 +29,7 @@ public interface BannerMapper {
 
     /**
      * 获取banner列表
-     * @param status    状态
+     * @param status    状态 0新建 1下线 2上线 3已发布
      * @param cid       频道id
      * @param offset    偏移
      * @param pageSize  页面显示条数
@@ -47,7 +47,7 @@ public interface BannerMapper {
      * @return
      */
     @Select(value="select id,title,jid,type,img,sort,cid,slot,status,content,width,height,"
-            + "create_time as createTime,update_time as updateTime from banner where id = #{id}")
+            + "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where id = #{id}")
     Banner getBannerById(Integer id);
 
     /**
@@ -80,7 +80,7 @@ public interface BannerMapper {
      * @return
      */
     @Select(value = "SELECT id,title,jid,type,sort,img,cid,slot,status,content,"
-            + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and status = 1 ORDER BY sort ASC")
+            + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and status = 2 ORDER BY sort ASC")
     List<Banner> getBannerMoveList(Integer cid);
     /**
      * 更新banner排序值
@@ -96,7 +96,16 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select("select sort from banner  WHERE cid = #{cid} and status = 1 ORDER BY sort desc LIMIT 1")
+    @Select("select sort from banner  WHERE cid = #{cid} and status = 2 ORDER BY sort desc LIMIT 1")
     Integer getMaxSortByCid(Integer cid);
+
+
+    /**
+     * 获取带发布的banner
+     * @return
+     */
+    @Select(value = "select id,title,jid,type,img,sort,cid,slot,status,content,width,height," +
+            "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
+    List<Banner> getBannerForPublish();
 
 }

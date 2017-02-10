@@ -89,4 +89,7 @@ public class JedisKey {
     public static final String JOKE_CHANNEL = "joke.channel.";
     /** 精选缓存*/
     public static final String JOKE_BANNER = "joke.banner.";
+
+    /** ezine joke 列表*/
+    public static final String EZINE_JOKE = "ezine.joke";
 }

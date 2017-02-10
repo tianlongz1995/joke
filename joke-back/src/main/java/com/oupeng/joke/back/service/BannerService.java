@@ -1,6 +1,7 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -67,7 +70,7 @@ public class BannerService {
      * @param type
      * @return
      */
-    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height) {
+    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime) {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
@@ -85,6 +88,7 @@ public class BannerService {
         banner.setSort(0);
         banner.setWidth(width);
         banner.setHeight(height);
+        banner.setPublishTimeString(publishTime);
         bannerMapper.addBanner(banner);
         return true;
     }
@@ -101,6 +105,14 @@ public class BannerService {
         return bannerMapper.getBannerListCount(status, cid);
     }
 
+    /**
+     * 查询banner列表
+     * @param status 0 新建 1下线 2上线 3 已发布
+     * @param cid    频道id
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public List<Banner> getBannerList(Integer status, Integer cid, Integer offset, Integer pageSize) {
         List<Banner> bannerList = bannerMapper.getBannerList(status, cid, offset, pageSize);
         if (!CollectionUtils.isEmpty(bannerList)) {
@@ -140,7 +152,7 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
@@ -161,6 +173,7 @@ public class BannerService {
         banner.setJid(jid);
         banner.setType(type);
         banner.setSlot(adId);
+        banner.setPublishTimeString(publishTime);
         bannerMapper.updateBanner(banner);
         return true;
     }
@@ -182,71 +195,46 @@ public class BannerService {
      * @param cid
      */
     public void delBanner(Integer id, Integer cid) {
-
         //删除记录
         bannerMapper.delBanner(id);
     }
 
     /**
      * 更新banner状态
-     *
+     * 校验是否能发布
      * @param id
-     * @param status 0 下线 1上线
+     * @param status 0 新建 1 下线 2上线 3 已发布 ,
      * @return
      */
-    public boolean updateBannerStatus(Integer id, Integer status) {
+    public String updateBannerStatus(Integer id, Integer status) {
+        String result = null;
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
         String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
-        // 下线删除缓存
-        if (status == 0) {
-            //1 重置banner的顺序
-            List<Banner> list = bannerMapper.getBannerMoveList(banner.getCid());
-            //下线元素的位置
-            int position = -1;
-
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getId().equals(id)) {
-                    position = i;
-                }
-            }
-            //banner大于1个,且下线的的不是最后一个元素,更新排序值,12345 删除 3 -》1234
-            if (list.size() > 1 && id != list.get(list.size() - 1).getId()) {
-                for (int i = position; i < list.size() - 1; i++) {
-                    //当前banner排序值
-                    int sort = list.get(i).getSort();
-                    bannerMapper.updateBannerSort(list.get(i + 1).getId(), sort);
-                }
-            }
-            bannerMapper.updateBannerSort(id, 0);
-            //2.更新状态
-            bannerMapper.updateBannerStatus(id, status);
-            //3.删除缓存
+        //上线
+        if (Constants.BANNER_STATUS_VALID == status) {
+            result = validBanner(bannerMapper.getBannerById(id));
+        } else if (Constants.TOPIC_STATUS_PUBLISH != status) { //下线
+            //删除缓存
             jedisCache.del(bannerKey);
             jedisCache.zrem(bannerListKey, Integer.toString(id));
-
-
-        } else {
-            // 判断上线banner个数
-            Integer bannerCount = bannerMapper.getBannerListCount(1, banner.getCid());
-            if (bannerCount >= 5) {
-                return false;
-            }
-            //1.修改排序值
-            Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
-            if (null == maxScore) {
-                bannerMapper.updateBannerSort(id, 1);
-            } else {
-                bannerMapper.updateBannerSort(id, maxScore + 1);
-            }
-            banner.setImg(banner.getImg());
-            //2.修改状态
-            bannerMapper.updateBannerStatus(id, status);
-            //3.增加缓存
-            jedisCache.set(bannerKey, JSON.toJSONString(banner));
-            jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
+            //置排序值为0
+//            bannerMapper.updateBannerSort(id, 0);
         }
-        //修改channel中banner状态
+        if (result == null) { //验证通过，或者下线，更新状态
+            //上线操作，修改sort值
+            if(Constants.BANNER_STATUS_VALID==status){
+                //1.修改排序值
+                Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
+                if (null == maxScore) {
+                    bannerMapper.updateBannerSort(id, 1);
+                } else {
+                    bannerMapper.updateBannerSort(id, maxScore + 1);
+                }
+            }
+            bannerMapper.updateBannerStatus(id, status);
+        }
+        //根据缓存中banner的个数，修改channel表中banner状态
         Long bannerCount = jedisCache.zcard(bannerListKey);
         //（0：不显示、1：显示）
         if (bannerCount == 0) {
@@ -254,8 +242,44 @@ public class BannerService {
         } else {
             distributorsMapper.updateChannelsBanner(1, banner.getCid());
         }
-        return true;
+        return result;
     }
+
+
+    /**
+     * 验证banner是否能正常发布
+     * @param banner
+     * @return
+     */
+    private String validBanner(Banner banner){
+        // 判断上线banner个数,不能超过五个
+        Integer bannerCount = bannerMapper.getBannerListCount(1, banner.getCid());
+        if (bannerCount >= 5) {
+            return "上线的banner不能超过5个";
+        }
+        if(banner.getPublishTime() == null){
+            return "banner的发布时间不能为空";
+        }else if(StringUtils.isBlank(banner.getImg())&& banner.getType()==0){
+            return "banner为内容时,图片不能为空";
+        } else if (null == banner.getJid() && banner.getType() == 0) {
+            return "banner为内容时，段子id不能为空";
+        }else if(null == banner.getSlot()&&banner.getType() == 1 ){
+            return "banner为广告时,广告位不能为空";
+        }else{
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.HOUR_OF_DAY, 1);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                if(banner.getPublishTime().compareTo(calendar.getTime()) < 0){
+                    return "发布时间最少要在下一个小时";
+                }
+            }
+        return null;
+    }
+
+
 
     /**
      * banner 移动 ，仅在上线的banner中有效
@@ -315,4 +339,16 @@ public class BannerService {
         }
         return false;
     }
+
+
+    /**
+     * 获取待发布的专题
+     * @return
+     */
+    public List<Banner> getBannerForPublish(){
+        return bannerMapper.getBannerForPublish();
+    }
+
+
+
 }

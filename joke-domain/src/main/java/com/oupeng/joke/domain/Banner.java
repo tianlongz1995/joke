@@ -2,6 +2,11 @@ package com.oupeng.joke.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.apache.commons.lang3.StringUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Banner {
     @JsonInclude(Include.NON_NULL)
@@ -21,9 +26,9 @@ public class Banner {
     @JsonInclude(Include.NON_NULL)
     private Integer status;
     @JsonInclude(Include.NON_NULL)
-    private String createTime;
+    private Date createTime;
     @JsonInclude(Include.NON_NULL)
-    private String updateTime;
+    private Date updateTime;
     @JsonInclude(Include.NON_NULL)
     private Integer slot;
     @JsonInclude(Include.NON_NULL)
@@ -32,6 +37,7 @@ public class Banner {
     @JsonInclude(Include.NON_NULL)
     private Integer height;
     @JsonInclude(Include.NON_NULL)
+    private Date publishTime;
 
     public Integer getId() {
         return id;
@@ -65,21 +71,6 @@ public class Banner {
         this.status = status;
     }
 
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
 
     public String getImg() {
         return img;
@@ -143,6 +134,47 @@ public class Banner {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public String getPublishTimeString() {
+        String result = null;
+        if(publishTime != null){
+            result = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(publishTime);
+        }
+        return result;
+    }
+    public void setPublishTimeString(String publishTime){
+        if(StringUtils.isNotBlank(publishTime)){
+            try {
+                this.publishTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(publishTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

@@ -34,4 +34,9 @@ public class Constants {
 
     /**banner已发布状态 0 下线 1 上线 */
 	public static final Integer Banner_STATUS_VALID = 1;
+
+	/**	banner待发布状态 (0:新建 1:下线 2:上线 3:已发布)	已上线*/
+	public static final Integer BANNER_STATUS_VALID = 2;
+	/**	banner已发布状态 (0:新建 1:下线 2:上线 3:已发布)	*/
+	public static final Integer BANNER_STATUS_PUBLISH = 3;
 }

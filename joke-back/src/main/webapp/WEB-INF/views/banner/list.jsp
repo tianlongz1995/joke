@@ -75,10 +75,16 @@
                                         <select class="form-control input" id="statusSearch" onchange="search()">
                                             <option value="">全部</option>
                                             <option value="0"
-                                                    <c:if test="${!empty status && status == 0}">selected</c:if> >下线
+                                                    <c:if test="${!empty status && status == 0}">selected</c:if> >新建
                                             </option>
                                             <option value="1"
-                                                    <c:if test="${!empty status && status == 1}">selected</c:if> >上线
+                                                    <c:if test="${!empty status && status == 1}">selected</c:if> >下线
+                                            </option>
+                                            <option value="2"
+                                                    <c:if test="${!empty status && status == 2}">selected</c:if> >上线
+                                            </option>
+                                            <option value="3"
+                                                    <c:if test="${!empty status && status == 3}">selected</c:if> >已发布
                                             </option>
                                         </select>
                                     </label>
@@ -117,6 +123,8 @@
                                     <th>内容类型</th>
                                     <th>状态</th>
                                     <th>描述</th>
+                                    <th>创建时间</th>
+                                    <th>发布时间</th>
                                     <c:if test="${ not empty cid}">
                                         <th>排序值</th>
                                     </c:if>
@@ -135,25 +143,34 @@
                                         <td><c:out value="${banner.slot}"/></td>
                                         <td><c:out value="${banner.jid}"/></td>
                                         <td>
-                                            <c:if test="${banner.cid == 1}">趣图</c:if>
-                                            <c:if test="${banner.cid == 2}">段子</c:if>
-                                            <c:if test="${banner.cid == 3}">推荐</c:if>
-                                            <c:if test="${banner.cid == 4}">精选</c:if>
+                                                <c:if test="${banner.cid == 1}">趣图</c:if>
+                                                <c:if test="${banner.cid == 2}">段子</c:if>
+                                                <c:if test="${banner.cid == 3}">推荐</c:if>
+                                                <c:if test="${banner.cid == 4}">精选</c:if>
                                         </td>
                                         <td>
                                             <c:if test="${banner.type == 0}">内容</c:if>
                                             <c:if test="${banner.type == 1}">广告</c:if>
                                         </td>
                                         <td>
-                                            <c:if test="${banner.status == 0}">下线</c:if>
-                                            <c:if test="${banner.status == 1}">上线</c:if>
+                                            <c:if test="${banner.status == 0}">新建</c:if>
+                                            <c:if test="${banner.status == 1}">下线</c:if>
+                                            <c:if test="${banner.status == 2}">上线</c:if>
+                                            <c:if test="${banner.status == 3}">已发布</c:if>
                                         </td>
                                         <td><c:out value="${banner.content}"/></td>
+                                        <td>
+                                            <fmt:formatDate value="${banner.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
+                                        <td>
+                                            <fmt:formatDate value="${banner.publishTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
+
                                         <c:if test="${ not empty cid}">
                                             <td><c:out value="${banner.sort}"/></td>
                                         </c:if>
                                         <td>
-                                                <%--下线--%>
+                                         <%--新建状态--%>
                                             <c:if test="${banner.status == 0}">
                                                 <a class="btn btn-info btn-sm"
                                                    href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
@@ -164,18 +181,39 @@
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(2,${banner.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 上线
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(1,${banner.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                            </c:if>
+
+                                                <%--下线--%>
+                                            <c:if test="${banner.status == 1}">
+                                                <a class="btn btn-info btn-sm"
+                                                   href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
+                                                    <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
+                                                </a>
+                                                <a class="btn btn-warning btn-sm" href="#"
+                                                   onclick="delBanner(${banner.id},${banner.cid})">
+                                                    <i class="glyphicon glyphicon-trash"></i> 删除
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
                                             </c:if>
-                                                <%--上线--%>
-                                            <c:if test="${banner.status == 1}">
-                                                <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="offlineOnline(0,${banner.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                </a>
+                                                <%--上线 --%>
+                                             <c:if test="${banner.status == 2 }">
+                                                 <a class="btn btn-danger btn-sm" href="#"
+                                                    onclick="offlineOnline(1,${banner.id})">
+                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                 </a>
+
                                                 <c:if test="${ not empty cid}">
-                                                    <c:if test="${ status == 1}">
+                                                    <c:if test="${ status == 2}">
                                                     <c:if test="${firstElement != banner.id}">
                                                         <a class="btn btn-success btn-sm" href="#"
                                                            onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
@@ -190,6 +228,14 @@
                                                     </c:if>
                                                 </c:if>
                                             </c:if>
+
+                                              <%--已发布--%>
+                                             <c:if test="${banner.status == 3 }">
+                                                 <a class="btn btn-danger btn-sm" href="#"
+                                                    onclick="offlineOnline(1,${banner.id})">
+                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                 </a>
+                                             </c:if>
 
                                         </td>
                                     </tr>
@@ -219,6 +265,7 @@
                         </div>
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
+
                                 <tr>
                                     <th>内容类型</th>
                                     <td>
@@ -228,6 +275,14 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>发布时间</th>
+                                    <td>
+                                        <input id="publishTime" type="text"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="form-control"
+                                               value=""/>
+                                    </td>
+                                <tr/>
                                 <tr>
                                     <th>标题</th>
                                     <td>
@@ -326,7 +381,7 @@
                     }
 
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val(),
+                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
                             function (data) {
                                 if (data['status']) {
                                     alert("添加成功");
@@ -397,6 +452,7 @@
                                 'id=' + id + '&status=' + status,
                                 function (data) {
                                     if (data['status']) {
+                                        alert("操作成功");
                                         location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                     } else {
                                         alert('操作失败. info:' + data['info']);
@@ -447,12 +503,12 @@
                 function hideOthers() {
                     var flag = $("#type").val();
                     if (flag == 1) {
-                        $("#cidTr").hide();
+//                        $("#cidTr").hide();
                         $("#imgTr").hide();
                         $("#jokeIdTr").hide();
                         $("#adIdTr").show();
                     } else {
-                        $("#cidTr").show();
+//                        $("#cidTr").show();
                         $("#imgTr").show();
                         $("#jokeIdTr").show();
                         $("#adIdTr").hide();

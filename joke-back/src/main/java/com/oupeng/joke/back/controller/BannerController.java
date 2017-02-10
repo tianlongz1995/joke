@@ -60,7 +60,7 @@ public class BannerController {
             }
             offset = (pageNumber - 1) * pageSize;
 
-            list = bannerService.getBannerList(status, cid, offset, pageSize);
+            list = bannerService.getBannerList(status, cid,offset, pageSize);
         }
         model.addAttribute("count", count);
         model.addAttribute("pageNumber", pageNumber);
@@ -99,9 +99,10 @@ public class BannerController {
                             @RequestParam(value = "jid")  Integer jid,
                             @RequestParam(value = "type") Integer type,
                             @RequestParam(value = "adid") Integer adid,
+                            @RequestParam(value = "publishTime",required = false) String publishTime,
                             @RequestParam(value = "width",required = false) Integer width,
                             @RequestParam(value = "height",required = false) Integer height) {
-        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height);
+        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height,publishTime);
         if (result) {
             return new Success("添加成功!");
         } else {
@@ -154,11 +155,12 @@ public class BannerController {
                          @RequestParam(value = "content") String content,
                          @RequestParam(value = "jid")     Integer jid,
                          @RequestParam(value = "type")    Integer type,
+                         @RequestParam(value = "publishTime") String publishTime,
                          @RequestParam(value = "adId")    Integer adId) {
         Banner banner = bannerService.getBannerById(id);
-        //下线的banner可以编辑
-        if (banner.getStatus() == 0) {
-           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId);
+        //下线和新建的的banner可以编辑
+        if (banner.getStatus() == 0 || banner.getStatus()== 1) {
+           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime);
             if(flag) {
                 return new Success("更新成功!");
             }else{
@@ -195,11 +197,11 @@ public class BannerController {
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id")Integer id,
                                 @RequestParam(value = "status") Integer status){
-        boolean flag = bannerService.updateBannerStatus(id, status);
-        if (flag) {
-            return new Success("上线/下线成功");
+        String result = bannerService.updateBannerStatus(id, status);
+        if (null == result) {
+            return new Success();
         } else {
-            return new Failed("上线/下线失败，banner超过5个");
+            return new Failed(result);
         }
     }
 
