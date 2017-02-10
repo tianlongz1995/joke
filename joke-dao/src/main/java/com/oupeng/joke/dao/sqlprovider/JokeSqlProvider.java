@@ -361,13 +361,6 @@ public class JokeSqlProvider {
 //		t1.create_time desc
 		sql.append(" order by  t1.weight desc limit ");
 		sql.append(offset).append(" , ").append(pageSize);
-
-		System.out.println(sql.toString());
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
 		return sql.toString();
 	}
 
