@@ -33,11 +33,11 @@ public class ChoiceSqlProvider {
         Object pageSize = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
         sql.append(" select id,title,img,content,status,");
-        sql.append(" create_time as createTime,update_time as updateTime from choice where 1 = 1 ");
+        sql.append(" create_time as createTime,update_time as updateTime,publish_time as publishTime from choice where 1 = 1 ");
         if (null != status) {
             sql.append(" and status = ").append(status);
         } else {
-            sql.append(" and status != 2 ");
+            sql.append(" and status != 4 "); //查询全部
         }
         sql.append(" order by create_time desc ");
         if (offset != null && pageSize != null) {
@@ -58,8 +58,9 @@ public class ChoiceSqlProvider {
         Object image = map.get("image");
         Object width = map.get("width");
         Object height = map.get("height");
+        Object publishTime = map.get("publishTime");
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into choice(title,img,status,content,width,height,create_time, update_time) value (");
+        sql.append(" insert into choice(title,img,status,content,width,height,publish_time,create_time, update_time) value (");
         if (null != title) {
             sql.append("'").append(title).append("',");
         } else {
@@ -89,6 +90,11 @@ public class ChoiceSqlProvider {
         }else {
             sql.append("0 ,");
         }
+        if(null != publishTime){
+            sql.append("'").append(publishTime).append("', ");
+        }else {
+            sql.append("null,");
+        }
         sql.append("now(),now())");
         return sql.toString();
     }
@@ -106,6 +112,7 @@ public class ChoiceSqlProvider {
         Object image = map.get("image");
         Object width = map.get("width");
         Object height = map.get("height");
+        Object publishTime  = map.get("publishTime");
         StringBuffer sql = new StringBuffer();
         sql.append(" update choice set update_time=now(),title = ");
         if (null != title) {
@@ -130,6 +137,12 @@ public class ChoiceSqlProvider {
             sql.append(width).append(",");
         } else {
             sql.append("0,");
+        }
+        sql.append(" publish_time = ");
+        if(null != publishTime){
+            sql.append("'").append(publishTime).append("',");
+        }else {
+            sql.append("null,");
         }
         sql.append(" height = ");
         if (null != width) {

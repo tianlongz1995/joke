@@ -78,6 +78,7 @@ public class ChoiceController {
     @ResponseBody
     public Result addChoice(@RequestParam(value = "title") String title,
                             @RequestParam(value = "content") String content,
+                            @RequestParam(value = "publishTime",required = false)String publishTime,
                             @RequestParam(value = "image") String image,
                             @RequestParam(value = "width") Integer width,
                             @RequestParam(value = "height") Integer height) {
@@ -96,7 +97,7 @@ public class ChoiceController {
             }
         }
         // 2.添加到数据库
-        boolean flag = choiceService.addChoice(title, content,image,width,height);
+        boolean flag = choiceService.addChoice(title, content,image,width,height,publishTime);
         if(flag){
             return new Success("添加成功!");
         }else{
@@ -155,9 +156,10 @@ public class ChoiceController {
                          @RequestParam(value = "content") String content,
                          @RequestParam(value = "image") String image,
                          @RequestParam(value = "width") Integer width,
-                         @RequestParam(value = "height") Integer height){
+                         @RequestParam(value = "height") Integer height,
+                         @RequestParam(value = "publishTime") String publishTime){
         Choice choice = choiceService.getChoiceById(id);
-       if(choice.getStatus()== 0) {
+       if(choice.getStatus() != 3) {
            List<String> tempUrl = choiceService.getImgUrl(content);
            List<String> realUrl;
            if (!CollectionUtils.isEmpty(tempUrl)) {
@@ -173,14 +175,14 @@ public class ChoiceController {
                }
            }
            // 2.更新到数据库
-           boolean flag = choiceService.updateChoice(id, title, content, image,width,height);
+           boolean flag = choiceService.updateChoice(id, title, content, image,width,height,publishTime);
           if(flag) {
               return new Success("更新成功!");
           }else{
               return new Failed("数据库插入,上传图片处理不成功，更新失败");
           }
        }else{
-           return new Failed("更新失败,上线精选，不允许编辑");
+           return new Failed("更新失败,已发布精选，不允许编辑");
        }
     }
 
@@ -197,8 +199,12 @@ public class ChoiceController {
     public Result offlineOnline(@RequestParam(value = "id") Integer id,
                                 @RequestParam(value = "status")Integer status){
 
-       choiceService.updateChoiceStatus(id, status);
-       return new Success("上线/下线成功");
+       String result = choiceService.updateChoiceStatus(id, status);
+        if(null == result){
+            return new Success();
+        }else {
+            return new Failed(result);
+        }
     }
 
     @RequestMapping(value = "review")

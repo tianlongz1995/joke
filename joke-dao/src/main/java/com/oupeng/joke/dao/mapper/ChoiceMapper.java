@@ -40,7 +40,8 @@ public interface ChoiceMapper {
                    @Param(value = "content") String content,
                    @Param(value = "image") String image,
                    @Param(value = "width") Integer width,
-                   @Param(value = "height") Integer height);
+                   @Param(value = "height") Integer height,
+                   @Param(value = "publishTime") String publishTime);
 
     /**
      * 删除
@@ -54,7 +55,7 @@ public interface ChoiceMapper {
      * @param id
      * @return
      */
-    @Select(value = "select id, title, img, status, content, width, height, good, bad from choice where id = #{id}")
+    @Select(value = "select id, title, img, status, content, width, height, good, bad,publish_time as publishTime from choice where id = #{id}")
     Choice getChoiceById(Integer id);
 
 
@@ -64,7 +65,8 @@ public interface ChoiceMapper {
                       @Param(value = "content")String content,
                       @Param(value = "image")String image,
                       @Param(value = "width") Integer width,
-                      @Param(value = "height") Integer height) ;
+                      @Param(value = "height") Integer height,
+                      @Param(value = "publishTime") String publishTime) ;
 
     /**
      * 更新状态
@@ -74,4 +76,12 @@ public interface ChoiceMapper {
     @Update(value = "update choice set update_time=now(),status = #{status} where id = #{id}")
     void updateChoiceStatus(@Param(value = "id") Integer id,
                             @Param(value = "status") Integer status);
+
+    /**
+     * 查询待发布的精选
+     * @return
+     */
+    @Select(value = "select id, title, img, status, content, width, height, good, bad," +
+            "create_time as createTime,update_time as updateTime,publish_time as publishTime from choice where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H') ")
+    List<Choice> getBannerForPublish();
 }

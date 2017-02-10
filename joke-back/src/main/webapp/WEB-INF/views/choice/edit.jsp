@@ -78,6 +78,15 @@
                                     <td><input id="choiceId" type="text" class="form-control" disabled="disabled" value="${choice.id}"/></td>
                                 </tr>
                                 <tr>
+                                    <th>发布时间</th>
+                                    <td>
+                                        <input id="publishTime" type="text"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})"
+                                               class="form-control"
+                                               value="${choice.publishTimeString}"/>
+                                    </td>
+                                <tr/>
+                                <tr>
                                     <th>标题</th>
                                     <td>
                                         <c:if test="${empty choice.title}">
@@ -113,10 +122,16 @@
                                     <th>状态</th>
                                     <td>
                                         <c:if test="${choice.status == 0}">
-                                            <input id="status" type="text" class="form-control" disabled="disabled" value="下线"/>
+                                            <input id="status" type="text" class="form-control" disabled="disabled" value="新建"/>
                                         </c:if>
                                         <c:if test="${choice.status == 1}">
+                                            <input id="status" type="text" class="form-control" disabled="disabled" value="下线"/>
+                                        </c:if>
+                                        <c:if test="${choice.status == 2}">
                                             <input id="status" type="text" class="form-control" disabled="disabled" value="上线"/>
+                                        </c:if>
+                                        <c:if test="${choice.status == 3}">
+                                            <input id="status" type="text" class="form-control" disabled="disabled" value="已发布"/>
                                         </c:if>
                                     </td>
                                 </tr>
@@ -167,7 +182,7 @@
                         return false;
                     }
                     post('choice/update',
-                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content)+ '&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
+                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content)+ '&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
                             function (data) {
                                 if(data['status']) {
                                     location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';

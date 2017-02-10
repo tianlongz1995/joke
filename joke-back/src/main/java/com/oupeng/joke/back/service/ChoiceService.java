@@ -1,6 +1,6 @@
 package com.oupeng.joke.back.service;
 
-import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
@@ -21,9 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,12 +101,12 @@ public class ChoiceService {
      * @param title
      * @param content
      */
-    public boolean addChoice(String title, String content, String image, Integer width, Integer height) {
+    public boolean addChoice(String title, String content, String image, Integer width, Integer height,String publishTime) {
         String newImg = handleImg(image);
         if (StringUtils.isBlank(newImg)) {
             return false;
         }
-        choiceMapper.addChoice(title, content, newImg, width, height);
+        choiceMapper.addChoice(title, content, newImg, width,height,publishTime);
         return true;
     }
 
@@ -242,7 +240,7 @@ public class ChoiceService {
         return tempUrl;
     }
 
-    public boolean updateChoice(Integer id, String title, String content, String image, Integer width, Integer height) {
+    public boolean updateChoice(Integer id, String title, String content, String image, Integer width, Integer height,String publishTime) {
         String newImg;
         //重新上传的图片
         if (image.startsWith(showPath)) {
@@ -254,7 +252,7 @@ public class ChoiceService {
             //已经上传的图片
             newImg = image.replace(realPath, "");
         }
-        choiceMapper.updateChoice(id, title, content, newImg, width, height);
+        choiceMapper.updateChoice(id, title, content, newImg, width, height,publishTime);
         return true;
     }
 
@@ -265,22 +263,51 @@ public class ChoiceService {
      * @param id
      * @param status
      */
-    public void updateChoiceStatus(Integer id, Integer status) {
+    public String updateChoiceStatus(Integer id, Integer status) {
+        String result = null;
         Choice choice = choiceMapper.getChoiceById(id);
         String choiceKey = JedisKey.STRING_JOKE + id;
         //精选id列表，缓存key
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
-        // 下线删除缓存
-        if (status == 0) {
+        //上线
+        if(Constants.CHOICE_STATUS_VALID == status){
+            result = validChoice(choice);
+        }else if(Constants.CHOICE_STATUS_PUBLISH !=status){ //下线
             jedisCache.del(choiceKey);
             jedisCache.zrem(choiceListKey, Integer.toString(id));
-        } else {
-            //增加缓存 - 上线
-            choice.setType(3);
-            choice.setImg(choice.getImg());
-            jedisCache.set(choiceKey, JSON.toJSONString(choice));
-            jedisCache.zadd(choiceListKey, System.currentTimeMillis(), id.toString());
         }
-        choiceMapper.updateChoiceStatus(id, status);
+         if(result == null){
+             choiceMapper.updateChoiceStatus(id,status);
+         }
+      return result;
+    }
+
+    public String validChoice(Choice choice){
+        if(choice.getPublishTime() == null){
+            return "精选的发布时间不能为空";
+        }else if(StringUtils.isBlank(choice.getContent())){
+            return "精选的内容不能为空";
+        } else if (StringUtils.isBlank(choice.getImg())) {
+            return "精选的封面图不能为空";
+        }else{
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.HOUR_OF_DAY, 1);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            if(choice.getPublishTime().compareTo(calendar.getTime()) < 0){
+                return "发布时间最少要在下一个小时";
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取带发布的精选列表
+     * @return
+     */
+    public  List<Choice> getBannerForPublish(){
+        return choiceMapper.getBannerForPublish();
     }
 }

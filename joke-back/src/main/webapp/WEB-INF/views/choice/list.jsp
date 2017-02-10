@@ -25,7 +25,7 @@
     <script src="/ui/js/date/WdatePicker.js"></script>
     <script src="ui/js/jquery.oupeng.upload.js"></script>
     <%--富文本编辑器--%>
-    <link  href="/ui/richtext/css/wangEditor.css"rel="stylesheet" type="text/css">
+    <link href="/ui/richtext/css/wangEditor.css" rel="stylesheet" type="text/css">
     <script src="/ui/richtext/js/wangEditor.js"></script>
 
 
@@ -39,6 +39,7 @@
         height: 500px;
         /*max-height: 500px;*/
     }
+
     .container {
         width: 100%;
         height: 200px;
@@ -92,10 +93,16 @@
                                         <select class="form-control input" id="statusSearch" onchange="search()">
                                             <option value="">全部</option>
                                             <option value="0"
-                                                    <c:if test="${!empty status && status == 0}">selected</c:if> >下线
+                                                    <c:if test="${!empty status && status == 0}">selected</c:if> >新建
                                             </option>
                                             <option value="1"
-                                                    <c:if test="${!empty status && status == 1}">selected</c:if> >上线
+                                                    <c:if test="${!empty status && status == 1}">selected</c:if> >下线
+                                            </option>
+                                            <option value="2"
+                                                    <c:if test="${!empty status && status == 2}">selected</c:if> >上线
+                                            </option>
+                                            <option value="2"
+                                                    <c:if test="${!empty status && status == 3}">selected</c:if> >已发布
                                             </option>
                                         </select>
                                     </label>
@@ -108,6 +115,7 @@
                                     <th>状态</th>
                                     <th>创建时间</th>
                                     <th>更新时间</th>
+                                    <th>发布时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -121,13 +129,19 @@
                                             <img src="${choice.img}" style="width: 176px;height: 100px;">
                                         </td>
                                         <td>
-                                            <c:if test="${choice.status == 0}">下线</c:if>
-                                            <c:if test="${choice.status == 1}">上线</c:if>
+                                            <c:if test="${choice.status == 0}">新建</c:if>
+                                            <c:if test="${choice.status == 1}">下线</c:if>
+                                            <c:if test="${choice.status == 2}">上线</c:if>
+                                            <c:if test="${choice.status == 3}">已发布</c:if>
                                         </td>
                                         <td><c:out value="${choice.createTime}"/></td>
                                         <td><c:out value="${choice.updateTime}"/></td>
                                         <td>
-                                                <%--下线--%>
+                                            <fmt:formatDate value="${choice.publishTime}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
+                                        <td>
+                                                <%--新建--%>
                                             <c:if test="${choice.status == 0}">
 
                                                 <a class="btn btn-info btn-sm"
@@ -139,22 +153,49 @@
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(2,${choice.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 上线
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(1,${choice.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                            </c:if>
+                                                <%--下线--%>
+                                            <c:if test="${choice.status == 1}">
+                                                <a class="btn btn-info btn-sm"
+                                                   href="choice/edit?id=${choice.id}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}">
+                                                    <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
+                                                </a>
+                                                <a class="btn btn-warning btn-sm" href="#"
+                                                   onclick="delChoice(${choice.id})">
+                                                    <i class="glyphicon glyphicon-trash"></i> 删除
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(2,${choice.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
                                             </c:if>
                                                 <%--上线--%>
-                                            <c:if test="${choice.status == 1}">
+                                            <c:if test="${choice.status == 2}">
                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="offlineOnline(0,${choice.id})">
+                                                   onclick="offlineOnline(1,${choice.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                            </c:if>
+                                                <%--已发布--%>
+                                            <c:if test="${choice.status == 3 }">
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(1,${choice.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                             </c:if>
 
-                                             <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#reviewContent"
-                                                       onclick="review(${choice.id})">
-                                                        <i class="glyphicon glyphicon-zoom-in"></i> 预览
-                                              </a>
+                                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal"
+                                               data-target="#reviewContent"
+                                               onclick="review(${choice.id})">
+                                                <i class="glyphicon glyphicon-zoom-in"></i> 预览
+                                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -171,8 +212,9 @@
                     </div>
                 </div><!-- box col-md-12 end -->
             </div><!-- row end -->
-       <%--新增choice 模态框--%>
-            <div class="modal fade bs-example-modal-lg" id="newBanner" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <%--新增choice 模态框--%>
+            <div class="modal fade bs-example-modal-lg" id="newBanner" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -183,6 +225,15 @@
                         </div>
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
+                                <tr>
+                                    <th>发布时间</th>
+                                    <td>
+                                        <input id="publishTime" type="text"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})"
+                                               class="form-control"
+                                               value=""/>
+                                    </td>
+                                <tr/>
                                 <tr>
                                     <th>标题</th>
                                     <td>
@@ -223,7 +274,8 @@
                 </div>
             </div>
             <%--预览--%>
-            <div class="modal fade bs-example-modal-lg" id="reviewContent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <div class="modal fade bs-example-modal-lg" id="reviewContent" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -243,9 +295,9 @@
             </div>
             <script type="text/javascript">
                 $(document).ready(function () {
-                    if('${banner.img}' != ''){
-                        $("#imgPriview").css('display','block');
-                        $("#imgDelButton").css('display','block');
+                    if ('${banner.img}' != '') {
+                        $("#imgPriview").css('display', 'block');
+                        $("#imgDelButton").css('display', 'block');
                     }
                 });
                 var editor = new wangEditor('editor-container');
@@ -281,14 +333,13 @@
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
-                    if(img == ""){
+                    if (img == "") {
                         alert("必须上传图片");
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
-                    alert("正在处理中，请耐心等待......");
                     post('choice/add',
-                            'title=' + cTitle + '&content=' + encodeURI(content) +'&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val(),
+                            'title=' + cTitle + '&content=' + encodeURI(content) + '&image=' + img + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val(),
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
@@ -322,7 +373,8 @@
                                     alert('请求失败，请检查网络环境');
                                 });
                     }
-                };
+                }
+                ;
                 //上线 下线
                 function offlineOnline(status, id) {
                     if (confirm("确认操作?")) {
@@ -330,6 +382,7 @@
                                 'id=' + id + '&status=' + status,
                                 function (data) {
                                     if (data['status']) {
+                                        alert("操作成功");
                                         location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                     } else {
                                         alert('操作失败. info:' + data['info']);
@@ -339,7 +392,8 @@
                                     alert('请求失败，请检查网络环境');
                                 });
                     }
-                };
+                }
+                ;
 
                 function post(url, data, success, error) {
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -348,20 +402,22 @@
                         type: 'GET', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                };
+                }
+                ;
                 /**    分页方法    */
                 function turnPage() {
                     location.href = '<%=basePath%>choice/list?status=${status}&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
-                };
+                }
+                ;
 
-             <%--wangEditor 富文本编辑器--%>
+                <%--wangEditor 富文本编辑器--%>
                 $(function () {
                     //图片上传地址
                     editor.config.uploadImgUrl = "upload/richText?${_csrf.parameterName}=${_csrf.token}";
                     // 自定义load事件
                     editor.config.uploadImgFns.onload = function (resultText) {
                         var data = eval('(' + resultText + ')');
-                        var  imgUrl = data.info;
+                        var imgUrl = data.info;
                         if (data.status == 0) {
                             alert("图片上传失败")
                         } else {
@@ -388,11 +444,11 @@
 
                     editor.create();
                 });
-              //预览
-                function review(cid){
+                //预览
+                function review(cid) {
                     $("#reviewModalContent").html("");
-                    $("#choiceContentId").html("精选内容预览，ID:"+cid);
-                     post('choice/review',
+                    $("#choiceContentId").html("精选内容预览，ID:" + cid);
+                    post('choice/review',
                             'id=' + cid,
                             function (data) {
                                 $("#reviewModalContent").html(data.info);
@@ -400,7 +456,8 @@
                             function () {
                                 alert('请求失败，请检查网络环境');
                             });
-                };
+                }
+                ;
                 $('#imgDelButton').click(function () {
                     $('#img').val('');
                     $('#image').val('');

@@ -2,14 +2,13 @@ package com.oupeng.joke.back.task;
 
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.service.BannerService;
-import com.oupeng.joke.back.service.JokeService;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.BannerMapper;
 import com.oupeng.joke.domain.Banner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -20,9 +19,11 @@ import java.util.List;
  * banner的定时发布任务
  */
 @Component
-public class BannerChannelTask {
+public class BannerPublishTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(BannerChannelTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(BannerPublishTask.class);
+    @Autowired
+    private BannerMapper bannerMapper;
     @Autowired
     private BannerService bannerService;
     @Autowired
@@ -32,7 +33,7 @@ public class BannerChannelTask {
      * 发布banner
      * */
     @Scheduled(cron="0 0/5 * * * ?")
-    public void publishTopicChannelJoke() {
+    public void publishBannerTask() {
         logger.info("开始发布banner数据...");
         List<Banner> bannerList = bannerService.getBannerForPublish();
         if (!CollectionUtils.isEmpty(bannerList)) {
@@ -41,7 +42,7 @@ public class BannerChannelTask {
                 String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
                 jedisCache.set(bannerKey, JSON.toJSONString(banner));
                 jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(banner.getCid()));
-                bannerService.updateBannerStatus(banner.getId(),3);
+                bannerMapper.updateBannerStatus(banner.getId(),3);
             }
         }
         logger.info("发布banner数据结束，共发布banner{}条",bannerList.size());
