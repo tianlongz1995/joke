@@ -188,10 +188,15 @@
                                                    onclick="offlineOnline(1,${banner.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${banner.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                </a>
                                             </c:if>
 
                                                 <%--下线--%>
                                             <c:if test="${banner.status == 1}">
+
                                                 <a class="btn btn-info btn-sm"
                                                    href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
@@ -204,6 +209,10 @@
                                                    onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${banner.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                </a>
                                             </c:if>
                                                 <%--上线 --%>
                                              <c:if test="${banner.status == 2 }">
@@ -211,7 +220,10 @@
                                                     onclick="offlineOnline(1,${banner.id})">
                                                      <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                  </a>
-
+                                                 <a class="btn btn-danger btn-sm" href="#"
+                                                    onclick="offlineOnline(4,${banner.id})">
+                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                 </a>
                                                 <c:if test="${ not empty cid}">
                                                     <c:if test="${ status == 2}">
                                                     <c:if test="${firstElement != banner.id}">

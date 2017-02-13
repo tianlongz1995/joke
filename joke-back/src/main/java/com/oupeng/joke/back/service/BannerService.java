@@ -206,14 +206,14 @@ public class BannerService {
      * @param status 0 新建 1 下线 2上线 3 已发布 ,
      * @return
      */
-    public String updateBannerStatus(Integer id, Integer status) {
+    public String publishBannerByTime(Integer id, Integer status) {
         String result = null;
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
         String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
         //上线
         if (Constants.BANNER_STATUS_VALID == status) {
-            result = validBanner(bannerMapper.getBannerById(id));
+            result = validBanner(bannerMapper.getBannerById(id),true);
         } else if (Constants.TOPIC_STATUS_PUBLISH != status) { //下线
             //删除缓存
             jedisCache.del(bannerKey);
@@ -245,37 +245,59 @@ public class BannerService {
         return result;
     }
 
+    /**
+     * banner的立即发布
+     * @param id
+     * @return
+     */
+    public String publishBannerNow(Integer id){
+        String result;
+        Banner banner = bannerMapper.getBannerById(id);
+        String bannerKey = JedisKey.STRING_BANNER + id;
+        String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
+        result = validBanner(banner,false);
+        if(null == result){ //验证通过
+            //1 增加缓存
+            jedisCache.set(bannerKey, JSON.toJSONString(banner));
+            jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
+            //2 修改发布状态
+            bannerMapper.updateBannerStatus(banner.getId(),3);
+        }
+        return result;
+    }
 
     /**
      * 验证banner是否能正常发布
      * @param banner
      * @return
      */
-    private String validBanner(Banner banner){
+    private String validBanner(Banner banner,boolean validPublishTime){
         // 判断上线banner个数,不能超过五个
         Integer bannerCount = bannerMapper.getBannerListCount(1, banner.getCid());
         if (bannerCount >= 5) {
             return "上线的banner不能超过5个";
         }
-        if(banner.getPublishTime() == null){
-            return "banner的发布时间不能为空";
-        }else if(StringUtils.isBlank(banner.getImg())&& banner.getType()==0){
+        if(validPublishTime) {
+            if (banner.getPublishTime() == null) {
+                return "banner的发布时间不能为空";
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.HOUR_OF_DAY, 1);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            if(banner.getPublishTime().compareTo(calendar.getTime()) < 0) {
+                return "发布时间最少要在下一个小时";
+            }
+        }
+        if(StringUtils.isBlank(banner.getImg())&& banner.getType()==0){
             return "banner为内容时,图片不能为空";
         } else if (null == banner.getJid() && banner.getType() == 0) {
             return "banner为内容时，段子id不能为空";
         }else if(null == banner.getSlot()&&banner.getType() == 1 ){
             return "banner为广告时,广告位不能为空";
-        }else{
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.add(Calendar.HOUR_OF_DAY, 1);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
-                if(banner.getPublishTime().compareTo(calendar.getTime()) < 0){
-                    return "发布时间最少要在下一个小时";
-                }
-            }
+        }
         return null;
     }
 
