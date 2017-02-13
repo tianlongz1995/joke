@@ -37,15 +37,6 @@ public class IndexService {
 
     @Autowired
     private Environment env;
-
-    @PostConstruct
-    public void init(){
-        String img = env.getProperty("img.prefix");
-        if(StringUtils.isNotEmpty(img)){
-            IMG_PREFIX = img;
-        }
-    }
-
     @Autowired
     private JedisCache jedisCache;
     /** 配置集合 */
@@ -54,6 +45,14 @@ public class IndexService {
     private ConcurrentHashMap<String, IndexResource> resourceMap = new ConcurrentHashMap<>();
     @Autowired
     private CacheManager cacheManager;
+
+    @PostConstruct
+    public void init(){
+        String img = env.getProperty("img.prefix");
+        if(StringUtils.isNotEmpty(img)){
+            IMG_PREFIX = img;
+        }
+    }
 
 //    private Cache picturesCache;
 
@@ -90,6 +89,7 @@ public class IndexService {
      */
     public void getIndexConfig(String did, Model model) {
         long start = System.nanoTime();
+        model.addAttribute("systemUtc", System.currentTimeMillis());
         if(StringUtils.isNumeric(did)){
 //            测试渠道
             if(did.equals(DEFAULT_DID)){
