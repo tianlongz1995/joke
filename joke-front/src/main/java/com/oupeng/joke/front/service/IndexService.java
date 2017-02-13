@@ -180,6 +180,16 @@ public class IndexService {
             for(String id : keys){
                 Joke joke = getJoke(id, cid);
                 if(joke != null){
+                    //评论内容
+                    Comment comment = joke.getComment();
+                    if (comment != null) {
+                        String content = comment.getBc();
+                        if (content.length() > 38) {
+                            content = content.substring(0, 35) + "...";
+                            comment.setBc(content);
+                            joke.setContent(content);
+                        }
+                    }
                     list.add(joke);
                 }
             }
