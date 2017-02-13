@@ -17,15 +17,17 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
-    <link href="/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
+    <link href="http://jokefront.bj.oupeng.com/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="app"></div>
 <script>
     var navInfo = ${config};
+    var CLIENTTIME = new Date();
+    var SERVERTIME = new Date(${systemUtc});
 </script>
 <script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
-<script src="/joke_new/prd/${index.libJs}"></script>
-<script src="/joke_new/prd/${index.appJs}"></script>
+<script src="http://jokefront.bj.oupeng.com/joke_new/prd/${index.libJs}"></script>
+<script src="http://jokefront.bj.oupeng.com/joke_new/prd/${index.appJs}"></script>
 </body>
 </html>
