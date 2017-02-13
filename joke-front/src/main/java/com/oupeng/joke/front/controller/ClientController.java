@@ -1,11 +1,13 @@
 package com.oupeng.joke.front.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Topic;
 import com.oupeng.joke.domain.log.ClientLog;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.domain.user.EzineJoke;
 import com.oupeng.joke.front.service.ClientService;
 import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.CookieUtil;
@@ -220,5 +222,18 @@ public class ClientController {
         if (at == 1) {
             client.info(new ClientLog("ufl",did, cid, uid, type, null).toString());
         }
+    }
+
+    /**
+     * ezine
+     * @return
+     */
+    @RequestMapping(value = "ezineJoke")
+    @ResponseBody
+    public Result ezineJoke() {
+        List<EzineJoke> list = clientService.ezineJoke();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("content",list);
+        return new Success(jsonObject,3622417,219,"导航笑话");
     }
 }

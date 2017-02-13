@@ -6,6 +6,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Topic;
+import com.oupeng.joke.domain.user.EzineJoke;
 import com.oupeng.joke.front.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +29,10 @@ public class ClientService {
     private static final String SHAREURLPREFIX = "http://joke.oupeng.com/#!";
     private static String IMG_REAL_SERVER_URL = null;
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
+
+
+    private static  final String  EZINE_PREFIX = "http://ezine.oupeng.com/app.html#";
+
     /**
      * 赞信息列表
      */
@@ -642,5 +647,26 @@ public class ClientService {
             //推荐分享
             joke.setShareUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 20 + "/tid/-1");
         }
+    }
+
+
+    /**
+     * ezine
+     * @return
+     */
+    public List<EzineJoke> ezineJoke(){
+        List<EzineJoke> ezineJokeList = new ArrayList<>();
+        Set<String> ezineJokeSet = jedisCache.zrevrange(JedisKey.EZINE_JOKE, (long) 0, (long) 19);
+        for (String jokeId :ezineJokeSet){
+            Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
+            if(null != joke){
+                EzineJoke ezineJoke = new EzineJoke();
+                ezineJoke.setContext(joke.getContent());
+                ezineJoke.setObjectId(joke.getId());
+                ezineJoke.setUrl(EZINE_PREFIX +"/detail/?cid=219&bid=3603372&oid="+joke.getId()+"&viewType=small");
+                ezineJokeList.add(ezineJoke);
+            }
+        }
+        return ezineJokeList;
     }
 }
