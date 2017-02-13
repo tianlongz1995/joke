@@ -1,5 +1,6 @@
 package com.oupeng.joke.back.service;
 
+import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
@@ -263,7 +264,7 @@ public class ChoiceService {
      * @param id
      * @param status
      */
-    public String updateChoiceStatus(Integer id, Integer status) {
+    public String publishChoiceByTime(Integer id, Integer status) {
         String result = null;
         Choice choice = choiceMapper.getChoiceById(id);
         String choiceKey = JedisKey.STRING_JOKE + id;
@@ -271,7 +272,7 @@ public class ChoiceService {
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         //上线
         if(Constants.CHOICE_STATUS_VALID == status){
-            result = validChoice(choice);
+            result = validChoice(choice,true);
         }else if(Constants.CHOICE_STATUS_PUBLISH !=status){ //下线
             jedisCache.del(choiceKey);
             jedisCache.zrem(choiceListKey, Integer.toString(id));
@@ -282,14 +283,35 @@ public class ChoiceService {
       return result;
     }
 
-    public String validChoice(Choice choice){
-        if(choice.getPublishTime() == null){
-            return "精选的发布时间不能为空";
-        }else if(StringUtils.isBlank(choice.getContent())){
-            return "精选的内容不能为空";
-        } else if (StringUtils.isBlank(choice.getImg())) {
-            return "精选的封面图不能为空";
-        }else{
+    /**
+     * 立即发布
+     * @param id
+     * @return
+     */
+    public String publishChoiceNow(Integer id){
+        Choice choice = choiceMapper.getChoiceById(id);
+        String choiceKey = JedisKey.STRING_JOKE + id;
+        //精选id列表，缓存key
+        String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
+        String result = validChoice(choice, false);
+        if(null == result){
+            //1 增加缓存
+            choice.setType(3);
+            jedisCache.set(choiceKey, JSON.toJSONString(choice));
+            jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
+            //2 更新发布状态
+            choiceMapper.updateChoiceStatus(choice.getId(),3);
+        }
+        return result;
+    }
+
+
+    public String validChoice(Choice choice,boolean validPublishTime){
+
+        if(validPublishTime){
+            if(choice.getPublishTime() == null){
+                return "精选的发布时间不能为空";
+            }
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.add(Calendar.HOUR_OF_DAY, 1);
@@ -299,6 +321,11 @@ public class ChoiceService {
             if(choice.getPublishTime().compareTo(calendar.getTime()) < 0){
                 return "发布时间最少要在下一个小时";
             }
+        }
+        if(StringUtils.isBlank(choice.getContent())){
+            return "精选的内容不能为空";
+        } else if (StringUtils.isBlank(choice.getImg())) {
+            return "精选的封面图不能为空";
         }
         return null;
     }

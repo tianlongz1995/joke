@@ -101,7 +101,7 @@
                                             <option value="2"
                                                     <c:if test="${!empty status && status == 2}">selected</c:if> >上线
                                             </option>
-                                            <option value="2"
+                                            <option value="3"
                                                     <c:if test="${!empty status && status == 3}">selected</c:if> >已发布
                                             </option>
                                         </select>
@@ -160,6 +160,10 @@
                                                    onclick="offlineOnline(1,${choice.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${choice.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                </a>
                                             </c:if>
                                                 <%--下线--%>
                                             <c:if test="${choice.status == 1}">
@@ -175,12 +179,20 @@
                                                    onclick="offlineOnline(2,${choice.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${choice.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                </a>
                                             </c:if>
                                                 <%--上线--%>
                                             <c:if test="${choice.status == 2}">
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(1,${choice.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${choice.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
                                                 </a>
                                             </c:if>
                                                 <%--已发布--%>

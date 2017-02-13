@@ -197,7 +197,12 @@ public class BannerController {
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id")Integer id,
                                 @RequestParam(value = "status") Integer status){
-        String result = bannerService.updateBannerStatus(id, status);
+        String result;
+        if (status == 4) { //立即发布
+            result = bannerService.publishBannerNow(id);
+        } else {
+            result = bannerService.publishBannerByTime(id, status);
+        }
         if (null == result) {
             return new Success();
         } else {

@@ -198,8 +198,12 @@ public class ChoiceController {
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id") Integer id,
                                 @RequestParam(value = "status")Integer status){
-
-       String result = choiceService.updateChoiceStatus(id, status);
+        String result;
+        if (status == 4) {
+            result = choiceService.publishChoiceNow(id);
+        } else {
+            result = choiceService.publishChoiceByTime(id, status);
+        }
         if(null == result){
             return new Success();
         }else {

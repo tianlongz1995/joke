@@ -114,6 +114,7 @@ public class JokeController {
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("pageCount", pageCount);
+		model.addAttribute("count", count);
 		model.addAllAttributes(jokeService.getJokeVerifyInfoByUser(username));
 		return "/joke/list";
 	}
