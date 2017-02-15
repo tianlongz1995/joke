@@ -7,7 +7,7 @@ import com.oupeng.joke.domain.Topic;
 import com.oupeng.joke.domain.log.ClientLog;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
-import com.oupeng.joke.domain.user.EzineJoke;
+import com.oupeng.joke.domain.EzineJoke;
 import com.oupeng.joke.front.service.ClientService;
 import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.CookieUtil;

@@ -6,7 +6,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Topic;
-import com.oupeng.joke.domain.user.EzineJoke;
+import com.oupeng.joke.domain.EzineJoke;
 import com.oupeng.joke.front.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
