@@ -184,10 +184,10 @@
                                                    onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
-                                                <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="offlineOnline(1,${banner.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                </a>
+                                                <%--<a class="btn btn-danger btn-sm" href="#"--%>
+                                                <%--onclick="offlineOnline(1,${banner.id})">--%>
+                                                <%--<i class="glyphicon glyphicon-remove icon-white"></i>下线--%>
+                                                <%--</a>--%>
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(4,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布

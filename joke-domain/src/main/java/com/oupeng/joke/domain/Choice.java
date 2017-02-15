@@ -33,9 +33,9 @@ public class Choice {
     @JsonInclude(Include.NON_NULL)
     private Integer height;
     @JsonInclude(Include.NON_NULL)
-    private String createTime;
+    private Date createTime;
     @JsonInclude(Include.NON_NULL)
-    private String updateTime;
+    private Date updateTime;
 
     @JsonInclude(Include.NON_NULL)
     private Date publishTime;
@@ -72,19 +72,19 @@ public class Choice {
         this.status = status;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public String getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 

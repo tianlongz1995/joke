@@ -134,8 +134,14 @@
                                             <c:if test="${choice.status == 2}">上线</c:if>
                                             <c:if test="${choice.status == 3}">已发布</c:if>
                                         </td>
-                                        <td><c:out value="${choice.createTime}"/></td>
-                                        <td><c:out value="${choice.updateTime}"/></td>
+                                        <td>
+                                            <fmt:formatDate value="${choice.createTime}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
+                                        <td>
+                                            <fmt:formatDate value="${choice.updateTime}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/>
+                                        </td>
                                         <td>
                                             <fmt:formatDate value="${choice.publishTime}"
                                                             pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -156,10 +162,10 @@
                                                    onclick="offlineOnline(2,${choice.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
-                                                <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="offlineOnline(1,${choice.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                </a>
+                                                <%--<a class="btn btn-danger btn-sm" href="#"--%>
+                                                   <%--onclick="offlineOnline(1,${choice.id})">--%>
+                                                    <%--<i class="glyphicon glyphicon-remove icon-white"></i>下线--%>
+                                                <%--</a>--%>
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(4,${choice.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
