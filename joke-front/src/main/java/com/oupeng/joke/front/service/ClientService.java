@@ -663,7 +663,7 @@ public class ClientService {
                 EzineJoke ezineJoke = new EzineJoke();
                 ezineJoke.setContext(joke.getContent());
                 ezineJoke.setObjectId(joke.getId());
-                ezineJoke.setUrl(EZINE_PREFIX +"/detail/?cid=219&bid=3603372&oid="+joke.getId()+"&viewType=small");
+                ezineJoke.setUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 14 + "/tid/-1");
                 ezineJokeList.add(ezineJoke);
             }
         }
