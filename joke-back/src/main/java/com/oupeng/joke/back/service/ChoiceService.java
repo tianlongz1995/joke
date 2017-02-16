@@ -103,7 +103,7 @@ public class ChoiceService {
      * @param content
      */
     public boolean addChoice(String title, String content, String image, Integer width, Integer height,String publishTime) {
-        String newImg = handleImg(image);
+        String newImg = handleImg(image, true);
         if (StringUtils.isBlank(newImg)) {
             return false;
         }
@@ -111,9 +111,9 @@ public class ChoiceService {
         return true;
     }
 
-    public String handleImg(String imgUrl) {
+    public String handleImg(String imgUrl, boolean isCrop) {
         if (StringUtils.isNotBlank(imgUrl)) {
-            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
+            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, isCrop);
             if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
                 return imgRespDto.getImgUrl();
             }
@@ -188,7 +188,7 @@ public class ChoiceService {
 
         List<String> realUrl2 = new ArrayList<>();
         for (String u : realUrl) {
-            String url = handleImg(u);
+            String url = handleImg(u, false);
             if (StringUtils.isNotBlank(url)) {
                 realUrl2.add(realPath + url);
             }
@@ -245,7 +245,7 @@ public class ChoiceService {
         String newImg;
         //重新上传的图片
         if (image.startsWith(showPath)) {
-            newImg = handleImg(image);
+            newImg = handleImg(image, true);
             if (StringUtils.isEmpty(image)) {
                 return false;
             }

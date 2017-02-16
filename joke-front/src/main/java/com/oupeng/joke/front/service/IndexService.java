@@ -33,7 +33,7 @@ public class IndexService {
     /** 默认did */
     private static final String DEFAULT_DID = "0";
     /** 图片前缀 */
-    private static String IMG_PREFIX = "http://joke-img.adbxb.cn/";
+    private static String IMG_PREFIX = "http://joke2-img.oupeng.com/";
 
     @Autowired
     private Environment env;
@@ -110,12 +110,16 @@ public class IndexService {
                         IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
                         if(backResource == null){
                             backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-                            resourceMap.put(JedisKey.INDEX_CACHE_BACK, indexResource);
+                            if(backResource != null){
+                                resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
+                            }
                         }
                         indexResource = backResource;
                         log.error("{}的首页请求失效,正在使用备用内容!", did);
                     }
-                    resourceMap.put(JedisKey.INDEX_CACHE_INDEX, indexResource);
+                    if(indexResource != null){
+                        resourceMap.put(JedisKey.INDEX_CACHE_INDEX, indexResource);
+                    }
                 }
                 String config = configMap.get(did);
                 if(config == null){
@@ -131,7 +135,9 @@ public class IndexService {
             IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
             if(backResource == null){
                 backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-                resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
+                if(backResource != null){
+                    resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
+                }
             }
             model.addAttribute(JedisKey.INDEX_CACHE_INDEX, backResource);
             model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, configMap.get(DEFAULT_DID));
@@ -183,11 +189,11 @@ public class IndexService {
                     //评论内容
                     Comment comment = joke.getComment();
                     if (comment != null) {
-                        String content = comment.getBc();
-                        if (content.length() > 38) {
-                            content = content.substring(0, 35) + "...";
-                            comment.setBc(content);
-                            joke.setContent(content);
+                        String bc = comment.getBc();
+                        if (bc.length() > 38) {
+                            bc = bc.substring(0, 35) + "...";
+                            comment.setBc(bc);
+//                            joke.setContent(content);
                         }
                     }
                     list.add(joke);
