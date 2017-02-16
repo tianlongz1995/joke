@@ -260,6 +260,22 @@ public class BannerService {
             //1 增加缓存
             jedisCache.set(bannerKey, JSON.toJSONString(banner));
             jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
+
+            //已发布的banner的最大排序值
+            Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
+            //更改立即发布的banner的排序值 maxScore+1
+            if (null == maxScore) {
+                bannerMapper.updateBannerSort(id, 1);
+            } else {
+                bannerMapper.updateBannerSort(id, maxScore + 1);
+            }
+            //修改所有待发布的banner的排序值+1
+            List<Banner> bannerList = bannerMapper.getBannerList(2,banner.getCid(),0,5);
+            if (!CollectionUtils.isEmpty(bannerList)) {
+                for (Banner b:bannerList){
+                bannerMapper.updateBannerSort(b.getId(),b.getSort()+1);
+                }
+            }
             //2 修改发布状态
             bannerMapper.updateBannerStatus(banner.getId(),3);
         }
@@ -272,8 +288,8 @@ public class BannerService {
      * @return
      */
     private String validBanner(Banner banner,boolean validPublishTime){
-        // 判断上线banner个数,不能超过五个
-        Integer bannerCount = bannerMapper.getBannerListCount(1, banner.getCid());
+        // 判断发布banner数量
+        Integer bannerCount = bannerMapper.getBannerListCount(3, banner.getCid());
         if (bannerCount >= 5) {
             return "上线的banner不能超过5个";
         }
