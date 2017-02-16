@@ -1,10 +1,12 @@
 package com.oupeng.joke.back.task;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
+import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.service.JokeService;
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
+import com.oupeng.joke.domain.Joke;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.oupeng.joke.back.service.JokeService;
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.cache.JedisCache;
-import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.domain.Joke;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class JokeTask {
@@ -61,7 +60,7 @@ public class JokeTask {
 				if(joke.getType() == Constants.JOKE_TYPE_TEXT){
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_TEXT, String.valueOf(joke.getId()));
 					jedisCache.sadd(JedisKey.SET_RECOMMEDN_JOKE_TEXT, String.valueOf(joke.getId()));
-				}else if(joke.getType() == Constants.JOKE_TYPE_IMG){
+				}else if(joke.getType() == Constants.JOKE_TYPE_CHOICE){ //3
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(joke.getId()));
 				}
 				index++;

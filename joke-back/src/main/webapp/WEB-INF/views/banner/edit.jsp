@@ -143,7 +143,7 @@
                                         </c:if>
                                         <c:if test="${!empty banner.img}">
                                             <input id="image" type="hidden" value="${banner.img}"/>
-                                            <img id="imgPriview"  style=width:60%;height:300px;" src="${banner.img}" >
+                                            <img id="imgPriview"  style=width:60%;" src="${banner.img}" >
                                             <input id="imgDelButton" type="button" class="btn btn-danger btn" value="删除" />
                                         </c:if>
 

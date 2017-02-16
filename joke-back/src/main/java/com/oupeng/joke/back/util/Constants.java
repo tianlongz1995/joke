@@ -9,6 +9,7 @@ public class Constants {
 	public static final Integer JOKE_TYPE_TEXT = 0;
 	public static final Integer JOKE_TYPE_IMG = 1;
 	public static final Integer JOKE_TYPE_GIF = 2;
+	public static final Integer JOKE_TYPE_CHOICE = 3;
 	/**	段子未审核状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
 	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
 	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布)	*/

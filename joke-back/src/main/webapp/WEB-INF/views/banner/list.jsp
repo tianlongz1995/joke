@@ -334,7 +334,7 @@
                                         <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png"
                                                class="form-control"/>
                                         <input id="image" type="hidden"/>
-                                        <img id="imgPriview" style="display: none;width:60%;height:300px;" src=""/>
+                                        <img id="imgPriview" style="display: none;width:60%;" src=""/>
                                         <input type="hidden" id="imgWidth" value="">
                                         <input type="hidden" id="imgHeight" value="">
                                         <input id="imgDelButton" type="button" class="btn btn-default"
