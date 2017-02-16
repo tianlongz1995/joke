@@ -584,6 +584,34 @@ public class JokeService {
     }
 
 	/**
+	 * 减少评论数量记录
+	 * @param jid
+	 * @return  TODO
+	 */
+	public boolean decrementComment(Integer[] jid) {
+//    	更新数据库中段子评论数
+		for(Integer id : jid){
+			if(id != null){
+				jokeMapper.decrementComment(id);
+				//		更新缓存中的段子评论数
+				Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
+				if(joke != null && joke.getComment() != null){
+					Comment comment = joke.getComment();
+					comment.setTotal(comment.getTotal() - 1);
+					jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
+				} else {
+					logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);
+				}
+			}
+		}
+		return true;
+	}
+
+
+
+
+
+	/**
 	 * 获取段子2.0文字段子发布列表
 	 * @param limit
 	 * @return
