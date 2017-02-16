@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.domain.EzineJoke;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Topic;
-import com.oupeng.joke.domain.EzineJoke;
 import com.oupeng.joke.front.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -661,7 +661,11 @@ public class ClientService {
             Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId),Joke.class);
             if(null != joke){
                 EzineJoke ezineJoke = new EzineJoke();
-                ezineJoke.setContext(joke.getContent());
+                String content = joke.getContent();
+                if(StringUtils.isNotEmpty(content)&&content.length()>120){
+                    content = content.substring(0,120)+"...";
+                }
+                ezineJoke.setContext(content);
                 ezineJoke.setObjectId(joke.getId());
                 ezineJoke.setUrl(SHAREURLPREFIX + "/detail/" + joke.getId() + "/cid/" + 14 + "/tid/-1");
                 ezineJokeList.add(ezineJoke);
