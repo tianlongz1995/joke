@@ -57,10 +57,10 @@ public class JokeTask {
 				}
 
 				jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
-				if(joke.getType() == Constants.JOKE_TYPE_TEXT){
+				if(joke.getType() == Constants.JOKE_TYPE_TEXT){ //段子类型：纯文 0
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_TEXT, String.valueOf(joke.getId()));
 					jedisCache.sadd(JedisKey.SET_RECOMMEDN_JOKE_TEXT, String.valueOf(joke.getId()));
-				}else if(joke.getType() == Constants.JOKE_TYPE_CHOICE){ //3
+				}else if(joke.getType() == Constants.JOKE_TYPE_CHOICE){ //段子类型：精选 3
 					jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(joke.getId()));
 				}
 				index++;

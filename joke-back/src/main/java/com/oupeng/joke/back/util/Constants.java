@@ -5,10 +5,13 @@ public class Constants {
 	public static final Integer ENABLE_STATUS = 1;
 	/**	无效状态 (0:下线/停用/失效)	*/
 	public static final Integer DISABLE_STATUS = 0;
-
+	/**段子类型：纯文*/
 	public static final Integer JOKE_TYPE_TEXT = 0;
+	/**段子类型：图片*/
 	public static final Integer JOKE_TYPE_IMG = 1;
+	/**段子类型：动图*/
 	public static final Integer JOKE_TYPE_GIF = 2;
+	/**段子类型：精选*/
 	public static final Integer JOKE_TYPE_CHOICE = 3;
 	/**	段子未审核状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
 	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
