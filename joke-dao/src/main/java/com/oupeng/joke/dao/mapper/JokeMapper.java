@@ -271,11 +271,18 @@ public interface JokeMapper {
 	String getPublishRole(Integer code);
 
 	/**
-	 * 更新神评数量
+	 * 增加神评数量
 	 * @param jid
 	 */
 	@Update("update joke set comment_number = comment_number + 1 where id = #{jid}")
     void incrementComment(@Param("jid")Integer jid);
+
+	/**
+	 * 减少神评数量
+	 * @param jid
+	 */
+	@Update("update joke set comment_number = comment_number - 1 where id = #{jid}")
+	void decrementComment(@Param("jid")Integer jid);
 
 
 	/**

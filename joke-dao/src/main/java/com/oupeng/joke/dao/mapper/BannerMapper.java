@@ -92,11 +92,11 @@ public interface BannerMapper {
                           @Param(value = "sort")Integer sort);
 
     /**
-     * 获取频道下已上线的banner最大的排序值
+     * 获取频道下已发布的banner最大的排序值
      * @param cid
      * @return
      */
-    @Select("select sort from banner  WHERE cid = #{cid} and status = 2 ORDER BY sort desc LIMIT 1")
+    @Select("select sort from banner  WHERE cid = #{cid} and status = 3 ORDER BY sort desc LIMIT 1")
     Integer getMaxSortByCid(Integer cid);
 
 

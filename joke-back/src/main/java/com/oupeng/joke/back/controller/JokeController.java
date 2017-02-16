@@ -313,4 +313,19 @@ public class JokeController {
 		}
 	}
 
+	/**
+	 * 减少评论数量记录
+	 * @param jid
+	 * @return
+	 */
+	@RequestMapping(value="/decrementComment")
+	@ResponseBody
+	public Result decrementComment(@RequestParam(value="jid")Integer[] jid){
+		if(jokeService.decrementComment(jid)){
+			return new Success();
+		}else{
+			return new Failed();
+		}
+	}
+
 }
