@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.task.Joke2PublishTask;
+import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
@@ -156,7 +157,7 @@ public class TaskService {
         if(task.getObject().getInteger("textNum") != null){
             PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
         }
-        List<Joke> list = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
+        List<Joke> list = jokeService.getJoke2PublishList(Constants.AUD, 0, PUBLISH_TEXT_SIZE);
         StringBuffer ids = new StringBuffer();
         if(!CollectionUtils.isEmpty(list)){
             for(Joke j:list){
@@ -199,8 +200,8 @@ public class TaskService {
         if(task.getObject().getInteger("imageWeight") != null){
             IMG_WEIGHT = task.getObject().getInteger("imageWeight");
         }
-        List<Joke> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
-        List<Joke> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
+        List<Joke> imgList = jokeService.getJoke2PublishList(Constants.AUD, 1, PUBLISH_IMG_SIZE);
+        List<Joke> gifList = jokeService.getJoke2PublishList(Constants.AUD, 2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
         int imgSize = 0;
@@ -285,9 +286,9 @@ public class TaskService {
             IMG_WEIGHT = task.getObject().getInteger("imageWeight");
         }
         Map<String,Double> map = Maps.newHashMap();
-        List<Joke> textList = jokeService.getJoke2PublishList(0, PUBLISH_TEXT_SIZE);
-        List<Joke> imgList = jokeService.getJoke2PublishList(1, PUBLISH_IMG_SIZE);
-        List<Joke> gifList = jokeService.getJoke2PublishList(2, PUBLISH_GIF_SIZE);
+        List<Joke> textList = jokeService.getJoke2PublishList(Constants.PUB, 0, PUBLISH_TEXT_SIZE);
+        List<Joke> imgList = jokeService.getJoke2PublishList(Constants.PUB, 1, PUBLISH_IMG_SIZE);
+        List<Joke> gifList = jokeService.getJoke2PublishList(Constants.PUB, 2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
 //        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
         int imgSize = 0;

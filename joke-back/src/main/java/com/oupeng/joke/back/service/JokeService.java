@@ -632,8 +632,8 @@ public class JokeService {
 	 * @param limit
 	 * @return
 	 */
-	public List<Joke> getJoke2PublishList(int type, int limit) {
-		return jokeMapper.getJoke2PublishList(type, limit);
+	public List<Joke> getJoke2PublishList(int status, int type, int limit) {
+		return jokeMapper.getJoke2PublishList(status, type, limit);
     }
 
 	/**

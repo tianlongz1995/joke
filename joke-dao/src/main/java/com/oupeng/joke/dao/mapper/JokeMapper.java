@@ -319,8 +319,8 @@ public interface JokeMapper {
 	 * @param limit
 	 * @return
 	 */
-	@Select("select id,weight from joke where audit = 1 and type = #{type} order by update_time desc limit #{limit}")
-    List<Joke> getJoke2PublishList(@Param("type")int type, @Param("limit")int limit);
+	@Select("select id,weight from joke where audit = #{status} and type = #{type} order by update_time desc limit #{limit}")
+    List<Joke> getJoke2PublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
 
 	/**
 	 * 更新段子2.0文字段子已发布状态
