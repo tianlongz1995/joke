@@ -48,7 +48,7 @@ public class JokeService {
      */
 
     private static int PUBLISH_SIZE = 500;
-    private static String IMG_REAL_SERVER_URL = "http://joke-img.adbxb.cn/";
+    private static String IMG_REAL_SERVER_URL = "http://joke2-img.oupeng.com/";
 
     /**
      * 发送邮件间隔

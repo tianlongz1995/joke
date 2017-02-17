@@ -1,6 +1,7 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.back.controller.DistributorsController;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
@@ -10,6 +11,8 @@ import com.oupeng.joke.dao.mapper.BannerMapper;
 import com.oupeng.joke.dao.mapper.DistributorsMapper;
 import com.oupeng.joke.domain.Banner;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @Service
 public class BannerService {
+    private static final Logger log = LoggerFactory.getLogger(BannerService.class);
 
     @Autowired
     private Environment env;
@@ -34,9 +38,9 @@ public class BannerService {
 
 
     private String uploadPath = "/nh/java/back/resources/image/";
-    private String showPath = "http://joke-admin.oupeng.com/resources/image/";
-    private String realPath = "http://joke-img.adbxb.cn/";
-    private String cropPath = "http://192.168.12.151:3000/upload";
+    private String showPath = "http://joke2admin.oupeng.com/resources/image/";
+    private String realPath = "http://joke2-img.oupeng.com/";
+    private String cropPath = "http://192.168.10.90:3000/upload";
 
     @PostConstruct
     public void initPath() {
@@ -181,6 +185,7 @@ public class BannerService {
     public String handleImg(String imgUrl) {
         if (StringUtils.isNotBlank(imgUrl)) {
             ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
+            log.debug("获取图片处理返回结果:{}", JSON.toJSONString(imgRespDto));
             if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
                 return imgRespDto.getImgUrl();
             }
