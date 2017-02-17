@@ -96,7 +96,7 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select("select sort from banner  WHERE cid = #{cid} and status in (2,3) ORDER BY sort desc LIMIT 1")
+    @Select("select sort from banner  WHERE cid = #{cid} and status = 3 ORDER BY sort desc LIMIT 1")
     Integer getMaxSortByCid(Integer cid);
 
 

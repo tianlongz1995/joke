@@ -1,7 +1,6 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
-import com.oupeng.joke.back.controller.DistributorsController;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
@@ -294,7 +293,7 @@ public class BannerService {
      */
     private String validBanner(Banner banner,boolean validPublishTime){
         // 判断发布banner数量
-        Integer bannerCount = bannerMapper.getBannerListCount(3, banner.getCid());
+        Integer bannerCount = bannerMapper.getBannerListCount(null, banner.getCid());
         if (bannerCount >= 5) {
             return "上线的banner不能超过5个";
         }
