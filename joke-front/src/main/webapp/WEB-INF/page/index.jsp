@@ -17,6 +17,7 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
+    <meta name="format-detection" content="telephone=no">
     <link href="http://jokefront.bj.oupeng.com/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
 </head>
 <body>
