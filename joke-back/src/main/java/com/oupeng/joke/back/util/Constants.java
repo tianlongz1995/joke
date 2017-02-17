@@ -48,4 +48,8 @@ public class Constants {
 	public static final Integer CHOICE_STATUS_VALID = 2;
 	/**	choice已发布状态 (0:新建 1:下线 2:上线 3:已发布)	*/
 	public static final Integer CHOICE_STATUS_PUBLISH = 3;
+    /**  段子已通过状态   */
+    public static final int AUD = 1;
+    /**  段子已发布状态   */
+    public static final int PUB = 3;
 }
