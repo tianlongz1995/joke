@@ -59,8 +59,10 @@ public class ChoiceSqlProvider {
         Object width = map.get("width");
         Object height = map.get("height");
         Object publishTime = map.get("publishTime");
+        Object good = map.get("good");
+        Object bad = map.get("bad");
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into choice(title,img,status,content,width,height,publish_time,create_time, update_time) value (");
+        sql.append(" insert into choice(title,img,status,content,width,height,good,bad,publish_time,create_time, update_time) value (");
         if (null != title) {
             sql.append("'").append(title).append("',");
         } else {
@@ -89,6 +91,16 @@ public class ChoiceSqlProvider {
             sql.append("'").append(height).append("',");
         }else {
             sql.append("0 ,");
+        }
+        if(null != good){
+            sql.append("'").append(good).append("',");
+        }else{
+            sql.append("0 ,");
+        }
+        if(null != bad){
+            sql.append("'").append(bad).append("',");
+        }else{
+            sql.append(" 0,");
         }
         if(null != publishTime){
             sql.append("'").append(publishTime).append("', ");

@@ -41,7 +41,9 @@ public interface ChoiceMapper {
                    @Param(value = "image") String image,
                    @Param(value = "width") Integer width,
                    @Param(value = "height") Integer height,
-                   @Param(value = "publishTime") String publishTime);
+                   @Param(value = "publishTime") String publishTime,
+                   @Param(value = "good") Integer good,
+                   @Param(value = "bad") Integer bad);
 
     /**
      * 删除
