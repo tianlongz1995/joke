@@ -357,7 +357,7 @@
                         return false;
                     }
                     post('choice/add',
-                            'title=' + cTitle + '&content=' + encodeURI(content) + '&image=' + img + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val(),
+                            'title=' + cTitle + '&content=' + encodeURIComponent(content) + '&image=' + img + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val(),
                             function (data) {
                                 if (data['status']) {
                                     location.reload();
