@@ -55,7 +55,7 @@ public interface ChoiceMapper {
      * @param id
      * @return
      */
-    @Select(value = "select id, title, img, status, content, width, height, good, bad,publish_time as publishTime from choice where id = #{id}")
+    @Select(value = "select id, title, img, status, content, width, height, good, bad,publish_time as publishTime,comment_number as commentNumber from choice where id = #{id}")
     Choice getChoiceById(Integer id);
 
 
@@ -82,6 +82,6 @@ public interface ChoiceMapper {
      * @return
      */
     @Select(value = "select id, title, img, status, content, width, height, good, bad," +
-            "create_time as createTime,update_time as updateTime,publish_time as publishTime from choice where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H') ")
-    List<Choice> getBannerForPublish();
+            "create_time as createTime,update_time as updateTime,publish_time as publishTime,comment_number as commentNumber from choice where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H') ")
+    List<Choice> getChoiceForPublish();
 }

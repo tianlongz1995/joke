@@ -40,6 +40,14 @@ public class Choice {
     @JsonInclude(Include.NON_NULL)
     private Date publishTime;
 
+    /** 评论	*/
+    @JsonInclude(Include.NON_NULL)
+    private Comment comment;
+
+    /** 评论数量(commentNumber)	*/
+    @JsonInclude(Include.NON_NULL)
+    private Integer commentNumber;
+
     public Integer getId() {
         return id;
     }
@@ -138,6 +146,23 @@ public class Choice {
 
     public Date getPublishTime() {
         return publishTime;
+    }
+
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public Integer getCommentNumber() {
+        return commentNumber;
+    }
+
+    public void setCommentNumber(Integer commentNumber) {
+        this.commentNumber = commentNumber;
     }
 
     public void setPublishTime(Date publishTime) {

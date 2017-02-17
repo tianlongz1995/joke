@@ -134,7 +134,11 @@ public class JokeService {
 						if(!CollectionUtils.isEmpty(likeIdList)){
 							String likeId = likeIdList.get(1);
 							logger.debug("update joke Like Count id:" + likeId);
-							jokeMapper.updatejokeLikeCount(Integer.valueOf(likeId));
+							if(Integer.valueOf(likeId)>20000000) { //更新精选的点踩数
+								jokeMapper.updateChoiceLikeCount(Integer.valueOf(likeId));
+							}else {
+								jokeMapper.updatejokeLikeCount(Integer.valueOf(likeId));
+							}
 							updateJokeLikeCache(likeId);
 						}
 					}catch(Exception e){
@@ -161,7 +165,11 @@ public class JokeService {
 						if(!CollectionUtils.isEmpty(stepIdList)){
 							String stepId = stepIdList.get(1);
 							logger.debug("update joke step Count id:" + stepId);
-							jokeMapper.updateJokeStepCount(Integer.valueOf(stepId));
+							if(Integer.valueOf(stepId)>20000000) { //更新精选的点踩数
+								jokeMapper.updateChoiceStepCount(Integer.valueOf(stepId));
+							}else {
+								jokeMapper.updateJokeStepCount(Integer.valueOf(stepId));
+							}
 							updateJokeStepCache(stepId);
 						}
 					}catch(Exception e){
@@ -568,7 +576,11 @@ public class JokeService {
 //    	更新数据库中段子评论数
         for(Integer id : jid){
             if(id != null){
-                jokeMapper.incrementComment(id);
+            	if(id>20000000){
+            		jokeMapper.incrementChoiceComment(id);
+				}else{
+					jokeMapper.incrementComment(id);
+				}
                 //		更新缓存中的段子评论数
                 Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
                 if(joke != null && joke.getComment() != null){
@@ -592,7 +604,11 @@ public class JokeService {
 //    	更新数据库中段子评论数
 		for(Integer id : jid){
 			if(id != null){
-				jokeMapper.decrementComment(id);
+				if(id>20000000) {
+					jokeMapper.decrementChoiceComment(id);
+				}else{
+					jokeMapper.decrementComment(id);
+				}
 				//		更新缓存中的段子评论数
 				Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
 				if(joke != null && joke.getComment() != null){

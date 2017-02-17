@@ -60,11 +60,25 @@ public interface JokeMapper {
 	void updateJokeStepCount(@Param(value = "id")Integer id);
 
 	/**
+	 * 更新精选的被点踩数
+	 * @param id
+     */
+	@Update(value="update choice set bad = bad + 1 where id = #{id}")
+	void updateChoiceStepCount(@Param(value = "id")Integer id);
+
+	/**
 	 * 更新段子点赞数
 	 * @param id
 	 */
 	@Update(value="update joke set good = good + 1 where id = #{id}")
 	void updatejokeLikeCount(@Param(value = "id")Integer id);
+
+	/**
+	 * 更新精选点赞数
+	 * @param id
+	 */
+	@Update(value="update choice set good = good + 1 where id = #{id}")
+	void updateChoiceLikeCount(@Param(value = "id")Integer id);
 
 	/**
 	 * 保存反馈信息
@@ -278,12 +292,26 @@ public interface JokeMapper {
     void incrementComment(@Param("jid")Integer jid);
 
 	/**
+	 * 增加精选的评论数
+	 * @param jid
+     */
+	@Update("update choice set comment_number = comment_number + 1 where id = #{jid}")
+	void incrementChoiceComment(@Param(value = "jid")Integer jid);
+
+	/**
 	 * 减少神评数量
 	 * @param jid
 	 */
 	@Update("update joke set comment_number = comment_number - 1 where id = #{jid}")
 	void decrementComment(@Param("jid")Integer jid);
 
+
+	/**
+	 * 减少神评数量
+	 * @param jid
+	 */
+	@Update("update choice set comment_number = comment_number - 1 where id = #{jid}")
+	void decrementChoiceComment(@Param("jid")Integer jid);
 
 	/**
 	 * 获取段子2.0文字段子发布列表

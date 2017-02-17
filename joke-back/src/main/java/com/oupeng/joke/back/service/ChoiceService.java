@@ -8,6 +8,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
+import com.oupeng.joke.domain.Comment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,8 +296,11 @@ public class ChoiceService {
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         String result = validChoice(choice, false);
         if(null == result){
-            //1 增加缓存
-            choice.setType(3);
+            //1 增加缓存 4:精选
+            choice.setType(4);
+            if(choice.getCommentNumber()!=null){
+                choice.setComment(new Comment(choice.getCommentNumber(),null,null,null));
+            }
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
             //2 更新发布状态
@@ -334,7 +338,7 @@ public class ChoiceService {
      * 获取带发布的精选列表
      * @return
      */
-    public  List<Choice> getBannerForPublish(){
-        return choiceMapper.getBannerForPublish();
+    public  List<Choice> getChoiceForPublish(){
+        return choiceMapper.getChoiceForPublish();
     }
 }

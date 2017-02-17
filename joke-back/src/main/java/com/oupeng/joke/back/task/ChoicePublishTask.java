@@ -6,6 +6,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
+import com.oupeng.joke.domain.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +35,19 @@ public class ChoicePublishTask {
      * 发布精选
      * */
     @Scheduled(cron="0 0/5 * * * ?")
-    public void publishBannerTask() {
+    public void publishChoiceTask() {
         logger.info("开始发布精选数据...");
-        List<Choice> choiceList = choiceService.getBannerForPublish();
+        List<Choice> choiceList = choiceService.getChoiceForPublish();
         //精选id列表，缓存key
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         if (!CollectionUtils.isEmpty(choiceList)) {
             for (Choice choice : choiceList) {
                 String choiceKey = JedisKey.STRING_JOKE + choice.getId();
 
-                choice.setType(3);
+                if(choice.getCommentNumber()!=null){
+                    choice.setComment(new Comment(choice.getCommentNumber(), null, null,null));
+                }
+                choice.setType(4);
                 jedisCache.set(choiceKey, JSON.toJSONString(choice));
                 jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
                 //更新状态
