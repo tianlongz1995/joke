@@ -389,3 +389,7 @@ CREATE TABLE `distributors` (
 -- Records of distributors
 -- ----------------------------
 INSERT INTO `distributors` VALUES ('2', '默认频道', '1', '2017-01-05 16:56:32', 'admin', '2017-01-16 14:48:58', 'admin');
+
+
+-- 修改choice自增初始值
+alter table choice AUTO_INCREMENT = 20000000;
