@@ -3,6 +3,9 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.oupeng.joke.back.util.Constants;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
@@ -14,10 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -93,8 +92,9 @@ public class JokeService {
 	 * @param user
 	 */
 	public void verifyJoke(Integer status,String ids,String user){
-		if(status != Constants.JOKE_STATUS_VALID){
-//			审核不通过
+		if(status == Constants.JOKE_STATUS_VALID || status == Constants.JOKE_STATUS_NOVALID){ //通过、不通过修改发布状态
+			jokeMapper.updateJokeStatus(status, ids, user);
+		}else{
 			String[] jokeIds = ids.split(",");
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
@@ -102,13 +102,20 @@ public class JokeService {
 					jedisCache.zrem(key, jokeIds);
 				}
 			}
-			
+            //删除段子
 			for(String id : jokeIds){
+				//  type 0:纯文本 1:图片 2:动图 3 精选
+				//段子缓存(1:趣图、2:段子、3:推荐、4:精选)
+				jedisCache.zrem(JedisKey.JOKE_CHANNEL + 1, id);
+				jedisCache.zrem(JedisKey.JOKE_CHANNEL + 2, id);
+				jedisCache.zrem(JedisKey.JOKE_CHANNEL + 3, id);
+				jedisCache.zrem(JedisKey.JOKE_CHANNEL + 4, id);
+				//删除段子
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
+
 		}
-//		审核通过
-		jokeMapper.updateJokeStatus(status, ids, user);
+
 	}
 	
 	public Joke getJokeById(Integer id){

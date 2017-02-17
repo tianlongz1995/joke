@@ -47,7 +47,7 @@ public class ChoicePublishTask {
                 if(choice.getCommentNumber()!=null){
                     choice.setComment(new Comment(choice.getCommentNumber(), null, null,null));
                 }
-                choice.setType(4);
+                choice.setType(3);
                 jedisCache.set(choiceKey, JSON.toJSONString(choice));
                 jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
                 //更新状态

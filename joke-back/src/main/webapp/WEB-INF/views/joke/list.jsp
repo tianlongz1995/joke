@@ -191,6 +191,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.status == 3}">已发布</c:if>
 					</td>
 					<td>
+						<%--未审核--%>
 						<c:if test="${joke.status == 0}">
 							<a class="btn btn-success btn-sm" href="#" onclick="verifyJoke(1,${joke.id})">
 					        	 <i class="glyphicon glyphicon-ok icon-white"></i>通过
@@ -202,10 +203,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        	<i class="glyphicon glyphicon-edit icon-white"></i>编辑
 					        </a>
 						</c:if>
-						<c:if test="${joke.status == 1 || joke.status == 3}">
+						<%--通过--%>
+						<c:if test="${joke.status == 1}">
 							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">
 					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
 					        </a>
+						</c:if>
+						<%--已发布--%>
+						<c:if test="${joke.status == 3}">
+							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(5,${joke.id})">
+								<i class="glyphicon glyphicon-remove icon-white"></i>下线
+							</a>
 						</c:if>
 						<c:if test="${joke.status == 2}">
 							<a class="btn btn-success btn-sm" href="#" onclick="verifyJoke(1,${joke.id})">

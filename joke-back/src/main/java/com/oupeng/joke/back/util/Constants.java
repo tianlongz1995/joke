@@ -17,6 +17,8 @@ public class Constants {
 	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
 	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
 	public static final Integer JOKE_STATUS_VALID = 1;
+	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
+	public static final Integer JOKE_STATUS_NOVALID = 2;
 	/**	段子发布状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
 	public static final Integer JOKE_STATUS_PUBLISH = 3;
 	/**	渠道上线状态: 1	*/

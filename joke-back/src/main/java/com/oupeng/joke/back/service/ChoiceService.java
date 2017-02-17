@@ -298,8 +298,8 @@ public class ChoiceService {
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         String result = validChoice(choice, false);
         if(null == result){
-            //1 增加缓存 4:精选
-            choice.setType(4);
+            //1 增加缓存
+            choice.setType(3);
             if(choice.getCommentNumber()!=null){
                 choice.setComment(new Comment(choice.getCommentNumber(),null,null,null));
             }
