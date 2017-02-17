@@ -92,10 +92,20 @@ public class JokeService {
 	 * @param user
 	 */
 	public void verifyJoke(Integer status,String ids,String user){
-		if(status == Constants.JOKE_STATUS_VALID || status == Constants.JOKE_STATUS_NOVALID){ //通过、不通过修改发布状态
+		String[] jokeIds = ids.split(",");
+		if(status == Constants.JOKE_STATUS_VALID ){ //通过
+			// 更改状态
+			jokeMapper.updateJokeStatus(status, ids, user);
+			//加到缓存
+			for (String id : jokeIds) {
+				Joke joke = jokeMapper.getJokeById(Integer.parseInt(id));
+				if (joke != null) {
+					jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
+				}
+			}
+		}else if(status == Constants.JOKE_STATUS_NOVALID){//不通过
 			jokeMapper.updateJokeStatus(status, ids, user);
 		}else{
-			String[] jokeIds = ids.split(",");
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
 				for(String key : keys){
@@ -113,9 +123,7 @@ public class JokeService {
 				//删除段子
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
-
 		}
-
 	}
 	
 	public Joke getJokeById(Integer id){
