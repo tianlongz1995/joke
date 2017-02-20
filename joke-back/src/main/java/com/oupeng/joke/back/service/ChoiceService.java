@@ -307,6 +307,8 @@ public class ChoiceService {
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
             //2 更新发布状态
             choiceMapper.updateChoiceStatus(choice.getId(),3);
+            //3 加入相关推荐
+            jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(choice.getId()));
         }
         return result;
     }
