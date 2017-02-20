@@ -156,11 +156,13 @@ public class BannerController {
                          @RequestParam(value = "jid")     Integer jid,
                          @RequestParam(value = "type")    Integer type,
                          @RequestParam(value = "publishTime") String publishTime,
-                         @RequestParam(value = "adId")    Integer adId) {
+                         @RequestParam(value = "adId")    Integer adId,
+                         @RequestParam(value = "width",required = false) Integer width,
+                         @RequestParam(value = "height",required = false) Integer height) {
         Banner banner = bannerService.getBannerById(id);
         //下线和新建的的banner可以编辑
         if (banner.getStatus() == 0 || banner.getStatus()== 1) {
-           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime);
+           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime,width,height);
             if(flag) {
                 return new Success("更新成功!");
             }else{

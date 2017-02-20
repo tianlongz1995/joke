@@ -391,7 +391,11 @@
                             return false;
                         }
                     }
-
+                    var imgWidth = $("#imgWidth").val();
+                    if (imgWidth < 200) {
+                        alert("图片宽度必须大于200");
+                        return false;
+                    }
                     post('banner/add',
                             'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
                             function (data) {

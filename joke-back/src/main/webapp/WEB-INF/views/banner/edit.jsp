@@ -237,10 +237,15 @@
                             return false;
                         }
                     }
+                    var imgWidth = $("#imgWidth").val();
+                    if (imgWidth < 200) {
+                        alert("图片宽度必须大于200");
+                        return false;
+                    }
                     $('#updateBanner').attr("disabled","disabled");
                     post('banner/update',
                             'id='+$("#bannerId").val()+'&title='+$("#title").val()+'&jid='+$("#jokeId").val()+'&cid='+$("#cid").val()+'&content='+$('#bannerContent').val()+'&type='+$("#type").val()
-                            +'&img='+$('#image').val() +'&adId='+$('#adId').val()+'&publishTime='+$("#publishTime").val(),
+                            +'&img='+$('#image').val() +'&adId='+$('#adId').val()+'&publishTime='+$("#publishTime").val()+'&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val(),
                             function (data) {
                                 if(data['status']) {
                                     alert("更新成功");

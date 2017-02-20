@@ -307,7 +307,7 @@ public class IndexService {
      * @param cid
      * @return
      */
-    public List<Relate> getJokeRelate(Integer did, Integer cid) {
+    public List<Relate> getJokeRelate(Integer did, Integer cid, Integer id) {
         List<Relate> relatedList = Lists.newArrayList();
         List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 4);
         if (!CollectionUtils.isEmpty(relatedImgIdList)) {
@@ -315,6 +315,9 @@ public class IndexService {
             for (String jokeId : relatedImgIdList) {
                 joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId), Joke.class);
                 if (joke != null) {
+                    if (id != null && joke.getId().equals(id)) {
+                        continue;
+                    }
                     Relate relate = new Relate();
                     relate.setId(joke.getId());
                     relate.setCid(1);
@@ -324,6 +327,7 @@ public class IndexService {
                         relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
                     }
                     relatedList.add(relate);
+
                 }
             }
         }
