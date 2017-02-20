@@ -108,9 +108,9 @@ public class ChoiceService {
         if (StringUtils.isBlank(newImg)) {
             return false;
         }
-        int bad  = 150 +(int)(Math.random()*150);
+        int bad  = 150 -(int)(Math.random()*150);
         int good = 500 +(int)(Math.random()*500);
-        choiceMapper.addChoice(title, content, newImg, width,height,publishTime,bad,good);
+        choiceMapper.addChoice(title, content, newImg, width,height,publishTime,good,bad);
         return true;
     }
 

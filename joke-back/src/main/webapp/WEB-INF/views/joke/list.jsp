@@ -198,7 +198,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<c:if test="${joke.status == 0}">未审核</c:if>
 						<c:if test="${joke.status == 1}">通过</c:if>
 						<c:if test="${joke.status == 2}">不通过</c:if>
-						<c:if test="${joke.status == 3}">已发布</c:if>
+						<c:if test="${joke.status == 3 || joke.status == 4}">已发布</c:if>
 					</td>
 					<td>
 						<%--未审核--%>
@@ -220,7 +220,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        </a>
 						</c:if>
 						<%--已发布--%>
-						<c:if test="${joke.status == 3}">
+						<c:if test="${joke.status == 3 || joke.status == 4}">
 							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(5,${joke.id})">
 								<i class="glyphicon glyphicon-remove icon-white"></i>下线
 							</a>

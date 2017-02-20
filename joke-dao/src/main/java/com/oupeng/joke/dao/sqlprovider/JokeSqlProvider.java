@@ -386,7 +386,12 @@ public class JokeSqlProvider {
 			sql.append(" and t1.type = ").append(type).append(" ");
 		}
 		if(status != null){
-			sql.append(" and t1.status = ").append(status).append(" ");
+            if(status == 3 ){
+                sql.append(" and t1.status in (3,4) ");
+            }else{
+                sql.append(" and t1.status = ").append(status).append(" ");
+            }
+//			sql.append(" and t1.status = ").append(status).append(" ");
 		}
 		if(source != null){
 			sql.append(" and t1.source_id = ").append(source).append(" ");
