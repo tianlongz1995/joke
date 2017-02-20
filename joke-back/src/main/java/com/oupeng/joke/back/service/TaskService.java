@@ -169,7 +169,7 @@ public class TaskService {
             }
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 2, map);
             // 更新已发布状态
-            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
+            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 3);
         }
         long end = System.currentTimeMillis();
         log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
@@ -252,7 +252,7 @@ public class TaskService {
         if(map != null && map.size() > 0){
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 1, map);
             // 更新已发布状态
-            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString());
+            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 3);
         }
         long end = System.currentTimeMillis();
         log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount+gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());
@@ -290,7 +290,6 @@ public class TaskService {
         List<Joke> imgList = jokeService.getJoke2PublishList(Constants.PUB, 1, PUBLISH_IMG_SIZE);
         List<Joke> gifList = jokeService.getJoke2PublishList(Constants.PUB, 2, PUBLISH_GIF_SIZE);
         StringBuffer ids = new StringBuffer();
-//        int max = imgList.size() > gifList.size() ? imgList.size() : gifList.size();
         int imgSize = 0;
         if(!CollectionUtils.isEmpty(imgList)){
             imgSize = imgList.size();
@@ -303,10 +302,12 @@ public class TaskService {
         if(!CollectionUtils.isEmpty(textList)){
             textSize = textList.size();
         }
+
         int img = IMG_WEIGHT;
         int gif = GIF_WEIGHT;
         int text = TEXT_WEIGHT;
-        int total = img + gif + text;
+        int total = imgSize + gifSize + textSize;
+        log.info("准备发布推荐[{}]条(img:{}, gif:{}, text:{})", total , imgSize, gifSize, textSize);
         for(int i = total; i > 0; i--){
 //			按照段子审核时间进行权重
             if(text > 0){
@@ -354,9 +355,11 @@ public class TaskService {
         }
         if(map != null && map.size() > 0){
             jedisCache.zadd(JedisKey.JOKE_CHANNEL + 3, map);
+//            // 更新已发布状态为已推荐
+            jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 4);
         }
         long end = System.currentTimeMillis();
-        log.info("发布趣图[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
+        log.info("发布推荐[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
     }
 
     @PreDestroy

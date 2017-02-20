@@ -41,7 +41,7 @@ public interface JokeMapper {
 						   @Param(value="id")Integer id, @Param(value="content")String content, @Param(value="isTopic")boolean isTopic);
 	
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
-			+ "create_time as createTime,update_time as updateTime,good,bad,width,height,weight from joke where id = ${id}")
+			+ "create_time as createTime,update_time as updateTime,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id = ${id}")
 	@ResultType(value=Joke.class)
 	Joke getJokeById(@Param(value="id")Integer id);
 	
@@ -326,8 +326,8 @@ public interface JokeMapper {
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time =now(), audit = 3,status =3, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
-	void updateJoke2PublishStatus(@Param("idsStr")String idsStr);
+	@Update("update joke set update_time =now(), audit = #{status},status = #{status}, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+	void updateJoke2PublishStatus(@Param("idsStr")String idsStr, @Param("status")Integer status);
 
 	/**
 	 * 获取段子2.0发布任务

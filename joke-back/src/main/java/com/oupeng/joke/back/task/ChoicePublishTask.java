@@ -48,8 +48,12 @@ public class ChoicePublishTask {
                     choice.setComment(new Comment(choice.getCommentNumber(), null, null,null));
                 }
                 choice.setType(3);
+//                精选内容
                 jedisCache.set(choiceKey, JSON.toJSONString(choice));
+//                精选频道
                 jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
+//                相关推荐 - 使用精选中的数据
+                 jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, choice.getId().toString());
                 //更新状态
                 choiceMapper.updateChoiceStatus(choice.getId(),3);
             }

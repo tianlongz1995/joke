@@ -37,7 +37,7 @@
         <!-- content start -->
         <div id="content" class="col-lg-10 col-sm-10">
             <div class="row">
-                <div class="box col-md-4">
+                <div class="box col-md-6">
                     <div class="box-inner">
                         <div class="box-header well bg-primary" data-original-title="">
                             <h2><i class="glyphicon glyphicon-user"></i> 首页资源配置</h2>
@@ -70,41 +70,41 @@
                     </div>
                 </div><!-- box col-md-12 end -->
 
-                <div class="box col-md-4">
-                    <div class="box-inner">
-                        <div class="box-header well bg-info" data-original-title="">
-                            <h2><i class="glyphicon glyphicon-user"></i> 备用资源配置</h2>
-                            <div id="indexBackBtnEdit" style="float: right;display: block;" title="修改" onclick="indexBackEdit()"><i class="glyphicon glyphicon-edit text-primary"></i></div>
-                            <div id="indexBackBtnHide" style="float: right;display: none;" title="返回" onclick="indexBackHide()"><i class="glyphicon glyphicon-log-out text-primary"></i></div>
+                <%--<div class="box col-md-4">--%>
+                    <%--<div class="box-inner">--%>
+                        <%--<div class="box-header well bg-info" data-original-title="">--%>
+                            <%--<h2><i class="glyphicon glyphicon-user"></i> 备用资源配置</h2>--%>
+                            <%--<div id="indexBackBtnEdit" style="float: right;display: block;" title="修改" onclick="indexBackEdit()"><i class="glyphicon glyphicon-edit text-primary"></i></div>--%>
+                            <%--<div id="indexBackBtnHide" style="float: right;display: none;" title="返回" onclick="indexBackHide()"><i class="glyphicon glyphicon-log-out text-primary"></i></div>--%>
 
-                        </div>
-                        <div class="box-content">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>lib.js</th>
-                                    <td><input id="libJsBack" type="text" class="form-control" value="${back.libJs}" disabled="disabled"/></td>
-                                </tr>
-                                <tr>
-                                    <th>app.js</th>
-                                    <td><input id="appJsBack" type="text" class="form-control" value="${back.appJs}" disabled="disabled"/></td>
-                                </tr>
-                                <tr>
-                                    <th>app.css</th>
-                                    <td>
-                                        <input id="appCssBack" type="text" class="form-control" value="${back.appCss}" disabled="disabled"/>
-                                    </td>
-                                </tr>
-                                </thead>
-                            </table>
-                            <div id="indexBackAdd" style="text-align: center;display: none;">
-                                <button onclick="modifyStatus(2)" type="button" class="btn btn-info" data-dismiss="modal">提交</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- box col-md-12 end -->
+                        <%--</div>--%>
+                        <%--<div class="box-content">--%>
+                            <%--<table class="table table-hover">--%>
+                                <%--<thead>--%>
+                                <%--<tr>--%>
+                                    <%--<th>lib.js</th>--%>
+                                    <%--<td><input id="libJsBack" type="text" class="form-control" value="${back.libJs}" disabled="disabled"/></td>--%>
+                                <%--</tr>--%>
+                                <%--<tr>--%>
+                                    <%--<th>app.js</th>--%>
+                                    <%--<td><input id="appJsBack" type="text" class="form-control" value="${back.appJs}" disabled="disabled"/></td>--%>
+                                <%--</tr>--%>
+                                <%--<tr>--%>
+                                    <%--<th>app.css</th>--%>
+                                    <%--<td>--%>
+                                        <%--<input id="appCssBack" type="text" class="form-control" value="${back.appCss}" disabled="disabled"/>--%>
+                                    <%--</td>--%>
+                                <%--</tr>--%>
+                                <%--</thead>--%>
+                            <%--</table>--%>
+                            <%--<div id="indexBackAdd" style="text-align: center;display: none;">--%>
+                                <%--<button onclick="modifyStatus(2)" type="button" class="btn btn-info" data-dismiss="modal">提交</button>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
+                    <%--</div>--%>
+                <%--</div><!-- box col-md-12 end -->--%>
 
-                <div class="box col-md-4">
+                <div class="box col-md-6">
                     <div class="box-inner">
                         <div class="box-header well bg-info" data-original-title="">
                             <h2><i class="glyphicon glyphicon-user"></i> 测试资源配置</h2>
@@ -267,14 +267,14 @@
                             });
                 };
 
-                function indexBackEdit() {
-                    $("#indexBackAdd").show();
-                    $("#indexBackBtnHide").show();
-                    $("#indexBackBtnEdit").hide();
-                    $("#libJsBack").removeAttr('disabled');
-                    $("#appJsBack").removeAttr('disabled');
-                    $("#appCssBack").removeAttr('disabled');
-                };
+//                function indexBackEdit() {
+//                    $("#indexBackAdd").show();
+//                    $("#indexBackBtnHide").show();
+//                    $("#indexBackBtnEdit").hide();
+//                    $("#libJsBack").removeAttr('disabled');
+//                    $("#appJsBack").removeAttr('disabled');
+//                    $("#appCssBack").removeAttr('disabled');
+//                };
 
                 function indexBackHide() {
                     $("#indexBackAdd").hide();

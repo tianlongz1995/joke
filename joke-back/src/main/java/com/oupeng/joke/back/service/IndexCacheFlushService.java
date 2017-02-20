@@ -110,6 +110,7 @@ public class IndexCacheFlushService {
             for(String key : set){
 //               发送暗号
                 jedisCache.lpush(key, JedisKey.INDEX_SIGN + sign);
+                logger.debug("发送给[{}]暗号:[{}]", key, JedisKey.INDEX_SIGN + sign);
             }
             try {
                 Thread.sleep(sleep);
@@ -122,8 +123,10 @@ public class IndexCacheFlushService {
 //              确认暗号
                 if(sign.equals(s)){
                     jedisCache.lpush(key, prefix + value);
+                    logger.debug("确认[{}]暗号数据:[{}]", key, prefix + value);
                 } else {
                     jedisCache.hdel(JedisKey.JOKE_INDEX_CACHE_FLUSH_SIGN, key);
+                    logger.info("删除[{}] Key:[{}]", JedisKey.JOKE_INDEX_CACHE_FLUSH_SIGN, key);
                 }
             }
         }

@@ -390,6 +390,7 @@ CREATE TABLE `distributors` (
 -- ----------------------------
 INSERT INTO `distributors` VALUES ('2', '默认频道', '1', '2017-01-05 16:56:32', 'admin', '2017-01-16 14:48:58', 'admin');
 
+alter table choice add COLUMN `comment_number` int(11) DEFAULT '0' COMMENT '评论数量';
 
 -- 修改choice自增初始值
 alter table choice AUTO_INCREMENT = 20000000;

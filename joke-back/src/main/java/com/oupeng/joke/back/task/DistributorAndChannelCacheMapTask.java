@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Component
 public class DistributorAndChannelCacheMapTask {
-    private static final Logger logger = LoggerFactory.getLogger(CommonChannelTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(DistributorAndChannelCacheMapTask.class);
 
     @Autowired
     private ChannelService channelService;

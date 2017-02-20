@@ -108,4 +108,11 @@ public interface BannerMapper {
             "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
     List<Banner> getBannerForPublish();
 
+    /**
+     * 发布上线banner数量
+     * @param cid
+     * @return
+     */
+    @Select("select count(1) from banner where cid = #{cid} and status in (2, 3)")
+    Integer getBannerCount(Integer cid);
 }

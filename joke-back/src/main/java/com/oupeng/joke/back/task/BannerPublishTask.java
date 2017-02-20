@@ -43,6 +43,12 @@ public class BannerPublishTask {
                 jedisCache.set(bannerKey, JSON.toJSONString(banner));
                 jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(banner.getId()));
                 bannerMapper.updateBannerStatus(banner.getId(),3);
+                //根据缓存中banner的个数，修改channel表中banner状态
+                Long bannerCount = jedisCache.zcard(bannerListKey);
+                if(bannerCount == 1){
+//                修改渠道配置中banner显示状态
+                    bannerService.changeBannerStatus(banner.getCid(), true);
+                }
             }
         }
         logger.info("发布banner数据结束，共发布banner{}条",bannerList.size());
