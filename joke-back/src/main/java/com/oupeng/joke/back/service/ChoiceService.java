@@ -277,8 +277,12 @@ public class ChoiceService {
         if(Constants.CHOICE_STATUS_VALID == status){
             result = validChoice(choice,true);
         }else if(Constants.CHOICE_STATUS_PUBLISH !=status){ //下线
+            //删除精选
             jedisCache.del(choiceKey);
+            //删除列表中Id
             jedisCache.zrem(choiceListKey, Integer.toString(id));
+            //删除推荐中Id
+            jedisCache.srem(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(choice.getId()));
         }
          if(result == null){
              choiceMapper.updateChoiceStatus(id,status);

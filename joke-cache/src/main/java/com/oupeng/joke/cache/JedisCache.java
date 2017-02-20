@@ -1,16 +1,15 @@
 package com.oupeng.joke.cache;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.Tuple;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class JedisCache {
@@ -196,7 +195,19 @@ public class JedisCache {
 			}
 		}
 	}
-	
+
+
+	public void srem(String key,String ... members){
+		Jedis jedis = null;
+		try{
+			jedis = jedisWritePool.getResource();
+			jedis.srem(key, members);
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
+		}
+	}
 	public void zadd(String key,Map<String,Double> value){
 		Jedis jedis = null;
 		try{
