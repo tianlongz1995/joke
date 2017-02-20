@@ -123,6 +123,7 @@ public class JokeService {
 				//删除段子
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
+			jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_NOVALID, ids, user); //修改为通过
 		}
 	}
 	
