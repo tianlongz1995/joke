@@ -100,6 +100,22 @@ public class JokeService {
 			for (String id : jokeIds) {
 				Joke joke = jokeMapper.getJokeById(Integer.parseInt(id));
 				if (joke != null) {
+                    joke.setCreateTime(null);
+                    joke.setSourceId(null);
+                    joke.setStatus(null);
+                    joke.setUpdateTime(null);
+                    joke.setVerifyTime(null);
+                    joke.setVerifyUser(null);
+                    if(joke.getCommentNumber() != null
+                            && joke.getCommentContent() != null
+                            && joke.getAvata() != null
+                            && joke.getNick() != null){
+                        joke.setComment(new Comment(joke.getCommentNumber(), joke.getCommentContent(), joke.getAvata(),joke.getNick()));
+                        joke.setCommentNumber(null);
+                        joke.setCommentContent(null);
+                        joke.setAvata(null);
+                        joke.setNick(null);
+    				}
 					jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
 				}
 			}
@@ -659,8 +675,8 @@ public class JokeService {
 	 * 更新段子2.0文字段子状态
 	 * @param idsStr
 	 */
-	public void updateJoke2PublishStatus(String idsStr) {
-		jokeMapper.updateJoke2PublishStatus(idsStr);
+	public void updateJoke2PublishStatus(String idsStr, int status) {
+		jokeMapper.updateJoke2PublishStatus(idsStr, status);
 	}
 
 	/**

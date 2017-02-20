@@ -9,6 +9,9 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
 import com.oupeng.joke.dao.mapper.DistributorsMapper;
 import com.oupeng.joke.domain.Banner;
+import com.oupeng.joke.domain.Channels;
+import com.oupeng.joke.domain.DistributorsConfig;
+import com.oupeng.joke.domain.IndexItem;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import javax.annotation.PostConstruct;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BannerService {
@@ -34,6 +38,8 @@ public class BannerService {
     private JedisCache jedisCache;
     @Autowired
     private DistributorsMapper distributorsMapper;
+    @Autowired
+    private IndexCacheFlushService indexCacheFlushService;
 
 
     private String uploadPath = "/nh/java/back/resources/image/";
@@ -245,8 +251,13 @@ public class BannerService {
         //（0：不显示、1：显示）
         if (bannerCount == 0) {
             distributorsMapper.updateChannelsBanner(0, banner.getCid());
+            changeBannerStatus(banner.getCid(), false);
         } else {
             distributorsMapper.updateChannelsBanner(1, banner.getCid());
+            if(bannerCount == 1){
+//                修改渠道配置中banner显示状态
+                changeBannerStatus(banner.getCid(), true);
+            }
         }
         return result;
     }
@@ -284,8 +295,58 @@ public class BannerService {
             }
             //2 修改发布状态
             bannerMapper.updateBannerStatus(banner.getId(),3);
+//          修改Channel表显示状态
+            distributorsMapper.updateChannelsBanner(1, banner.getCid());
+
+            //根据缓存中banner的个数，修改channel表中banner状态
+            Long bannerCount = jedisCache.zcard(bannerListKey);
+            if(bannerCount == 1){
+//                修改渠道配置中banner显示状态
+                changeBannerStatus(banner.getCid(), true);
+            }
+
         }
         return result;
+    }
+
+    /**
+     * 修改渠道配置中banner显示状态
+     * @param cid
+     * @param bannerView
+     */
+    public void changeBannerStatus(Integer cid, boolean bannerView) {
+        Map<String, String> distributors = jedisCache.hgetAll(JedisKey.JOKE_DISTRIBUTOR_CONFIG);
+        if(distributors != null && distributors.size() > 0){
+            log.debug("修改渠道配置前:[{}]", JSON.toJSONString(distributors));
+            boolean change = false, save = false;
+            for(Map.Entry<String, String> m : distributors.entrySet()){
+                DistributorsConfig d = JSON.parseObject(m.getValue(), DistributorsConfig.class);
+                if(d != null){
+                    List<Channels> channelsList = d.getChannels();
+                    if(!CollectionUtils.isEmpty(channelsList)){
+                        for(Channels c : channelsList){
+                            if(c.getI().equals(cid)){
+                                c.setB(bannerView);
+                                log.debug("修改渠道[{}]配置中频道[{}]banner显示状态[{}]", m.getKey(), cid, bannerView);
+                                change = true;
+                            }
+                        }
+                    }
+
+                }
+                if(change){
+                    distributors.put(m.getKey(), JSON.toJSONString(d));
+//				    删除应用内缓存
+                    indexCacheFlushService.updateIndex(new IndexItem(m.getKey(), 0));
+                    change = false;
+                    save = true;
+                }
+            }
+            if(save){
+                log.debug("修改渠道配置后:[{}]", JSON.toJSONString(distributors));
+                jedisCache.hmset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, distributors);
+            }
+        }
     }
 
     /**
@@ -294,8 +355,8 @@ public class BannerService {
      * @return
      */
     private String validBanner(Banner banner,boolean validPublishTime){
-        // 判断发布banner数量
-        Integer bannerCount = bannerMapper.getBannerListCount(null, banner.getCid());
+        // 判断发布上线banner数量
+        Integer bannerCount = bannerMapper.getBannerCount(banner.getCid());
         if (bannerCount >= 5) {
             return "上线的banner不能超过5个";
         }
@@ -392,7 +453,5 @@ public class BannerService {
     public List<Banner> getBannerForPublish(){
         return bannerMapper.getBannerForPublish();
     }
-
-
 
 }

@@ -43,34 +43,40 @@ public class IndexService {
     private ConcurrentHashMap<String, String> configMap = new ConcurrentHashMap<>();
     /** 资源集合 */
     private ConcurrentHashMap<String, IndexResource> resourceMap = new ConcurrentHashMap<>();
-    @Autowired
-    private CacheManager cacheManager;
+//    @Autowired
+//    private CacheManager cacheManager;
 
-    @PostConstruct
-    public void init(){
-        String img = env.getProperty("img.prefix");
-        if(StringUtils.isNotEmpty(img)){
-            IMG_PREFIX = img;
-        }
-    }
+    private IndexResource backResource;
 
-//    private Cache picturesCache;
 
     @PostConstruct
     public void initConstants() {
+//        获取CDN前缀
+        String img = env.getProperty("img.real.server.url");
+        if(StringUtils.isNotEmpty(img)){
+            IMG_PREFIX = img;
+        }
+//        获取首页资源文件配置缓存
         IndexResource indexResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_INDEX), IndexResource.class);
         if(indexResource != null){
             resourceMap.put(JedisKey.INDEX_CACHE_INDEX, indexResource);
         }
-        IndexResource backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-        if(backResource != null){
-            resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
+//        获取备用资源文件配置
+        String backResourceStr = env.getProperty("back.resource");
+        if(StringUtils.isNotBlank(backResourceStr)){
+            backResource = JSON.parseObject(backResourceStr, IndexResource.class);
+            if(backResource == null){
+                log.error("渠道备用配置为空:{}", backResourceStr);
+            } else {
+                resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
+            }
         }
+//        获取测试资源文件配置
         IndexResource testResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_TEST), IndexResource.class);
         if(testResource != null){
             resourceMap.put(JedisKey.INDEX_CACHE_TEST, testResource);
         }
-//        更新所以缓存
+//        更新所有渠道菜单配置缓存
         Set<String> keys = jedisCache.hkeys(JedisKey.JOKE_DISTRIBUTOR_CONFIG);
         for(String key : keys){
             String config = jedisCache.hget(JedisKey.JOKE_DISTRIBUTOR_CONFIG, key);
@@ -78,8 +84,6 @@ public class IndexService {
                 configMap.put(key, config);
             }
         }
-
-//        picturesCache = cacheManager.getCache("pictures");
     }
 
     /**
@@ -109,15 +113,13 @@ public class IndexService {
                     if(indexResource == null){
                         IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
                         if(backResource == null){
-                            backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-                            if(backResource != null){
-                                resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
-                            }
+                            log.error("{}的首页请求失效, 备用资源为空!", did);
                         }
                         indexResource = backResource;
-                        log.error("{}的首页请求失效,正在使用备用内容!", did);
-                    }
-                    if(indexResource != null){
+                        if(log.isDebugEnabled()){
+                            log.error("{}的首页请求失效,正在使用备用内容!", did);
+                        }
+                    } else {
                         resourceMap.put(JedisKey.INDEX_CACHE_INDEX, indexResource);
                     }
                 }
@@ -134,15 +136,13 @@ public class IndexService {
         } else {
             IndexResource backResource = resourceMap.get(JedisKey.INDEX_CACHE_BACK);
             if(backResource == null){
-                backResource = JSON.parseObject(jedisCache.get(JedisKey.JOKE_RESOURCE_CONFIG_BACK), IndexResource.class);
-                if(backResource != null){
-                    resourceMap.put(JedisKey.INDEX_CACHE_BACK, backResource);
-                }
+                log.error("{}的首页请求失效, 备用资源为空!", did);
             }
             model.addAttribute(JedisKey.INDEX_CACHE_INDEX, backResource);
             model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, configMap.get(DEFAULT_DID));
-
-            log.error("已使用备用配置替代处理, 非法请求参数:{}", did);
+            if(log.isDebugEnabled()){
+                log.error("{}的首页请求失效,正在使用备用内容!", did);
+            }
         }
 
         if(log.isDebugEnabled()){
@@ -164,7 +164,11 @@ public class IndexService {
      * @param environment
      */
     public void flushResourceCache(String environment) {
-        resourceMap.remove(environment);
+        if(JedisKey.INDEX_CACHE_BACK.equals(environment)){
+            log.error("备用资源[{}]不能删除!", environment);
+        } else {
+            resourceMap.remove(environment);
+        }
     }
 
     /**
@@ -190,7 +194,7 @@ public class IndexService {
                     Comment comment = joke.getComment();
                     if (comment != null) {
                         String bc = comment.getBc();
-                        if (bc.length() > 38) {
+                        if (bc != null && bc.length() > 38) {
                             bc = bc.substring(0, 35) + "...";
                             comment.setBc(bc);
 //                            joke.setContent(content);
@@ -217,12 +221,15 @@ public class IndexService {
      * @return
      */
     public Joke getJoke(String id, Integer cid) {
-//        Element element = picturesCache.get(cid+id);
             Joke joke;
-//        if(element == null){
             joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
             if(joke != null){
-                joke.setImg(IMG_PREFIX + joke.getImg());
+                if(joke.getImg() != null){
+                    joke.setImg(IMG_PREFIX + joke.getImg());
+                }
+                if(joke.getType().equals(Constants.JOKE_TYPE_GIF)){
+                    joke.setGif(IMG_PREFIX + joke.getGif());
+                }
                 if(cid == 4){
                     joke.setContent(null);
                 }
@@ -230,11 +237,7 @@ public class IndexService {
                     Comment comment = joke.getComment();
                     comment.setAvata(comment.getAvata());
                 }
-//                picturesCache.put(new Element(cid+id, joke));
             }
-//        } else {
-//            joke = (Joke) element.getObjectValue();
-//        }
         return joke;
     }
 
@@ -248,10 +251,10 @@ public class IndexService {
     public JokeDetail getJokeDetail(Integer did, Integer cid, Integer jid) {
         JokeDetail joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jid),JokeDetail.class);
         if(joke != null){
-            if(joke.getType() == Constants.JOKE_TYPE_IMG){
+            if(joke.getImg() != null){
                 joke.setImg(IMG_PREFIX + joke.getImg());
-            }else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-                joke.setImg(IMG_PREFIX + joke.getImg());
+            }
+            if(joke.getType().equals(Constants.JOKE_TYPE_GIF)){
                 joke.setGif(IMG_PREFIX + joke.getGif());
             }
             String key = JedisKey.JOKE_CHANNEL + cid;

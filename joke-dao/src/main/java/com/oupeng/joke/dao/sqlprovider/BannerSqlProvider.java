@@ -101,8 +101,6 @@ public class BannerSqlProvider {
         sql.append("select count(1) from banner where 1 = 1 ");
         if (status != null) {
             sql.append(" and status = ").append(status);
-        }else{
-            sql.append(" and status in (2,3)"); //已发布的和上线的banner的数量
         }
         if (cid != null) {
             sql.append(" and cid = ").append(cid);

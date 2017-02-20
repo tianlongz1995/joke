@@ -37,12 +37,12 @@
 						<span> 频道管理</span>
 					</a>
 				</li>
-                <li>
-                    <a class="ajax-link" href="topic/list">
-                        <i class="glyphicon glyphicon-th"></i>
-                        <span> 专题管理</span>
-                    </a>
-                </li>
+                <%--<li>--%>
+                    <%--<a class="ajax-link" href="topic/list">--%>
+                        <%--<i class="glyphicon glyphicon-th"></i>--%>
+                        <%--<span> 专题管理</span>--%>
+                    <%--</a>--%>
+                <%--</li>--%>
 				<li>
 					<a class="ajax-link" href="banner/list">
 						<i class="glyphicon glyphicon-th"></i>
