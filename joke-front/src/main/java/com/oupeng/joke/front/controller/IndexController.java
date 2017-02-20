@@ -93,11 +93,12 @@ public class IndexController {
     @RequestMapping(value = "/joke2/relate")
     @ResponseBody
     public Result relate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
-                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid) {
+                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                         @RequestParam(value = "id", required = false) Integer id) {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }
-        List<Relate> relates = indexService.getJokeRelate(did, cid);
+        List<Relate> relates = indexService.getJokeRelate(did, cid,id);
         if(relates == null){
             return new Result("获取失败!", 1);
         }
