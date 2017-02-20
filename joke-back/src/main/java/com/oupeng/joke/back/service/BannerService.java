@@ -155,7 +155,7 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer width,Integer height) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
@@ -177,6 +177,8 @@ public class BannerService {
         banner.setType(type);
         banner.setSlot(adId);
         banner.setPublishTimeString(publishTime);
+        banner.setWidth(width);
+        banner.setHeight(height);
         bannerMapper.updateBanner(banner);
         return true;
     }

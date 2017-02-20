@@ -192,6 +192,18 @@ public class BannerSqlProvider {
         }else{
             sql.append("null, ");
         }
+        sql.append(" width = ");
+        if(null != banner.getWidth()){
+            sql.append("'").append(banner.getWidth()).append("', ");
+        }else{
+            sql.append("0,");
+        }
+        sql.append(" height = ");
+        if(null != banner.getWidth()){
+            sql.append("'").append(banner.getHeight()).append("', ");
+        }else{
+            sql.append("0,");
+        }
         sql.append(" content=");
         if(StringUtils.isNotBlank(banner.getContent())){
             sql.append("'").append(banner.getContent().trim()).append("' ");

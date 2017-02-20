@@ -356,6 +356,11 @@
                         $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
+                    var imgWidth = $("#imgWidth").val();
+                    if(imgWidth<200){
+                        alert("图片宽度必须大于200");
+                        return false;
+                    }
                     post('choice/add',
                             'title=' + cTitle + '&content=' + encodeURIComponent(content) + '&image=' + img + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val(),
                             function (data) {
