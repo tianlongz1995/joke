@@ -103,8 +103,10 @@ public class JokeService {
 					jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
 				}
 			}
+            logger.info("内容审核：段子id[{}]：通过",ids);
 		}else if(status == Constants.JOKE_STATUS_NOVALID){//不通过
 			jokeMapper.updateJokeStatus(status, ids, user);
+            logger.info("内容审核：段子id[{}]:不通过",ids);
 		}else{
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
@@ -124,6 +126,7 @@ public class JokeService {
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
 			jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_NOVALID, ids, user); //修改为通过
+            logger.info("内容审核：段子id[{}]:下线",ids);
 		}
 	}
 	
