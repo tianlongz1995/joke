@@ -182,7 +182,7 @@
                         return false;
                     }
                     post('choice/update',
-                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURI(content)+ '&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
+                            'id='+$("#choiceId").val()+'&title='+title+'&content='+ encodeURIComponent(content)+ '&image='+img+'&width='+$("#imgWidth").val()+'&height='+$("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
                             function (data) {
                                 if(data['status']) {
                                     location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';

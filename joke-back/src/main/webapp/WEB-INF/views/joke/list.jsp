@@ -132,11 +132,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量通过
 			        </a>
 			    </label>
-			    <label style="padding-right:0px;">
-			        <a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,'batch')">
-			        	 <i class="glyphicon glyphicon-remove icon-white"></i>批量不通过
-			        </a>
-				</label>
+
+				<c:if test="${status != 3}">
+					<label style="padding-right:0px;">
+						<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,'batch')">
+							<i class="glyphicon glyphicon-remove icon-white"></i>批量不通过
+						</a>
+					</label>
+				</c:if>
+				<c:if test="${status == 3}">
+					<label style="padding-right:10px;">
+						<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(5,'batch')">
+							<i class="glyphicon glyphicon-remove icon-white"></i>批量下线
+						</a>
+					</label>
+				</c:if>
 			</div>
 		
 			<thead >
