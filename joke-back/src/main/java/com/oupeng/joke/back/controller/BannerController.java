@@ -3,6 +3,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.BannerService;
 import com.oupeng.joke.domain.Banner;
+import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -36,6 +37,7 @@ public class BannerController {
     @RequestMapping(value = "/list")
     public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
                                 @RequestParam(value = "cid", required = false) Integer cid,
+                                @RequestParam(value = "did",required = false) Integer did,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
@@ -44,7 +46,8 @@ public class BannerController {
         int pageCount = 0;//总页数
         int offset;//开始条数index
         List<Banner> list = null;
-        int count = bannerService.getBannerListCount(status, cid);//总条数
+        List<Distributor> distributorList = null;
+        int count = bannerService.getBannerListCount(status, cid,did);//总条数
         if (count > 0) {
             if (count % pageSize == 0) {
                 pageCount = count / pageSize;
@@ -60,17 +63,21 @@ public class BannerController {
             }
             offset = (pageNumber - 1) * pageSize;
 
-            list = bannerService.getBannerList(status, cid,offset, pageSize);
+            list = bannerService.getBannerList(status, cid,did,offset, pageSize);
+
         }
+        distributorList = bannerService.getDistributorIdAndName();
         model.addAttribute("count", count);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("list", list);
+        model.addAttribute("distributor",distributorList);
         model.addAttribute("status", status);
         model.addAttribute("cid", cid);
+        model.addAttribute("did",did);
         if (list != null){
-            model.addAttribute("firstElement",bannerService.getBannerList(status, cid, 0, 1).get(0).getId());
+            model.addAttribute("firstElement",bannerService.getBannerList(status, cid,did, 0, 1).get(0).getId());
         }else{
             model.addAttribute("firstElement","");
         }
@@ -101,8 +108,9 @@ public class BannerController {
                             @RequestParam(value = "adid") Integer adid,
                             @RequestParam(value = "publishTime",required = false) String publishTime,
                             @RequestParam(value = "width",required = false) Integer width,
-                            @RequestParam(value = "height",required = false) Integer height) {
-        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height,publishTime);
+                            @RequestParam(value = "height",required = false) Integer height,
+                            @RequestParam(value = "did") Integer did) {
+        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height,publishTime,did);
         if (result) {
             return new Success("添加成功!");
         } else {
@@ -124,12 +132,16 @@ public class BannerController {
     public String edit(@RequestParam(value = "id") Integer id,
                        @RequestParam(value = "status",required = false)     Integer status,
                        @RequestParam(value = "cid",required = false)        Integer cid,
+                       @RequestParam(value = "did",required = false)        Integer did,
                        @RequestParam(value = "pageSize",required = false)   Integer pageSize,
                        @RequestParam(value = "pageNumber",required = false) Integer pageNumber,
                        Model model) {
+        List<Distributor> distributorList =  bannerService.getDistributorIdAndName();
         model.addAttribute("banner", bannerService.getBannerById(id));
         model.addAttribute("cid",cid);
+        model.addAttribute("did",did);
         model.addAttribute("status",status);
+        model.addAttribute("distributor",distributorList);
         model.addAttribute("pageSize",pageSize);
         model.addAttribute("pageNumber",pageNumber);
         return "/banner/edit";
@@ -158,11 +170,12 @@ public class BannerController {
                          @RequestParam(value = "publishTime") String publishTime,
                          @RequestParam(value = "adId")    Integer adId,
                          @RequestParam(value = "width",required = false) Integer width,
-                         @RequestParam(value = "height",required = false) Integer height) {
+                         @RequestParam(value = "height",required = false) Integer height,
+                         @RequestParam(value = "did") Integer did) {
         Banner banner = bannerService.getBannerById(id);
         //下线和新建的的banner可以编辑
         if (banner.getStatus() == 0 || banner.getStatus()== 1) {
-           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime,width,height);
+           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime,width,height,did);
             if(flag) {
                 return new Success("更新成功!");
             }else{

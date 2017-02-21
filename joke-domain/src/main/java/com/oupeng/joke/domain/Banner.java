@@ -39,6 +39,10 @@ public class Banner {
     @JsonInclude(Include.NON_NULL)
     private Date publishTime;
 
+   /** 渠道ID*/
+    @JsonInclude(Include.NON_NULL)
+    private Integer did;
+
     public Integer getId() {
         return id;
     }
@@ -158,6 +162,14 @@ public class Banner {
 
     public void setPublishTime(Date publishTime) {
         this.publishTime = publishTime;
+    }
+
+    public Integer getDid() {
+        return did;
+    }
+
+    public void setDid(Integer did) {
+        this.did = did;
     }
 
     public String getPublishTimeString() {

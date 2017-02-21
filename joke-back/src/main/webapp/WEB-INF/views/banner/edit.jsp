@@ -114,6 +114,16 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>渠道类型</th>
+                                    <td>
+                                        <select id="did" class="form-control">
+                                            <c:forEach items="${distributor}" var="dis">
+                                                <option value="${dis.id}" <c:if test="${dis.id= banner.did}">selected="selected"</c:if>>${dis.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </td>
+                                </tr>
 
                                 <tr>
                                     <th>状态</th>
@@ -218,6 +228,7 @@
                     var jid = $("#jokeId").val();
                     var adId = $("#adId").val();
                     var img = $("#imgPriview").attr("src");
+                    var did = $("#did").val();
                     //内容 段子id不能为空
                     if ($("#type").val() == 0) {
                         if (jid == "") {
@@ -245,11 +256,11 @@
                     $('#updateBanner').attr("disabled","disabled");
                     post('banner/update',
                             'id='+$("#bannerId").val()+'&title='+$("#title").val()+'&jid='+$("#jokeId").val()+'&cid='+$("#cid").val()+'&content='+$('#bannerContent').val()+'&type='+$("#type").val()
-                            +'&img='+$('#image').val() +'&adId='+$('#adId').val()+'&publishTime='+$("#publishTime").val()+'&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val(),
+                            +'&img='+$('#image').val() +'&adId='+$('#adId').val()+'&publishTime='+$("#publishTime").val()+'&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val()+'&did='+did,
                             function (data) {
                                 if(data['status']) {
                                     alert("更新成功");
-                                    location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
+                                    location.href = '<%=basePath%>banner/list?cid=${cid}&did=${did}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                 } else {
                                     alert('更新失败. info:'+data['info']);
                                     $('#updateBanner').removeAttr("disabled");

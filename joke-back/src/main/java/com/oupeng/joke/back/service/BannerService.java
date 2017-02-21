@@ -8,10 +8,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
 import com.oupeng.joke.dao.mapper.DistributorsMapper;
-import com.oupeng.joke.domain.Banner;
-import com.oupeng.joke.domain.Channels;
-import com.oupeng.joke.domain.DistributorsConfig;
-import com.oupeng.joke.domain.IndexItem;
+import com.oupeng.joke.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +37,7 @@ public class BannerService {
     private DistributorsMapper distributorsMapper;
     @Autowired
     private IndexCacheFlushService indexCacheFlushService;
+
 
 
     private String uploadPath = "/nh/java/back/resources/image/";
@@ -79,7 +77,7 @@ public class BannerService {
      * @param type
      * @return
      */
-    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime) {
+    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime,Integer did) {
         Banner banner = new Banner();
         banner.setContent(content);
         //内容上传图片
@@ -90,6 +88,7 @@ public class BannerService {
         banner.setImg(newImg);
         banner.setTitle(title);
         banner.setCid(cid);
+        banner.setDid(did);
         banner.setJid(jid);
         banner.setType(type);
         banner.setSlot(adid);
@@ -110,8 +109,8 @@ public class BannerService {
      * @param cid
      * @return
      */
-    public Integer getBannerListCount(Integer status, Integer cid) {
-        return bannerMapper.getBannerListCount(status, cid);
+    public Integer getBannerListCount(Integer status, Integer cid,Integer did) {
+        return bannerMapper.getBannerListCount(status, cid,did);
     }
 
     /**
@@ -122,8 +121,8 @@ public class BannerService {
      * @param pageSize
      * @return
      */
-    public List<Banner> getBannerList(Integer status, Integer cid, Integer offset, Integer pageSize) {
-        List<Banner> bannerList = bannerMapper.getBannerList(status, cid, offset, pageSize);
+    public List<Banner> getBannerList(Integer status, Integer cid,Integer did, Integer offset, Integer pageSize) {
+        List<Banner> bannerList = bannerMapper.getBannerList(status, cid, did,offset, pageSize);
         if (!CollectionUtils.isEmpty(bannerList)) {
             for (Banner banner : bannerList) {
                 if (StringUtils.isNotBlank(banner.getImg())) {
@@ -161,11 +160,12 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer width,Integer height) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer width,Integer height,Integer did) {
         Banner banner = new Banner();
         banner.setTitle(title);
         banner.setId(id);
         banner.setCid(cid);
+        banner.setDid(did);
         //重新上传的图片
         if (img.startsWith(showPath)) {
             String newImg = handleImg(img);
@@ -271,7 +271,7 @@ public class BannerService {
         String result;
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
-        String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
+        String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
         result = validBanner(banner,false);
         if(null == result){ //验证通过
             //1 增加缓存
@@ -287,7 +287,7 @@ public class BannerService {
                 bannerMapper.updateBannerSort(id, maxScore + 1);
             }
             //修改所有待发布的banner的排序值+1
-            List<Banner> bannerList = bannerMapper.getBannerList(2,banner.getCid(),0,5);
+            List<Banner> bannerList = bannerMapper.getBannerList(2,banner.getCid(),banner.getDid(),0,5);
             if (!CollectionUtils.isEmpty(bannerList)) {
                 for (Banner b:bannerList){
                 bannerMapper.updateBannerSort(b.getId(),b.getSort()+1);
@@ -452,6 +452,12 @@ public class BannerService {
      */
     public List<Banner> getBannerForPublish(){
         return bannerMapper.getBannerForPublish();
+    }
+
+
+
+    public List<Distributor> getDistributorIdAndName(){
+        return  distributorsMapper.getDistributorIdAndName();
     }
 
 }

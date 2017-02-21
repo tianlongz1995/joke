@@ -18,7 +18,7 @@ public class BannerSqlProvider {
      */
     public static String addBanner(Banner banner) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into banner(title, img, cid,status,content,jid,type,slot,sort,width,height,publish_time,create_time, update_time) value (");
+        sql.append(" insert into banner(title, img, cid,did,status,content,jid,type,slot,sort,width,height,publish_time,create_time, update_time) value (");
         if (StringUtils.isNotBlank(banner.getTitle())) {
             sql.append("'").append(banner.getTitle().trim()).append("',");
         } else {
@@ -35,6 +35,11 @@ public class BannerSqlProvider {
             sql.append("'").append(banner.getCid()).append("',");
         } else {
             sql.append("null,");
+        }
+        if(banner.getDid()!=null){
+            sql.append(banner.getDid()).append(",");
+        }else{
+            sql.append("2,");
         }
         //status
         sql.append("0,");
@@ -97,6 +102,7 @@ public class BannerSqlProvider {
     public static String getBannerListCount(Map<String, Object> map) {
         Object status = map.get("status");
         Object cid = map.get("cid");
+        Object did = map.get("did");
         StringBuffer sql = new StringBuffer();
         sql.append("select count(1) from banner where 1 = 1 ");
         if (status != null) {
@@ -104,6 +110,9 @@ public class BannerSqlProvider {
         }
         if (cid != null) {
             sql.append(" and cid = ").append(cid);
+        }
+        if(did  != null){
+            sql.append(" and did = ").append(did);
         }
         return sql.toString();
     }
@@ -117,10 +126,11 @@ public class BannerSqlProvider {
     public static String getBannerList(Map<String, Object> map) {
         Object status    = map.get("status");
         Object cid       = map.get("cid");
+        Object did       = map.get("did");
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select id,title,jid,img,cid,type,status,content,slot,sort,");
+        sql.append(" select id,title,jid,img,cid,did,type,status,content,slot,sort,");
         sql.append(" create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where 1 = 1 ");
         if(status != null){
             sql.append(" and status = ").append(status);
@@ -129,6 +139,9 @@ public class BannerSqlProvider {
         }
         if(null != cid){
             sql.append(" and cid = ").append(cid);
+        }
+        if(null != did){
+            sql.append("and did = ").append("did");
         }
         sql.append(" order by sort asc ");
         if(offset != null && pageSize != null){
@@ -152,12 +165,17 @@ public class BannerSqlProvider {
             sql.append("null,");
         }
         sql.append(" cid=");
-        if(null != banner.getCid().toString()){
+        if(null != banner.getCid()){
             sql.append("'").append(banner.getCid()).append("',");
         }else{
             sql.append("null,");
         }
-
+        sql.append(" did=");
+        if(null != banner.getDid()){
+            sql.append(banner.getDid()).append(",");
+        }else{
+            sql.append("null,");
+        }
         sql.append(" jid=");
         if(null !=banner.getJid()){
             sql.append("'").append(banner.getJid()).append("',");

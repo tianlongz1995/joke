@@ -39,7 +39,7 @@ public class BannerPublishTask {
         if (!CollectionUtils.isEmpty(bannerList)) {
             for (Banner banner : bannerList) {
                 String bannerKey = JedisKey.STRING_BANNER + banner.getId();
-                String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
+                String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
                 jedisCache.set(bannerKey, JSON.toJSONString(banner));
                 jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(banner.getId()));
                 bannerMapper.updateBannerStatus(banner.getId(),3);

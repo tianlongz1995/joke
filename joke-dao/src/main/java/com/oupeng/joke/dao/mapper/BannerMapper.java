@@ -25,7 +25,8 @@ public interface BannerMapper {
      */
     @SelectProvider(method = "getBannerListCount", type = BannerSqlProvider.class)
     Integer getBannerListCount(@Param(value = "status")Integer status,
-                               @Param(value = "cid")   Integer cid);
+                               @Param(value = "cid")   Integer cid,
+                               @Param(value = "did") Integer did);
 
     /**
      * 获取banner列表
@@ -38,6 +39,7 @@ public interface BannerMapper {
     @SelectProvider(method = "getBannerList",type = BannerSqlProvider.class)
     List<Banner> getBannerList(@Param(value= "status")Integer status,
                                @Param(value = "cid") Integer cid,
+                               @Param(value = "did") Integer did,
                                @Param(value= "offset")Integer offset,
                                @Param(value ="pageSize")Integer pageSize);
 
@@ -46,7 +48,7 @@ public interface BannerMapper {
      * @param id banner id
      * @return
      */
-    @Select(value="select id,title,jid,type,img,sort,cid,slot,status,content,width,height,"
+    @Select(value="select id,title,jid,type,img,sort,cid,did,slot,status,content,width,height,"
             + "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where id = #{id}")
     Banner getBannerById(Integer id);
 
@@ -104,7 +106,7 @@ public interface BannerMapper {
      * 获取带发布的banner
      * @return
      */
-    @Select(value = "select id,title,jid,type,img,sort,cid,slot,status,content,width,height," +
+    @Select(value = "select id,title,jid,type,img,sort,cid,did,slot,status,content,width,height," +
             "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
     List<Banner> getBannerForPublish();
 

@@ -110,6 +110,21 @@
                                             </option>
                                         </select>
                                     </label>
+                                    <div class="form-group" style="display: inline-block;padding-left:10px;">
+                                        <label>
+                                            <label for="didSearch" style="display: inline-block;"> 渠道: </label>
+                                        </label>
+                                    </div>
+                                    <label style="padding-right:10px;">
+                                        <select class="form-control input" id="didSearch" onchange="search()">
+                                            <option value="">全部</option>
+                                            <c:forEach items="${distributor}" var="dis">
+                                                <option value="${dis.id}"
+                                                        <c:if test="${dis.id == did}">selected="selected"</c:if> >${dis.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                        </select>
+                                    </label>
                                 </div>
 
                                 <thead>
@@ -119,7 +134,8 @@
                                     <th>图片</th>
                                     <th>广告位id</th>
                                     <th>段子id</th>
-                                    <th>频道类型</th>
+                                    <th>频道</th>
+                                    <th>渠道</th>
                                     <th>内容类型</th>
                                     <th>状态</th>
                                     <th>描述</th>
@@ -143,10 +159,18 @@
                                         <td><c:out value="${banner.slot}"/></td>
                                         <td><c:out value="${banner.jid}"/></td>
                                         <td>
-                                                <c:if test="${banner.cid == 1}">趣图</c:if>
-                                                <c:if test="${banner.cid == 2}">段子</c:if>
-                                                <c:if test="${banner.cid == 3}">推荐</c:if>
-                                                <c:if test="${banner.cid == 4}">精选</c:if>
+                                            <c:if test="${banner.cid == 1}">趣图</c:if>
+                                            <c:if test="${banner.cid == 2}">段子</c:if>
+                                            <c:if test="${banner.cid == 3}">推荐</c:if>
+                                            <c:if test="${banner.cid == 4}">精选</c:if>
+                                        </td>
+                                        <td>
+                                            <c:forEach items="distributor" var="dis">
+                                                <c:if test="dis.id == banner.did">
+                                                    ${dis.name}
+                                                </c:if>
+
+                                            </c:forEach>
                                         </td>
                                         <td>
                                             <c:if test="${banner.type == 0}">内容</c:if>
@@ -163,17 +187,18 @@
                                             <fmt:formatDate value="${banner.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
                                         <td>
-                                            <fmt:formatDate value="${banner.publishTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                            <fmt:formatDate value="${banner.publishTime}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
 
                                         <c:if test="${ not empty cid}">
                                             <td><c:out value="${banner.sort}"/></td>
                                         </c:if>
                                         <td>
-                                         <%--新建状态--%>
+                                                <%--新建状态--%>
                                             <c:if test="${banner.status == 0}">
                                                 <a class="btn btn-info btn-sm"
-                                                   href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
+                                                   href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&did=${did}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                                 </a>
                                                 <a class="btn btn-warning btn-sm" href="#"
@@ -215,39 +240,41 @@
                                                 </a>
                                             </c:if>
                                                 <%--上线 --%>
-                                             <c:if test="${banner.status == 2 }">
-                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                    onclick="offlineOnline(1,${banner.id})">
-                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                 </a>
-                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                    onclick="offlineOnline(4,${banner.id})">
-                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
-                                                 </a>
+                                            <c:if test="${banner.status == 2 }">
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(1,${banner.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(4,${banner.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
+                                                </a>
                                                 <c:if test="${ not empty cid}">
-                                                    <c:if test="${ status == 2}">
-                                                    <c:if test="${firstElement != banner.id}">
-                                                        <a class="btn btn-success btn-sm" href="#"
-                                                           onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
-                                                            <i class="glyphicon glyphicon-arrow-up"></i> 上移
-                                                        </a>
-                                                    </c:if>
+                                                    <c:if test="${ not empty did}">
+                                                        <c:if test="${ status == 2}">
+                                                            <c:if test="${firstElement != banner.id}">
+                                                                <a class="btn btn-success btn-sm" href="#"
+                                                                   onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
+                                                                    <i class="glyphicon glyphicon-arrow-up"></i> 上移
+                                                                </a>
+                                                            </c:if>
 
-                                                    <a class="btn btn-success btn-sm" href="#"
-                                                       onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
-                                                        <i class="glyphicon glyphicon-arrow-down"></i> 下移
-                                                    </a>
+                                                            <a class="btn btn-success btn-sm" href="#"
+                                                               onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
+                                                                <i class="glyphicon glyphicon-arrow-down"></i> 下移
+                                                            </a>
+                                                        </c:if>
                                                     </c:if>
                                                 </c:if>
                                             </c:if>
 
-                                              <%--已发布--%>
-                                             <c:if test="${banner.status == 3 }">
-                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                    onclick="offlineOnline(1,${banner.id})">
-                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
-                                                 </a>
-                                             </c:if>
+                                                <%--已发布--%>
+                                            <c:if test="${banner.status == 3 }">
+                                                <a class="btn btn-danger btn-sm" href="#"
+                                                   onclick="offlineOnline(1,${banner.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i>下线
+                                                </a>
+                                            </c:if>
 
                                         </td>
                                     </tr>
@@ -291,7 +318,8 @@
                                     <th>发布时间</th>
                                     <td>
                                         <input id="publishTime" type="text"
-                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})" class="form-control"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})"
+                                               class="form-control"
                                                value=""/>
                                     </td>
                                 <tr/>
@@ -324,6 +352,16 @@
                                             <option value="2">段子</option>
                                             <option value="3">推荐</option>
                                             <option value="4">精选</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>渠道</th>
+                                    <td>
+                                        <select id="did" class="form-control">
+                                            <c:forEach items="${distributor}" var="dis">
+                                                <option value="${dis.id}">${dis.name}</option>
+                                            </c:forEach>
                                         </select>
                                     </td>
                                 </tr>
@@ -371,8 +409,8 @@
                     $('#addNewBanner').attr("disabled", "disabled");
                     var jid = $("#jokeId").val();
                     var adId = $("#adId").val();
+                    var did = $("#did").val();
                     var img = $("#imgPriview").attr("src");
-
                     if ($("#type").val() == 0) {
                         if (jid == "") {
                             alert("必须填写段子编号");
@@ -397,7 +435,7 @@
                         return false;
                     }
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val()+'&publishTime='+$("#publishTime").val(),
+                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val() + '&did=' + did,
                             function (data) {
                                 if (data['status']) {
                                     alert("添加成功");
@@ -414,7 +452,7 @@
                 });
                 //banner 查询
                 function search() {
-                    location.href = '<%=basePath%>banner/list?status=' + $("#statusSearch").val() + '&cid=' + $("#cidSearch").val();
+                    location.href = '<%=basePath%>banner/list?status=' + $("#statusSearch").val() + '&cid=' + $("#cidSearch").val() + '&did=' + $("#didSearch").val();
                 }
 
                 $('#imgDelButton').click(function () {

@@ -7,7 +7,6 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.*;
 import com.oupeng.joke.front.util.Constants;
 import com.oupeng.joke.front.util.FormatUtil;
-import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -339,9 +338,9 @@ public class IndexService {
      * @param cid
      * @return
      */
-    public Result getBannerList(Integer cid) {
+    public Result getBannerList(Integer did,Integer cid) {
         String key = JedisKey.JOKE_BANNER + cid;
-        Long size = jedisCache.zcard(JedisKey.JOKE_BANNER + cid);
+        Long size = jedisCache.zcard(JedisKey.JOKE_BANNER + did+"_"+cid);
         Set<String> bannerSet = jedisCache.zrange(key, 0, -1);
         List<Banner> bannerList = new ArrayList<>();
         Banner banner;

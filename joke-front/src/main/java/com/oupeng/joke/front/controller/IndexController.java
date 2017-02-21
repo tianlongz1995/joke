@@ -114,7 +114,7 @@ public class IndexController {
     public Result getBannerList(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                                 @RequestParam(value = "cid") Integer cid){
 
-        return indexService.getBannerList(cid);
+        return indexService.getBannerList(did,cid);
     }
 
 }

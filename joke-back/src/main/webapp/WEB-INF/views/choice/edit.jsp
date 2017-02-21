@@ -136,7 +136,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>内容</th>
+                                    <th>内容(图片宽度需超过200)</th>
                                     <td>
                                         <!--富文本编辑器-->
                                         <div id="editor-container" class="container">

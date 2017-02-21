@@ -140,4 +140,12 @@ public interface DistributorsMapper {
 	@Update(value = "update channels set banner = #{bannerStatus} where id = #{id}")
 	void updateChannelsBanner(@Param(value = "bannerStatus") Integer bannerStatus,
 							  @Param(value = "id") Integer id);
+
+
+	/**
+	 * 获取渠道ID和name
+	 * @return
+     */
+	@Select(value = "select id,name from distributors")
+	List<Distributor> getDistributorIdAndName();
 }
