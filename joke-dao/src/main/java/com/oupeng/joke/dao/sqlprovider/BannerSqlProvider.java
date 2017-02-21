@@ -107,6 +107,8 @@ public class BannerSqlProvider {
         sql.append("select count(1) from banner where 1 = 1 ");
         if (status != null) {
             sql.append(" and status = ").append(status);
+        } else {
+            sql.append(" and status != 4 ");
         }
         if (cid != null) {
             sql.append(" and cid = ").append(cid);
@@ -130,20 +132,20 @@ public class BannerSqlProvider {
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select id,title,jid,img,cid,did,type,status,content,slot,sort,");
-        sql.append(" create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where 1 = 1 ");
+        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,d.name as dName,b.type,b.status,b.content,b.slot,b.sort,b.create_time as createTime,b.update_time as updateTime,b.publish_time as publishTime from banner b ");
+        sql.append(" left join `distributors` d on b.did = d.id where 1 = 1 ");
         if(status != null){
-            sql.append(" and status = ").append(status);
+            sql.append(" and b.status = ").append(status);
         } else {
-            sql.append(" and status != 4 ");
+            sql.append(" and b.status != 4 ");
         }
         if(null != cid){
-            sql.append(" and cid = ").append(cid);
+            sql.append(" and b.cid = ").append(cid);
         }
         if(null != did){
-            sql.append("and did = ").append("did");
+            sql.append(" and b.did = ").append(did);
         }
-        sql.append(" order by sort asc ");
+        sql.append(" order by b.sort asc ");
         if(offset != null && pageSize != null){
             sql.append(" limit ").append(offset).append(" , ").append(pageSize);
         }

@@ -274,7 +274,7 @@ public class TaskService {
         try {
             long start = System.currentTimeMillis();
             int imgCount = 0, gifCount = 0, textCount = 0;
-            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
+            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             if (task.getObject().getInteger("gifNum") != null) {
                 PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
             }
@@ -321,8 +321,8 @@ public class TaskService {
                 if (text > 0) {
                     if (textSize > 0) {
                         String id = textList.get(textSize - 1).getId().toString();
-                        int weight = textList.get(textSize - 1).getWeight();
-                        map.put(id, baseScore + weight);
+//                        int weight = textList.get(textSize - 1).getWeight();
+                        map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         textCount++;
                     }
@@ -332,8 +332,8 @@ public class TaskService {
                 if (img > 0) {
                     if (imgSize > 0) {
                         String id = imgList.get(imgSize - 1).getId().toString();
-                        int weight = imgList.get(imgSize - 1).getWeight();
-                        map.put(id, baseScore + weight);
+//                        int weight = imgList.get(imgSize - 1).getWeight();
+                        map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         imgCount++;
                     }
@@ -343,8 +343,8 @@ public class TaskService {
                 if (gif > 0) { // 频道权重是否用完
                     if (gifSize > 0) {
                         String id = gifList.get(gifSize - 1).getId().toString();
-                        int weight = gifList.get(gifSize - 1).getWeight();
-                        map.put(id, baseScore + weight);
+//                        int weight = gifList.get(gifSize - 1).getWeight();
+                        map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         gifCount++;
                     }

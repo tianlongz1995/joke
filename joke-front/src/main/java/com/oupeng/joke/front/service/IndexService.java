@@ -339,7 +339,7 @@ public class IndexService {
      * @return
      */
     public Result getBannerList(Integer did,Integer cid) {
-        String key = JedisKey.JOKE_BANNER + cid;
+        String key = JedisKey.JOKE_BANNER + did+"_"+cid;
         Long size = jedisCache.zcard(JedisKey.JOKE_BANNER + did+"_"+cid);
         Set<String> bannerSet = jedisCache.zrange(key, 0, -1);
         List<Banner> bannerList = new ArrayList<>();

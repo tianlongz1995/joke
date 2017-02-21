@@ -42,6 +42,9 @@ public class Banner {
    /** 渠道ID*/
     @JsonInclude(Include.NON_NULL)
     private Integer did;
+    /** 渠道名称*/
+    @JsonInclude(Include.NON_NULL)
+    private String dName;
 
     public Integer getId() {
         return id;
@@ -170,6 +173,14 @@ public class Banner {
 
     public void setDid(Integer did) {
         this.did = did;
+    }
+
+    public String getdName() {
+        return dName;
+    }
+
+    public void setdName(String dName) {
+        this.dName = dName;
     }
 
     public String getPublishTimeString() {

@@ -39,18 +39,18 @@ public class BannerPublishTask {
         if (!CollectionUtils.isEmpty(bannerList)) {
             for (Banner banner : bannerList) {
                 String bannerKey = JedisKey.STRING_BANNER + banner.getId();
-                String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
+                String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid() + "_" + banner.getCid();
                 jedisCache.set(bannerKey, JSON.toJSONString(banner));
                 jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(banner.getId()));
-                bannerMapper.updateBannerStatus(banner.getId(),3);
+                bannerMapper.updateBannerStatus(banner.getId(), 3);
                 //根据缓存中banner的个数，修改channel表中banner状态
                 Long bannerCount = jedisCache.zcard(bannerListKey);
-                if(bannerCount == 1){
-//                修改渠道配置中banner显示状态
-                    bannerService.changeBannerStatus(banner.getCid(), true);
+                if (bannerCount == 1) {
+//                  修改渠道配置中banner显示状态
+                    bannerService.changeBannerStatus(banner.getCid(), banner.getDid(), true);
                 }
             }
         }
-        logger.info("发布banner数据结束，共发布banner{}条",bannerList.size());
+        logger.info("发布banner数据结束，共发布banner{}条", bannerList.size());
     }
 }

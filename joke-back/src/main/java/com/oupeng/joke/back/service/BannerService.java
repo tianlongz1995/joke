@@ -82,7 +82,7 @@ public class BannerService {
         banner.setContent(content);
         //内容上传图片
         String newImg = handleImg(img);
-        if (StringUtils.isBlank(newImg) && type ==0) {
+        if (StringUtils.isBlank(newImg) && type == 0) {
             return false;
         }
         banner.setImg(newImg);
@@ -122,15 +122,21 @@ public class BannerService {
      * @return
      */
     public List<Banner> getBannerList(Integer status, Integer cid,Integer did, Integer offset, Integer pageSize) {
-        List<Banner> bannerList = bannerMapper.getBannerList(status, cid, did,offset, pageSize);
-        if (!CollectionUtils.isEmpty(bannerList)) {
-            for (Banner banner : bannerList) {
-                if (StringUtils.isNotBlank(banner.getImg())) {
-                    banner.setImg(realPath + banner.getImg());
+        try {
+            List<Banner> bannerList = bannerMapper.getBannerList(status, cid, did,offset, pageSize);
+            if (!CollectionUtils.isEmpty(bannerList)) {
+                for (Banner banner : bannerList) {
+                    if (StringUtils.isNotBlank(banner.getImg())) {
+                        banner.setImg(realPath + banner.getImg());
+                    }
                 }
             }
+            return bannerList;
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            return null;
         }
-        return bannerList;
+
     }
 
     /**
@@ -222,7 +228,7 @@ public class BannerService {
         String result = null;
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
-        String bannerListKey = JedisKey.JOKE_BANNER + banner.getCid();
+        String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
         //上线
         if (Constants.BANNER_STATUS_VALID == status) {
             result = validBanner(bannerMapper.getBannerById(id),true);
@@ -251,12 +257,12 @@ public class BannerService {
         //（0：不显示、1：显示）
         if (bannerCount == 0) {
             distributorsMapper.updateChannelsBanner(0, banner.getCid());
-            changeBannerStatus(banner.getCid(), false);
+            changeBannerStatus(banner.getCid(), banner.getDid(), false);
         } else {
             distributorsMapper.updateChannelsBanner(1, banner.getCid());
             if(bannerCount == 1){
 //                修改渠道配置中banner显示状态
-                changeBannerStatus(banner.getCid(), true);
+                changeBannerStatus(banner.getCid(), banner.getDid(), true);
             }
         }
         return result;
@@ -302,7 +308,7 @@ public class BannerService {
             Long bannerCount = jedisCache.zcard(bannerListKey);
             if(bannerCount == 1){
 //                修改渠道配置中banner显示状态
-                changeBannerStatus(banner.getCid(), true);
+                changeBannerStatus(banner.getCid(), banner.getDid(), true);
             }
 
         }
@@ -314,39 +320,31 @@ public class BannerService {
      * @param cid
      * @param bannerView
      */
-    public void changeBannerStatus(Integer cid, boolean bannerView) {
-        Map<String, String> distributors = jedisCache.hgetAll(JedisKey.JOKE_DISTRIBUTOR_CONFIG);
-        if(distributors != null && distributors.size() > 0){
-            log.debug("修改渠道配置前:[{}]", JSON.toJSONString(distributors));
-            boolean change = false, save = false;
-            for(Map.Entry<String, String> m : distributors.entrySet()){
-                DistributorsConfig d = JSON.parseObject(m.getValue(), DistributorsConfig.class);
-                if(d != null){
-                    List<Channels> channelsList = d.getChannels();
-                    if(!CollectionUtils.isEmpty(channelsList)){
-                        for(Channels c : channelsList){
-                            if(c.getI().equals(cid)){
-                                c.setB(bannerView);
-                                log.debug("修改渠道[{}]配置中频道[{}]banner显示状态[{}]", m.getKey(), cid, bannerView);
-                                change = true;
-                            }
-                        }
+    public void changeBannerStatus(Integer cid, Integer did, boolean bannerView) {
+        String configStr = jedisCache.hget(JedisKey.JOKE_DISTRIBUTOR_CONFIG, String.valueOf(did));
+        log.info("修改渠道[{}]-[{}]-[{}]配置前:[{}]", did, cid, bannerView, configStr);
+        DistributorsConfig distributorsConfig = JSON.parseObject(configStr, DistributorsConfig.class);
+        boolean change = false;
+        if(distributorsConfig != null){
+            List<Channels> channelsList = distributorsConfig.getChannels();
+            if(!CollectionUtils.isEmpty(channelsList)){
+                for(Channels c : channelsList){
+                    if(c.getI().equals(cid)){
+                        c.setB(bannerView);
+                        log.info("修改渠道[{}]配置中频道[{}]banner显示状态[{}]", did, cid, bannerView);
+                        change = true;
+                        break;
                     }
-
                 }
-                if(change){
-                    distributors.put(m.getKey(), JSON.toJSONString(d));
-//				    删除应用内缓存
-                    indexCacheFlushService.updateIndex(new IndexItem(m.getKey(), 0));
-                    change = false;
-                    save = true;
-                }
-            }
-            if(save){
-                log.debug("修改渠道配置后:[{}]", JSON.toJSONString(distributors));
-                jedisCache.hmset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, distributors);
             }
         }
+        if(change){
+//          更新缓存状态
+            jedisCache.hset(JedisKey.JOKE_DISTRIBUTOR_CONFIG, String.valueOf(did), JSON.toJSONString(distributorsConfig));
+//		    更新前台应用内缓存
+            indexCacheFlushService.updateIndex(new IndexItem(String.valueOf(did), 0));
+        }
+        log.info("修改渠道配置[{}]后:[{}]", change, JSON.toJSONString(distributorsConfig));
     }
 
     /**

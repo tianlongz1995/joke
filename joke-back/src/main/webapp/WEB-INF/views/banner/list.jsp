@@ -165,12 +165,13 @@
                                             <c:if test="${banner.cid == 4}">精选</c:if>
                                         </td>
                                         <td>
-                                            <c:forEach items="distributor" var="dis">
-                                                <c:if test="dis.id == banner.did">
-                                                    ${dis.name}
-                                                </c:if>
+                                            <%--<c:forEach items="distributor" var="dis">--%>
+                                                <%--<c:if test="dis.id == banner.did">--%>
+                                                    <%--${dis.name}--%>
+                                                <%--</c:if>--%>
 
-                                            </c:forEach>
+                                            <%--</c:forEach>--%>
+                                                <c:out value="${banner.dName}"/>
                                         </td>
                                         <td>
                                             <c:if test="${banner.type == 0}">内容</c:if>
@@ -430,12 +431,13 @@
                         }
                     }
                     var imgWidth = $("#imgWidth").val();
-                    if (imgWidth < 200) {
+                    var type =  $('#type').val();
+                    if (type == 0 && imgWidth < 200) {
                         alert("图片宽度必须大于200");
                         return false;
                     }
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + $('#type').val() + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val() + '&did=' + did,
+                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + type + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val() + '&did=' + did,
                             function (data) {
                                 if (data['status']) {
                                     alert("添加成功");

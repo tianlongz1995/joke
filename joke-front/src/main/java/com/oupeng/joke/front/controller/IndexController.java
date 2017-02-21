@@ -111,7 +111,7 @@ public class IndexController {
      */
     @RequestMapping(value = "/joke2/banner")
     @ResponseBody
-    public Result getBannerList(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
+    public Result getBannerList(@RequestParam(value = "did") Integer did,
                                 @RequestParam(value = "cid") Integer cid){
 
         return indexService.getBannerList(did,cid);

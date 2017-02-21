@@ -145,7 +145,7 @@
                                         <select id="did" class="form-control">
                                             <c:forEach items="${distributor}" var="dis">
                                                 <option value="${dis.id}"
-                                                        <c:if test="${dis.id= banner.did}">selected="selected"</c:if>>${dis.name}</option>
+                                                        <c:if test="${dis.id == banner.did}">selected="selected"</c:if>>${dis.name}</option>
                                             </c:forEach>
                                         </select>
                                     </td>
@@ -284,13 +284,14 @@
                         }
                     }
                     var imgWidth = $("#imgWidth").val();
-                    if (imgWidth < 200) {
+                    var type =  $('#type').val();
+                    if (type == 0 && imgWidth < 200) {
                         alert("图片宽度必须大于200");
                         return false;
                     }
                     $('#updateBanner').attr("disabled", "disabled");
                     post('banner/update',
-                            'id=' + $("#bannerId").val() + '&title=' + $("#title").val() + '&jid=' + $("#jokeId").val() + '&cid=' + $("#cid").val() + '&content=' + $('#bannerContent').val() + '&type=' + $("#type").val()
+                            'id=' + $("#bannerId").val() + '&title=' + $("#title").val() + '&jid=' + $("#jokeId").val() + '&cid=' + $("#cid").val() + '&content=' + $('#bannerContent').val() + '&type=' + type
                             + '&img=' + $('#image').val() + '&adId=' + $('#adId').val() + '&publishTime=' + $("#publishTime").val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&did=' + did,
                             function (data) {
                                 if (data['status']) {
