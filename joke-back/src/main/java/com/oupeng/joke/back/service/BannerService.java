@@ -237,7 +237,7 @@ public class BannerService {
             //上线操作，修改sort值
             if(Constants.BANNER_STATUS_VALID==status){
                 //1.修改排序值
-                Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
+                Integer maxScore = bannerMapper.getMaxSortByCidAndDid(banner.getCid(),banner.getDid());
                 if (null == maxScore) {
                     bannerMapper.updateBannerSort(id, 1);
                 } else {
@@ -279,7 +279,7 @@ public class BannerService {
             jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
 
             //已发布的banner的最大排序值
-            Integer maxScore = bannerMapper.getMaxSortByCid(banner.getCid());
+            Integer maxScore = bannerMapper.getMaxSortByCidAndDid(banner.getCid(),banner.getDid());
             //更改立即发布的banner的排序值 maxScore+1
             if (null == maxScore) {
                 bannerMapper.updateBannerSort(id, 1);
@@ -394,9 +394,9 @@ public class BannerService {
      * @param sort
      * @return
      */
-    public boolean bannerMove(Integer id, Integer cid, Integer type, Integer sort) {
+    public boolean bannerMove(Integer id, Integer cid,Integer did, Integer type, Integer sort) {
         //获取频道下 ，已上线的banner
-        List<Banner> list = bannerMapper.getBannerMoveList(cid);
+        List<Banner> list = bannerMapper.getBannerMoveList(cid,did);
         if (!CollectionUtils.isEmpty(list)) {
             Banner d = list.get(0);
             //第一个元素禁止上移
@@ -434,7 +434,7 @@ public class BannerService {
                 bannerMapper.updateBannerSort(lastId, sort);
             }
             //2.更新缓存,重置
-            List<Banner> listUpdated = bannerMapper.getBannerMoveList(cid);
+            List<Banner> listUpdated = bannerMapper.getBannerMoveList(cid,did);
             if (!CollectionUtils.isEmpty(listUpdated)) {
                 for (Banner b : listUpdated) {
                     jedisCache.set(JedisKey.STRING_BANNER + b.getId(), JSON.toJSONString(b));

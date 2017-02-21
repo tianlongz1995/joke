@@ -254,13 +254,13 @@
                                                         <c:if test="${ status == 2}">
                                                             <c:if test="${firstElement != banner.id}">
                                                                 <a class="btn btn-success btn-sm" href="#"
-                                                                   onclick="move('${banner.id}','${banner.cid}', 1, ${banner.sort})">
+                                                                   onclick="move('${banner.id}','${banner.cid}','${banner.did}', 1, ${banner.sort})">
                                                                     <i class="glyphicon glyphicon-arrow-up"></i> 上移
                                                                 </a>
                                                             </c:if>
 
                                                             <a class="btn btn-success btn-sm" href="#"
-                                                               onclick="move('${banner.id}','${banner.cid}', 2, ${banner.sort})">
+                                                               onclick="move('${banner.id}','${banner.cid}','${banner.did}', 2, ${banner.sort})">
                                                                 <i class="glyphicon glyphicon-arrow-down"></i> 下移
                                                             </a>
                                                         </c:if>
@@ -519,9 +519,9 @@
                 }
                 ;
                 //移动
-                function move(id, cid, type, sort) {
+                function move(id, cid, did, type, sort) {
                     post('banner/bannerMove',
-                            'id=' + id + '&type=' + type + '&sort=' + sort + '&cid=' + cid,
+                            'id=' + id + '&type=' + type + '&sort=' + sort + '&cid=' + cid+'&cid=' + cid,'&did=' + did,
                             function (data) {
                                 if (data['status']) {
                                     //刷新页面

@@ -82,8 +82,9 @@ public interface BannerMapper {
      * @return
      */
     @Select(value = "SELECT id,title,jid,type,sort,img,cid,slot,status,content,"
-            + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and status = 2 ORDER BY sort ASC")
-    List<Banner> getBannerMoveList(Integer cid);
+            + "create_time as createTime,update_time as updateTime FROM banner WHERE cid = #{cid} and did = #{did} and status = 2 ORDER BY sort ASC")
+    List<Banner> getBannerMoveList(@Param(value = "cid") Integer cid,
+                                   @Param(value = "did") Integer did);
     /**
      * 更新banner排序值
      * @param id
@@ -98,8 +99,9 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select("select sort from banner  WHERE cid = #{cid} and status = 3 ORDER BY sort desc LIMIT 1")
-    Integer getMaxSortByCid(Integer cid);
+    @Select("select sort from banner  WHERE cid = #{cid}  and did = #{did} and status = 3 ORDER BY sort desc LIMIT 1")
+    Integer getMaxSortByCidAndDid(@Param(value = "cid") Integer cid,
+                            @Param(value = "did") Integer did);
 
 
     /**

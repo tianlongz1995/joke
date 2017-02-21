@@ -234,11 +234,12 @@ public class BannerController {
      */
     @RequestMapping(value = "bannerMove")
     @ResponseBody
-    public Result bannerMove(@RequestParam(value = "id")Integer id,
-                             @RequestParam(value = "cid")Integer cid,
-                             @RequestParam(value = "type")Integer type,
-                             @RequestParam(value = "sort")Integer sort){
-        Boolean flag = bannerService.bannerMove(id,cid,type,sort);
+    public Result bannerMove(@RequestParam(value = "id")   Integer id,
+                             @RequestParam(value = "cid")  Integer cid,
+                             @RequestParam(value = "type") Integer type,
+                             @RequestParam(value = "sort") Integer sort,
+                             @RequestParam(value = "did")  Integer did){
+        Boolean flag = bannerService.bannerMove(id,cid,did,type,sort);
         if(flag){
             return new Success("banner移动成功");
         }else{
