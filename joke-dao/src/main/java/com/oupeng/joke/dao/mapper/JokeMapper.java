@@ -319,7 +319,7 @@ public interface JokeMapper {
 	 * @param limit
 	 * @return
 	 */
-	@Select("select id,weight from joke where audit = #{status} and type = #{type} order by weight desc limit #{limit}")
+	@Select("select id,weight from joke where audit = #{status} and type = #{type} order by update_time desc limit #{limit}")
     List<Joke> getJoke2PublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
 
 	/**
