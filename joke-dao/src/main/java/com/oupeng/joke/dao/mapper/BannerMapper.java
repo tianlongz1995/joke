@@ -117,6 +117,6 @@ public interface BannerMapper {
      * @param cid
      * @return
      */
-    @Select("select count(1) from banner where cid = #{cid} and status in (2, 3)")
-    Integer getBannerCount(Integer cid);
+    @Select("select count(1) from banner where cid = #{cid} and did=#{did} and status in (2, 3)")
+    Integer getBannerCount(Integer did,Integer cid);
 }

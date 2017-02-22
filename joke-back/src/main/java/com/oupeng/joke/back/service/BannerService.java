@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class BannerService {
@@ -354,7 +353,7 @@ public class BannerService {
      */
     private String validBanner(Banner banner,boolean validPublishTime){
         // 判断发布上线banner数量
-        Integer bannerCount = bannerMapper.getBannerCount(banner.getCid());
+        Integer bannerCount = bannerMapper.getBannerCount(banner.getDid(),banner.getCid());
         if (bannerCount >= 5) {
             return "上线的banner不能超过5个";
         }
