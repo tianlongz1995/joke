@@ -113,7 +113,8 @@ public class DistributorsController {
 	 */
 	@RequestMapping(value="/add", produces = {"application/json"})
 	@ResponseBody
-	public Result add(@RequestParam(value="name") String name,
+	public Result add(@RequestParam(value="id") Integer id,
+                      @RequestParam(value="name") String name,
 					  @RequestParam(value="status") Integer status,
 					  @RequestParam(value="channelIds", required=false)Integer[] channelIds,
 					  @RequestParam(value="lc", required=false)Integer lc,
@@ -127,7 +128,10 @@ public class DistributorsController {
 		if(username == null){
 			return new Failed("登录信息失效,请重新登录!");
 		}
-		distributorsService.add(name, status, username, channelIds, s, lc, lb, dt, dc, db, di);
+        if(distributorsService.exist(id)){
+            return new Failed("渠道编号已存在!");
+        }
+		distributorsService.add(id, name, status, username, channelIds, s, lc, lb, dt, dc, db, di);
 		return new Success();
 	}
 

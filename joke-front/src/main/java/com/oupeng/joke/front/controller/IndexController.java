@@ -33,7 +33,7 @@ public class IndexController {
      * @param did  渠道id
      * @return
      */
-    @RequestMapping(value = "/joke/index.html")
+    @RequestMapping(value = {"/", "/index.html", "/joke/index.html"})
     public String index(@RequestParam(value = "did", required = false, defaultValue = "2") String did, Model model) {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]的请求!", did);

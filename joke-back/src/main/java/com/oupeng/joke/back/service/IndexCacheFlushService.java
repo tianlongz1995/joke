@@ -126,6 +126,7 @@ public class IndexCacheFlushService {
                     logger.debug("确认[{}]暗号数据:[{}]", key, prefix + value);
                 } else {
                     jedisCache.hdel(JedisKey.JOKE_INDEX_CACHE_FLUSH_SIGN, key);
+                    jedisCache.del(key);
                     logger.info("删除[{}] Key:[{}]", JedisKey.JOKE_INDEX_CACHE_FLUSH_SIGN, key);
                 }
             }

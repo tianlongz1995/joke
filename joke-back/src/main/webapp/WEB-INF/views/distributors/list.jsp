@@ -141,6 +141,11 @@
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
                                 <tr>
+                                    <th>编号</th>
+                                    <td><input id="addId" name="addId" type="text" class="form-control" placeholder="渠道ID"/>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>名称</th>
                                     <td><input id="addName" name="addName" type="text" class="form-control" placeholder="渠道名称"/>
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
@@ -298,6 +303,7 @@
                         return false;
                     }
                     var name = $("#addName").val();
+                    var did = $("#addId").val();
                     var status = $('#addStatus').val();
                     if(name == null || name.length < 1 || status == null || status.length < 1){
                         alert("名称、状态不能为空!");
@@ -346,7 +352,7 @@
                         return false;
                     }
                     post('distributors/add',
-                            'name=' + name + '&status=' + status + '&channelIds=' + contentType.toString() + ads,
+                            'id=' + did +'&name=' + name + '&status=' + status + '&channelIds=' + contentType.toString() + ads,
                             function (data) {
                                 if (data.status == 1) {
                                     location.href = '<%=basePath%>distributors/list?status=' + $("#status").val();

@@ -47,9 +47,10 @@ public class DistributorsService {
 	 * @param username
 	 * @return
 	 */
-	public void add(String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di) {
-		Distributor distributors = new Distributor();
-		distributors.setName(name);
+	public void add(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di) {
+	    Distributor distributors = new Distributor();
+        distributors.setId(id);
+        distributors.setName(name);
 		distributors.setStatus(status);
 		distributors.setCreateBy(username);
 		distributorsMapper.add(distributors);
@@ -249,4 +250,13 @@ public class DistributorsService {
 		return false;
 
 	}
+
+    /**
+     * 渠道是否存在
+     * @param id
+     * @return
+     */
+    public boolean exist(Integer id) {
+        return distributorsMapper.getDistributorsCount(id) > 0;
+    }
 }

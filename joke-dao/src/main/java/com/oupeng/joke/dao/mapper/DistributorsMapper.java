@@ -31,8 +31,8 @@ public interface DistributorsMapper {
 	 * @param distributors
 	 * @return
 	 */
-	@Insert("insert into distributors(name, status, create_time, create_by) value(#{name}, #{status}, now(), #{createBy})")
-	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
+	@Insert("insert into distributors(id, name, status, create_time, create_by) value(#{id}, #{name}, #{status}, now(), #{createBy})")
+//	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
 	void add(Distributor distributors);
 
 	/**
@@ -148,4 +148,12 @@ public interface DistributorsMapper {
      */
 	@Select(value = "select id,name from distributors")
 	List<Distributor> getDistributorIdAndName();
+
+    /**
+     * 获取渠道数量
+     * @param id
+     * @return
+     */
+    @Select(value = "select count(id) from distributors where id = #{id}")
+    int getDistributorsCount(@Param("id")Integer id);
 }

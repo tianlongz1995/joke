@@ -153,7 +153,7 @@ public class TaskService {
         try {
             long start = System.currentTimeMillis();
             int count = 0;
-            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMdd000000").format(new Date()));
+            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             Map<String, Double> map = Maps.newHashMap();
             if (task.getObject().getInteger("textNum") != null) {
                 PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
@@ -161,12 +161,14 @@ public class TaskService {
             List<Joke> list = jokeService.getJoke2PublishList(Constants.AUD, 0, PUBLISH_TEXT_SIZE);
             StringBuffer ids = new StringBuffer();
             if (!CollectionUtils.isEmpty(list)) {
+                int i = list.size();
                 for (Joke j : list) {
                     int id = j.getId();
-                    int weight = j.getWeight();
-                    map.put(Integer.toString(id), baseScore + weight);
+//                    int weight = j.getWeight();
+                    map.put(Integer.toString(id), baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
                     count++;
+                    i--;
                 }
                 jedisCache.zadd(JedisKey.JOKE_CHANNEL + 2, map);
                 // 更新已发布状态
