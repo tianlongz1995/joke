@@ -27,12 +27,9 @@ public class ClientService {
     private static final String PNG = ".png";
     private static final String JPG = ".jpg";
     private static final String SHAREURLPREFIX = "http://joke.oupeng.com/#!";
+    private static  final String  EZINE_PREFIX = "http://ezine.oupeng.com/app.html#";
     private static String IMG_REAL_SERVER_URL = null;
     private static List<String> addLikeIds = Lists.newCopyOnWriteArrayList();
-
-
-    private static  final String  EZINE_PREFIX = "http://ezine.oupeng.com/app.html#";
-
     /**
      * 赞信息列表
      */
@@ -299,7 +296,7 @@ public class ClientService {
      * @return
      */
     private List<Joke> getOldJokeCacheList(String key, int sort, String uid, int cacheType) {
-        //用户排序值key
+        //用户排序值key  TODO userSoreCacheKey 可优化存储到一个hash中
         String userSoreCacheKey = getUserScoreCacheKey(uid, cacheType);
         List<Joke> list = Lists.newArrayList();
         //缓存记录总数
