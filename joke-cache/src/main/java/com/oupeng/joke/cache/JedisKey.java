@@ -92,4 +92,7 @@ public class JedisKey {
 
     /** ezine joke 列表*/
     public static final String EZINE_JOKE = "ezine.joke";
+
+    /** 用户段子浏览位置  */
+    public static final String UID_POS = "uid.pos";
 }

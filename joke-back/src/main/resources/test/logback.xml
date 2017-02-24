@@ -24,7 +24,7 @@
     </logger>
 
     <root level="debug">
-        <appender-ref ref="console"/>
+        <appender-ref ref="default"/>
     </root>
 
 </configuration>

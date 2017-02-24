@@ -62,109 +62,109 @@ public class ClientController {
                                    @RequestParam(value = "uid") String uid,
                                    @RequestParam(value = "at") Integer at,
                                    @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
-        addLog(did, 20, uid, at, sort, 4);
+        addLog(did, 20, uid, at, sort);
         List<Joke> recommendList = clientService.getRecommendList(uid, at, sort);
         return new Success(recommendList);
     }
 
-    /**
-     * 文字接口
-     *
-     * @param did  渠道id
-     * @param uid  用户id
-     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
-     * @param sort 排序值，记录上拉请求，用户看到的段子编号
-     * @return
-     */
-    @RequestMapping(value = "text")
-    @ResponseBody
-    public Result getTextList(@RequestParam(value = "did") Integer did,
-                              @RequestParam(value = "uid") String uid,
-                              @RequestParam(value = "at") Integer at,
-                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
-        addLog(did, 14, uid, at, sort, 0);
-        List<Joke> textList = clientService.getTextList(14, uid, at, sort);
-        return new Success(textList);
-    }
+//    /**
+//     * 文字接口
+//     *
+//     * @param did  渠道id
+//     * @param uid  用户id
+//     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+//     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+//     * @return
+//     */
+//    @RequestMapping(value = "text")
+//    @ResponseBody
+//    public Result getTextList(@RequestParam(value = "did") Integer did,
+//                              @RequestParam(value = "uid") String uid,
+//                              @RequestParam(value = "at") Integer at,
+//                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+//        addLog(did, 14, uid, at, sort, 0);
+//        List<Joke> textList = clientService.getTextList(14, uid, at, sort);
+//        return new Success(textList);
+//    }
 
-    /**
-     * 动图接口
-     *
-     * @param did  渠道id
-     * @param uid  用户id
-     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
-     * @param sort 排序值，记录上拉请求，用户看到的段子编号
-     * @return
-     */
-    @RequestMapping(value = "gift")
-    @ResponseBody
-    public Result getGiftList(@RequestParam(value = "did") Integer did,
-                              @RequestParam(value = "uid") String uid,
-                              @RequestParam(value = "at") Integer at,
-                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
-        addLog(did, 16, uid, at, sort, 1);
-        List<Joke> giftList = clientService.getGiftList(16, uid, at, sort);
-        return new Success(giftList);
-    }
+//    /**
+//     * 动图接口
+//     *
+//     * @param did  渠道id
+//     * @param uid  用户id
+//     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+//     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+//     * @return
+//     */
+//    @RequestMapping(value = "gift")
+//    @ResponseBody
+//    public Result getGiftList(@RequestParam(value = "did") Integer did,
+//                              @RequestParam(value = "uid") String uid,
+//                              @RequestParam(value = "at") Integer at,
+//                              @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+//        addLog(did, 16, uid, at, sort, 1);
+//        List<Joke> giftList = clientService.getGiftList(16, uid, at, sort);
+//        return new Success(giftList);
+//    }
 
-    /**
-     * 图片接口
-     *
-     * @param did  渠道id
-     * @param uid  用户id
-     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
-     * @param sort 排序值，记录上拉请求，用户看到的段子编号
-     * @return
-     */
-    @RequestMapping(value = "image")
-    @ResponseBody
-    public Result getImageList(@RequestParam(value = "did") Integer did,
-                               @RequestParam(value = "uid") String uid,
-                               @RequestParam(value = "at") Integer at,
-                               @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
-        addLog(did, 18, uid, at, sort, 2);
-        List<Joke> imageList = clientService.getImageList(18, uid, at, sort);
-        return new Success(imageList);
-    }
+//    /**
+//     * 图片接口
+//     *
+//     * @param did  渠道id
+//     * @param uid  用户id
+//     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+//     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+//     * @return
+//     */
+//    @RequestMapping(value = "image")
+//    @ResponseBody
+//    public Result getImageList(@RequestParam(value = "did") Integer did,
+//                               @RequestParam(value = "uid") String uid,
+//                               @RequestParam(value = "at") Integer at,
+//                               @RequestParam(value = "sort", required = false, defaultValue = "0") Integer sort) {
+//        addLog(did, 18, uid, at, sort, 2);
+//        List<Joke> imageList = clientService.getImageList(18, uid, at, sort);
+//        return new Success(imageList);
+//    }
 
-    /**
-     * 专题接口
-     *
-     * @param did  渠道id
-     * @param uid  用户id
-     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
-     * @param sort 排序值，记录上拉请求，用户看到的段子编号
-     * @return
-     */
-    @RequestMapping(value = "topic")
-    @ResponseBody
-    public Result getTopicList(@RequestParam(value = "did") Integer did,
-                               @RequestParam(value = "uid") String uid,
-                               @RequestParam(value = "at") Integer at,
-                               @RequestParam(value = "sort", required = false) Integer sort) {
-//        addLog(did, 22, uid, at, sort, 3);
-//        List<Topic> topicList = clientService.getTopicList(uid, at, sort);
-        List<Topic> topicList = new ArrayList<>();
-        return new Success(topicList);
-    }
+//    /**
+//     * 专题接口
+//     *
+//     * @param did  渠道id
+//     * @param uid  用户id
+//     * @param at   0:首次请求; 1:上拉刷新; 2:下拉刷新
+//     * @param sort 排序值，记录上拉请求，用户看到的段子编号
+//     * @return
+//     */
+//    @RequestMapping(value = "topic")
+//    @ResponseBody
+//    public Result getTopicList(@RequestParam(value = "did") Integer did,
+//                               @RequestParam(value = "uid") String uid,
+//                               @RequestParam(value = "at") Integer at,
+//                               @RequestParam(value = "sort", required = false) Integer sort) {
+////        addLog(did, 22, uid, at, sort, 3);
+////        List<Topic> topicList = clientService.getTopicList(uid, at, sort);
+//        List<Topic> topicList = new ArrayList<>();
+//        return new Success(topicList);
+//    }
 
-    /**
-     * 专题详情接口
-     *
-     * @param did 渠道id
-     * @param uid 用户id
-     * @param tid 专题id
-     * @return
-     */
-    @RequestMapping(value = "topicDetail")
-    @ResponseBody
-    public Result geTopicDetailList(@RequestParam(value = "did") Integer did,
-                                    @RequestParam(value = "uid") String uid,
-                                    @RequestParam(value = "tid") Integer tid) {
-        client.info(new ClientLog("visit", did, 22, uid, Constants.IMPR_LOG_TYPE_LIST).toString());
-        List<Joke> topicDetailList = clientService.getTopicDetailList(tid);
-        return new Success(topicDetailList);
-    }
+//    /**
+//     * 专题详情接口
+//     *
+//     * @param did 渠道id
+//     * @param uid 用户id
+//     * @param tid 专题id
+//     * @return
+//     */
+//    @RequestMapping(value = "topicDetail")
+//    @ResponseBody
+//    public Result geTopicDetailList(@RequestParam(value = "did") Integer did,
+//                                    @RequestParam(value = "uid") String uid,
+//                                    @RequestParam(value = "tid") Integer tid) {
+//        client.info(new ClientLog("visit", did, 22, uid, Constants.IMPR_LOG_TYPE_LIST).toString());
+//        List<Joke> topicDetailList = clientService.getTopicDetailList(tid);
+//        return new Success(topicDetailList);
+//    }
 
     /**
      * 踩接口
@@ -206,26 +206,25 @@ public class ClientController {
      * @param uid         用户编号
      * @param at          0 首次访问,1 上拉,2 下拉
      * @param sort        上拉请求编号
-     * @param requestType 0 文字 1 动图 2 图片 3 专题 4 推荐
      */
-    public void addLog(int did, int cid, String uid, int at, int sort, int requestType) {
-        int type = Constants.IMPR_LOG_TYPE_LIST; //pv类型：列表页
-        boolean flag = clientService.haveDropedDown(uid, requestType);
-        //下拉和上拉 首次请求
-        if (at == 1 && sort == 0 || !flag) {
-            type = Constants.IMPR_LOG_TYPE_CHANNEL; //pv类型 频道入口
-        }
-        client.info(new ClientLog("visit", did, cid, uid, type).toString());
+    public void addLog(int did, int cid, String uid, int at, int sort) {
+//        int type = Constants.IMPR_LOG_TYPE_CHANNEL; //pv类型：频道入口
+//        boolean flag = clientService.haveDropedDown(uid);
+//        //下拉和上拉 首次请求
+//        if (at == 1 && sort == 0 || !flag) {
+//            type = Constants.IMPR_LOG_TYPE_CHANNEL; //pv类型 频道入口
+//        }
+        client.info(new ClientLog("visit", did, cid, uid, Constants.IMPR_LOG_TYPE_CHANNEL).toString());
         if (at == 2) {
-            client.info(new ClientLog("dfl",did, cid, uid, type, null).toString());
+            client.info(new ClientLog("dfl",did, cid, uid, Constants.IMPR_LOG_TYPE_CHANNEL, null).toString());
         }
         if (at == 1) {
-            client.info(new ClientLog("ufl",did, cid, uid, type, null).toString());
+            client.info(new ClientLog("ufl",did, cid, uid, Constants.IMPR_LOG_TYPE_CHANNEL, null).toString());
         }
     }
 
     /**
-     * ezine
+     * 开心一刻 - 欧朋浏览器导航笑话
      * @return
      */
     @RequestMapping(value = "ezineJoke")

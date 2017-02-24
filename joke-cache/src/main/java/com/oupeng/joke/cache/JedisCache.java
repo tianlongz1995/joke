@@ -52,6 +52,18 @@ public class JedisCache {
 		}
 	}
 
+    public List<String> mget(String ... keys) {
+        Jedis jedis = null;
+        try{
+            jedis = jedisReadPool.getResource();
+            return jedis.mget(keys);
+        }finally{
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+    }
+
 	public void mset(String ... keysvalues){
 		Jedis jedis = null;
 		try{
@@ -437,4 +449,5 @@ public class JedisCache {
 			}
 		}
 	}
+
 }
