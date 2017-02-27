@@ -30,7 +30,7 @@ public class IndexService {
     /** 日志 */
     private static final Logger log = LoggerFactory.getLogger(IndexService.class);
     /** 默认did */
-    private static final String DEFAULT_DID = "0";
+    private static final String DEFAULT_DID = "1";
     /** 图片前缀 */
     private static String IMG_PREFIX = "http://joke2-img.oupeng.com/";
 
