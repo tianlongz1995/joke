@@ -31,6 +31,7 @@ import java.util.List;
 
 /**
  * 段子控制器
+ *
  */
 @Controller
 @RequestMapping(value="/joke")
