@@ -36,6 +36,26 @@ public class JokeService {
 	@Autowired
 	private Environment env;
 
+    private String imgPrefix = "http://joke2-img.oupeng.com/";
+
+    private String remoteImgPrefix = "http://joke2-img.oupeng.com/";
+
+    @PostConstruct
+    private void init(){
+        String url = env.getProperty("img.real.server.url");
+        if (StringUtils.isNoneBlank(url)) {
+            imgPrefix = url;
+        } else {
+            logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+        }
+        String remoteImgUrl = env.getProperty("remote.crop.img.server.url");
+        if (StringUtils.isNoneBlank(remoteImgUrl)) {
+            remoteImgPrefix = remoteImgUrl;
+        } else {
+            logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+        }
+    }
+
 	/**
 	 * 获取段子列表
 	 * @param type
@@ -78,10 +98,10 @@ public class JokeService {
 
     private void handleJokeUrl(Joke joke) {
         if(joke.getType() == Constants.JOKE_TYPE_IMG){
-            joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+            joke.setImg( imgPrefix + joke.getImg());
         }else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-            joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-            joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+            joke.setImg( imgPrefix + joke.getImg());
+            joke.setGif( imgPrefix + joke.getGif());
         }
     }
 
@@ -93,7 +113,7 @@ public class JokeService {
 	 */
 	public void verifyJoke(Integer status,String ids,String user){
 		String[] jokeIds = ids.split(",");
-		if(status == Constants.JOKE_STATUS_VALID ){ //通过
+		if(status.equals(Constants.JOKE_STATUS_VALID)){ // status = 1 通过
 			// 更改状态
 			jokeMapper.updateJokeStatus(status, ids, user);
 			//加到缓存
@@ -120,10 +140,10 @@ public class JokeService {
 				}
 			}
             logger.info("内容审核：段子id[{}]：通过",ids);
-		}else if(status == Constants.JOKE_STATUS_NOVALID){//不通过
+		}else if(status.equals(Constants.JOKE_STATUS_NOVALID)){ // status = 2 不通过
 			jokeMapper.updateJokeStatus(status, ids, user);
             logger.info("内容审核：段子id[{}]:不通过",ids);
-		}else{
+		}else if(status.equals(Constants.JOKE_STATUS_OFFLINE)){ // status = 5 下线
 			Set<String> keys = jedisCache.keys(JedisKey.SORTEDSET_ALL);
 			if(!CollectionUtils.isEmpty(keys)){
 				for(String key : keys){
@@ -141,9 +161,15 @@ public class JokeService {
 				//删除段子
 				jedisCache.del(JedisKey.STRING_JOKE + id);
 			}
-			jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_NOVALID, ids, user); //修改为通过
-            logger.info("内容审核：段子id[{}]:下线",ids);
-		}
+			jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_NOVALID, ids, user); // 下线段子修改为不通过
+            logger.info("内容审核：段子:[{}]下线!", ids);
+		}else if(status.equals(Constants.JOKE_STATUS_TOP)) { // status = 6 置顶 只改status,不改audit
+//          更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
+            jokeMapper.updateJokeTopStatus(status, ids, user);
+//            保存置顶段子
+            jokeMapper.insertJokeTop(ids);
+            logger.info("内容审核：段子id[{}]置顶!", ids);
+        }
 	}
 	
 	public Joke getJokeById(Integer id){
@@ -409,7 +435,7 @@ public class JokeService {
 	private boolean handleJokeImg(String imgUrl,String gifUrl,Integer width,Integer height,Joke joke){
 		if (StringUtils.isNotBlank(gifUrl)) {//动图
 			joke.setType(Constants.JOKE_TYPE_GIF);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"), gifUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(remoteImgPrefix, gifUrl, true);
 			if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
 				joke.setGif(imgRespDto.getGifUrl());
 				joke.setImg(imgRespDto.getImgUrl());
@@ -419,7 +445,7 @@ public class JokeService {
 			} 
 		} else if (StringUtils.isNotBlank(imgUrl)) {//静图
 			joke.setType(Constants.JOKE_TYPE_IMG);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"), imgUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(remoteImgPrefix, imgUrl, true);
 			if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
 				joke.setGif(null);
 				joke.setImg(imgRespDto.getImgUrl());
@@ -663,7 +689,7 @@ public class JokeService {
 
 
 	/**
-	 * 获取段子2.0文字段子发布列表
+	 * 获取段子2.0文字、趣图段子发布列表
 	 * @param limit
 	 * @return
 	 */
@@ -686,4 +712,25 @@ public class JokeService {
 	public List<Task> getJoke2PublishTask() {
 		return jokeMapper.getJoke2PublishTask();
 	}
+
+    /**
+     * 获取段子2.0推荐段子发布列表
+     * @param status
+     * @param type
+     * @param limit
+     * @return
+     */
+    public List<Joke> getJoke2RecommendPublishList(int status, int type, Integer limit) {
+        return jokeMapper.getJoke2RecommendPublishList(status, type, limit);
+    }
+
+    /**
+     * 获取当前时间发布的段子列表
+     * @param releaseDate
+     * @param releaseHours
+     * @return
+     */
+    public List<Joke> getJoke2RecommendTopList(String releaseDate, String releaseHours) {
+        return jokeMapper.getJoke2RecommendTopList(releaseDate, releaseHours);
+    }
 }

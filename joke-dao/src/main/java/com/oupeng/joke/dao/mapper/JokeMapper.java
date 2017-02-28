@@ -168,6 +168,14 @@ public interface JokeMapper {
 						  @Param(value="ids")String ids,
 						  @Param(value="user")String user);
 
+    /**
+     * 更新段子置顶状态 - 更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
+     * @param status
+     * @param ids
+     * @param user
+     */
+    @Update("update joke set status = #{status}, verify_time = now(), verify_user= #{user} where id in (${ids})")
+    void updateJokeTopStatus(@Param("status")Integer status, @Param("ids")String ids, @Param("user")String user);
 	/**
 	 * 获取字典记录总条数
 	 * @param code
@@ -314,13 +322,22 @@ public interface JokeMapper {
 	void decrementChoiceComment(@Param("jid")Integer jid);
 
 	/**
-	 * 获取段子2.0文字段子发布列表
+	 * 获取段子2.0文字、趣图段子发布列表
 	 * @param type
 	 * @param limit
 	 * @return
 	 */
 	@Select("select id,weight from joke where audit = #{status} and type = #{type} order by update_time desc limit #{limit}")
     List<Joke> getJoke2PublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
+
+    /**
+     * 获取段子2.0推荐段子发布列表
+     * @param type
+     * @param limit
+     * @return
+     */
+    @Select("select id from joke where audit = #{status} and status = #{status} and type = #{type} order by update_time desc limit #{limit}")
+    List<Joke> getJoke2RecommendPublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
 
 	/**
 	 * 更新段子2.0文字段子已发布状态
@@ -335,4 +352,20 @@ public interface JokeMapper {
 	 */
 	@Select("select id, `describe` as name, `type`, `value` as policy from dictionary where code in('10041','10042','10043')")
 	List<Task> getJoke2PublishTask();
+
+    /**
+     * 保存置顶段子
+     * @param ids
+     */
+    @InsertProvider(method = "insertJokeTop",type = JokeSqlProvider.class)
+    void insertJokeTop(@Param("ids")String ids);
+
+    /**
+     * 获取当前时间发布的段子列表
+     * @param releaseDate
+     * @param releaseHours
+     * @return
+     */
+    @Select("select t.id, j.type,t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.status = 6 and j.audit = 1 order by t.sort asc")
+    List<Joke> getJoke2RecommendTopList(@Param("releaseDate")String releaseDate, @Param("releaseHours")String releaseHours);
 }

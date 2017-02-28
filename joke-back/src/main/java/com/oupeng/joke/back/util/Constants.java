@@ -13,14 +13,18 @@ public class Constants {
 	public static final Integer JOKE_TYPE_GIF = 2;
 	/**段子类型：精选*/
 	public static final Integer JOKE_TYPE_CHOICE = 3;
-	/**	段子未审核状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
+	/**	段子未审核状态 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
 	public static final Integer JOKE_STATUS_NOT_AUDITED = 0;
-	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
+	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
 	public static final Integer JOKE_STATUS_VALID = 1;
-	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
+	/**	段子审核通过状态 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
 	public static final Integer JOKE_STATUS_NOVALID = 2;
-	/**	段子发布状态 (0:未审核 1:通过 2:不通过 3:发布)	*/
+	/**	段子发布状态 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
 	public static final Integer JOKE_STATUS_PUBLISH = 3;
+    /**	下线 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
+    public static final Integer JOKE_STATUS_OFFLINE = 5;
+    /**	置顶 (0:未审核 1:通过 2:不通过 3:发布 4:推荐 5:下线 6:置顶)	*/
+    public static final Integer JOKE_STATUS_TOP = 6;
 	/**	渠道上线状态: 1	*/
 	public static final Integer CHANNEL_STATUS_VALID = 1;
 	public static final Integer CHANNEL_TYPE_COMMON = 0;

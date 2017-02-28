@@ -7,14 +7,14 @@
             <maxHistory>3</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>[%-5level][%d{HH:mm:ss}] - [%logger{15}] - %msg%n</pattern>
+            <pattern>[%-5level][%d{yyyy-MM-dd HH:mm:ss}] - [%logger] - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%-5level][%d{yyyy-MM-dd HH:mm:ss}] - [%logger{15}] - %msg%n</pattern>
+            <pattern>[%-5level][%d{yyyy-MM-dd HH:mm:ss}] - [%logger] - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -22,6 +22,29 @@
     <logger name="org.springframework.scheduling">
         <level value="info" />
     </logger>
+
+    <!--<logger name="org.mybatis.spring">-->
+         <!--<level value="info" />-->
+    <!--</logger>-->
+
+    <!--<logger name="org.springframework.security">-->
+        <!--<level value="info" />-->
+    <!--</logger>-->
+    <!--<logger name="org.springframework.web.servlet.mvc.method.annotation">-->
+        <!--<level value="info" />-->
+    <!--</logger>-->
+
+    <!--<logger name="org.springframework.web.servlet">-->
+        <!--<level value="info" />-->
+    <!--</logger>-->
+    <!--<logger name="org.springframework.beans.factory">-->
+        <!--<level value="info" />-->
+    <!--</logger>-->
+    <!--<logger name="org.springframework.web.servlet.handler">-->
+        <!--<level value="info" />-->
+    <!--</logger>-->
+
+
 
     <root level="debug">
         <appender-ref ref="console"/>

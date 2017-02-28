@@ -117,8 +117,6 @@ public class JokeSqlProvider {
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
 		sql.append(" update joke set update_time =now(),verify_time=now(), ");
-//		getType 为 null
-//		sql.append(" status=1,type=").append(joke.getType()).append(",");
 		sql.append(" status=1,");
 		sql.append(" verify_user='").append(joke.getVerifyUser()).append("',");
 		if(StringUtils.isNotBlank(joke.getTitle())){
@@ -252,6 +250,23 @@ public class JokeSqlProvider {
 		return sql.toString();
 	}
 
+    /**
+     * 保存置顶段子SQL
+     * @param map
+     * @return
+     */
+    public static String insertJokeTop(Map<String,Object> map){
+        StringBuffer sql = new StringBuffer();
+        sql.append(" insert into joke_top(jid, sort, status, create_time) values");
+        String ids = map.get("ids").toString();
+        String[] idArray = ids.split(",");
+        if(idArray != null && idArray.length > 0){
+            for(String id : idArray){
+                sql.append("('").append(id).append("', 0, 0, now()),");
+            }
+        }
+        return sql.substring(0, sql.length() - 1);
+    }
 	/**
 	 * 添加权重字典
 	 * @param dict

@@ -497,12 +497,12 @@ public class ClientService {
 //        return list;
 //    }
 
-    /**
-     * 获取用户浏览记录缓存key
-     *
-     * @param cacheType 0 文字，1 动图，2 图片 3 专题， 4 推荐
-     * @return
-     */
+//    /**
+//     * 获取用户浏览记录缓存key
+//     *
+//     * @param cacheType 0 文字，1 动图，2 图片 3 专题， 4 推荐
+//     * @return
+//     */
 //    private String getUserViewedCacheKey(String uid, Integer cacheType) {
 //        String key;
 //        if (0 == cacheType) {

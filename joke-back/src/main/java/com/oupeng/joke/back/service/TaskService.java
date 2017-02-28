@@ -11,6 +11,7 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.JobInfo;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Task;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
@@ -18,6 +19,7 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -56,6 +58,16 @@ public class TaskService {
     private JokeService jokeService;
     @Autowired
     private JedisCache jedisCache;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private Environment env;
+    /** 收件人    */
+    private String recipient = "shuangh@oupeng.com";
+    /** 抄送    */
+    private String cc = "shuangh@oupeng.com";
+    /** 邮件主题    */
+    private String subject = "段子发布通知";
 
     /**
      * 任务调度器
@@ -65,6 +77,7 @@ public class TaskService {
     @PostConstruct
     public void init() {
         try {
+//            初始化定时发布任务
             sched = stdSchedulerFactory.getScheduler();
             sched.start();
 //            初始化任务
@@ -78,6 +91,15 @@ public class TaskService {
                         addJob(task);
                     }
                 }
+            }
+//            加载发布邮件提醒信息
+            String r = env.getProperty("data.publish.recipient");
+            if(StringUtils.isNotBlank(r)){
+                recipient = r;
+            }
+            String c = env.getProperty("data.publish.cc");
+            if(StringUtils.isNotBlank(c)){
+                cc = c;
             }
 
         } catch (SchedulerException e) {
@@ -155,9 +177,10 @@ public class TaskService {
             int count = 0;
             Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             Map<String, Double> map = Maps.newHashMap();
-            if (task.getObject().getInteger("textNum") != null) {
-                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
-            }
+            processPublishSize(task);
+//            if (task.getObject().getInteger("textNum") != null) {
+//                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
+//            }
             List<Joke> list = jokeService.getJoke2PublishList(Constants.AUD, 0, PUBLISH_TEXT_SIZE);
             StringBuffer ids = new StringBuffer();
             if (!CollectionUtils.isEmpty(list)) {
@@ -192,20 +215,21 @@ public class TaskService {
             int imgCount = 0, gifCount = 0;
             Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             Map<String, Double> map = Maps.newHashMap();
-            if (task.getObject().getInteger("gifNum") != null) {
-                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
-            }
-            if (task.getObject().getInteger("imageNum") != null) {
-                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
-            }
-
-            if (task.getObject().getInteger("gifWeight") != null) {
-                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
-            }
-
-            if (task.getObject().getInteger("imageWeight") != null) {
-                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
-            }
+            processPublishSize(task);
+//            if (task.getObject().getInteger("gifNum") != null) {
+//                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
+//            }
+//            if (task.getObject().getInteger("imageNum") != null) {
+//                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
+//            }
+//
+//            if (task.getObject().getInteger("gifWeight") != null) {
+//                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
+//            }
+//
+//            if (task.getObject().getInteger("imageWeight") != null) {
+//                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
+//            }
             List<Joke> imgList = jokeService.getJoke2PublishList(Constants.AUD, 1, PUBLISH_IMG_SIZE);
             List<Joke> gifList = jokeService.getJoke2PublishList(Constants.AUD, 2, PUBLISH_GIF_SIZE);
             StringBuffer ids = new StringBuffer();
@@ -276,29 +300,64 @@ public class TaskService {
         try {
             long start = System.currentTimeMillis();
             int imgCount = 0, gifCount = 0, textCount = 0;
-            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
-            if (task.getObject().getInteger("gifNum") != null) {
-                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
-            }
-            if (task.getObject().getInteger("imageNum") != null) {
-                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
-            }
-            if (task.getObject().getInteger("textNum") != null) {
-                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
-            }
-            if (task.getObject().getInteger("textWeight") != null) {
-                TEXT_WEIGHT = task.getObject().getInteger("textWeight");
-            }
-            if (task.getObject().getInteger("gifWeight") != null) {
-                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
-            }
-            if (task.getObject().getInteger("imageWeight") != null) {
-                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
-            }
+            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHH0000").format(new Date()));
+            processPublishSize(task);
             Map<String, Double> map = Maps.newHashMap();
-            List<Joke> textList = jokeService.getJoke2PublishList(Constants.PUB, 0, PUBLISH_TEXT_SIZE);
-            List<Joke> imgList = jokeService.getJoke2PublishList(Constants.PUB, 1, PUBLISH_IMG_SIZE);
-            List<Joke> gifList = jokeService.getJoke2PublishList(Constants.PUB, 2, PUBLISH_GIF_SIZE);
+//            if (task.getObject().getInteger("gifNum") != null) {
+//                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
+//            }
+//            if (task.getObject().getInteger("imageNum") != null) {
+//                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
+//            }
+//            if (task.getObject().getInteger("textNum") != null) {
+//                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
+//            }
+//            if (task.getObject().getInteger("textWeight") != null) {
+//                TEXT_WEIGHT = task.getObject().getInteger("textWeight");
+//            }
+//            if (task.getObject().getInteger("gifWeight") != null) {
+//                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
+//            }
+//            if (task.getObject().getInteger("imageWeight") != null) {
+//                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
+//            }
+            String releaseDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            String releaseHours = new SimpleDateFormat("HH").format(new Date());
+//            查询当前可用的推荐首页置顶段子
+            List<Joke> topList = jokeService.getJoke2RecommendTopList(releaseDate, releaseHours);
+            int textTop = 0, imgTop = 0, gifTop = 0;
+            int index = 9999;
+            if(CollectionUtils.isEmpty(topList)){
+                for(Joke j : topList){
+                    if(j.getType().equals(0)){
+                        textTop++;
+                    } else if(j.getType().equals(1)){
+                        imgTop++;
+                    } else if(j.getType().equals(2)){
+                        gifTop++;
+                    }
+                    map.put(String.valueOf(j.getId()), baseScore + Double.valueOf(index));
+                    index--;
+                }
+            }
+
+            PUBLISH_TEXT_SIZE = PUBLISH_TEXT_SIZE - textTop;
+            List<Joke> textList = null, imgList = null, gifList = null;
+            if(PUBLISH_TEXT_SIZE > 0){
+                textList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 0, PUBLISH_TEXT_SIZE);
+            }
+            PUBLISH_IMG_SIZE = PUBLISH_IMG_SIZE - imgTop;
+            if(PUBLISH_IMG_SIZE > 0){
+                imgList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 1, PUBLISH_IMG_SIZE);
+            }
+            PUBLISH_GIF_SIZE = PUBLISH_GIF_SIZE - gifTop;
+            if(PUBLISH_GIF_SIZE > 0){
+                gifList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 2, PUBLISH_GIF_SIZE);
+            }
+//          获取推荐信息列表 - 不含置顶的段子
+
+
+
             StringBuffer ids = new StringBuffer();
             int imgSize = 0;
             if (!CollectionUtils.isEmpty(imgList)) {
@@ -323,7 +382,6 @@ public class TaskService {
                 if (text > 0) {
                     if (textSize > 0) {
                         String id = textList.get(textSize - 1).getId().toString();
-//                        int weight = textList.get(textSize - 1).getWeight();
                         map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         textCount++;
@@ -334,7 +392,6 @@ public class TaskService {
                 if (img > 0) {
                     if (imgSize > 0) {
                         String id = imgList.get(imgSize - 1).getId().toString();
-//                        int weight = imgList.get(imgSize - 1).getWeight();
                         map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         imgCount++;
@@ -345,7 +402,6 @@ public class TaskService {
                 if (gif > 0) { // 频道权重是否用完
                     if (gifSize > 0) {
                         String id = gifList.get(gifSize - 1).getId().toString();
-//                        int weight = gifList.get(gifSize - 1).getWeight();
                         map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         gifCount++;
@@ -374,6 +430,34 @@ public class TaskService {
             log.error(e.getMessage(), e);
         }
     }
+
+
+
+    /**
+     * 处理发布数据数量
+     * @param task
+     */
+    private void processPublishSize(Task task) {
+        if (task.getObject().getInteger("gifNum") != null) {
+            PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
+        }
+        if (task.getObject().getInteger("imageNum") != null) {
+            PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
+        }
+        if (task.getObject().getInteger("textNum") != null) {
+            PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
+        }
+        if (task.getObject().getInteger("textWeight") != null) {
+            TEXT_WEIGHT = task.getObject().getInteger("textWeight");
+        }
+        if (task.getObject().getInteger("gifWeight") != null) {
+            GIF_WEIGHT = task.getObject().getInteger("gifWeight");
+        }
+        if (task.getObject().getInteger("imageWeight") != null) {
+            IMG_WEIGHT = task.getObject().getInteger("imageWeight");
+        }
+    }
+
 
     @PreDestroy
     public void destroy() {

@@ -105,7 +105,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="0" <c:if test="${!empty status && status == 0}">selected</c:if> >未审核</option>
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
 						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
-						<option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
+                        <option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
+                        <option value="6" <c:if test="${!empty status && status == 6}">selected</c:if> >首页置顶</option>
 					</select>
 				</div>
 				<div style="padding-right:10px;display: inline-block;">
@@ -124,15 +125,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<label style="padding-right:10px;">
 					<a class="btn btn-primary btn-sm" href="#" id="selectVerifyJokeList">
-						<span class="glyphicon glyphicon-search icon-white" >查询</span>
+						<span class="glyphicon glyphicon-search icon-white" > 查询</span>
 					</a>
 				</label>
+                <c:if test="${status == 0 || status == 2}">
 				<label style="padding-right:10px;">
 					<a class="btn btn-success btn-sm" href="#" onclick="verifyJoke(1,'batch')">
 			        	 <i class="glyphicon glyphicon-ok icon-white"></i>批量通过
 			        </a>
 			    </label>
-
+                </c:if>
+                <c:if test="${status == 1}">
+                    <label style="padding-right:10px;">
+                        <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,'batch')">
+                            <i class="glyphicon glyphicon-open icon-white"></i> 批量置顶
+                        </a>
+                    </label>
+                </c:if>
 				<c:if test="${status != 3}">
 					<label style="padding-right:0px;">
 						<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,'batch')">
@@ -215,14 +224,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</c:if>
 						<%--通过--%>
 						<c:if test="${joke.status == 1}">
-							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">
-					        	 <i class="glyphicon glyphicon-remove icon-white"></i>不通过
-					        </a>
+                            <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,${joke.id})">
+                                <i class="glyphicon glyphicon-open icon-white"></i> 置  顶
+                            </a>
+                            <a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">
+                                <i class="glyphicon glyphicon-remove icon-white"></i> 不通过
+                            </a>
 						</c:if>
 						<%--已发布--%>
 						<c:if test="${joke.status == 3 || joke.status == 4}">
 							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(5,${joke.id})">
-								<i class="glyphicon glyphicon-remove icon-white"></i>下线
+								<i class="glyphicon glyphicon-cloud-download icon-white"></i>下线
 							</a>
 						</c:if>
 						<c:if test="${joke.status == 2}">

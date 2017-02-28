@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,25 @@ public class TopicService {
 	private Environment env;
 
 
+    private String imgPrefix = "http://joke2-img.oupeng.com/";
+
+    private String remoteImgPrefix = "http://joke2-img.oupeng.com/";
+
+    @PostConstruct
+    private void init(){
+        String url = env.getProperty("img.real.server.url");
+        if (StringUtils.isNoneBlank(url)) {
+            imgPrefix = url;
+        } else {
+            logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+        }
+        String remoteImgUrl = env.getProperty("remote.crop.img.server.url");
+        if (StringUtils.isNoneBlank(remoteImgUrl)) {
+            remoteImgPrefix = remoteImgUrl;
+        } else {
+            logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+        }
+    }
 	/**
 	 * 获取专题列表记录总数
 	 * @param status
@@ -57,7 +77,7 @@ public class TopicService {
 		if(!CollectionUtils.isEmpty(topicList)){
 			for(Topic topic : topicList){
 				if(StringUtils.isNotBlank(topic.getImg())){
-					topic.setImg( env.getProperty("img.real.server.url") + topic.getImg());
+					topic.setImg( imgPrefix + topic.getImg());
 				}
 			}
 		}
@@ -72,7 +92,7 @@ public class TopicService {
 	public Topic getTopicById(Integer id){
 		Topic topic = topicMapper.getTopicById(id);
 		if(topic != null && StringUtils.isNotBlank(topic.getImg())){
-			topic.setImg(env.getProperty("img.real.server.url") + topic.getImg());
+			topic.setImg(imgPrefix + topic.getImg());
 		}
 		return topic;
 	}
@@ -213,7 +233,7 @@ public class TopicService {
 
 	public String handleImg(String imgUrl){
 		if(StringUtils.isNotBlank(imgUrl)){
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, false);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(remoteImgPrefix,imgUrl, false);
 			if(imgRespDto != null && imgRespDto.getErrorCode() == 0){
 				return imgRespDto.getImgUrl();
 			}
@@ -237,7 +257,7 @@ public class TopicService {
 		joke.setTitle(title);
 		if(StringUtils.isNotBlank(gifUrl)){//动图
 			joke.setType(Constants.JOKE_TYPE_GIF);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),gifUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(remoteImgPrefix,gifUrl, true);
 			if(imgRespDto != null && imgRespDto.getErrorCode() == 0 && StringUtils.isNotBlank(imgRespDto.getImgUrl()) && StringUtils.isNotBlank(imgRespDto.getGifUrl())){
 				joke.setGif(imgRespDto.getGifUrl());
 				joke.setImg(imgRespDto.getImgUrl());
@@ -249,7 +269,7 @@ public class TopicService {
 			}
 		}else if(StringUtils.isNotBlank(imgUrl)){//静图
 			joke.setType(Constants.JOKE_TYPE_IMG);
-			ImgRespDto imgRespDto = HttpUtil.handleImg(env.getProperty("remote.crop.img.server.url"),imgUrl, true);
+			ImgRespDto imgRespDto = HttpUtil.handleImg(remoteImgPrefix,imgUrl, true);
 			if(imgRespDto != null && imgRespDto.getErrorCode() == 0 && StringUtils.isNotBlank(imgRespDto.getImgUrl())){
 				joke.setGif(null);
 				joke.setImg(imgRespDto.getImgUrl());
@@ -303,10 +323,10 @@ public class TopicService {
 		if(!CollectionUtils.isEmpty(list)){
 			for(Joke joke : list){
 				if(joke.getType() == Constants.JOKE_TYPE_IMG){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
+					joke.setImg( imgPrefix + joke.getImg());
 				}else if(joke.getType() == Constants.JOKE_TYPE_GIF){
-					joke.setImg( env.getProperty("img.real.server.url") + joke.getImg());
-					joke.setGif( env.getProperty("img.real.server.url") + joke.getGif());
+					joke.setImg( imgPrefix + joke.getImg());
+					joke.setGif( imgPrefix + joke.getGif());
 				}
 			}
 		}
