@@ -41,14 +41,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <!-- content start -->
 <div id="content" class="col-lg-10 col-sm-10">
-<div>
-	<ul class="breadcrumb">
-		<li><a href="distributor/list">内容审核</a></li>
-	</ul>
-</div>
+<%--<div>--%>
+	<%--<ul class="breadcrumb">--%>
+		<%--<li><a href="distributor/list">内容审核</a></li>--%>
+	<%--</ul>--%>
+<%--</div>--%>
 
 <div class="row">
-<div class="box col-md-12">
+<div class="box col-md-12" style="margin-top: 0;">
 
 <div class="box-inner">
 	<div class="box-header well" data-original-title="">
@@ -106,7 +106,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<option value="1" <c:if test="${!empty status && status == 1}">selected</c:if> >已通过</option>
 						<option value="2" <c:if test="${!empty status && status == 2}">selected</c:if> >不通过</option>
                         <option value="3" <c:if test="${!empty status && status == 3}">selected</c:if> >已发布</option>
-                        <option value="6" <c:if test="${!empty status && status == 6}">selected</c:if> >首页置顶</option>
+                        <%--<option value="6" <c:if test="${!empty status && status == 6}">selected</c:if> >首页置顶</option>--%>
 					</select>
 				</div>
 				<div style="padding-right:10px;display: inline-block;">
@@ -204,8 +204,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							${joke.weight}
 					</td>
 					<td>
+                            ${joke.status}
 						<c:if test="${joke.status == 0}">未审核</c:if>
-						<c:if test="${joke.status == 1}">通过</c:if>
+                        <c:if test="${joke.audit == 6}">
+                            <a class="btn btn-warning btn-xs" href="#">
+                                <i class="glyphicon glyphicon-open icon-white"></i> 置&nbsp;顶
+                            </a>
+                        </c:if>
+						<c:if test="${joke.status == 1}">
+                            <a class="btn btn-success btn-xs" href="#">
+                                <i class="glyphicon glyphicon-thumbs-up icon-white"></i> 通&nbsp;过
+                            </a>
+                        </c:if>
 						<c:if test="${joke.status == 2}">不通过</c:if>
 						<c:if test="${joke.status == 3 || joke.status == 4}">已发布</c:if>
 					</td>
@@ -223,14 +233,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        </a>
 						</c:if>
 						<%--通过--%>
-						<c:if test="${joke.status == 1}">
+						<c:if test="${joke.status == 1 && joke.audit != 6}">
                             <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,${joke.id})">
                                 <i class="glyphicon glyphicon-open icon-white"></i> 置  顶
                             </a>
+                            <%--<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">--%>
+                                <%--<i class="glyphicon glyphicon-remove icon-white"></i> 不通过--%>
+                            <%--</a>--%>
+						</c:if>
+
+                        <c:if test="${joke.status == 6}">
                             <a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">
                                 <i class="glyphicon glyphicon-remove icon-white"></i> 不通过
                             </a>
-						</c:if>
+                        </c:if>
 						<%--已发布--%>
 						<c:if test="${joke.status == 3 || joke.status == 4}">
 							<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(5,${joke.id})">
@@ -302,7 +318,8 @@ function verifyJoke(status,id) {
 	if("batch" == id){
 		var ids = [];
 		$('input[name="jokeId"]:checked').each(function(){
-			ids.push($(this).val());
+//			console.log("attr:" + this.attr + ", checked:" + this.checked + ", this:" + this + ", val:" + $(this).val());
+		    ids.push($(this).val());
 			});
 		if(ids.length == 0){
 			alert("未选中任何内容");
@@ -320,7 +337,11 @@ function verifyJoke(status,id) {
 				}
 			},
 			function () {
-				alert('请求失败，请检查网络环境');
+			    if(status == 6){
+                    alert('请求失败，不能提交已置顶段子!');
+                } else {
+                    alert('请求失败，请检查网络环境!');
+                }
 			});
 }
 

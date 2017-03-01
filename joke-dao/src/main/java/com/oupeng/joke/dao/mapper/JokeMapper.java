@@ -170,12 +170,11 @@ public interface JokeMapper {
 
     /**
      * 更新段子置顶状态 - 更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
-     * @param status
      * @param ids
      * @param user
      */
-    @Update("update joke set status = #{status}, verify_time = now(), verify_user= #{user} where id in (${ids})")
-    void updateJokeTopStatus(@Param("status")Integer status, @Param("ids")String ids, @Param("user")String user);
+    @Update("update joke set audit = 6, verify_time = now(), verify_user= #{user} where id in (${ids})")
+    void updateJokeTopAudit(@Param("ids")String ids, @Param("user")String user);
 	/**
 	 * 获取字典记录总条数
 	 * @param code
@@ -327,7 +326,7 @@ public interface JokeMapper {
 	 * @param limit
 	 * @return
 	 */
-	@Select("select id,weight from joke where audit = #{status} and type = #{type} order by update_time desc limit #{limit}")
+	@Select("select id,weight from joke where status = #{status} and type = #{type} order by update_time desc limit #{limit}")
     List<Joke> getJoke2PublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
 
     /**
@@ -336,15 +335,21 @@ public interface JokeMapper {
      * @param limit
      * @return
      */
-    @Select("select id from joke where audit = #{status} and status = #{status} and type = #{type} order by update_time desc limit #{limit}")
+    @Select("select id from joke where audit = 1 and status = #{status} and type = #{type} order by update_time desc limit #{limit}")
     List<Joke> getJoke2RecommendPublishList(@Param("status")int status, @Param("type")int type, @Param("limit")int limit);
 
 	/**
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time =now(), audit = #{status},status = #{status}, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+	@Update("update joke set update_time = now(), status = #{status}, , verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
 	void updateJoke2PublishStatus(@Param("idsStr")String idsStr, @Param("status")Integer status);
+    /**
+     * 更新段子2.0文字段子已推荐状态
+     * @param idsStr
+     */
+    @Update("update joke set update_time = now(), status = 4, audit = 4, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+    void updateJoke2RecommendPublishStatus(@Param("idsStr")String idsStr);
 
 	/**
 	 * 获取段子2.0发布任务
@@ -366,6 +371,64 @@ public interface JokeMapper {
      * @param releaseHours
      * @return
      */
-    @Select("select t.id, j.type,t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.status = 6 and j.audit = 1 order by t.sort asc")
+    @Select("select t.id, j.type,t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort asc")
     List<Joke> getJoke2RecommendTopList(@Param("releaseDate")String releaseDate, @Param("releaseHours")String releaseHours);
+
+    /**
+     * 更新首页置顶段子状态
+     * @param idsStr
+     */
+    @Update("update joke_top set update_time = now(), status = 2, update_user= 'systemTask' where jid in (${idsStr}) ")
+    void updateJokeTopPublishStatus(@Param("idsStr")String idsStr);
+
+    /**
+     * 获取首页置顶段子总数
+     * @param type
+     * @param status
+     * @param source
+     * @param startDay
+     * @param endDay
+     * @return
+     */
+    @SelectProvider(method = "getJokeTopListCount",type = JokeSqlProvider.class)
+    int getJokeTopListCount(@Param("type")Integer type,
+                            @Param("status")Integer status,
+                            @Param("source")Integer source,
+                            @Param("startDay")String startDay,
+                            @Param("endDay")String endDay);
+
+    /**
+     * 获取首页置顶段子列表
+     * @param type
+     * @param status
+     * @param source
+     * @param startDay
+     * @param endDay
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    @SelectProvider(method = "getJokeTopList",type = JokeSqlProvider.class)
+    List<JokeTop> getJokeTopList(@Param("type")Integer type,
+                                 @Param("status")Integer status,
+                                 @Param("source")Integer source,
+                                 @Param("startDay")String startDay,
+                                 @Param("endDay")String endDay,
+                                 @Param("offset")int offset,
+                                 @Param("pageSize")Integer pageSize);
+
+    /**
+     * 发布首页置顶段子
+     * @param id
+     * @param sort
+     * @param releaseDate
+     * @param releaseHours
+     * @param username
+     */
+    @Update("update joke_top set update_time = now(), status = 1, sort = #{sort}, update_user= #{username}, release_date = #{releaseDate}, release_hours = #{releaseHours} where jid = #{id}")
+    int releaseTopJoke(@Param("id")Integer id,
+                       @Param("sort")Integer sort,
+                       @Param("releaseDate")String releaseDate,
+                       @Param("releaseHours")String releaseHours,
+                       @Param("username")String username);
 }

@@ -20,7 +20,8 @@
 					<a href="#"><i class="glyphicon glyphicon-list-alt"></i><span> 内容管理</span></a>
 					<ul class="nav nav-pills nav-stacked">
 						<li><a href="joke/search"><span> 快捷查找</span></a></li>
-						<li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
+                        <li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
+                        <li><a href="joke/top"><span> 首页置顶</span></a></li>
 						<li><a href="joke/publish"><span> 发布规则</span></a></li>
 					</ul>
 				</li>

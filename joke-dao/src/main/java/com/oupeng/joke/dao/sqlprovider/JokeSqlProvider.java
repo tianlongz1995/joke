@@ -3,7 +3,11 @@ package com.oupeng.joke.dao.sqlprovider;
 import com.oupeng.joke.domain.Dictionary;
 import com.oupeng.joke.domain.Joke;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class JokeSqlProvider {
@@ -257,12 +261,14 @@ public class JokeSqlProvider {
      */
     public static String insertJokeTop(Map<String,Object> map){
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into joke_top(jid, sort, status, create_time) values");
+        sql.append("insert into joke_top(jid, sort, status, create_time) values");
         String ids = map.get("ids").toString();
         String[] idArray = ids.split(",");
         if(idArray != null && idArray.length > 0){
             for(String id : idArray){
-                sql.append("('").append(id).append("', 0, 0, now()),");
+                if(id != null && id.length() > 0){
+                    sql.append("('").append(id).append("', 0, 0, now()),");
+                }
             }
         }
         return sql.substring(0, sql.length() - 1);
@@ -357,13 +363,15 @@ public class JokeSqlProvider {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" select t1.id,t1.title,t1.content,t1.img,t1.gif,t1.type,t1.status,t2.name as sourceName,");
 		sql.append(" t1.verify_user as verifyUser,t1.verify_time as verifyTime,t1.create_time as createTime,");
-		sql.append(" t1.update_time as updateTime,t1.weight from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
+		sql.append(" t1.update_time as updateTime,t1.weight,t1.audit from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
 		if(type != null){
 			sql.append(" and t1.type = ").append(type).append(" ");
 		}
 		if(status != null){
-			if(status == 3 ){
+			if(status.equals(3)){
 				sql.append(" and t1.status in (3,4) ");
+            }else if(status.equals(1)){
+                sql.append(" and t1.status in (1,6) ");
 			}else{
 				sql.append(" and t1.status = ").append(status).append(" ");
 			}
@@ -388,7 +396,7 @@ public class JokeSqlProvider {
 	 * @param map
 	 * @return
 	 */
-	public static String getJokeListForVerifyCount(Map<String,Object> map){
+    public static String getJokeListForVerifyCount(Map<String,Object> map){
 		Integer type = (Integer) map.get("type");
 		Integer status = (Integer) map.get("status");
 		Integer source = (Integer) map.get("source");
@@ -401,12 +409,13 @@ public class JokeSqlProvider {
 			sql.append(" and t1.type = ").append(type).append(" ");
 		}
 		if(status != null){
-            if(status == 3 ){
+            if(status.equals(3)) {
                 sql.append(" and t1.status in (3,4) ");
+            }else if(status.equals(1)){
+                sql.append(" and t1.status in (1,6) ");
             }else{
                 sql.append(" and t1.status = ").append(status).append(" ");
             }
-//			sql.append(" and t1.status = ").append(status).append(" ");
 		}
 		if(source != null){
 			sql.append(" and t1.source_id = ").append(source).append(" ");
@@ -491,5 +500,71 @@ public class JokeSqlProvider {
 		sql.append("where code = ").append(code);
 		return sql.toString();
 	}
+
+    /**
+     * 获取首页置顶段子总数SQL
+     * @param map
+     * @return
+     */
+    public static String getJokeTopListCount(Map<String,Object> map){
+        Object type = map.get("type");
+        Object status = map.get("status");
+        Object source = map.get("source");
+        Object startDay = map.get("startDay");
+        Object endDay = map.get("endDay");
+        StringBuffer sql = new StringBuffer();
+        sql.append("select count(j.id) from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
+        if(startDay != null && endDay != null){
+            sql.append(" and j.create_time >= '").append(startDay).append("' and j.create_time <= '").append(endDay).append("' ");
+        }
+        if(type != null){
+            sql.append("  and j.type = ").append(type).append(" ");
+        }
+        if(status != null){
+            sql.append(" and jt.status = ").append(status).append(" ");
+        }
+        if(source != null){
+            sql.append(" and s.id = ").append(source).append(" ");
+        }
+        return sql.toString();
+    }
+
+    /**
+     * 获取首页置顶段子列表SQL
+     * @param map
+     * @return
+     */
+    public static String getJokeTopList(Map<String,Object> map){
+        Object type = map.get("type");
+        Object status = map.get("status");
+        Object source = map.get("source");
+        Object startDay = map.get("startDay");
+        Object endDay = map.get("endDay");
+        Object offset = map.get("offset");
+        Object pageSize = map.get("pageSize");
+        StringBuffer sql = new StringBuffer();
+        sql.append("select j.id, j.title, j.content, j.img, j.gif, j.type, s.name as sourceName, j.create_time as createTime, jt.sort, jt.release_date as releaseDate, jt.release_hours as releaseHours, jt.status from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
+        if(startDay != null && endDay != null){
+            sql.append(" and j.create_time >= '").append(startDay).append("' and j.create_time <= '").append(endDay).append("' ");
+        }
+        if(type != null){
+            sql.append("  and j.type = ").append(type).append(" ");
+        }
+        if(status != null){
+            sql.append(" and jt.status = ").append(status).append(" ");
+        }
+        if(source != null){
+            sql.append(" and s.id = ").append(source).append(" ");
+        }
+        sql.append(" order by ");
+        if(status != null && status.equals(1)){ // 已处理 - 审核通过 - 待发布
+            sql.append(" jt.release_date asc, jt.release_hours asc ");
+        } else {
+            sql.append(" jt.create_time desc ");
+        }
+        sql.append(" limit ").append(offset).append(", ").append(pageSize);
+
+        return sql.toString();
+    }
 
 }

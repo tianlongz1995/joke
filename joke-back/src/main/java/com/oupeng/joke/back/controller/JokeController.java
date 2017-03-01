@@ -8,6 +8,7 @@ import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Joke;
+import com.oupeng.joke.domain.JokeTop;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -58,7 +59,7 @@ public class JokeController {
     }
 
 	/**
-	 * 待审核段子列表
+	 * 段子列表
 	 * @param status
 	 * @param type
 	 * @param source
@@ -70,7 +71,7 @@ public class JokeController {
 	 * @return
 	 */
 	@RequestMapping(value="/list")
-	public String getJokeListForVerify(@RequestParam(value="status",required=false)Integer status,
+	public String list(@RequestParam(value="status",required=false)Integer status,
 									   @RequestParam(value="type",required=false)Integer type,
 									   @RequestParam(value="source",required=false)Integer source,
 									   @RequestParam(value="startDay",required=false)String startDay,
@@ -327,5 +328,89 @@ public class JokeController {
 			return new Failed();
 		}
 	}
+
+    /**
+     * 首页置顶段子列表
+     * @param status
+     * @param type
+     * @param source
+     * @param startDay
+     * @param endDay
+     * @param pageNumber
+     * @param pageSize
+     * @param model
+     * @return
+     */
+    @RequestMapping(value="/top")
+    public String top(@RequestParam(value="status",required=false)Integer status,
+                      @RequestParam(value="type",required=false)Integer type,
+                      @RequestParam(value="source",required=false)Integer source,
+                      @RequestParam(value="startDay",required=false)String startDay,
+                      @RequestParam(value="endDay",required=false)String endDay,
+                      @RequestParam(value="pageNumber",required=false)Integer pageNumber,
+                      @RequestParam(value="pageSize",required=false)Integer pageSize,
+                       Model model){
+        pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+        pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+        if(startDay == null || startDay.length() < 1 || endDay == null || endDay.length() < 1){
+            startDay = null;
+            endDay = null;
+        }
+        int pageCount = 0;//总页数
+        int offset ;//开始条数index
+        List<JokeTop> list = null;
+        //	获取总条数
+        int count = jokeService.getJokeTopListCount(type, status, source, startDay, endDay);
+        if(count > 0){
+            if (count % pageSize == 0) {
+                pageCount = count / pageSize;
+            } else {
+                pageCount = count / pageSize + 1;
+            }
+
+            if (pageNumber > pageCount) {
+                pageNumber = pageCount;
+            }
+            if (pageNumber < 1) {
+                pageNumber = 1;
+            }
+            offset = (pageNumber - 1) * pageSize;
+
+            list = jokeService.getJokeTopList(type, status, source, startDay, endDay, offset, pageSize);
+        }
+
+        model.addAttribute("list", list);
+        model.addAttribute("sourceList", sourceService.getAllSourceList());
+        model.addAttribute("status", status);
+        model.addAttribute("type", type);
+        model.addAttribute("source", source);
+        model.addAttribute("startDay", startDay);
+        model.addAttribute("endDay", endDay);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("count", count);
+        return "/joke/top";
+    }
+
+    /**
+     * 发布推荐置顶段子
+     * @param ids
+     * @param releaseDate
+     * @param releaseHours
+     * @return
+     */
+    @RequestMapping(value="/releaseTopJoke")
+    @ResponseBody
+    public Result releaseTopJoke(@RequestParam(value="ids")Integer[] ids,
+                                 @RequestParam(value="sorts")Integer[] sorts,
+                                 @RequestParam(value="releaseDate")String releaseDate,
+                                 @RequestParam(value="releaseHours")String releaseHours){
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        return jokeService.releaseTopJoke(ids, sorts, releaseDate, releaseHours, username);
+    }
 
 }

@@ -180,7 +180,7 @@ public class TaskService {
             processPublishSize(task);
 //            if (task.getObject().getInteger("textNum") != null) {
 //                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
-//            }
+//            } 100 10
             List<Joke> list = jokeService.getJoke2PublishList(Constants.AUD, 0, PUBLISH_TEXT_SIZE);
             StringBuffer ids = new StringBuffer();
             if (!CollectionUtils.isEmpty(list)) {
@@ -250,7 +250,6 @@ public class TaskService {
                 if (img > 0) {
                     if (imgSize > 0) {
                         String id = imgList.get(imgSize - 1).getId().toString();
-//                        int weight = imgList.get(imgSize - 1).getWeight();
                         map.put(id, baseScore + Double.valueOf(i));
                         ids.append(id).append(",");
                         imgCount++;
@@ -356,8 +355,6 @@ public class TaskService {
             }
 //          获取推荐信息列表 - 不含置顶的段子
 
-
-
             StringBuffer ids = new StringBuffer();
             int imgSize = 0;
             if (!CollectionUtils.isEmpty(imgList)) {
@@ -421,8 +418,11 @@ public class TaskService {
             }
             if (map != null && map.size() > 0) {
                 jedisCache.zadd(JedisKey.JOKE_CHANNEL + 3, map);
-//            // 更新已发布状态为已推荐
-                jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 4);
+                String idStr = ids.deleteCharAt(ids.lastIndexOf(",")).toString();
+//            // 更新已发布状态为 已推荐(4)
+                jokeService.updateJoke2RecommendPublishStatus(idStr);
+//                更新首页置顶段子状态为已发布
+                jokeService.updateJokeTopPublishStatus(idStr);
             }
             long end = System.currentTimeMillis();
             log.info("发布推荐[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());

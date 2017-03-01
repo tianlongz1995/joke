@@ -2,6 +2,7 @@ package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
@@ -10,6 +11,8 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.*;
+import com.oupeng.joke.domain.response.*;
+import com.oupeng.joke.domain.response.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +84,7 @@ public class JokeService {
 	 * @return
 	 */
 	public int getJokeListForVerifyCount(Integer type, Integer status, Integer source, String startDay, String endDay) {
-		return jokeMapper.getJokeListForVerifyCount(type, status, source, startDay, endDay);
+        return jokeMapper.getJokeListForVerifyCount(type, status, source, startDay, endDay);
 	}
 
 	/**
@@ -105,6 +108,22 @@ public class JokeService {
         }
     }
 
+    /**
+     * 处理置顶段子图片地址
+     * @param jokeTops
+     */
+    private void handleJokeTopUrl(List<JokeTop> jokeTops) {
+        if(!CollectionUtils.isEmpty(jokeTops)){
+            for(JokeTop jokeTop : jokeTops) {
+                if (jokeTop.getType() == Constants.JOKE_TYPE_IMG) {
+                    jokeTop.setImg(imgPrefix + jokeTop.getImg());
+                } else if (jokeTop.getType() == Constants.JOKE_TYPE_GIF) {
+                    jokeTop.setImg(imgPrefix + jokeTop.getImg());
+                    jokeTop.setGif(imgPrefix + jokeTop.getGif());
+                }
+            }
+        }
+    }
 	/**
 	 * 修改审核状态
 	 * @param status
@@ -165,7 +184,8 @@ public class JokeService {
             logger.info("内容审核：段子:[{}]下线!", ids);
 		}else if(status.equals(Constants.JOKE_STATUS_TOP)) { // status = 6 置顶 只改status,不改audit
 //          更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
-            jokeMapper.updateJokeTopStatus(status, ids, user);
+            jokeMapper.updateJokeTopAudit(ids, user);
+
 //            保存置顶段子
             jokeMapper.insertJokeTop(ids);
             logger.info("内容审核：段子id[{}]置顶!", ids);
@@ -698,13 +718,19 @@ public class JokeService {
     }
 
 	/**
-	 * 更新段子2.0文字段子状态
-	 * @param idsStr
-	 */
-	public void updateJoke2PublishStatus(String idsStr, int status) {
-		jokeMapper.updateJoke2PublishStatus(idsStr, status);
-	}
-
+     * 更新段子2.0文字段子状态
+     * @param idsStr
+     */
+    public void updateJoke2PublishStatus(String idsStr, int status) {
+        jokeMapper.updateJoke2PublishStatus(idsStr, status);
+    }
+    /**
+     * 更新段子2.0段子状态为已推荐
+     * @param idsStr
+     */
+    public void updateJoke2RecommendPublishStatus(String idsStr) {
+        jokeMapper.updateJoke2RecommendPublishStatus(idsStr);
+    }
 	/**
 	 * 获取段子2.0发布任务
 	 * @return
@@ -732,5 +758,67 @@ public class JokeService {
      */
     public List<Joke> getJoke2RecommendTopList(String releaseDate, String releaseHours) {
         return jokeMapper.getJoke2RecommendTopList(releaseDate, releaseHours);
+    }
+
+    /**
+     * 获取首页置顶段子总数
+     * @param type
+     * @param status
+     * @param source
+     * @param startDay
+     * @param endDay
+     * @return
+     */
+    public int getJokeTopListCount(Integer type, Integer status, Integer source, String startDay, String endDay) {
+        return jokeMapper.getJokeTopListCount(type, status, source, startDay, endDay);
+    }
+
+    /**
+     * 获取首页置顶段子列表
+     * @param type
+     * @param status
+     * @param source
+     * @param startDay
+     * @param endDay
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    public List<JokeTop> getJokeTopList(Integer type, Integer status, Integer source, String startDay, String endDay, int offset, Integer pageSize) {
+        List<JokeTop> jokeList = jokeMapper.getJokeTopList(type, status, source, startDay, endDay, offset, pageSize);
+        handleJokeTopUrl(jokeList);
+        return jokeList;
+    }
+
+    /**
+     * 更新首页置顶段子状态
+     * @param idStr
+     */
+    public void updateJokeTopPublishStatus(String idStr) {
+        jokeMapper.updateJokeTopPublishStatus(idStr);
+    }
+
+    /**
+     * 发布推荐置顶段子
+     * @param ids
+     * @param releaseDate
+     * @param releaseHours
+     * @return
+     */
+    public Result releaseTopJoke(Integer[] ids, Integer[] sorts, String releaseDate, String releaseHours, String username) {
+        if(ids == null || ids.length < 1 || sorts == null || ids.length != sorts.length){
+            return new Failed("参数错误!");
+        }
+        int count = 0;
+        for(int i = 0; i < ids.length; i++){
+            jokeMapper.releaseTopJoke(ids[i], sorts[i], releaseDate, releaseHours, username);
+            count++;
+        }
+
+        if(count > 0){
+            return new Success("发布成功!");
+        } else {
+            return new Failed("段子[{}]发布失败!", JSON.toJSONString(ids));
+        }
     }
 }

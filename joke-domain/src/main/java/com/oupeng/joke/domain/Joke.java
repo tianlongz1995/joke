@@ -69,6 +69,9 @@ public class Joke {
     /**权重*/
 	@JsonInclude(Include.NON_NULL)
 	private Integer weight;
+    /** 评审状态 */
+    @JsonInclude(Include.NON_NULL)
+    private Integer audit;
 
 
 	public Integer getId() {
@@ -256,4 +259,11 @@ public class Joke {
 	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
+
+    public Integer getAudit() {
+        return audit;
+    }
+    public void setAudit(Integer audit) {
+        this.audit = audit;
+    }
 }
