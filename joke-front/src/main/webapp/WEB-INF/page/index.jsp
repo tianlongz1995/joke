@@ -18,15 +18,15 @@
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
     <meta name="format-detection" content="telephone=no">
+    <script>
+        var navInfo = ${config};
+        var CLIENTTIME = new Date();
+        var SERVERTIME = new Date(${systemUtc});
+    </script>
     <link href="http://s.opfed.com/joke_new/prd/${index.appCss}" rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="app"></div>
-<script>
-    var navInfo = ${config};
-    var CLIENTTIME = new Date();
-    var SERVERTIME = new Date(${systemUtc});
-</script>
 <script src="http://s.opfed.com/lib/zepto/1.2.0/zepto.min.js"></script>
 <script src="http://s.opfed.com/joke_new/prd/${index.libJs}"></script>
 <script src="http://s.opfed.com/joke_new/prd/${index.appJs}"></script>
