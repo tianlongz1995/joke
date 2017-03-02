@@ -484,8 +484,7 @@ public class TaskService {
 
     /**
      * 拼接字符串
-     *
-     * @param type     (0:趣图  1:动图 2:段子)
+     * @param type  (0:趣图  1:动图 2:段子)
      * @param typeVale
      * @param counts
      * @return
