@@ -179,7 +179,7 @@ public class JokeController {
 			return new Failed("更新失败");
 		}
 	}
-	
+
 	@RequestMapping(value="/search")
 	public String searchJokeList(@RequestParam(value="jokeid",required=false)Integer jokeid,
 			                     @RequestParam(value="content",required=false)String content,

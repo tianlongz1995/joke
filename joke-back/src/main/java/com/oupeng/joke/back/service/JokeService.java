@@ -686,4 +686,14 @@ public class JokeService {
 	public List<Task> getJoke2PublishTask() {
 		return jokeMapper.getJoke2PublishTask();
 	}
+
+	/**
+	 * 获取已审核的段子列表记录总数
+	 * @param type
+	 * @param status
+	 * @return
+	 */
+	public int getJoke2ListCount(Integer type,Integer status) {
+		return jokeMapper.getJoke2ListCount(type, status);
+	}
 }

@@ -477,4 +477,30 @@ public class JokeSqlProvider {
 		return sql.toString();
 	}
 
+	/**
+	 * 获取审核段子总数SQL
+	 * @param map
+	 * @return
+	 */
+	public static String getJoke2ListCount(Map<String,Object> map){
+		Object type = map.get("type");
+		Object status = map.get("status");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select count(t1.id) from joke t1  ");
+		if(type != null || status !=null){
+			sql.append(" where ");
+			if(type != null){
+				sql.append(" t1.type = ").append(type).append(" ");
+			}
+			if (type != null && status != null){
+				sql.append(" and ");
+			}
+			if(status != null){
+				sql.append(" t1.status = ").append(status).append(" ");
+			}
+		}
+		return sql.toString();
+	}
+
+
 }
