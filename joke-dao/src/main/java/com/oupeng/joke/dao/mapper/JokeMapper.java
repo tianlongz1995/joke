@@ -14,7 +14,18 @@ public interface JokeMapper {
 	 * @return
 	 */
 	@SelectProvider(method="getJokeListForTopicCount",type=JokeSqlProvider.class)
-	int getJokeListForTopicCount(@Param("type")Integer type, @Param("status")Integer status);
+	int getJokeListForTopicCount(@Param("type")Integer type, @Param("status")Integer
+			status);
+
+	/**
+	 * 获取段子列表总数
+	 * @param type
+	 * @param status
+	 * @return
+	 */
+	@SelectProvider(method="getJokeListForCount",type=JokeSqlProvider.class)
+	int getJokeListForCount(@Param("type")Integer type, @Param("status")Integer
+			status);
 
 	/**
 	 * 获取专题段子列表

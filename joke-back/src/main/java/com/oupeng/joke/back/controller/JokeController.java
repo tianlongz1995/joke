@@ -11,6 +11,7 @@ import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,7 +56,7 @@ public class JokeController {
     @PostConstruct
     public void init(){
         String re = env.getProperty("joke.delete.recipient");
-        if(org.apache.commons.lang3.StringUtils.isNotBlank(re)){
+        if(StringUtils.isNoneBlank(re)){
             recipient = re;
         }
     }
