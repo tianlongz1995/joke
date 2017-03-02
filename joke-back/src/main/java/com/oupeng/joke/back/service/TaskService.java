@@ -302,6 +302,8 @@ public class TaskService {
             Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHH0000").format(new Date()));
             processPublishSize(task);
             Map<String, Double> map = Maps.newHashMap();
+            StringBuffer ids = new StringBuffer();
+            StringBuffer topIds = new StringBuffer();
 //            if (task.getObject().getInteger("gifNum") != null) {
 //                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
 //            }
@@ -320,13 +322,14 @@ public class TaskService {
 //            if (task.getObject().getInteger("imageWeight") != null) {
 //                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
 //            }
-            String releaseDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            String releaseDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             String releaseHours = new SimpleDateFormat("HH").format(new Date());
 //            查询当前可用的推荐首页置顶段子
             List<Joke> topList = jokeService.getJoke2RecommendTopList(releaseDate, releaseHours);
+            int topSize = 0;
             int textTop = 0, imgTop = 0, gifTop = 0;
             int index = 9999;
-            if(CollectionUtils.isEmpty(topList)){
+            if(!CollectionUtils.isEmpty(topList)){
                 for(Joke j : topList){
                     if(j.getType().equals(0)){
                         textTop++;
@@ -336,8 +339,11 @@ public class TaskService {
                         gifTop++;
                     }
                     map.put(String.valueOf(j.getId()), baseScore + Double.valueOf(index));
+                    ids.append(j.getId()).append(",");
+                    topIds.append(j.getId()).append(",");
                     index--;
                 }
+                topSize = map.size();
             }
 
             PUBLISH_TEXT_SIZE = PUBLISH_TEXT_SIZE - textTop;
@@ -355,7 +361,6 @@ public class TaskService {
             }
 //          获取推荐信息列表 - 不含置顶的段子
 
-            StringBuffer ids = new StringBuffer();
             int imgSize = 0;
             if (!CollectionUtils.isEmpty(imgList)) {
                 imgSize = imgList.size();
@@ -422,10 +427,14 @@ public class TaskService {
 //            // 更新已发布状态为 已推荐(4)
                 jokeService.updateJoke2RecommendPublishStatus(idStr);
 //                更新首页置顶段子状态为已发布
-                jokeService.updateJokeTopPublishStatus(idStr);
+                if(topSize > 0){
+                    String topIdStr = topIds.substring(0, topIds.length() - 1);
+                    jokeService.updateJokeTopPublishStatus(topIdStr);
+                }
             }
             long end = System.currentTimeMillis();
-            log.info("发布推荐[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
+            int allTotal = topSize + imgCount + gifCount + textCount;
+            log.info("发布推荐[{}]条, 置顶:[{}]条, 非置顶:[{}]条, 图片:[{}]条, 动图:[{}]条, 文字:[{}] 条, 耗时[{}], cron:{}", allTotal, topSize, imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

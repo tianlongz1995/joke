@@ -204,16 +204,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							${joke.weight}
 					</td>
 					<td>
-                            ${joke.status}
 						<c:if test="${joke.status == 0}">未审核</c:if>
                         <c:if test="${joke.audit == 6}">
-                            <a class="btn btn-warning btn-xs" href="#">
-                                <i class="glyphicon glyphicon-open icon-white"></i> 置&nbsp;顶
+                            <a class="btn btn-warning btn-xs" href="#" style="margin-bottom: 2px;">
+                                <i class="glyphicon glyphicon-open icon-white"></i> 已置顶
                             </a>
                         </c:if>
 						<c:if test="${joke.status == 1}">
                             <a class="btn btn-success btn-xs" href="#">
-                                <i class="glyphicon glyphicon-thumbs-up icon-white"></i> 通&nbsp;过
+                                <i class="glyphicon glyphicon-thumbs-up icon-white"></i> 通&nbsp;&nbsp;&nbsp;过
                             </a>
                         </c:if>
 						<c:if test="${joke.status == 2}">不通过</c:if>
@@ -235,7 +234,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<%--通过--%>
 						<c:if test="${joke.status == 1 && joke.audit != 6}">
                             <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,${joke.id})">
-                                <i class="glyphicon glyphicon-open icon-white"></i> 置  顶
+                                <i class="glyphicon glyphicon-open icon-white"></i> 置 顶
                             </a>
                             <%--<a class="btn btn-danger btn-sm" href="#" onclick="verifyJoke(2,${joke.id})">--%>
                                 <%--<i class="glyphicon glyphicon-remove icon-white"></i> 不通过--%>

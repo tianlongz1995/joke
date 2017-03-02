@@ -136,7 +136,7 @@
                                             抓取时间
                                         </c:if>
                                     </th>
-                                    <th style="width: 5%;text-align: center; vertical-align: middle;">分值</th>
+                                    <th style="width: 5%;text-align: center; vertical-align: middle;">排序值</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">状态</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">操作</th>
                                 </tr>
@@ -179,7 +179,8 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                                ${joke.sort}
+
+                                            <input id="sort${joke.id}" type="text" <c:if test="${joke.status != 0}">disabled</c:if> class="form-control input-sm" style="width: 40px;padding: 5px;" value="${joke.sort}">
                                         </td>
                                         <td>
                                             <c:if test="${joke.status == 0}">
@@ -189,7 +190,7 @@
                                             </c:if>
                                             <c:if test="${joke.status == 2}">
                                                 <a class="btn btn-warning btn-xs" href="#">
-                                                    <i class="glyphicon glyphicon-ok-circle icon-white"></i> 已发布
+                                                    <i class="glyphicon glyphicon-ok-circle icon-white"></i> 已置顶
                                                 </a>
                                             </c:if>
                                             <c:if test="${joke.status == 1}">
@@ -201,13 +202,10 @@
                                         <td>
                                             <%--未审核--%>
                                             <c:if test="${joke.status == 0}">
-                                                <a class="btn btn-primary btn-xs" href="#" onclick="verifyJoke(6,${joke.id})">
-                                                    <i class="glyphicon glyphicon-open icon-white"></i> 上移
+                                                <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${joke.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
                                                 </a>
-                                                <a class="btn btn-danger btn-xs" href="#" onclick="verifyJoke(2,${joke.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i> 下移
-                                                </a>
-                                                <a class="btn btn-success btn-xs" href="#" onclick="verifyJoke(1,${joke.id})">
+                                                <a class="btn btn-success btn-xs" href="#" onclick="process(${joke.id}, ${joke.sort})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 处理
                                                 </a>
                                             </c:if>
@@ -308,6 +306,11 @@
                     }
                 });
 
+                function editSort(id) {
+                    var sort = $("#sort" + id).val();
+                    console.log(id + ":" + sort);
+                }
+
                 /** 打开处理窗口   */
                 function process(id, sort) {
                     if ("batch" == id) {
@@ -331,6 +334,7 @@
                     // 显示定时发布日期和时间的设置窗口
                     $("#process").modal('show');
                 }
+
 
                 /** 提交处理结果   */
                 function processSubmit() {
