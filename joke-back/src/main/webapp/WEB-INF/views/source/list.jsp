@@ -31,26 +31,10 @@
 <div class="ch-container">
     <div class="row">
         <jsp:include page="../common/leftmenu.jsp"/>
-        <noscript>
-            <div class="alert alert-block col-md-12">
-                <h4 class="alert-heading">Warning!</h4>
-
-                <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>enabled to use this site.
-                </p>
-            </div>
-        </noscript>
-
         <!-- content start -->
         <div id="content" class="col-lg-10 col-sm-10">
-            <div>
-                <ul class="breadcrumb">
-                    <li><a href="source/list">内容源管理</a></li>
-                </ul>
-            </div>
-
-
             <div class="row">
-                <div class="box col-md-12">
+                <div class="box col-md-12" style="margin-top: 0;">
                     <div class="box-inner">
                         <div class="box-header well" data-original-title="">
                             <h2><i class="glyphicon glyphicon-user"></i> 内容源列表</h2>

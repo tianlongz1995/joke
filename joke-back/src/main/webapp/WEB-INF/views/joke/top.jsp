@@ -30,7 +30,6 @@
 <div class="ch-container">
     <div class="row">
         <jsp:include page="../common/leftmenu.jsp"/>
-
         <!-- content start -->
         <div id="content" class="col-lg-10 col-sm-10">
             <div class="row">
