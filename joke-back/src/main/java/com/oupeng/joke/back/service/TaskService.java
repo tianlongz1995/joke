@@ -53,28 +53,6 @@ public class TaskService {
     private static Integer PUBLISH_GIF_SIZE = 100;
     /**  发布标题 */
     private static String SUBJECT = "段子发布通知";
-    /**  各位 */
-    private static String  GEWEI= "各位：\n";
-    /**  段子推荐 */
-    private static String  DUANZTUIJIAN = "\t段子【推荐】频道发布段子信息:\n";
-    /**  段子趣图 */
-    private static String  DUANZQUTU = "\t段子【趣图】频道发布段子信息:\n";
-    /**  段子频道 */
-    private static String  DUANZ = "\t段子【段子】频道发布段子信息:\n";
-    /**  图片发布 */
-    private static String  IMG_STATUS = "\t图片：发布";
-    /**   已审*/
-    private static String  YISHEN = "条，已审核剩余";
-    /**   未审*/
-    private static String  WEISHEN = "条，未审核剩余";
-    /**  动图发布 */
-    private static String  GIF_STATUS = "条\n\t动图：发布";
-    /**  文本发布 */
-    private static String  TEXT_STATUS = "条\n\t文本：发布";
-    /**  条 */
-    private static String  TIAO = "条。";
-
-
     @Autowired
     private StdSchedulerFactory stdSchedulerFactory;
     @Autowired
@@ -215,18 +193,11 @@ public class TaskService {
             }
             // 发送邮件给yangd,抄送给shuangh
             StringBuffer contents = new StringBuffer();
-            // 文本未审核总记录数
-            int noStatusTextCount = jokeService.getJoke2ListCount(0,0);
-            // 文本已审核通过
-            int passStatusTextCount = jokeService.getJoke2ListCount(0,1);
-            // 文本已审核通过
-            int failStatusTextCount = jokeService.getJoke2ListCount(0,2);
-            // 文本审核总数剩余
-            int textStatusCount = passStatusTextCount + failStatusTextCount ;
-            contents.append(GEWEI).append(DUANZ)
-                    .append(IMG_STATUS).append(count)
-                    .append(YISHEN).append(textStatusCount)
-                    .append(WEISHEN).append(noStatusTextCount).append(TIAO);
+            int[] textCounts =  getCountByType(Constants.JOKE_TYPE_TEXT);
+            contents.append("各位：\n").append("\t段子【段子】频道发布段子信息:\n")
+                    .append("\t段子：发布").append(count)
+                    .append("条，已审核剩余").append(textCounts[1])
+                    .append("条，未审核剩余").append(textCounts[0]).append("条。");
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
 
             long end = System.currentTimeMillis();
@@ -318,30 +289,16 @@ public class TaskService {
 
             // 发送邮件给yangd,抄送给shuangh
             StringBuffer contents = new StringBuffer();
-//            contents.append("图片数量: ").append(imgCount).append(",").append("动图数量").append(gifCount).append(",").append("文章数量").append(textCount);
-            // 图片未审核总记录数
-            int noStatusImgCount = jokeService.getJoke2ListCount(1,0);
-            // 图片已审核通过
-            int passStatusImgCount = jokeService.getJoke2ListCount(1,1);
-            // 图片已审核通过
-            int failStatusImgCount = jokeService.getJoke2ListCount(1,2);
-            // 图片审核总数剩余
-            int imgStatusCount = failStatusImgCount + passStatusImgCount ;
-            // 动图未审核总记录数
-            int noStatusGifCount = jokeService.getJoke2ListCount(2,0);
-            // 动图已审核通过
-            int passStatusGifCount = jokeService.getJoke2ListCount(2,1);
-            // 动图已审核通过
-            int failStatusGifCount = jokeService.getJoke2ListCount(2,2);
-            // 动图审核总数剩余
-            int gifStatusCount = passStatusGifCount + failStatusGifCount ;
-            contents.append(GEWEI).append(DUANZQUTU)
-                    .append(IMG_STATUS).append(imgCount)
-                    .append(YISHEN).append(imgStatusCount)
-                    .append(WEISHEN).append(noStatusImgCount)
-                    .append(GIF_STATUS).append(gifCount)
-                    .append(YISHEN).append(gifStatusCount)
-                    .append(WEISHEN).append(noStatusGifCount).append(TIAO);
+            int[] imgCounts =  getCountByType(Constants.JOKE_TYPE_IMG);
+            int[] gifCounts =  getCountByType(Constants.JOKE_TYPE_GIF);
+            contents.append("各位：\n").append("\t段子【趣图】频道发布段子信息:\n")
+                    .append("\t图片：发布").append(imgCount)
+                    .append("\t图片：发布").append(imgCount)
+                    .append("条，已审核剩余").append(imgCounts[1])
+                    .append("条，未审核剩余").append(imgCounts[0])
+                    .append("条\n\t动图：发布").append(gifCount)
+                    .append("条，已审核剩余").append(gifCounts[1])
+                    .append("条，未审核剩余").append(gifCounts[0]).append("条。");
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
 
             long end = System.currentTimeMillis();
@@ -458,41 +415,19 @@ public class TaskService {
 
             // 发送邮件给yangd,抄送给shuangh
             StringBuffer contents = new StringBuffer();
-//            contents.append("图片数量: ").append(imgCount).append(",").append("动图数量").append(gifCount).append(",").append("文章数量").append(textCount);
-            // 文本未审核总记录数
-            int noStatusTextCount = jokeService.getJoke2ListCount(0,0);
-            // 文本已审核通过
-            int passStatusTextCount = jokeService.getJoke2ListCount(0,1);
-            // 文本已审核未通过
-            int failStatusTextCount = jokeService.getJoke2ListCount(0,2);
-            // 文本审核总数剩余
-            int textStatusCount = passStatusTextCount + failStatusTextCount ;
-            // 图片未审核总记录数
-            int noStatusImgCount = jokeService.getJoke2ListCount(1,0);
-            // 图片已审核通过
-            int passStatusImgCount = jokeService.getJoke2ListCount(1,1);
-            // 图片已审核通过
-            int failStatusImgCount = jokeService.getJoke2ListCount(1,2);
-            // 图片审核总数剩余
-            int imgStatusCount = failStatusImgCount + passStatusImgCount;
-            // 动图未审核总记录数
-            int noStatusGifCount = jokeService.getJoke2ListCount(2,0);
-            // 动图已审核通过
-            int passStatusGifCount = jokeService.getJoke2ListCount(2,1);
-            // 动图已审核通过
-            int failStatusGifCount = jokeService.getJoke2ListCount(2,2);
-            // 动图审核总数剩余
-            int gifStatusCount = passStatusGifCount + failStatusGifCount ;
-            contents.append(GEWEI).append(DUANZTUIJIAN)
-                    .append(IMG_STATUS).append(imgCount)
-                    .append(YISHEN).append(imgStatusCount)
-                    .append(WEISHEN).append(noStatusImgCount)
-                    .append(GIF_STATUS).append(gifCount)
-                    .append(YISHEN).append(gifStatusCount)
-                    .append(WEISHEN).append(noStatusGifCount)
-                    .append(TEXT_STATUS).append(textCount)
-                    .append(YISHEN).append(textStatusCount)
-                    .append(WEISHEN).append(noStatusTextCount).append(TIAO);
+            int[] textCounts =  getCountByType(Constants.JOKE_TYPE_TEXT);
+            int[] imgCounts =  getCountByType(Constants.JOKE_TYPE_IMG);
+            int[] gifCounts =  getCountByType(Constants.JOKE_TYPE_GIF);
+            contents.append("各位：\n").append("\t段子【推荐】频道发布段子信息:\n")
+                    .append("\t图片：发布").append(imgCount)
+                    .append("条，已审核剩余").append(imgCounts[1])
+                    .append("条，未审核剩余").append(imgCounts[0])
+                    .append("条\n\t动图：发布").append(gifCount)
+                    .append("条，已审核剩余").append(gifCounts[1])
+                    .append("条，未审核剩余").append(gifCounts[0])
+                    .append("条\n\t文本：发布").append(textCount)
+                    .append("条，已审核剩余").append(textCounts[1])
+                    .append("条，未审核剩余").append(textCounts[0]).append("条。");
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
 
             log.info("发布推荐[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
@@ -500,8 +435,6 @@ public class TaskService {
             log.error(e.getMessage(), e);
         }
     }
-
-
 
     @PreDestroy
     public void destroy() {
@@ -512,4 +445,18 @@ public class TaskService {
             log.error("关闭任务调度器异常:" + e.getMessage(), e);
         }
     }
+
+    /**
+     *
+     * 获取段子总数
+     * @parame type
+     */
+    private int[] getCountByType(int type){
+        int[] count = new int[2];
+        for (int i = 0; i < 2; i++){
+            count[i] = jokeService.getJoke2ListCount(type,i);
+        }
+        return count;
+    }
+
 }

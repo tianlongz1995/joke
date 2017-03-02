@@ -337,11 +337,10 @@ public interface JokeMapper {
 	List<Task> getJoke2PublishTask();
 
 	/**
-	 * 获取段子2.0推荐发布规则未审核过发布列表
+	 * 获取段子2.0推荐发布规则发布列表总数
 	 * @param type
 	 * @return
 	 */
-//	@Select("select count(*) from joke where find_in_set(type,'1,2')")
 	@SelectProvider(method="getJoke2ListCount",type=JokeSqlProvider.class)
 	int getJoke2ListCount(@Param("type")Integer type, @Param("status")Integer status);
 

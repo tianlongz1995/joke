@@ -688,7 +688,7 @@ public class JokeService {
 	}
 
 	/**
-	 * 获取已审核的段子列表记录总数
+	 * 获取段子列表记录总数
 	 * @param type
 	 * @param status
 	 * @return
