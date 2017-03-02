@@ -71,7 +71,6 @@ public class TaskService {
     private static final String MAIL_SUBJECT = "段子发布通知";
     private static final String MAIL_PEOPLE = "各位:\n";
     private static final String[] PUBTYPE = {"\t趣图:", "\t动图:", "\t段子:"};
-    private static final String[] CHANTYPE = {"段子", "趣图:", "推荐"};
 
 
     @Autowired
@@ -223,7 +222,7 @@ public class TaskService {
             log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
 
             //发送邮件
-            sendEmailByPub(null, null, count);
+            sendEmailByPub("段子", null, null, count);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -314,7 +313,7 @@ public class TaskService {
 
 
             //发送邮件
-            sendEmailByPub(imgCount, gifCount, null);
+            sendEmailByPub("趣图", imgCount, gifCount, null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -427,7 +426,7 @@ public class TaskService {
 
 
             //发送邮件
-            sendEmailByPub(imgCount, gifCount, textCount);
+            sendEmailByPub("推荐", imgCount, gifCount, textCount);
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -451,44 +450,35 @@ public class TaskService {
 
     }
 
-
-    private void sendEmailByPub(Integer imgCount, Integer gifCount, Integer textCount) {
-
-        int[] textAudAndNoCount;
-        int[] imgAudAndNoCount;
-        int[] gifAudAndNoCount;
-
-        int type = 0;
+    /**
+     * 根据段子频道类型发送邮件
+     *
+     * @param type
+     * @param imgCount
+     * @param gifCount
+     * @param textCount
+     */
+    private void sendEmailByPub(String type, Integer imgCount, Integer gifCount, Integer textCount) {
         //邮件内容
         StringBuffer stringBuffer = new StringBuffer();
-        if (textCount != null) {
-            type++;
-        }
+        stringBuffer.append(MAIL_PEOPLE).append("\t段子【").append(type).append("】频道发布段子信息:\n");
+
         if (imgCount != null) {
-            type++;
+            //趣图记录(0:未审核  1:审核）
+            int[] imgAudAndNoCount = getCount(Constants.JOKE_TYPE_IMG);
+            stringBuffer.append(appendString(0, imgCount, imgAudAndNoCount));
         }
         if (gifCount != null) {
-            type++;
-        }
-        if (type >= 2) {
-            //趣图记录(0:未审核  1:审核）
-            imgAudAndNoCount = getCount(Constants.JOKE_TYPE_IMG);
             //动图记录(0:未审核  1:审核）
-            gifAudAndNoCount = getCount(Constants.JOKE_TYPE_GIF);
-            stringBuffer.append(MAIL_PEOPLE).
-                    append("\t段子【").append(CHANTYPE[type - 1]).append("】频道发布段子信息:\n")
-                    .append(appendString(0, imgCount, imgAudAndNoCount))
-                    .append(appendString(1, gifCount, gifAudAndNoCount));
+            int[] gifAudAndNoCount = getCount(Constants.JOKE_TYPE_GIF);
+            stringBuffer.append(appendString(1, gifCount, gifAudAndNoCount));
         }
-        if (type == 1 || type == 3) {
+        if (textCount != null) {
             //段子(0:未审核  1:审核）
-            textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
-            if (type != 3) {
-                stringBuffer.append(MAIL_PEOPLE)
-                        .append("\t段子【").append(CHANTYPE[type - 1]).append("】频道发布段子信息:\n");
-            }
+            int[] textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
             stringBuffer.append(appendString(2, textCount, textAudAndNoCount));
         }
+
         mailService.sendMail(recipient, cc, MAIL_SUBJECT, stringBuffer.toString());
     }
 
