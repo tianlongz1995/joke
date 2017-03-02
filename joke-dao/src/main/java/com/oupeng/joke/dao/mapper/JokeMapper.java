@@ -342,7 +342,7 @@ public interface JokeMapper {
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time = now(), status = #{status}, , verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+	@Update("update joke set update_time = now(), status = #{status}, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
 	void updateJoke2PublishStatus(@Param("idsStr")String idsStr, @Param("status")Integer status);
     /**
      * 更新段子2.0文字段子已推荐状态

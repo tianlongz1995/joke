@@ -134,12 +134,7 @@
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">格式</th>
                                     <th style="width: 10%;text-align: center; vertical-align: middle;">来源</th>
                                     <th style="width: 15%;text-align: center; vertical-align: middle;">
-                                        <c:if test="${!empty status && status == 1}">
-                                            发布时间
-                                        </c:if>
-                                        <c:if test="${empty status || status != 1}">
-                                            抓取时间
-                                        </c:if>
+                                        发布时间
                                     </th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">权重值</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">状态</th>
@@ -176,11 +171,8 @@
                                                 ${joke.sourceName}
                                         </td>
                                         <td>
-                                            <c:if test="${joke.status == 1}">
+                                            <c:if test="${!empty joke.releaseDate}">
                                                 ${joke.releaseDate}&nbsp;${joke.releaseHours}点
-                                            </c:if>
-                                            <c:if test="${joke.status != 1}">
-                                                <fmt:formatDate value="${joke.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                             </c:if>
                                         </td>
                                         <td>
