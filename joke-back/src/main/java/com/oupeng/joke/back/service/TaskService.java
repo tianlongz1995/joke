@@ -194,7 +194,7 @@ public class TaskService {
             // 发送邮件给yangd,抄送给shuangh
             StringBuffer contents = new StringBuffer();
             int[] textCounts =  getCountByType(Constants.JOKE_TYPE_TEXT);
-            StringBuffer s3 = getDuanZ("文本",count,textCounts[1],textCounts[0]);
+            StringBuffer s3 = getJokeStr("文本",count,textCounts[1],textCounts[0]);
             contents.append("各位：\n").append("\t段子【段子】频道发布段子信息:\n")
                     .append(s3);
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
@@ -290,8 +290,8 @@ public class TaskService {
             StringBuffer contents = new StringBuffer();
             int[] imgCounts =  getCountByType(Constants.JOKE_TYPE_IMG);
             int[] gifCounts =  getCountByType(Constants.JOKE_TYPE_GIF);
-            StringBuffer s1 = getDuanZ("图片",imgCount,imgCounts[1],imgCounts[0]);
-            StringBuffer s2 = getDuanZ("动图",gifCount,gifCounts[1],gifCounts[0]);
+            StringBuffer s1 = getJokeStr("图片",imgCount,imgCounts[1],imgCounts[0]);
+            StringBuffer s2 = getJokeStr("动图",gifCount,gifCounts[1],gifCounts[0]);
             contents.append("各位：\n").append("\t段子【趣图】频道发布段子信息:\n")
                     .append(s1).append(s2);
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
@@ -413,9 +413,9 @@ public class TaskService {
             int[] textCounts =  getCountByType(Constants.JOKE_TYPE_TEXT);
             int[] imgCounts =  getCountByType(Constants.JOKE_TYPE_IMG);
             int[] gifCounts =  getCountByType(Constants.JOKE_TYPE_GIF);
-            StringBuffer s1 = getDuanZ("图片",imgCount,imgCounts[1],imgCounts[0]);
-            StringBuffer s2 = getDuanZ("动图",gifCount,gifCounts[1],gifCounts[0]);
-            StringBuffer s3 = getDuanZ("文本",textCount,textCounts[1],textCounts[0]);
+            StringBuffer s1 = getJokeStr("图片",imgCount,imgCounts[1],imgCounts[0]);
+            StringBuffer s2 = getJokeStr("动图",gifCount,gifCounts[1],gifCounts[0]);
+            StringBuffer s3 = getJokeStr("文本",textCount,textCounts[1],textCounts[0]);
             contents.append("各位：\n").append("\t段子【推荐】频道发布段子信息:\n")
                     .append(s1).append(s2).append(s3);
             mailService.sendMail(recipient,cc,SUBJECT,contents.toString());
@@ -455,9 +455,9 @@ public class TaskService {
      * 拼接输出发布条数
      * @parame type
      */
-    public StringBuffer getDuanZ(String str, int count, int count1, int count0) {
+    public StringBuffer getJokeStr(String str, int count, int count1, int count0) {
         StringBuffer s = new StringBuffer();
-        s.append("\t").append(str).append("：发布").append(count).append("条，已审核剩余").append(count1).append("条，未审核剩余").append(count0).append("条").append("\n");
+        s.append("\t").append(str).append("：发布").append(count).append("条，已审核剩余").append(count1).append("条，未审核剩余").append(count0).append("条\n");
         return s;
     }
 
