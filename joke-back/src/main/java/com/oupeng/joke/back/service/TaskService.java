@@ -11,6 +11,7 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.JobInfo;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.Task;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
@@ -18,6 +19,7 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -38,18 +40,40 @@ import java.util.Map;
 public class TaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
-    /**	文字权重	*/
+    /**
+     * 文字权重
+     */
     private static Integer TEXT_WEIGHT = 2;
-    /**	静图权重	*/
+    /**
+     * 静图权重
+     */
     private static Integer IMG_WEIGHT = 2;
-    /**	动图权重	*/
+    /**
+     * 动图权重
+     */
     private static Integer GIF_WEIGHT = 1;
-    /**	发布文字数量	*/
+    /**
+     * 发布文字数量
+     */
     private static Integer PUBLISH_TEXT_SIZE = 200;
-    /**	发布静图数量	*/
+    /**
+     * 发布静图数量
+     */
     private static Integer PUBLISH_IMG_SIZE = 200;
-    /**	发布动图数量	*/
+    /**
+     * 发布动图数量
+     */
     private static Integer PUBLISH_GIF_SIZE = 100;
+
+    /**
+     * 发布推荐消息邮件
+     */
+    private static final String MAIL_SUBJECT = "段子发布通知";
+    private static final String MAIL_PEOPLE = "各位:\n";
+    private static final String[] PUBTYPE = {"\t趣图:", "\t动图:", "\t段子:"};
+    private static final String[] CHANTYPE = {"段子", "趣图:", "推荐"};
+
+
     @Autowired
     private StdSchedulerFactory stdSchedulerFactory;
     @Autowired
@@ -57,6 +81,15 @@ public class TaskService {
     @Autowired
     private JedisCache jedisCache;
 
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private Environment env;
+
+    //收件人
+    private String recipient;
+    //抄送
+    private String cc;
     /**
      * 任务调度器
      */
@@ -65,13 +98,23 @@ public class TaskService {
     @PostConstruct
     public void init() {
         try {
+
+            String re = env.getProperty("data.publish.recipient");
+            if (StringUtils.isNotBlank(re)) {
+                recipient = re;
+            }
+            String co = env.getProperty("data.publish.cc");
+            if (StringUtils.isNotBlank(co)) {
+                cc = co;
+            }
+
             sched = stdSchedulerFactory.getScheduler();
             sched.start();
 //            初始化任务
             List<Task> tasks = jokeService.getJoke2PublishTask();
-            if(!CollectionUtils.isEmpty(tasks)){
-                for(Task task : tasks){
-                    if(task.getPolicy() != null){
+            if (!CollectionUtils.isEmpty(tasks)) {
+                for (Task task : tasks) {
+                    if (task.getPolicy() != null) {
                         JSONObject jsonObject = JSON.parseObject(task.getPolicy());
                         task.setObject(jsonObject);
                         task.setCron(jsonObject.getString("role"));
@@ -101,7 +144,7 @@ public class TaskService {
             jobDetail.setName(task.getId());
             jobDetail.setJobClass(Joke2PublishTask.class);
             JobDataMap jobDataMap = new JobDataMap();
-			jobDataMap.put("task", task);
+            jobDataMap.put("task", task);
             jobDataMap.put("taskService", this);
             jobDetail.setJobDataMap(jobDataMap);
             jobInfo.setJobDetail(jobDetail);
@@ -121,16 +164,17 @@ public class TaskService {
 
     /**
      * 更新任务
+     *
      * @param task
      * @return
      */
-    public boolean updateTask(Task task){
+    public boolean updateTask(Task task) {
         try {
             JobKey jobKey = new JobKey(task.getId());
             JobDetail jobDetail = sched.getJobDetail(jobKey);
             if (jobDetail != null) {
                 boolean del = sched.deleteJob(jobKey);
-                if(del){
+                if (del) {
                     log.info("更新定时任务[{}]完成:[{}]", jobDetail.getKey(), task.getObject());
                 } else {
                     log.error("更新定时任务[{}]异常:[{}]", jobDetail.getKey(), task.getObject());
@@ -147,6 +191,7 @@ public class TaskService {
     /**
      * 发布段子(文字)
      * 段子2.0
+     *
      * @param task
      */
     public void publishText(Task task) {
@@ -176,6 +221,9 @@ public class TaskService {
             }
             long end = System.currentTimeMillis();
             log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
+
+            //发送邮件
+            sendEmailByPub(null, null, count);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -184,9 +232,10 @@ public class TaskService {
     /**
      * 发布趣图
      * 段子2.0
+     *
      * @param task
      */
-    public void publishImage(Task task){
+    public void publishImage(Task task) {
         long start = System.currentTimeMillis();
         try {
             int imgCount = 0, gifCount = 0;
@@ -262,7 +311,11 @@ public class TaskService {
             }
             long end = System.currentTimeMillis();
             log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount + gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());
-        }catch (Exception e){
+
+
+            //发送邮件
+            sendEmailByPub(imgCount, gifCount, null);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
@@ -270,6 +323,7 @@ public class TaskService {
     /**
      * 发布推荐消息
      * 段子2.0
+     *
      * @param task
      */
     public void publishRecommend(Task task) {
@@ -370,10 +424,90 @@ public class TaskService {
             }
             long end = System.currentTimeMillis();
             log.info("发布推荐[{}]条(img:{}, gif:{}, text:{}), 耗时[{}], cron:{}", imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
+
+
+            //发送邮件
+            sendEmailByPub(imgCount, gifCount, textCount);
+
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
+
+    /**
+     * 根据段子类型，获取段子数:
+     * count[0]=未审核
+     * count[1]=已审核
+     *
+     * @param type
+     * @return
+     */
+    private int[] getCount(Integer type) {
+        int[] count = new int[2];
+        for (int i = 0; i < 2; i++) {
+            count[i] = jokeService.getJokeListForCount(type, i);
+        }
+        return count;
+
+    }
+
+
+    private void sendEmailByPub(Integer imgCount, Integer gifCount, Integer textCount) {
+
+        int[] textAudAndNoCount;
+        int[] imgAudAndNoCount;
+        int[] gifAudAndNoCount;
+
+        int type = 0;
+        //邮件内容
+        StringBuffer stringBuffer = new StringBuffer();
+        if (textCount != null) {
+            type++;
+        }
+        if (imgCount != null) {
+            type++;
+        }
+        if (gifCount != null) {
+            type++;
+        }
+        if (type >= 2) {
+            //趣图记录(0:未审核  1:审核）
+            imgAudAndNoCount = getCount(Constants.JOKE_TYPE_IMG);
+            //动图记录(0:未审核  1:审核）
+            gifAudAndNoCount = getCount(Constants.JOKE_TYPE_GIF);
+            stringBuffer.append(MAIL_PEOPLE).
+                    append("\t段子【").append(CHANTYPE[type - 1]).append("】频道发布段子信息:\n")
+                    .append(appendString(0, imgCount, imgAudAndNoCount))
+                    .append(appendString(1, gifCount, gifAudAndNoCount));
+        }
+        if (type == 1 || type == 3) {
+            //段子(0:未审核  1:审核）
+            textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
+            if (type != 3) {
+                stringBuffer.append(MAIL_PEOPLE)
+                        .append("\t段子【").append(CHANTYPE[type - 1]).append("】频道发布段子信息:\n");
+            }
+            stringBuffer.append(appendString(2, textCount, textAudAndNoCount));
+        }
+        mailService.sendMail(recipient, cc, MAIL_SUBJECT, stringBuffer.toString());
+    }
+
+    /**
+     * 拼接字符串
+     *
+     * @param type     (0:趣图  1:动图 2:段子)
+     * @param typeVale
+     * @param counts
+     * @return
+     */
+    private String appendString(Integer type, Integer typeVale, int[] counts) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(PUBTYPE[type]).append("发布").append(typeVale).append("条")
+                .append("，已审核剩余").append(counts[1]).append("条")
+                .append("，未审核剩余").append(counts[0]).append("条").append("。\n");
+        return sb.toString();
+    }
+
 
     @PreDestroy
     public void destroy() {
