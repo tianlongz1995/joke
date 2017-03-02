@@ -818,7 +818,47 @@ public class JokeService {
         if(count > 0){
             return new Success("发布成功!");
         } else {
-            return new Failed("段子[{}]发布失败!", JSON.toJSONString(ids));
+            return new Failed("段子["+JSON.toJSONString(ids)+"]发布失败!");
+        }
+    }
+
+    /**
+     * 修改排序值
+     * @param id
+     * @param sort
+     * @param username
+     * @return
+     */
+    public Result editTopJokeSort(Integer id, Integer sort, String username) {
+        int count =  jokeMapper.editTopJokeSort(id, sort, username);
+        if(count == 1){
+            return new Success("修改成功!");
+        } else {
+            return new Failed("段子["+id+"]修改排序值["+sort+"]失败!");
+        }
+    }
+
+    /**
+     * 批量修改排序值
+     * @param ids
+     * @param sorts
+     * @param username
+     * @return
+     */
+    public Result editTopJokeSorts(Integer[] ids, Integer[] sorts, String username) {
+        if(ids == null || ids.length < 1 || sorts == null || ids.length != sorts.length){
+            return new Failed("参数错误!");
+        }
+        int count = 0;
+        for(int i = 0; i < ids.length; i++){
+            jokeMapper.editTopJokeSort(ids[i], sorts[i], username);
+            count++;
+        }
+
+        if(count > 0){
+            return new Success("修改成功!");
+        } else {
+            return new Failed("段子["+ JSON.toJSONString(ids)+"]修改排序值["+JSON.toJSONString(sorts)+"]失败!");
         }
     }
 }

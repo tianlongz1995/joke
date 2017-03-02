@@ -116,7 +116,12 @@
                                     <c:if test="${status == 0}">
                                         <label style="padding-right:10px;">
                                             <a class="btn btn-success btn-sm" href="#" onclick="process('batch', 'batch')">
-                                                <i class="glyphicon glyphicon-time icon-white"></i> 批量定时
+                                                <i class="glyphicon glyphicon-time icon-white"></i> 批量置顶
+                                            </a>
+                                        </label>
+                                        <label style="padding-right:10px;">
+                                            <a class="btn btn-primary btn-sm" href="#" onclick="editSorts()">
+                                                <i class="glyphicon glyphicon-time icon-white"></i> 批量排序
                                             </a>
                                         </label>
                                     </c:if>
@@ -136,7 +141,7 @@
                                             抓取时间
                                         </c:if>
                                     </th>
-                                    <th style="width: 5%;text-align: center; vertical-align: middle;">排序值</th>
+                                    <th style="width: 5%;text-align: center; vertical-align: middle;">权重值</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">状态</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">操作</th>
                                 </tr>
@@ -179,10 +184,11 @@
                                             </c:if>
                                         </td>
                                         <td>
-
                                             <input id="sort${joke.id}" type="text" <c:if test="${joke.status != 0}">disabled</c:if> class="form-control input-sm" style="width: 40px;padding: 5px;" value="${joke.sort}">
                                         </td>
+
                                         <td>
+                                                <%-- 状态 --%>
                                             <c:if test="${joke.status == 0}">
                                                 <a class="btn btn-default btn-xs" href="#">
                                                     <i class="glyphicon glyphicon-question-sign" style="color: sandybrown;"></i> 未审核
@@ -201,12 +207,12 @@
                                         </td>
                                         <td>
                                             <%--未审核--%>
-                                            <c:if test="${joke.status == 0}">
+                                            <c:if test="${!empty status && status == 0}">
                                                 <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${joke.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
                                                 </a>
                                                 <a class="btn btn-success btn-xs" href="#" onclick="process(${joke.id}, ${joke.sort})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 处理
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
                                                 </a>
                                             </c:if>
                                         </td>
@@ -306,9 +312,53 @@
                     }
                 });
 
+                /** 修改排序值   */
                 function editSort(id) {
                     var sort = $("#sort" + id).val();
                     console.log(id + ":" + sort);
+                    post('joke/editTopJokeSort',
+                            'id=' + id  + '&sort=' + sort,
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert('成功:' + data.info);
+                                } else {
+                                    alert('处理失败:' + data.info);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
+                }
+
+                /** 修改排序值   */
+                function editSorts() {
+                    var ids = [];
+                    var sorts = [];
+                    $('input[name="jokeId"]:checked').each(function () {
+                        var i = $(this).val();
+                        ids.push(i);
+                        var sortValue = $("#sort" + i).val();
+                        sorts.push(sortValue)
+                    });
+                    if (ids.length < 1 || sorts.length < 1) {
+                        alert("未选中任何内容");
+                        return false;
+                    }
+                    var id = ids.toString();
+                    var sort = sorts.toString();
+//                    alert(id + "=" + sort);
+                    post('joke/editTopJokeSorts',
+                            'ids=' + id  + '&sorts=' + sort,
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert('成功:' + data.info);
+                                } else {
+                                    alert('处理失败:' + data.info);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
                 }
 
                 /** 打开处理窗口   */
@@ -317,8 +367,10 @@
                         var ids = [];
                         var sorts = [];
                         $('input[name="jokeId"]:checked').each(function () {
-                            ids.push($(this).val());
-                            sorts.push($(this).attr('sort'))
+                            var i = $(this).val();
+                            ids.push(i);
+                            var sortValue = $("#sort" + i).val();
+                            sorts.push(sortValue)
                         });
                         if (ids.length == 0 || sorts.length == 0) {
                             alert("未选中任何内容");

@@ -413,4 +413,38 @@ public class JokeController {
         return jokeService.releaseTopJoke(ids, sorts, releaseDate, releaseHours, username);
     }
 
+
+    /**
+     * 修改排序值
+     * @param id
+     * @param sort
+     * @return
+     */
+    @RequestMapping(value="/editTopJokeSort")
+    @ResponseBody
+    public Result editTopJokeSort(@RequestParam(value="id")Integer id,
+                                  @RequestParam(value="sort")Integer sort){
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        return jokeService.editTopJokeSort(id, sort, username);
+    }
+
+    /**
+     * 批量修改排序值
+     * @param ids
+     * @param sorts
+     * @return
+     */
+    @RequestMapping(value="/editTopJokeSorts")
+    @ResponseBody
+    public Result editTopJokeSorts(@RequestParam(value="ids")Integer[] ids,
+                                  @RequestParam(value="sorts")Integer[] sorts){
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        return jokeService.editTopJokeSorts(ids, sorts, username);
+    }
 }

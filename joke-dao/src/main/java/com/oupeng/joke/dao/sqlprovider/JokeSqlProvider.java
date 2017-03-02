@@ -560,7 +560,7 @@ public class JokeSqlProvider {
         if(status != null && status.equals(1)){ // 已处理 - 审核通过 - 待发布
             sql.append(" jt.release_date asc, jt.release_hours asc ");
         } else {
-            sql.append(" jt.create_time desc ");
+            sql.append(" jt.sort desc ");
         }
         sql.append(" limit ").append(offset).append(", ").append(pageSize);
 

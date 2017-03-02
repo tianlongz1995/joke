@@ -371,7 +371,7 @@ public interface JokeMapper {
      * @param releaseHours
      * @return
      */
-    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort asc")
+    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort desc")
     List<Joke> getJoke2RecommendTopList(@Param("releaseDate")String releaseDate, @Param("releaseHours")String releaseHours);
 
     /**
@@ -431,4 +431,16 @@ public interface JokeMapper {
                        @Param("releaseDate")String releaseDate,
                        @Param("releaseHours")String releaseHours,
                        @Param("username")String username);
+
+    /**
+     * 修改排序值
+     * @param id
+     * @param sort
+     * @param username
+     * @return
+     */
+    @Update("update joke_top set update_time = now(), update_user= #{username}, sort = #{sort} where jid = #{id}")
+    int editTopJokeSort(@Param("id")Integer id,
+                        @Param("sort")Integer sort,
+                        @Param("username")String username);
 }
