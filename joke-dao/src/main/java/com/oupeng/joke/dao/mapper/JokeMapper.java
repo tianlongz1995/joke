@@ -346,4 +346,13 @@ public interface JokeMapper {
 	 */
 	@Select("select id, `describe` as name, `type`, `value` as policy from dictionary where code in('10041','10042','10043')")
 	List<Task> getJoke2PublishTask();
+
+	/**
+	 * 获取段子2.0推荐发布规则发布列表总数
+	 * @param type
+	 * @return
+	 */
+	@SelectProvider(method="getJoke2ListCount",type=JokeSqlProvider.class)
+	int getJoke2ListCount(@Param("type")Integer type, @Param("status")Integer status);
+
 }
