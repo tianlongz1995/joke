@@ -874,4 +874,14 @@ public class JokeService {
             return new Failed("段子["+ JSON.toJSONString(ids)+"]修改排序值["+JSON.toJSONString(sorts)+"]失败!");
         }
     }
+
+    /**
+     * 获取段子2.0记录数量
+     * @param type
+     * @param status
+     * @return
+     */
+    public int getJokeListForCount(Integer type, int status) {
+        return jokeMapper.getJokeListForCount(type, status);
+    }
 }

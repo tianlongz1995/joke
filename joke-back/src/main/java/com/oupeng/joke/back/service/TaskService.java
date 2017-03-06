@@ -40,6 +40,12 @@ import java.util.Map;
 public class TaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
+    /**
+     * 发布推荐消息邮件
+     */
+    private static final String MAIL_SUBJECT = "段子发布通知";
+    private static final String MAIL_PEOPLE = "各位:\n";
+    private static final String[] PUBTYPE = {"\t趣图:", "\t动图:", "\t段子:"};
     /**	文字权重	*/
     private static Integer TEXT_WEIGHT = 2;
     /**	静图权重	*/
@@ -68,7 +74,6 @@ public class TaskService {
     private String cc = "shuangh@oupeng.com";
     /** 邮件主题    */
     private String subject = "段子发布通知";
-
     /**
      * 任务调度器
      */
@@ -193,6 +198,10 @@ public class TaskService {
                 // 更新已发布状态
                 jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 3);
             }
+
+            //发送邮件
+            sendEmailByPub("段子", null, null, count);
+
             long end = System.currentTimeMillis();
             log.info("2.0 - 发布段子[{}]条, 耗时[{}], cron:{}", count, FormatUtil.getTimeStr(end - start), task.getObject());
         } catch (Exception e) {
@@ -265,6 +274,10 @@ public class TaskService {
                 // 更新已发布状态
                 jokeService.updateJoke2PublishStatus(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 3);
             }
+
+            //发送邮件
+            sendEmailByPub("趣图", imgCount, gifCount, null);
+
             long end = System.currentTimeMillis();
             log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount + gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());
         }catch (Exception e){
@@ -396,6 +409,9 @@ public class TaskService {
                     jokeService.updateJokeTopPublishStatus(topIdStr);
                 }
             }
+            //发送邮件
+            sendEmailByPub("推荐", imgCount, gifCount, textCount);
+
             long end = System.currentTimeMillis();
             int allTotal = topSize + imgCount + gifCount + textCount;
             log.info("发布推荐[{}]条, 置顶:[{}]条, 非置顶:[{}]条, 图片:[{}]条, 动图:[{}]条, 文字:[{}] 条, 耗时[{}], cron:{}", allTotal, topSize, imgCount + gifCount + textCount, imgCount, gifCount, textCount, FormatUtil.getTimeStr(end - start), task.getObject());
@@ -431,6 +447,69 @@ public class TaskService {
         }
     }
 
+    /**
+     * 拼接字符串
+     * @param type  (0:趣图  1:动图 2:段子)
+     * @param typeVale
+     * @param counts
+     * @return
+     */
+    private String appendString(Integer type, Integer typeVale, int[] counts) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(PUBTYPE[type]).append("发布").append(typeVale).append("条")
+                .append("，已审核剩余").append(counts[1]).append("条")
+                .append("，未审核剩余").append(counts[0]).append("条").append("。\n");
+        return sb.toString();
+    }
+
+    /**
+     * 根据段子频道类型发送邮件
+     *
+     * @param type
+     * @param imgCount
+     * @param gifCount
+     * @param textCount
+     */
+    private void sendEmailByPub(String type, Integer imgCount, Integer gifCount, Integer textCount) {
+        //邮件内容
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(MAIL_PEOPLE).append("\t段子【").append(type).append("】频道发布段子信息:\n");
+
+        if (imgCount != null) {
+            //趣图记录(0:未审核  1:审核）
+            int[] imgAudAndNoCount = getCount(Constants.JOKE_TYPE_IMG);
+            stringBuffer.append(appendString(0, imgCount, imgAudAndNoCount));
+        }
+        if (gifCount != null) {
+            //动图记录(0:未审核  1:审核）
+            int[] gifAudAndNoCount = getCount(Constants.JOKE_TYPE_GIF);
+            stringBuffer.append(appendString(1, gifCount, gifAudAndNoCount));
+        }
+        if (textCount != null) {
+            //段子(0:未审核  1:审核）
+            int[] textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
+            stringBuffer.append(appendString(2, textCount, textAudAndNoCount));
+        }
+
+        mailService.sendMail(recipient, cc, MAIL_SUBJECT, stringBuffer.toString());
+    }
+
+    /**
+     * 根据段子类型，获取段子数:
+     * count[0]=未审核
+     * count[1]=已审核
+     *
+     * @param type
+     * @return
+     */
+    private int[] getCount(Integer type) {
+        int[] count = new int[2];
+        for (int i = 0; i < 2; i++) {
+            count[i] = jokeService.getJokeListForCount(type, i);
+        }
+        return count;
+
+    }
 
     @PreDestroy
     public void destroy() {

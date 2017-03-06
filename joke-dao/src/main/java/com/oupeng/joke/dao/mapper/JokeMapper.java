@@ -443,4 +443,12 @@ public interface JokeMapper {
     int editTopJokeSort(@Param("id")Integer id,
                         @Param("sort")Integer sort,
                         @Param("username")String username);
+
+    /**
+     * 获取段子2.0记录数量
+     * @param type
+     * @return
+     */
+    @Select("select count(id) from joke where type = #{type} and status = #{status}")
+    int getJokeListForCount(@Param("type")Integer type, @Param("status")Integer status);
 }
