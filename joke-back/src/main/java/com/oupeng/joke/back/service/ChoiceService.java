@@ -3,6 +3,7 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImageUtil;
 import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
@@ -11,6 +12,7 @@ import com.oupeng.joke.domain.Choice;
 import com.oupeng.joke.domain.Comment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,8 @@ public class ChoiceService {
     private String showPath;
     private String realPath;
     private String cropPath;
+    private String cropRealPath;
+    private String srcRealPath;
 
     @PostConstruct
     public void initPath() {
@@ -53,6 +57,8 @@ public class ChoiceService {
         String s = env.getProperty("show_image_path");
         String r = env.getProperty("img.real.server.url");
         String c = env.getProperty("remote.crop.img.server.url");
+        String creal=env.getProperty("crop.img.url");
+        String sreal=env.getProperty("img.server.url");
         if(StringUtils.isNotEmpty(u)){
             uploadPath = u;
         }
@@ -64,6 +70,12 @@ public class ChoiceService {
         }
         if(StringUtils.isNotEmpty(c)){
             cropPath = c;
+        }
+        if(StringUtils.isNotBlank(creal)){
+            cropRealPath=creal;
+        }
+        if(StringUtils.isNotBlank(sreal)){
+            srcRealPath=sreal;
         }
     }
 
@@ -104,7 +116,7 @@ public class ChoiceService {
      * @param content
      */
     public boolean addChoice(String title, String content, String image, Integer width, Integer height,String publishTime) {
-        String newImg = handleImg(image, true);
+        String newImg = handleImg(image,true);
         if (StringUtils.isBlank(newImg)) {
             return false;
         }
@@ -115,10 +127,10 @@ public class ChoiceService {
     }
 
     public String handleImg(String imgUrl, boolean isCrop) {
-        if (StringUtils.isNotBlank(imgUrl)) {
-            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, isCrop);
-            if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
-                return imgRespDto.getImgUrl();
+        if (StringUtils.isNotBlank(imgUrl)&&isCrop) {
+            String imgurl = ImageUtil.handleImg(cropPath,cropRealPath,imgUrl,srcRealPath);
+            if (imgurl != null && imgurl.length() != 0) {
+                return imgurl;
             }
         }
         return null;

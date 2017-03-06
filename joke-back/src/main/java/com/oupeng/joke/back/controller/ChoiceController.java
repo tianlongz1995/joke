@@ -1,6 +1,9 @@
 package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.ChoiceService;
+import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImageUtil;
+import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.domain.Choice;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
@@ -82,6 +85,7 @@ public class ChoiceController {
                             @RequestParam(value = "image") String image,
                             @RequestParam(value = "width") Integer width,
                             @RequestParam(value = "height") Integer height) {
+
         List<String> tempUrl = choiceService.getImgUrl(content);
         List<String> realUrl;
         if (!CollectionUtils.isEmpty(tempUrl)) {

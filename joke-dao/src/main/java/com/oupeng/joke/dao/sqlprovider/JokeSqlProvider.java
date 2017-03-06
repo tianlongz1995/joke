@@ -39,7 +39,7 @@ public class JokeSqlProvider {
         Object type = map.get("type");
         Object status = map.get("status");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select count(t1.id) from joke t1 where 1=1");
+        sql.append(" select count(t1.id) from joke t1 where 1=1").append(" ");
 
         if (type != null) {
             sql.append("and t1.type = ").append(type).append(" ");
