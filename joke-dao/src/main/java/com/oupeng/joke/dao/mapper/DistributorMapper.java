@@ -90,5 +90,11 @@ public interface DistributorMapper {
 	List<Distributor> getAllDistributors();
 	
 	@Select(value="SELECT id FROM distributor WHERE name like '%${name}%'")
-	public List<Integer> getDistributorIdListByName(@Param(value = "name")String name);
+	List<Integer> getDistributorIdListByName(@Param(value = "name")String name);
+
+    @Select("select id from joke where source_id = #{sourceId} and type = 0")
+    List<String> getErrorJoke(@Param("sourceId")int sourceId);
+
+    @Delete("delete from joke where source_id = #{sourceId}")
+    int delErrorJoke(@Param("sourceId")int sourceId);
 }
