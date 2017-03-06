@@ -178,16 +178,12 @@ public class TaskService {
             Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             Map<String, Double> map = Maps.newHashMap();
             processPublishSize(task);
-//            if (task.getObject().getInteger("textNum") != null) {
-//                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
-//            } 100 10
             List<Joke> list = jokeService.getJoke2PublishList(Constants.AUD, 0, PUBLISH_TEXT_SIZE);
             StringBuffer ids = new StringBuffer();
             if (!CollectionUtils.isEmpty(list)) {
                 int i = list.size();
                 for (Joke j : list) {
                     int id = j.getId();
-//                    int weight = j.getWeight();
                     map.put(Integer.toString(id), baseScore + Double.valueOf(i));
                     ids.append(id).append(",");
                     count++;
@@ -216,20 +212,6 @@ public class TaskService {
             Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHHmm00").format(new Date()));
             Map<String, Double> map = Maps.newHashMap();
             processPublishSize(task);
-//            if (task.getObject().getInteger("gifNum") != null) {
-//                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
-//            }
-//            if (task.getObject().getInteger("imageNum") != null) {
-//                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
-//            }
-//
-//            if (task.getObject().getInteger("gifWeight") != null) {
-//                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
-//            }
-//
-//            if (task.getObject().getInteger("imageWeight") != null) {
-//                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
-//            }
             List<Joke> imgList = jokeService.getJoke2PublishList(Constants.AUD, 1, PUBLISH_IMG_SIZE);
             List<Joke> gifList = jokeService.getJoke2PublishList(Constants.AUD, 2, PUBLISH_GIF_SIZE);
             StringBuffer ids = new StringBuffer();
@@ -304,24 +286,6 @@ public class TaskService {
             Map<String, Double> map = Maps.newHashMap();
             StringBuffer ids = new StringBuffer();
             StringBuffer topIds = new StringBuffer();
-//            if (task.getObject().getInteger("gifNum") != null) {
-//                PUBLISH_GIF_SIZE = task.getObject().getInteger("gifNum");
-//            }
-//            if (task.getObject().getInteger("imageNum") != null) {
-//                PUBLISH_IMG_SIZE = task.getObject().getInteger("imageNum");
-//            }
-//            if (task.getObject().getInteger("textNum") != null) {
-//                PUBLISH_TEXT_SIZE = task.getObject().getInteger("textNum");
-//            }
-//            if (task.getObject().getInteger("textWeight") != null) {
-//                TEXT_WEIGHT = task.getObject().getInteger("textWeight");
-//            }
-//            if (task.getObject().getInteger("gifWeight") != null) {
-//                GIF_WEIGHT = task.getObject().getInteger("gifWeight");
-//            }
-//            if (task.getObject().getInteger("imageWeight") != null) {
-//                IMG_WEIGHT = task.getObject().getInteger("imageWeight");
-//            }
             String releaseDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             String releaseHours = new SimpleDateFormat("HH").format(new Date());
 //            查询当前可用的推荐首页置顶段子

@@ -132,7 +132,7 @@
                                         </td>
                                         <td class="idselect">
                                             <a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke(${joke.id})">
-                                                <i class="glyphicon glyphicon-remove icon-white"></i>删除
+                                                <i class="glyphicon glyphicon-remove icon-white"></i> 不通过
                                             </a>
                                         </td>
                                     </tr>
