@@ -1,11 +1,8 @@
 package com.oupeng.joke.back.util;
 
-import java.awt.*;
+
 import java.io.IOException;
 
-import magick.ImageInfo;
-import magick.MagickException;
-import magick.MagickImage;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
@@ -68,31 +65,5 @@ public class HttpUtil {
 		}
 		return imgRespDto;
 	}
-	/*
-	public static ImgRespDto handleImg(String cropPath, String imgPath,boolean isCrop) {
 
-		ImageInfo info = null;
-		MagickImage image = null;
-		MagickImage cropImage = null;
-		Rectangle rect = null;
-		int width=200;
-        ImgReqDto imgReqDto=new ImgReqDto(imgPath,true);
-		int height=200;
-		try {
-			info = new ImageInfo(imgPath);
-			image = new MagickImage(info);
-
-			rect=new Rectangle(width,height);
-			cropImage=image.cropImage(rect);
-			return null;
-		} catch (MagickException me) {
-			logger.error("upload img to crop error !", me);
-		} finally {
-			if (cropImage != null) {
-				cropImage.destroyImages();
-			}
-		}
-		return null;
-	}
-	*/
 }

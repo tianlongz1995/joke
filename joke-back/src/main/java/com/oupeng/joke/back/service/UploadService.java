@@ -15,25 +15,30 @@ import java.util.UUID;
 @Service
 public class UploadService {
 
-	private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
-	
-	@Autowired
-	private Environment env;
-	
-	public String copyImg(MultipartFile img){
-		String suffix = FilenameUtils.getExtension(img.getOriginalFilename());
+    private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
+
+    @Autowired
+    private Environment env;
+
+    public String copyImg(MultipartFile img) {
+        String suffix = FilenameUtils.getExtension(img.getOriginalFilename());
+
+        if (!suffix.equalsIgnoreCase("gif")) {
+            suffix = "jpg";
+        }
+
         String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()
                 + FilenameUtils.EXTENSION_SEPARATOR_STR + suffix;
         String path = FilenameUtils.concat(env.getProperty("upload_image_path"), newFileName);
-		//TODO  改回
+        //TODO  改回
 //        String path = "C:/Users/rainy/joke/"+newFileName;
         String url = null;
         try {
-			img.transferTo(new File(path));
-			url = env.getProperty("show_image_path") + newFileName;
-		} catch (IllegalStateException | IOException e) {
-			logger.error("image upload error!",e);
-		}
+            img.transferTo(new File(path));
+            url = env.getProperty("show_image_path") + newFileName;
+        } catch (IllegalStateException | IOException e) {
+            logger.error("image upload error!", e);
+        }
         return url;
-	}
+    }
 }
