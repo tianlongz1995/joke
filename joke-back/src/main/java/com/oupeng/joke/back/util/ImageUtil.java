@@ -3,7 +3,6 @@ package com.oupeng.joke.back.util;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -55,14 +54,9 @@ public class ImageUtil {
                 file.delete();
             }
         }
-
         return dest.substring(dest.lastIndexOf("/") + 1);
 
     }
-
-//    public  static void main(String[] args){
-//        handleImg("E:/oupeng/joke/joke-back/target/joke-back-2.0/resources/image/","http://localhost:8080/joke-back/resources/image/1488879731750_32963b0b-ad83-4e08-9e43-dfb03f710314.gif",false);
-//    }
 
     private static void handleImg(String src, String dest, String type) {
 
@@ -91,8 +85,7 @@ public class ImageUtil {
             //写入缩减后的图片
             ImageIO.write((BufferedImage) itemp, dest.substring(dest.lastIndexOf(".") + 1), destFile);
         } catch (Exception e) {
-//            logger.error("upload img to crop error !", e);
-            e.printStackTrace();
+            logger.error("upload img to crop error !", e);
         }
     }
 }
