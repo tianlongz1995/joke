@@ -49,7 +49,7 @@ public class ChoiceService {
     private String realPath;
     private String cropPath;
     private String cropRealPath;
-    private String srcRealPath;
+
 
     @PostConstruct
     public void initPath() {
@@ -57,26 +57,24 @@ public class ChoiceService {
         String s = env.getProperty("show_image_path");
         String r = env.getProperty("img.real.server.url");
         String c = env.getProperty("remote.crop.img.server.url");
-        String creal=env.getProperty("crop.img.url");
-        String sreal=env.getProperty("img.server.url");
-        if(StringUtils.isNotEmpty(u)){
+        String creal = env.getProperty("crop.img.url");
+
+        if (StringUtils.isNotEmpty(u)) {
             uploadPath = u;
         }
-        if(StringUtils.isNotEmpty(s)){
+        if (StringUtils.isNotEmpty(s)) {
             showPath = s;
         }
-        if(StringUtils.isNotEmpty(r)){
+        if (StringUtils.isNotEmpty(r)) {
             realPath = r;
         }
-        if(StringUtils.isNotEmpty(c)){
+        if (StringUtils.isNotEmpty(c)) {
             cropPath = c;
         }
-        if(StringUtils.isNotBlank(creal)){
-            cropRealPath=creal;
+        if (StringUtils.isNotBlank(creal)) {
+            cropRealPath = creal;
         }
-        if(StringUtils.isNotBlank(sreal)){
-            srcRealPath=sreal;
-        }
+
     }
 
     /**
@@ -115,20 +113,20 @@ public class ChoiceService {
      * @param title
      * @param content
      */
-    public boolean addChoice(String title, String content, String image, Integer width, Integer height,String publishTime) {
-        String newImg = handleImg(image,true);
+    public boolean addChoice(String title, String content, String image, Integer width, Integer height, String publishTime) {
+        String newImg = handleImg(image, true);
         if (StringUtils.isBlank(newImg)) {
             return false;
         }
-        int bad  = 150 -(int)(Math.random()*150);
-        int good = 500 +(int)(Math.random()*500);
-        choiceMapper.addChoice(title, content, newImg, width,height,publishTime,good,bad);
+        int bad = 150 - (int) (Math.random() * 150);
+        int good = 500 + (int) (Math.random() * 500);
+        choiceMapper.addChoice(title, content, newImg, width, height, publishTime, good, bad);
         return true;
     }
 
     public String handleImg(String imgUrl, boolean isCrop) {
-        if (StringUtils.isNotBlank(imgUrl)&&isCrop) {
-            String imgurl = ImageUtil.handleImg(cropPath,cropRealPath,imgUrl,srcRealPath);
+        if (StringUtils.isNotBlank(imgUrl)) {
+            String imgurl = ImageUtil.handleImg(cropRealPath, imgUrl, isCrop);
             if (imgurl != null && imgurl.length() != 0) {
                 return imgurl;
             }
@@ -256,7 +254,7 @@ public class ChoiceService {
         return tempUrl;
     }
 
-    public boolean updateChoice(Integer id, String title, String content, String image, Integer width, Integer height,String publishTime) {
+    public boolean updateChoice(Integer id, String title, String content, String image, Integer width, Integer height, String publishTime) {
         String newImg;
         //重新上传的图片
         if (image.startsWith(showPath)) {
@@ -268,7 +266,7 @@ public class ChoiceService {
             //已经上传的图片
             newImg = image.replace(realPath, "");
         }
-        choiceMapper.updateChoice(id, title, content, newImg, width, height,publishTime);
+        choiceMapper.updateChoice(id, title, content, newImg, width, height, publishTime);
         return true;
     }
 
@@ -286,9 +284,9 @@ public class ChoiceService {
         //精选id列表，缓存key
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         //上线
-        if(Constants.CHOICE_STATUS_VALID == status){
-            result = validChoice(choice,true);
-        }else if(Constants.CHOICE_STATUS_PUBLISH !=status){ //下线
+        if (Constants.CHOICE_STATUS_VALID == status) {
+            result = validChoice(choice, true);
+        } else if (Constants.CHOICE_STATUS_PUBLISH != status) { //下线
             //删除精选
             jedisCache.del(choiceKey);
             //删除列表中Id
@@ -296,33 +294,34 @@ public class ChoiceService {
             //删除推荐中Id
             jedisCache.srem(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(choice.getId()));
         }
-         if(result == null){
-             choiceMapper.updateChoiceStatus(id,status);
-         }
-      return result;
+        if (result == null) {
+            choiceMapper.updateChoiceStatus(id, status);
+        }
+        return result;
     }
 
     /**
      * 立即发布
+     *
      * @param id
      * @return
      */
-    public String publishChoiceNow(Integer id){
+    public String publishChoiceNow(Integer id) {
         Choice choice = choiceMapper.getChoiceById(id);
         String choiceKey = JedisKey.STRING_JOKE + id;
         //精选id列表，缓存key
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
         String result = validChoice(choice, false);
-        if(null == result){
+        if (null == result) {
             //1 增加缓存
             choice.setType(3);
-            if(choice.getCommentNumber()!=null){
-                choice.setComment(new Comment(choice.getCommentNumber(),null,null,null));
+            if (choice.getCommentNumber() != null) {
+                choice.setComment(new Comment(choice.getCommentNumber(), null, null, null));
             }
             jedisCache.set(choiceKey, JSON.toJSONString(choice));
             jedisCache.zadd(choiceListKey, System.currentTimeMillis(), choice.getId().toString());
             //2 更新发布状态
-            choiceMapper.updateChoiceStatus(choice.getId(),3);
+            choiceMapper.updateChoiceStatus(choice.getId(), 3);
             //3 加入相关推荐
             jedisCache.sadd(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(choice.getId()));
         }
@@ -330,10 +329,10 @@ public class ChoiceService {
     }
 
 
-    public String validChoice(Choice choice,boolean validPublishTime){
+    public String validChoice(Choice choice, boolean validPublishTime) {
 
-        if(validPublishTime){
-            if(choice.getPublishTime() == null){
+        if (validPublishTime) {
+            if (choice.getPublishTime() == null) {
                 return "精选的发布时间不能为空";
             }
             Calendar calendar = Calendar.getInstance();
@@ -342,11 +341,11 @@ public class ChoiceService {
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            if(choice.getPublishTime().compareTo(calendar.getTime()) < 0){
+            if (choice.getPublishTime().compareTo(calendar.getTime()) < 0) {
                 return "发布时间最少要在下一个小时";
             }
         }
-        if(StringUtils.isBlank(choice.getContent())){
+        if (StringUtils.isBlank(choice.getContent())) {
             return "精选的内容不能为空";
         } else if (StringUtils.isBlank(choice.getImg())) {
             return "精选的封面图不能为空";
@@ -356,9 +355,10 @@ public class ChoiceService {
 
     /**
      * 获取带发布的精选列表
+     *
      * @return
      */
-    public  List<Choice> getChoiceForPublish(){
+    public List<Choice> getChoiceForPublish() {
         return choiceMapper.getChoiceForPublish();
     }
 }
