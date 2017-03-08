@@ -12,6 +12,7 @@
         <module>joke-dao</module>
         <module>joke-domain</module>
         <module>joke-cache</module>
+        <module>spider</module>
     </modules>
 
     <properties>

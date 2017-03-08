@@ -394,3 +394,8 @@ alter table choice add COLUMN `comment_number` int(11) DEFAULT '0' COMMENT '评�
 
 -- 修改choice自增初始值
 alter table choice AUTO_INCREMENT = 20000000;
+
+
+-- 新增发布段子用户头像url、发布段子用户昵称字段
+alter table joke add COLUMN `release_avata` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户头像url';
+alter table joke add COLUMN `release_nick` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户昵称';
