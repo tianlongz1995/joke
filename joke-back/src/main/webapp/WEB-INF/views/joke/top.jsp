@@ -36,7 +36,7 @@
                 <div class="box col-md-12" style="margin-top: 0;">
                     <div class="box-inner">
                         <div class="box-header well" data-original-title="">
-                            <h2><i class="glyphicon glyphicon-user"></i> 内容列表</h2>
+                            <h2><i class="glyphicon glyphicon-user"></i> 首页置顶列表</h2>
                         </div>
                         <div class="box-content" style="vertical-align: middle;">
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
@@ -88,7 +88,7 @@
                                                     <c:if test="${!empty status && status == 1}">selected</c:if> >已处理
                                             </option>
                                             <option value="2"
-                                                    <c:if test="${!empty status && status == 2}">selected</c:if> >已发布
+                                                    <c:if test="${!empty status && status == 2}">selected</c:if> >已置顶
                                             </option>
                                         </select>
                                     </div>
@@ -182,7 +182,7 @@
                                                 <%-- 状态 --%>
                                             <c:if test="${joke.status == 0}">
                                                 <a class="btn btn-default btn-xs" href="#">
-                                                    <i class="glyphicon glyphicon-question-sign" style="color: sandybrown;"></i> 未审核
+                                                    <i class="glyphicon glyphicon-question-sign" style="color: sandybrown;"></i> 未处理
                                                 </a>
                                             </c:if>
                                             <c:if test="${joke.status == 2}">
@@ -192,7 +192,7 @@
                                             </c:if>
                                             <c:if test="${joke.status == 1}">
                                                 <a class="btn btn-success btn-xs" href="#">
-                                                    <i class="glyphicon glyphicon-thumbs-up"></i> 通&nbsp;过
+                                                    <i class="glyphicon glyphicon-thumbs-up"></i> 已处理
                                                 </a>
                                             </c:if>
                                         </td>
@@ -206,11 +206,9 @@
                                                         <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
                                                     </a>
                                                 </c:if>
-                                                <c:if test="${!empty status && status == 2}">
-                                                    <a class="btn btn-danger btn-xs" href="#" onclick="offline(${joke.id})">
-                                                        <i class="glyphicon glyphicon-remove icon-white"></i> 下线
-                                                    </a>
-                                                </c:if>
+                                                <a class="btn btn-danger btn-xs" href="#" onclick="offline(${joke.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i> 下线
+                                                </a>
                                         </td>
                                     </tr>
                                 </c:forEach>

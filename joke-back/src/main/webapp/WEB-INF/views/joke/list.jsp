@@ -37,7 +37,7 @@
                 <div class="box col-md-12" style="margin-top: 0;">
                     <div class="box-inner">
                         <div class="box-header well" data-original-title="">
-                            <h2><i class="glyphicon glyphicon-user"></i> 内容列表</h2>
+                            <h2><i class="glyphicon glyphicon-user"></i> 内容审核列表</h2>
                         </div>
                         <div class="box-content" style="vertical-align: middle;">
                             <div class="alert alert-info" style="vertical-align: middle;margin: auto;padding: 10px;">
