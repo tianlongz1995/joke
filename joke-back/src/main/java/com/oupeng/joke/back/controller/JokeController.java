@@ -458,4 +458,8 @@ public class JokeController {
         return new Success();
     }
 
+    @RequestMapping(value="/addJokePage")
+    public String addJokePage(){
+        return "joke/add";
+    }
 }
