@@ -450,6 +450,11 @@ public class JokeController {
         return jokeService.editTopJokeSorts(ids, sorts, username);
     }
 
+    /**
+     * 置顶段子下线
+     * @param ids
+     * @return
+     */
     @RequestMapping(value="/topOffline", produces = {"application/json"})
     @ResponseBody
     public Result topOffline(@RequestParam(value="ids")String ids){
@@ -458,6 +463,10 @@ public class JokeController {
         return new Success();
     }
 
+    /**
+     * 添加段子页面
+     * @return
+     */
     @RequestMapping(value="/addJokePage")
     public String addJokePage(){
         return "joke/add";

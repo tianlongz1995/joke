@@ -53,11 +53,11 @@
                                 <label style="padding-right:30px;">
                                     <span>动图:<c:out value="${type2}"></c:out></span>
                                 </label>
-                                <div style="float: right">
-                                    <a class="btn btn-success btn-sm" href="joke/addJokePage" >
-                                        <i class="glyphicon glyphicon-add icon-white"></i>新增段子
-                                    </a>
-                                </div>
+                                <%--<div style="float: right">--%>
+                                    <%--<a class="btn btn-success btn-sm" href="joke/addJokePage" >--%>
+                                        <%--<i class="glyphicon glyphicon-add icon-white"></i>新增段子--%>
+                                    <%--</a>--%>
+                                <%--</div>--%>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
                                 <div class="dataTables_filter" id="DataTables_Table_0_filter" style="margin: 15px 5px;">
