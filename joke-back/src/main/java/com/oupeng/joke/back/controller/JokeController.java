@@ -471,4 +471,34 @@ public class JokeController {
     public String addJokePage(){
         return "joke/add";
     }
+
+
+    /**
+     * 新增段子
+     * @param title
+     * @param type
+     * @param image
+     * @param content
+     * @param weight
+     * @param width
+     * @param height
+     * @return
+     */
+    @RequestMapping(value="/addJoke", produces = {"application/json"})
+    @ResponseBody
+    public Result addJoke(@RequestParam(value = "title", required = false) String title,
+                          @RequestParam(value = "type") Integer type,
+                          @RequestParam(value = "image", required = false) String image,
+                          @RequestParam(value = "content") String content,
+                          @RequestParam(value = "weight")  Integer weight,
+                          @RequestParam(value = "width",required = false) Integer width,
+                          @RequestParam(value = "height",required = false) Integer height) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean result = jokeService.addJoke(title, type, image, content, weight, width, height, username);
+        if (result) {
+            return new Success("添加成功!");
+        } else {
+            return new Failed("添加失败!");
+        }
+    }
 }

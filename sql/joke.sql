@@ -394,3 +394,8 @@ alter table choice add COLUMN `comment_number` int(11) DEFAULT '0' COMMENT '评�
 
 -- 修改choice自增初始值
 alter table choice AUTO_INCREMENT = 20000000;
+
+
+alter table joke add COLUMN `create_by` varchar(128) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人';
+
+insert into source(id, name, status, create_time) value(1, '用户录入', 1, now());

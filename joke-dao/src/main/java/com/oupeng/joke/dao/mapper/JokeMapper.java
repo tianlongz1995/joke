@@ -477,4 +477,38 @@ public interface JokeMapper {
      */
     @Update("update joke_top set update_time = now(), update_user= #{username}, status = 3 where jid in (${ids})")
     int topJokeOffline(@Param("ids")String ids,  @Param("username")String username);
+
+    /**
+     * 新增段子
+     * @param title
+     * @param type
+     * @param img
+     * @param gif
+     * @param good
+     * @param bad
+     * @param uuid
+     * @param avata
+     * @param nick
+     * @param content
+     * @param weight
+     * @param width
+     * @param height
+     * @param username
+     * @return
+     */
+    @InsertProvider(method = "addJoke",type = JokeSqlProvider.class)
+    int addJoke(@Param("title")String title,
+                @Param("type")Integer type,
+                @Param("img")String img,
+                @Param("gif")String gif,
+                @Param("good")int good,
+                @Param("bad")int bad,
+                @Param("uuid")String uuid,
+                @Param("avata")String avata,
+                @Param("nick")String nick,
+                @Param("content")String content,
+                @Param("weight")Integer weight,
+                @Param("width")Integer width,
+                @Param("height")Integer height,
+                @Param("username")String username);
 }

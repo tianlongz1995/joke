@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class JokeService {
@@ -923,4 +924,35 @@ public class JokeService {
         }
     }
 
+    /**
+     * 新增段子
+     * @param title
+     * @param type
+     * @param img
+     * @param content
+     * @param weight
+     * @param width
+     * @param height
+     * @param username
+     * @return
+     */
+    public boolean addJoke(String title, Integer type, String img, String content, Integer weight, Integer width, Integer height, String username) {
+//        随机点赞点踩数
+        int bad  = 150 -(int)(Math.random()*150);
+        int good = 500 +(int)(Math.random()*500);
+        String uuid = UUID.randomUUID().toString();
+
+        Comment comment = new Comment();
+
+//        将图片从临时目录上传到CDN目录(images)
+        String gif = "";
+
+
+        int count = jokeMapper.addJoke(title, type, img, gif, good, bad, uuid, comment.getAvata(), comment.getNick(), content, weight, width, height, username);
+        if(count > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
