@@ -124,40 +124,21 @@ public class JokeService {
             }
         }
     }
-	/**
-	 * 修改审核状态
-	 * @param status
-	 * @param ids
-	 * @param user
-	 */
-	public void verifyJoke(Integer status,String ids,String user){
+
+    /**
+     * 修改审核状态
+     * @param status    段子待修改状态
+     * @param ids       段子编号
+     * @param user      操作用户
+     * @param allStatus 当前段子所在状态
+     */
+	public void verifyJoke(Integer status,String ids,String user,Integer allStatus){
 		String[] jokeIds = ids.split(",");
 		if(status.equals(Constants.JOKE_STATUS_VALID)){ // status = 1 通过
 			// 更改状态
 			jokeMapper.updateJokeStatus(status, ids, user);
 			//加到缓存
-			for (String id : jokeIds) {
-				Joke joke = jokeMapper.getJokeById(Integer.parseInt(id));
-				if (joke != null) {
-                    joke.setCreateTime(null);
-                    joke.setSourceId(null);
-                    joke.setStatus(null);
-                    joke.setUpdateTime(null);
-                    joke.setVerifyTime(null);
-                    joke.setVerifyUser(null);
-                    if(joke.getCommentNumber() != null
-                            && joke.getCommentContent() != null
-                            && joke.getAvata() != null
-                            && joke.getNick() != null){
-                        joke.setComment(new Comment(joke.getCommentNumber(), joke.getCommentContent(), joke.getAvata(),joke.getNick()));
-                        joke.setCommentNumber(null);
-                        joke.setCommentContent(null);
-                        joke.setAvata(null);
-                        joke.setNick(null);
-    				}
-					jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
-				}
-			}
+            jokeToCache(ids);
             logger.info("内容审核：段子id[{}]：通过",ids);
 		}else if(status.equals(Constants.JOKE_STATUS_NOVALID)){ // status = 2 不通过(删除)
 //			  清除缓存
@@ -172,14 +153,53 @@ public class JokeService {
             jokeMapper.updateJokeStatus(Constants.JOKE_STATUS_NOVALID, ids, user); // 下线段子修改为不通过
             logger.info("内容审核：段子:[{}]下线!", ids);
 		}else if(status.equals(Constants.JOKE_STATUS_TOP)) { // status = 6 置顶 只改status,不改audit
-//          更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
-            jokeMapper.updateJokeTopAudit(ids, user);
+            if(allStatus != null && allStatus.equals(1)){ // 已通过的段子置顶
+//              更新置顶状态不改变更新时间, 避免影响段子、趣图发布时的顺序
+                jokeMapper.updateJokeTopAudit(ids, user);
+//              保存置顶段子
+                jokeMapper.insertJokeTop(ids);
+            }
+            if(allStatus != null && allStatus.equals(0)){ // 未审核的段子置顶
+//                修改段子状态为已审核、置顶
+                jokeMapper.updateJokeToTopAndAudit(ids, user);
+                //加到缓存
+                jokeToCache(ids);
+//              保存置顶段子
+                jokeMapper.insertJokeTop(ids);
+            } else {
+                logger.error("内容审核：未审核、已通过状态下不能置顶段子![{}]", ids);
+            }
 
-//            保存置顶段子
-            jokeMapper.insertJokeTop(ids);
             logger.info("内容审核：段子id[{}]置顶!", ids);
         }
 	}
+
+    /**
+     * 缓存段子
+     * @param jokeIds
+     */
+	private void jokeToCache(String jokeIds){
+        List<Joke> jokes = jokeMapper.getCacheJokeListByIds(jokeIds);
+        if(CollectionUtils.isEmpty(jokes)){
+            logger.error("缓存段子失败! 获取段子列表为空:[{}]", jokeIds);
+        }
+        //加到缓存
+        for (Joke joke : jokes) {
+            if (joke != null) {
+                if(joke.getCommentNumber() != null
+                        && joke.getCommentContent() != null
+                        && joke.getAvata() != null
+                        && joke.getNick() != null){
+                    joke.setComment(new Comment(joke.getCommentNumber(), joke.getCommentContent(), joke.getAvata(),joke.getNick()));
+                    joke.setCommentNumber(null);
+                    joke.setCommentContent(null);
+                    joke.setAvata(null);
+                    joke.setNick(null);
+                }
+                jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
+            }
+        }
+    }
 
     /**
      * 清除段子缓存
@@ -194,14 +214,12 @@ public class JokeService {
         }
         //删除段子
         for(String id : jokeIds){
-            //  type 0:纯文本 1:图片 2:动图 3 精选
-            //段子缓存(1:趣图、2:段子、3:推荐、4:精选)
-            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 1, id);
-            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 2, id);
-            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 3, id);
-            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 4, id);
+            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 1, id); // 从趣图频道删除
+            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 2, id); // 从段子频道删除
+            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 3, id); // 从精选频道删除
+            jedisCache.zrem(JedisKey.JOKE_CHANNEL + 4, id); // 从精选频道删除
             //删除段子
-            jedisCache.del(JedisKey.STRING_JOKE + id);
+            jedisCache.del(JedisKey.STRING_JOKE + id);      // 删除段子缓存
         }
     }
 
@@ -884,4 +902,25 @@ public class JokeService {
     public int getJokeListForCount(Integer type, int status) {
         return jokeMapper.getJokeListForCount(type, status);
     }
+
+    /**
+     * 置顶段子下线
+     * @param ids
+     * @param username
+     * @return
+     */
+    public Result topOffline(String ids, String username) {
+//        清除缓存
+        cleanJokeCache(ids.split(","));
+//        更新置顶表数据库状态 - 下线(status=3)
+        int count = jokeMapper.topJokeOffline(ids, username);
+//        更新段子表数据状态为不通过 - 下线(status=5)
+        jokeMapper.updateJokeStatus(5, ids, username);
+        if(count > 0){
+            return new Success("修改成功!");
+        } else {
+            return new Failed("段子["+ JSON.toJSONString(ids)+"]下线失败!");
+        }
+    }
+
 }

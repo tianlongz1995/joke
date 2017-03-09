@@ -122,16 +122,18 @@ public class JokeController {
 
 	/**
 	 * 修改审核状态
-	 * @param ids
-	 * @param status
+     * @param ids       段子编号
+	 * @param status    段子待修改状态
+     * @param allStatus 当前段子所在状态
 	 * @return
 	 */
 	@RequestMapping(value="/verify", produces = {"application/json"})
 	@ResponseBody
 	public Result verify(@RequestParam(value="ids")String ids,
-						 @RequestParam(value="status")Integer status){
+						 @RequestParam(value="status")Integer status,
+                         @RequestParam(value="allStatus", required = false)Integer allStatus){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		jokeService.verifyJoke(status, ids, username);
+		jokeService.verifyJoke(status, ids, username, allStatus);
 		return new Success();
 	}
 
@@ -447,4 +449,13 @@ public class JokeController {
         }
         return jokeService.editTopJokeSorts(ids, sorts, username);
     }
+
+    @RequestMapping(value="/topOffline", produces = {"application/json"})
+    @ResponseBody
+    public Result topOffline(@RequestParam(value="ids")String ids){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        jokeService.topOffline(ids, username);
+        return new Success();
+    }
+
 }

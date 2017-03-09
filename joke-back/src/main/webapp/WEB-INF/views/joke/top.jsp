@@ -197,15 +197,20 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                            <%--未审核--%>
-                                            <c:if test="${!empty status && status == 0}">
-                                                <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${joke.id})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
-                                                </a>
-                                                <a class="btn btn-success btn-xs" href="#" onclick="process(${joke.id}, ${joke.sort})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
-                                                </a>
-                                            </c:if>
+                                                <%--未审核--%>
+                                                <c:if test="${!empty status && status == 0}">
+                                                    <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${joke.id})">
+                                                        <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
+                                                    </a>
+                                                    <a class="btn btn-success btn-xs" href="#" onclick="process(${joke.id}, ${joke.sort})">
+                                                        <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
+                                                    </a>
+                                                </c:if>
+                                                <c:if test="${!empty status && status == 2}">
+                                                    <a class="btn btn-danger btn-xs" href="#" onclick="offline(${joke.id})">
+                                                        <i class="glyphicon glyphicon-remove icon-white"></i> 下线
+                                                    </a>
+                                                </c:if>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -376,8 +381,22 @@
 
                     // 显示定时发布日期和时间的设置窗口
                     $("#process").modal('show');
-                }
+                };
 
+                function offline(id) {
+                    post('joke/topOffline',
+                            'ids=' + id,
+                            function (data) {
+                                if (data.status == 1) {
+                                    turnPage();
+                                } else {
+                                    alert('处理失败:' + data.info);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
+                };
 
                 /** 提交处理结果   */
                 function processSubmit() {

@@ -138,7 +138,7 @@
                                             </a>
                                         </label>
                                     </c:if>
-                                    <c:if test="${status == 1}">
+                                    <c:if test="${status == 0 || status == 1}">
                                         <label style="padding-right:10px;">
                                             <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,'batch')">
                                                 <i class="glyphicon glyphicon-open icon-white"></i> 批量置顶
@@ -237,7 +237,7 @@
                                                 </a>
                                             </c:if>
                                                 <%--通过--%>
-                                            <c:if test="${joke.status == 1 && joke.audit != 6}">
+                                            <c:if test="${(joke.status == 0 || joke.status == 1) && joke.audit != 6}">
                                                 <a class="btn btn-primary btn-sm" href="#" onclick="verifyJoke(6,${joke.id})">
                                                     <i class="glyphicon glyphicon-open icon-white"></i> 置 顶
                                                 </a>
@@ -332,7 +332,7 @@
                         id = ids.toString();
                     }
                     post('joke/verify',
-                            'ids=' + id + '&status=' + status,
+                            'ids=' + id + '&status=' + status + '&allStatus=' + $("#status").val(),
                             function (data) {
                                 if (data.status == 1) {
                                     turnPage();

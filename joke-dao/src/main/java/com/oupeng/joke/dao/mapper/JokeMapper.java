@@ -175,7 +175,16 @@ public interface JokeMapper {
      */
     @Update("update joke set audit = 6, verify_time = now(), verify_user= #{user} where id in (${ids})")
     void updateJokeTopAudit(@Param("ids")String ids, @Param("user")String user);
-	/**
+
+    /**
+     * 更新段子状态为已通过、置顶, 并修改更新时间
+     * @param ids
+     * @param user
+     */
+    @Update("update joke set status = 1 ,audit = 6, verify_time = now(), verify_user= #{user}, update_time = now() where id in (${ids})")
+    void updateJokeToTopAndAudit(@Param("ids")String ids, @Param("user")String user);
+
+    /**
 	 * 获取字典记录总条数
 	 * @param code
 	 * @return
@@ -451,4 +460,21 @@ public interface JokeMapper {
      */
     @Select("select count(id) from joke where type = #{type} and status = #{status}")
     int getJokeListForCount(@Param("type")Integer type, @Param("status")Integer status);
+
+    /**
+     * 获取待缓存的段子信息
+     * @param jokeIds
+     * @return
+     */
+    @Select("select id,title,content,img,gif,type,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id in (${jokeIds})")
+    List<Joke> getCacheJokeListByIds(@Param("jokeIds")String jokeIds);
+
+    /**
+     * 置顶段子下线
+     * @param ids
+     * @param username
+     * @return
+     */
+    @Update("update joke_top set update_time = now(), update_user= #{username}, status = 3 where jid in (${ids})")
+    int topJokeOffline(@Param("ids")String ids,  @Param("username")String username);
 }
