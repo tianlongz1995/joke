@@ -2,10 +2,12 @@ package com.oupeng.joke.back.util;
 
 import java.io.IOException;
 
+import com.oupeng.joke.domain.Comment;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -64,4 +66,45 @@ public class HttpUtil {
 		}
 		return imgRespDto;
 	}
+
+    /**
+     * 获取随机用户信息
+     * @param randomUserUrl
+     * @return
+     */
+    public static Comment getRandomUser(String randomUserUrl) {
+        CloseableHttpClient httpClient = null;
+        CloseableHttpResponse response = null;
+        HttpGet httpGet = new HttpGet(randomUserUrl);
+        Comment comment = new Comment();
+            try {
+            httpClient = HttpClients.createDefault();
+                response = httpClient.execute(httpGet);
+                String result = EntityUtils.toString(response.getEntity());
+                JSONObject jsonObject = new JSONObject().parseObject(result.toString().trim());
+                if(jsonObject != null && jsonObject.get("avata") != null && jsonObject.get("nick") != null){
+                    comment.setAvata(jsonObject.get("avata").toString());
+                    comment.setNick(jsonObject.get("nick").toString());
+                }
+            return comment;
+        } catch (IOException e) {
+            logger.error("upload img to crop error !",e);
+            return comment;
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+                logger.error("upload img to crop error !", e);
+            }
+        }
+    }
+
+    public static void main(String[] a){
+        HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+    }
 }

@@ -44,6 +44,8 @@ public class JokeService {
 
     private String remoteImgPrefix = "http://joke2-img.oupeng.com/";
 
+    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
+
     @PostConstruct
     private void init(){
         String url = env.getProperty("img.real.server.url");
@@ -57,6 +59,13 @@ public class JokeService {
             remoteImgPrefix = remoteImgUrl;
         } else {
             logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+        }
+
+        String userUrl = env.getProperty("random.user.url");
+        if (StringUtils.isNoneBlank(userUrl)) {
+            randomUserUrl = userUrl;
+        } else {
+            logger.error("getProperty(\"random.user.url\") is null:{}", url);
         }
     }
 
@@ -941,12 +950,10 @@ public class JokeService {
         int bad  = 150 -(int)(Math.random()*150);
         int good = 500 +(int)(Math.random()*500);
         String uuid = UUID.randomUUID().toString();
-
-        Comment comment = new Comment();
+        Comment comment = HttpUtil.getRandomUser(randomUserUrl);
 
 //        将图片从临时目录上传到CDN目录(images)
         String gif = "";
-
 
         int count = jokeMapper.addJoke(title, type, img, gif, good, bad, uuid, comment.getAvata(), comment.getNick(), content, weight, width, height, username);
         if(count > 0){
