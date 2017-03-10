@@ -65,8 +65,6 @@
                                     <td>
                                         <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png" class="form-control"/>
                                         <input id="image" type="hidden" value=""/>
-                                        <input id="width" type="hidden"/>
-                                        <input id="height" type="hidden"/>
                                         <img id="imgPriview" style="display: none"   >
                                         <input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除"/>
                                     </td>
@@ -85,12 +83,10 @@
                                 </thead>
                             </table>
                             <div style="width: 100%;text-align: center;">
-                                <a id="addJoke" onclick="addJoke" class="btn btn-primary" href="#" style="vertical-align: middle;" >
+                                <a id="addJoke" onclick="addJoke()" class="btn btn-primary" style="vertical-align: middle;" >
                                     <i class="glyphicon glyphicon-plus-sign icon-white"></i> 新增段子
                                 </a>
                             </div>
-
-
                         </div>
                     </div>
                 </div><!-- box col-md-12 end -->
@@ -111,30 +107,43 @@
                 $('#imgDelButton').click(function () {
                     $('#img').val('');
                     $('#image').val('');
-                    $('#width').val('');
-                    $('#height').val('');
                     $("#imgPriview").hide();
                     $("#imgDelButton").css('display', 'none');
                 });
 
                 $('#img').change(function () {
+                    var type = $('input:radio[name="type"]:checked').val();
                     var file = $(this)[0].files[0];
+                    if (type == null) {
+                        alert("没有选中类型!");
+                        return false;
+                    } else {
+                        if(type == 1){
+                            var point = file.name.lastIndexOf(".");
+                            var suffix = file.name.substr(point);
+                            if(suffix != '.jpg' && suffix != '.jpeg' && suffix != '.png' && suffix != '.JPG' && suffix != '.JPEG' && suffix != '.PNG'){
+                                alert("图片类型只支持:jpg、jpeg、png格式的图片!");
+                                return false;
+                            }
+                        } else if(type == 2){
+                            var point = file.name.lastIndexOf(".");
+                            var suffix = file.name.substr(point);
+                            if(suffix != '.gif'){
+                                alert("动图类型只支持:gif格式的图片!");
+                                return false;
+                            }
+                        }
+
+                    }
+
                     $(this).OupengUpload(file, {
                         url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
                         acceptFileTypes: 'image/*',
                         maxFileSize: 1024 * 1024 * 5,
                         minFileSize: 0,
                         onUploadSuccess: function (data) {
-//                            if (data.substring(data.length - 4) == ".gif") {
-//                                $("#gifUrl").val(data);
-//                                $("#imgUrl").val('');
-//                            } else {
-//                                $("#imgUrl").val(data);
-//                                $("#gifUrl").val('');
-//                            }
 //                            console.log(data);
                             $('#image').val('' + data);
-                            $('#height').val('');
                             $("#imgPriview").attr('src', data).show();
                             $("#imgDelButton").show();
                         },
@@ -146,15 +155,30 @@
 
                 function addJoke() {
                     var type = $('input:radio[name="type"]:checked').val();
-                    if (type == null) {
-                        alert("没有选中类型");
+                    var weight = $("#weight").val();
+                    var content = $("#content").val();
+                    var image = $("#image").val();
+                    if(weight == null || weight.length < 1 || isNaN(weight)){
+                        alert("权重必须是数字!");
                         return false;
                     }
-
+                    if (type == null) {
+                        alert("没有选中类型!");
+                        return false;
+                    } else {
+                        if(type > 0 && image.length < 10){
+                            alert("您还没有上传图片!");
+                            return false;
+                        }
+                    }
+                    if(content.replace(/(^s*)|(s*$)/g, "").length ==0){
+                        alert("内容不能为空!");
+                        return false;
+                    }
                     $('#addJoke').attr("disabled", "disabled");
                     post('joke/addJoke',
-                            'title=' + $("#title").val() + '&type=' + type + '&image=' + $("#image").val() + '&content=' + $("#content").val()
-                            + '&width=' + $("#width").val() + '&height=' + $("#height").val() + '&weight=' + $("#weight").val(),
+                            'title=' + $("#title").val() + '&type=' + type + '&image=' + image
+                            + '&content=' + content + '&weight=' + weight,
                             function (data) {
                                 if (data['status']) {
                                     location.href = '<%=basePath%>joke/list';
@@ -175,7 +199,9 @@
                         type: 'POST', url: url, data: data, success: success, error: error,
                         headers: {'X-CSRF-TOKEN': csrfToken}
                     });
-                }
+                };
+
+
             </script>
 
         </div><!-- content end -->

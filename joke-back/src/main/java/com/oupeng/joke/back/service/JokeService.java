@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.ImageUtils;
 import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.*;
+import com.oupeng.joke.domain.Dictionary;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -22,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.io.File;
+import java.util.*;
 
 @Service
 public class JokeService {
@@ -39,12 +39,15 @@ public class JokeService {
 	private TaskService taskService;
 	@Autowired
 	private Environment env;
+    private String uploadImagePath = "/nh/java/back/resources/image/";
 
     private String imgPrefix = "http://joke2-img.oupeng.com/";
 
     private String remoteImgPrefix = "http://joke2-img.oupeng.com/";
 
     private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
+
+    private String cdnImagePath = "/data01/images/";
 
     @PostConstruct
     private void init(){
@@ -54,18 +57,31 @@ public class JokeService {
         } else {
             logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
         }
+        String uploadPath = env.getProperty("upload_image_path");
+        if (StringUtils.isNoneBlank(uploadPath)) {
+            uploadImagePath = uploadPath;
+        } else {
+            logger.error("getProperty(\"upload_image_path\") is null:{}", uploadPath);
+        }
+        String cdnPath = env.getProperty("img.cdn.path");
+        if (StringUtils.isNoneBlank(cdnPath)) {
+            cdnImagePath = cdnPath;
+        } else {
+            logger.error("getProperty(\"img.cdn.path\") is null:{}", cdnPath);
+        }
+
         String remoteImgUrl = env.getProperty("remote.crop.img.server.url");
         if (StringUtils.isNoneBlank(remoteImgUrl)) {
             remoteImgPrefix = remoteImgUrl;
         } else {
-            logger.error("getProperty(\"img.real.server.url\") is null:{}", url);
+            logger.error("getProperty(\"img.real.server.url\") is null:{}", remoteImgUrl);
         }
 
         String userUrl = env.getProperty("random.user.url");
         if (StringUtils.isNoneBlank(userUrl)) {
             randomUserUrl = userUrl;
         } else {
-            logger.error("getProperty(\"random.user.url\") is null:{}", url);
+            logger.error("getProperty(\"random.user.url\") is null:{}", userUrl);
         }
     }
 
@@ -940,26 +956,87 @@ public class JokeService {
      * @param img
      * @param content
      * @param weight
-     * @param width
-     * @param height
      * @param username
      * @return
      */
-    public boolean addJoke(String title, Integer type, String img, String content, Integer weight, Integer width, Integer height, String username) {
+    public boolean addJoke(String title, Integer type, String img, String content, Integer weight, String username) {
 //        随机点赞点踩数
         int bad  = 150 -(int)(Math.random()*150);
         int good = 500 +(int)(Math.random()*500);
         String uuid = UUID.randomUUID().toString();
         Comment comment = HttpUtil.getRandomUser(randomUserUrl);
-
+        String fileName = getUrlImageFileName(img);
+        String storeName = "";
+        String gif = null;
+        Image image = new Image();
+        int random  = new Random().nextInt(3000);
+        try {
+            File dir = null;
 //        将图片从临时目录上传到CDN目录(images)
-        String gif = "";
+            if(type > 0){
+                if(fileName == null && fileName.length() < 1){
+                    logger.error("上传的图片类型段子没有图片信息:[{}]", img);
+                    return false;
+                }
+                dir = new File(cdnImagePath + random + "/");
+                if(!dir.isDirectory()){
+                    dir.mkdirs();
+                }
+//                所有静图都格式化为jpg
+                if(type.equals(1)){
+                    storeName = fileName.substring(0, fileName.lastIndexOf("."));
+                    storeName = storeName + ".jpg";
+//                    生成图片并获得宽高
+                    ImageUtils.generateImage(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + storeName, "jpg", image);
+                    img = random + "/" + storeName;
+                } else if(type.equals(2)){
+                    //            将图片拷贝到CDN目录下
+                    boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + fileName);
+                    if(!copyStatus){
+                        return false;
+                    }
+//                  获得宽高
+                    ImageUtils.getImgWidthAndHeight(new File(dir.getCanonicalPath() + "/" + fileName), image);
+                    img = random + "/" + fileName;
+                }
 
-        int count = jokeMapper.addJoke(title, type, img, gif, good, bad, uuid, comment.getAvata(), comment.getNick(), content, weight, width, height, username);
+            }
+            if(type == 2 & img != null && img.length() > 10){
+                String newFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
+                boolean copyStatus = ImageUtils.getGifOneFrame(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + newFileName, 5);
+//                String jpgName = fileName.replace("gif", "jpg");
+//                boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + jpgName, dir.getCanonicalPath() + jpgName);
+                if(!copyStatus){
+                    return false;
+                }
+                gif = img;
+                img = random + "/" + newFileName;
+            }
+        } catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+
+        int count = jokeMapper.addJoke(title, type, img, gif, good, bad, uuid, comment.getAvata(), comment.getNick(), content, weight, image.getWidth(), image.getHeight(), username);
         if(count > 0){
+
+
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 获取远程URL图片名称
+     * @param img
+     * @return
+     */
+    private String getUrlImageFileName(String img) {
+        int pos = img.lastIndexOf("/");
+        if(pos < 0){
+            return null;
+        }
+        return img.substring(pos + 1);
     }
 }

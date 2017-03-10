@@ -480,8 +480,6 @@ public class JokeController {
      * @param image
      * @param content
      * @param weight
-     * @param width
-     * @param height
      * @return
      */
     @RequestMapping(value="/addJoke", produces = {"application/json"})
@@ -490,11 +488,9 @@ public class JokeController {
                           @RequestParam(value = "type") Integer type,
                           @RequestParam(value = "image", required = false) String image,
                           @RequestParam(value = "content") String content,
-                          @RequestParam(value = "weight")  Integer weight,
-                          @RequestParam(value = "width",required = false) Integer width,
-                          @RequestParam(value = "height",required = false) Integer height) {
+                          @RequestParam(value = "weight",required = false)  Integer weight) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean result = jokeService.addJoke(title, type, image, content, weight, width, height, username);
+        boolean result = jokeService.addJoke(title, type, image, content, weight, username);
         if (result) {
             return new Success("添加成功!");
         } else {

@@ -77,7 +77,7 @@
             </div><!-- row end -->
 
             <script type="text/javascript">
-                $('#updateAd').click(function (event) {
+                $('#updateAd').click(function () {
                     $('#updateAd').attr("disabled", "disabled");
                     post('source/update',
                             'id=' + $("#sourceid").val() + '&name=' + $("#name").val() + '&url=' + $('#url').val() + '&status=' + $('#status').val(),
@@ -96,7 +96,6 @@
                 });
 
                 function post(url, data, success, error) {
-                    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
                     $.ajax({
                         type: 'POST', url: url, data: data, success: success, error: error,
