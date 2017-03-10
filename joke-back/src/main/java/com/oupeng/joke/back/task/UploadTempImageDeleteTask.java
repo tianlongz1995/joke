@@ -61,7 +61,7 @@ public class UploadTempImageDeleteTask {
                 logger.info("删除临时图:[{}]",tempList[i]);
             }
             if (tempList[i].isDirectory()) {
-                logger.info("文件夹：" + tempList[i]);
+                logger.info("文件夹:[{}]", tempList[i]);
             }
         }
         long end = System.currentTimeMillis();
