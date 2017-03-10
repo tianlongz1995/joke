@@ -39,8 +39,6 @@ public class UploadService {
         String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString()
                 + FilenameUtils.EXTENSION_SEPARATOR_STR + suffix;
         String path = FilenameUtils.concat(uploadImagePath, newFileName);
-		//TODO  改回
-//        String path = "C:/Users/rainy/joke/"+newFileName;
         String url = null;
         try {
 			img.transferTo(new File(path));
