@@ -44,21 +44,21 @@
                                     <label style="padding-right:10px;">
                                         <span>开始</span>
                                         <c:if test="${empty startDay}">
-                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value=""
+                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value=""
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                         <c:if test="${!empty startDay}">
-                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${startDay}"
+                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="${startDay}"
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                     </label>
                                     <label style="padding-right:10px;">
                                         <span>结束</span>
                                         <c:if test="${empty endDay}">
-                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="" style="max-width: 160px;"/>
+                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="" style="max-width: 160px;"/>
                                         </c:if>
                                         <c:if test="${!empty endDay}">
-                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${endDay}"
+                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="${endDay}"
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                     </label>

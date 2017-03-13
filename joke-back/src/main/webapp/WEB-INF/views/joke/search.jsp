@@ -129,6 +129,9 @@
                                             <c:if test="${joke.status == 1}">通过</c:if>
                                             <c:if test="${joke.status == 2}">不通过</c:if>
                                             <c:if test="${joke.status == 3}">已发布</c:if>
+                                            <c:if test="${joke.status == 4}">已推荐</c:if>
+                                            <c:if test="${joke.status == 5}">下线</c:if>
+                                            <c:if test="${joke.status == 6}">已置顶</c:if>
                                         </td>
                                         <td class="idselect">
                                             <c:if test="${joke.status != 2}">
