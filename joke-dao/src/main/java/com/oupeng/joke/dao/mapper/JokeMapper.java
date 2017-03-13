@@ -380,7 +380,7 @@ public interface JokeMapper {
      * @param releaseHours
      * @return
      */
-    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort desc")
+    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort asc")
     List<Joke> getJoke2RecommendTopList(@Param("releaseDate")String releaseDate, @Param("releaseHours")String releaseHours);
 
     /**

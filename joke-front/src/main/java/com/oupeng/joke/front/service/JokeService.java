@@ -184,7 +184,7 @@ public class JokeService {
     /**
      * 定时将赞列表中数据存储到缓存中
      */
-    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 5000)
+    @Scheduled(fixedRate = 1000 * 60 * 3, initialDelay = 5000)
     public void addLikeQueue() {
         try {
             if (!CollectionUtils.isEmpty(addLikeIds)) {
@@ -200,7 +200,7 @@ public class JokeService {
     /**
      * 定时将踩列表中数据存储到缓存中
      */
-    @Scheduled(fixedRate = 1000 * 60 * 10, initialDelay = 8000)
+    @Scheduled(fixedRate = 1000 * 60 * 3, initialDelay = 8000)
     public void addStepQueue() {
         try {
             if (!CollectionUtils.isEmpty(addStepIds)) {

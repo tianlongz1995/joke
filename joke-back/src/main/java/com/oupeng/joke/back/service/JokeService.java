@@ -262,17 +262,17 @@ public class JokeService {
 	 */
 	@PostConstruct
 	public void jokeLikeCountUpdate(){
-		logger.debug("jokeLikeCountUpdate init...");
+		logger.debug("段子点赞任务启动...");
 		new Thread(){
 			public void run() {
 				while(true){
 					try{
 						List<String> likeIdList = jedisCache.brpop(JedisKey.JOKE_LIST_LIKE, 60*5);
-						logger.info("jokeLikeCountUpdate receved size:[{}]", likeIdList == null ? 0 : likeIdList.size());
+						logger.debug("段子点赞任务收到点赞信息:[{}]", likeIdList == null ? 0 : likeIdList.size());
 						if(!CollectionUtils.isEmpty(likeIdList)){
 							String likeId = likeIdList.get(1);
-							logger.debug("update joke Like Count id:" + likeId);
-							if(Integer.valueOf(likeId)>20000000) { //更新精选的点踩数
+							logger.debug("段子点赞任务更新:[{}]" , likeId);
+							if(Integer.valueOf(likeId) > 20000000 ) { //更新精选的点踩数
 								jokeMapper.updateChoiceLikeCount(Integer.valueOf(likeId));
 							}else {
 								jokeMapper.updatejokeLikeCount(Integer.valueOf(likeId));

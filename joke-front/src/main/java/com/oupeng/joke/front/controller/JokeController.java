@@ -57,8 +57,8 @@ public class JokeController {
     @RequestMapping(value = "/stepLike")
     @ResponseBody
     public Result stepLike(@RequestParam(value="id")Integer id,
-    		@RequestParam(value="type")Integer type,
-    		HttpServletRequest request){
+                           @RequestParam(value="type")Integer type,
+                           HttpServletRequest request){
     	String uid = CookieUtil.getCookie(request);
     	clk.info(new ClickLog(id, uid, type).toString());
         jokeService.stepLike(id, type);

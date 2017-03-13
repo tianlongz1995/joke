@@ -47,7 +47,7 @@
                 <div class="box col-md-12" style="margin-top: 0;">
                     <div class="box-inner">
                         <div class="box-header well" data-original-title="">
-                            <h2><i class="glyphicon glyphicon-user"></i> 内容列表</h2>
+                            <h2><i class="glyphicon glyphicon-user"></i> 快捷查找列表</h2>
                         </div>
                         <div class="box-content">
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
@@ -129,11 +129,16 @@
                                             <c:if test="${joke.status == 1}">通过</c:if>
                                             <c:if test="${joke.status == 2}">不通过</c:if>
                                             <c:if test="${joke.status == 3}">已发布</c:if>
+                                            <c:if test="${joke.status == 4}">已推荐</c:if>
+                                            <c:if test="${joke.status == 5}">下线</c:if>
+                                            <c:if test="${joke.status == 6}">已置顶</c:if>
                                         </td>
                                         <td class="idselect">
-                                            <a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke(${joke.id})">
-                                                <i class="glyphicon glyphicon-remove icon-white"></i> 不通过
-                                            </a>
+                                            <c:if test="${joke.status != 2}">
+                                                <a class="btn btn-danger btn-sm" href="#" onclick="deleteJoke(${joke.id})">
+                                                    <i class="glyphicon glyphicon-remove icon-white"></i> 不通过
+                                                </a>
+                                            </c:if>
                                         </td>
                                     </tr>
                                 </c:forEach>
