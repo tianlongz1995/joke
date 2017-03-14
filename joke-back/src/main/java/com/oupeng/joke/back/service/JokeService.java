@@ -997,8 +997,6 @@ public class JokeService {
             if(type == 2 & img != null && img.length() > 10){
                 String newFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
                 boolean copyStatus = ImageUtils.getGifOneFrame(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + newFileName, 5);
-//                String jpgName = fileName.replace("gif", "jpg");
-//                boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + jpgName, dir.getCanonicalPath() + jpgName);
                 if(!copyStatus){
                     return false;
                 }
@@ -1009,11 +1007,33 @@ public class JokeService {
             logger.error(e.getMessage(), e);
             return false;
         }
+        Joke joke = new Joke();
+        joke.setTitle(title);
+        joke.setType(type);
+        joke.setImg(img);
+        joke.setGif(gif);
+        joke.setGood(good);
+        joke.setBad(bad);
+        joke.setUuid(uuid);
+        joke.setReleaseAvata(comment.getAvata());
+        joke.setReleaseNick(comment.getNick());
+        joke.setContent(content);
+        joke.setWeight(weight);
+        joke.setWidth(image.getWidth());
+        joke.setHeight(image.getHeight());
+        joke.setCreateBy(username);
+        joke.setSourceId(1);
+        joke.setAudit(6);
+        joke.setStatus(1);
 
-        int count = jokeMapper.addJoke(title, type, img, gif, good, bad, uuid, comment.getAvata(), comment.getNick(), content, weight, image.getWidth(), image.getHeight(), username);
-        if(count > 0){
+        jokeMapper.addJoke(joke);
+        if(joke.getId() != null){
+//            保存段子到缓存 - 直接通过状态并置顶(未处理)
+            String id = String.valueOf(joke.getId());
+            jokeToCache(id);
 
-
+//            保存段子置顶数据
+            jokeMapper.insertJokeTop(id);
             return true;
         } else {
             return false;

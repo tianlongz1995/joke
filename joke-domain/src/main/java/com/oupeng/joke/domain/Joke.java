@@ -37,6 +37,8 @@ public class Joke {
 	private String verifyUser;
 	@JsonInclude(Include.NON_NULL)
 	private Date verifyTime;
+    @JsonInclude(Include.NON_NULL)
+    private String createBy;
 	@JsonInclude(Include.NON_NULL)
 	private Date createTime;
 	@JsonInclude(Include.NON_NULL)
@@ -72,7 +74,12 @@ public class Joke {
     /** 评审状态 */
     @JsonInclude(Include.NON_NULL)
     private Integer audit;
-
+    /** 发布用户头像  */
+    @JsonInclude(Include.NON_NULL)
+    private String releaseAvata;
+    /** 发布用户昵称 */
+    @JsonInclude(Include.NON_NULL)
+    private String releaseNick;
 
 	public Integer getId() {
 		return id;
@@ -265,5 +272,29 @@ public class Joke {
     }
     public void setAudit(Integer audit) {
         this.audit = audit;
+    }
+
+    public String getReleaseAvata() {
+        return releaseAvata;
+    }
+
+    public void setReleaseAvata(String releaseAvata) {
+        this.releaseAvata = releaseAvata;
+    }
+
+    public String getReleaseNick() {
+        return releaseNick;
+    }
+
+    public void setReleaseNick(String releaseNick) {
+        this.releaseNick = releaseNick;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

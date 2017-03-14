@@ -128,7 +128,7 @@ public class JokeSqlProvider {
 			sql.append(" title = null,");
 		}
 		if(StringUtils.isNotBlank(joke.getContent())){
-			sql.append(" content= '").append(joke.getContent().trim()).append("', ");
+			sql.append(" content = '").append(joke.getContent().trim()).append("', ");
 		}else{
 			sql.append(" content = null, ");
 		}
@@ -548,98 +548,113 @@ public class JokeSqlProvider {
 
     /**
      * 新增段子SQL
-     * @param map
+     * @param joke
      * @return
      */
-    public static String addJoke(Map<String,Object> map){
-        String title = (String) map.get("title");
-        Integer type = (Integer) map.get("type");
-        String img = (String) map.get("img");
-        String gif = (String) map.get("gif");
-        Integer good = (Integer) map.get("good");
-        Integer bad = (Integer) map.get("bad");
-        String uuid = (String) map.get("uuid");
-        String avata = (String) map.get("avata");
-        String nick = (String) map.get("nick");
-        String content = (String) map.get("content");
-        Integer weight = (Integer) map.get("weight");
-        Integer width = (Integer) map.get("width");
-        Integer height = (Integer) map.get("height");
-        String username = (String) map.get("username");
+    public static String addJoke(Joke joke){
+//        String title = (String) map.get("title");
+//        Integer type = (Integer) map.get("type");
+//        String img = (String) map.get("img");
+//        String gif = (String) map.get("gif");
+//        Integer good = (Integer) map.get("good");
+//        Integer bad = (Integer) map.get("bad");
+//        String uuid = (String) map.get("uuid");
+//        String avata = (String) map.get("avata");
+//        String nick = (String) map.get("nick");
+//        String content = (String) map.get("content");
+//        Integer weight = (Integer) map.get("weight");
+//        Integer width = (Integer) map.get("width");
+//        Integer height = (Integer) map.get("height");
+//        String username = (String) map.get("username");
 
         StringBuffer sql = new StringBuffer();
         sql.append("insert into joke(title, type, img, gif, good, bad, uuid, release_avata, release_nick, content, weight, width, height, create_by, create_time, source_id, audit, status) value(");
-        if(StringUtils.isNotBlank(title)){
-            sql.append("'").append(title).append("', ");
+        if(StringUtils.isNotBlank(joke.getTitle())){
+            sql.append("'").append(joke.getTitle()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(type != null){
-            sql.append(type).append(", ");
+        if(joke.getType() != null){
+            sql.append(joke.getType()).append(", ");
         } else {
             sql.append("0, ");
         }
-        if(StringUtils.isNotBlank(img)){
-            sql.append("'").append(img).append("', ");
+        if(StringUtils.isNotBlank(joke.getImg())){
+            sql.append("'").append(joke.getImg()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(gif)){
-            sql.append("'").append(gif).append("', ");
+        if(StringUtils.isNotBlank(joke.getGif())){
+            sql.append("'").append(joke.getGif()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(good != null){
-            sql.append(good).append(", ");
+        if(joke.getGood() != null){
+            sql.append(joke.getGood()).append(", ");
         } else {
             sql.append("15, ");
         }
-        if(bad != null){
-            sql.append(bad).append(", ");
+        if(joke.getBad() != null){
+            sql.append(joke.getBad()).append(", ");
         } else {
             sql.append("0, ");
         }
-        if(StringUtils.isNotBlank(uuid)){
-            sql.append("'").append(uuid).append("', ");
+        if(StringUtils.isNotBlank(joke.getUuid())){
+            sql.append("'").append(joke.getUuid()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(avata)){
-            sql.append("'").append(avata).append("', ");
+        if(StringUtils.isNotBlank(joke.getReleaseAvata())){
+            sql.append("'").append(joke.getReleaseAvata()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(nick)){
-            sql.append("'").append(nick).append("', ");
+        if(StringUtils.isNotBlank(joke.getReleaseNick())){
+            sql.append("'").append(joke.getReleaseNick()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(content)){
-            sql.append("'").append(content).append("', ");
+        if(StringUtils.isNotBlank(joke.getContent())){
+            sql.append("'").append(joke.getContent()).append("', ");
         } else {
             sql.append("'', ");
         }
-        if(weight != null){
-            sql.append(weight).append(", ");
+        if(joke.getWeight() != null){
+            sql.append(joke.getWeight()).append(", ");
         } else {
             sql.append("0, ");
         }
-        if(width != null){
-            sql.append(width).append(", ");
+        if(joke.getWidth() != null){
+            sql.append(joke.getWidth()).append(", ");
         } else {
             sql.append("null, ");
         }
-        if(height != null){
-            sql.append(height).append(", ");
+        if(joke.getHeight() != null){
+            sql.append(joke.getHeight()).append(", ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(username)){
-            sql.append("'").append(username).append("', ");
+        if(StringUtils.isNotBlank(joke.getCreateBy())){
+            sql.append("'").append(joke.getCreateBy()).append("', ");
         } else {
             sql.append("null, ");
         }
-        sql.append(" now(), 1, 0, 0)");
+        sql.append(" now(), ");
+        if(joke.getSourceId() != null){
+            sql.append(joke.getSourceId()).append(", ");
+        } else {
+            sql.append("1, ");
+        }
+        if(joke.getAudit() != null){
+            sql.append(joke.getAudit()).append(", ");
+        } else {
+            sql.append("6, ");
+        }
+        if(joke.getStatus() != null){
+            sql.append(joke.getStatus()).append(")");
+        } else {
+            sql.append("1)");
+        }
         return sql.toString();
     }
 

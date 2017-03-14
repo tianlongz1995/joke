@@ -160,7 +160,7 @@ public class JokeController {
 	@ResponseBody
 	public Result update(@RequestParam(value = "id") Integer id,
 						 @RequestParam(value = "title", required = false) String title,
-						 @RequestParam(value = "content") String content,
+						 @RequestParam(value = "content", required = false) String content,
 						 @RequestParam(value = "weight",required = false) Integer weight) {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		boolean result = jokeService.updateJoke(id, title,content, weight, username);
@@ -479,7 +479,7 @@ public class JokeController {
     public Result addJoke(@RequestParam(value = "title", required = false) String title,
                           @RequestParam(value = "type") Integer type,
                           @RequestParam(value = "image", required = false) String image,
-                          @RequestParam(value = "content") String content,
+                          @RequestParam(value = "content", required = false) String content,
                           @RequestParam(value = "weight",required = false)  Integer weight) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean result = jokeService.addJoke(title, type, image, content, weight, username);

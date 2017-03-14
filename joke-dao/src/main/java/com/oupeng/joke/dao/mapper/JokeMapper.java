@@ -486,35 +486,10 @@ public interface JokeMapper {
 
     /**
      * 新增段子
-     * @param title
-     * @param type
-     * @param img
-     * @param gif
-     * @param good
-     * @param bad
-     * @param uuid
-     * @param avata
-     * @param nick
-     * @param content
-     * @param weight
-     * @param width
-     * @param height
-     * @param username
+     * @param joke
      * @return
      */
     @InsertProvider(method = "addJoke",type = JokeSqlProvider.class)
-    int addJoke(@Param("title")String title,
-                @Param("type")Integer type,
-                @Param("img")String img,
-                @Param("gif")String gif,
-                @Param("good")int good,
-                @Param("bad")int bad,
-                @Param("uuid")String uuid,
-                @Param("avata")String avata,
-                @Param("nick")String nick,
-                @Param("content")String content,
-                @Param("weight")Integer weight,
-                @Param("width")Integer width,
-                @Param("height")Integer height,
-                @Param("username")String username);
+    @SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
+    void addJoke(Joke joke);
 }

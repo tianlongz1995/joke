@@ -171,10 +171,6 @@
                             return false;
                         }
                     }
-                    if(content.replace(/(^s*)|(s*$)/g, "").length ==0){
-                        alert("内容不能为空!");
-                        return false;
-                    }
                     $('#addJoke').attr("disabled", "disabled");
                     post('joke/addJoke',
                             'title=' + $("#title").val() + '&type=' + type + '&image=' + image

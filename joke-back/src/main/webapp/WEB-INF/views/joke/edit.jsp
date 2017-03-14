@@ -99,10 +99,6 @@
                         alert("权重必须是数字!");
                         return false;
                     }
-                    if(content.replace(/(^s*)|(s*$)/g, "").length ==0){
-                        alert("内容不能为空!");
-                        return false;
-                    }
 
                     post('joke/update',
                             'id=' + id + '&title=' + title + '&content=' + content + '&weight=' + weight,
