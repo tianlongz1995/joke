@@ -47,3 +47,4 @@ target/
 pom.xml.*
 */pom.xml.*
 release.properties
+spider/
