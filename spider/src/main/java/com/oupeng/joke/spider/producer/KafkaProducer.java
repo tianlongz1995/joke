@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.producer;
 
 import java.util.Properties;
+
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
@@ -10,7 +11,7 @@ import kafka.serializer.StringEncoder;
 public class KafkaProducer {
 
 
-private  static Producer<Integer, String> getProducer(){
+    private static Producer<Integer, String> getProducer() {
 
         Properties props = new Properties();
         //根据这个配置获取metadata,不必是kafka集群上的所有broker
@@ -31,25 +32,26 @@ private  static Producer<Integer, String> getProducer(){
                 new ProducerConfig(props));
         return producer;
     }
+
     //创建Kafka的生产者, key是消息的key的类型, value是消息的类型
-    private static Producer<Integer,String> producer=getProducer();
+    private static Producer<Integer, String> producer = getProducer();
 
     public static void sendMessage(String message) {
 
-            //消息主题是test
-            KeyedMessage<Integer, String> keyedMessage = new KeyedMessage<Integer, String>("joke_text", message);
-            //message可以带key, 根据key来将消息分配到指定区, 如果没有key则随机分配到某个区
+        //消息主题是test
+        KeyedMessage<Integer, String> keyedMessage = new KeyedMessage<Integer, String>("joke_text", message);
+        //message可以带key, 根据key来将消息分配到指定区, 如果没有key则随机分配到某个区
 //          KeyedMessage<Integer, String> keyedMessage = new KeyedMessage<Integer, String>("test", 1, message);
-            producer.send(keyedMessage);
-            System.out.println("send: " + message);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        producer.send(keyedMessage);
+        System.out.println("send: " + message);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         sendMessage("adb");
     }
 

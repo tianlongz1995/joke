@@ -1,11 +1,13 @@
-package com.oupeng.joke.spider.controller;
+package com.oupeng.joke.spider.task;
 
 import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.domain.JokeText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
@@ -13,8 +15,9 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 /**
  * Created by Administrator on 2017/3/13.
  */
-@Controller
-public class SpiderController {
+@Component
+public class SpiderTask {
+    private static Logger logger = LoggerFactory.getLogger(SpiderTask.class);
 
     private static final String textUrl = "http://www.laifudao.com/wangwen/";
     private static final String imgUrl = "http://www.laifudao.com/tupian/";
@@ -31,22 +34,19 @@ public class SpiderController {
     private PageModelPipeline jobInfoDaoPipeline;
 
 
-    @RequestMapping("/text")
-    public String spiderText() {
-        crawl(jobInfoDaoPipeline, JokeText.class, textUrl);
-        return "text";
-    }
-
-    @RequestMapping("/image")
-    public String spiderImg() {
+    @Scheduled(cron = "0 0/2 18,19 * * ?")
+    public void spiderImg() {
+        logger.info("spiderImg...");
         crawl(jobInfoDaoImgPipeline, JokeImg.class, imgUrl);
-        return "image";
+        logger.info("spiderTxt...");
+        crawl(jobInfoDaoPipeline, JokeText.class, textUrl);
+
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)
                 .addUrl(url)
                 .thread(1)
-                .run();
+                .start();
     }
 }

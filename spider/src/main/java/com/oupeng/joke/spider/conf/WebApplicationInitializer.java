@@ -7,22 +7,22 @@ import javax.servlet.Filter;
 
 public class WebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] {BackConfig.class, DatabaseConfig.class };
-	}
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class[]{BackConfig.class, DatabaseConfig.class};
+    }
 
-	@Override
-	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { MvcConfig.class };
-	}
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class[]{MvcConfig.class};
+    }
 
-	@Override
-	protected String[] getServletMappings() {
-		return new String[] { "/" };
-	}
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
+    }
 
-	@Override
-	protected Filter[] getServletFilters() {
-		return null;
-	}
+    @Override
+    protected Filter[] getServletFilters() {
+        return null;
+    }
 }

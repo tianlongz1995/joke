@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @EnableScheduling
-@ComponentScan(basePackages = {"com.oupeng.joke.spider.controller", "com.oupeng.joke.spider.pipeline"})
+@ComponentScan(basePackages = {"com.oupeng.joke.spider.task", "com.oupeng.joke.spider.pipeline"})
 @MapperScan("com.oupeng.joke.spider.mapper")
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
