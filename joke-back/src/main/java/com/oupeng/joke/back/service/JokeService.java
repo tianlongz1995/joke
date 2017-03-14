@@ -382,26 +382,19 @@ public class JokeService {
 	 * 更新段子信息
 	 * @param id
 	 * @param title
-	 * @param img
-	 * @param gif
-	 * @param width
-	 * @param height
 	 * @param content
 	 * @param user
 	 * @return
 	 */
-	public boolean updateJoke(Integer id,String title,String img,String gif,Integer width,Integer height,String content,Integer weight,String user){
+	public boolean updateJoke(Integer id, String title, String content, Integer weight, String user){
 		Joke joke = new Joke();
 		joke.setId(id);
 		joke.setContent(content);
 		joke.setTitle(title);
 		joke.setVerifyUser(user);
 		joke.setWeight(weight);
-		boolean result = handleJokeImg(img,gif,width,height,joke);
-		if(result){
-			jokeMapper.updateJoke(joke);
-		}
-		return result;
+        int count = jokeMapper.updateJoke(joke);
+		return count == 1;
 	}
 	
 	public Map<String,Integer> getJokeVerifyInfoByUser(String user){

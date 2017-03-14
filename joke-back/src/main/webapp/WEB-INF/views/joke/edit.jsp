@@ -13,16 +13,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
-    <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
-
     <base href="<%=basePath%>">
     <%@ include file="../common/css.html" %>
     <script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
     <script src="ui/js/jquery.oupeng.upload.js"></script>
-
-    <!-- The fav icon -->
     <link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
 
@@ -56,11 +52,11 @@
                                 <tr>
                                     <th>图片 /动图</th>
                                     <td>
-                                        <input id="img" name="img" type="file" accept=".jpg,.jpeg,.png,.gif"/>
+                                        <%--<input id="img" name="img" type="file" accept=".jpg,.jpeg,.png,.gif"/>--%>
                                         <img id="imgPriview" style="display: none"
                                         <c:if test="${joke.type == 2}"> src="${joke.gif}" </c:if>
                                         <c:if test="${joke.type == 1}"> src="${joke.img}" </c:if> >
-                                        <input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除"/>
+                                        <%--<input id="imgDelButton" type="button" class="btn btn-default" style="display: none" value="删除"/>--%>
                                     </td>
                                 </tr>
                                 <tr>
@@ -77,10 +73,6 @@
                                 </thead>
                             </table>
                             <input id="id" type="hidden" value="${joke.id}"/>
-                            <input id="width" type="hidden" value="${joke.width}"/>
-                            <input id="height" type="hidden" value="${joke.height}"/>
-                            <input id="imgUrl" type="hidden" value="${joke.img}"/>
-                            <input id="gifUrl" type="hidden" value="${joke.gif}"/>
                             <button id="updateJoke" type="button" class="btn btn-primary btn-sm" data-dismiss="modal">通过</button>
                         </div>
                     </div>
@@ -95,46 +87,55 @@
                     }
                 });
 
-                $('#imgDelButton').click(function () {
-                    $('#img').val('');
-                    $('#imgUrl').val('');
-                    $('#gifUrl').val('');
-                    $('#width').val('');
-                    $('#height').val('');
-                    $("#imgPriview").hide();
-                });
+//                $('#imgDelButton').click(function () {
+//                    $('#img').val('');
+//                    $("#imgPriview").hide();
+//                });
 
-                $('#img').change(function () {
-                    var file = $(this)[0].files[0];
-                    $(this).OupengUpload(file, {
-                        url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',
-                        acceptFileTypes: 'image/*',
-                        maxFileSize: 1024 * 1024 * 5,
-                        minFileSize: 0,
-                        onUploadSuccess: function (data) {
-                            if (data.substring(data.length - 4) == ".gif") {
-                                $("#gifUrl").val(data);
-                                $("#imgUrl").val('');
-                            } else {
-                                $("#imgUrl").val(data);
-                                $("#gifUrl").val('');
-                            }
-                            $('#width').val('');
-                            $('#height').val('');
-                            $("#imgPriview").attr('src', data).show();
-                            $("#imgDelButton").show();
-                        },
-                        onUploadError: function (data) {
-                            alert(data);
-                        }
-                    });
-                });
+                <%--$('#img').change(function () {--%>
+                    <%--var file = $(this)[0].files[0];--%>
+                    <%--$(this).OupengUpload(file, {--%>
+                        <%--url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',--%>
+                        <%--acceptFileTypes: 'image/*',--%>
+                        <%--maxFileSize: 1024 * 1024 * 5,--%>
+                        <%--minFileSize: 0,--%>
+                        <%--onUploadSuccess: function (data) {--%>
+                            <%--if (data.substring(data.length - 4) == ".gif") {--%>
+                                <%--$("#gifUrl").val(data);--%>
+                                <%--$("#imgUrl").val('');--%>
+                            <%--} else {--%>
+                                <%--$("#imgUrl").val(data);--%>
+                                <%--$("#gifUrl").val('');--%>
+                            <%--}--%>
+                            <%--$('#width').val('');--%>
+                            <%--$('#height').val('');--%>
+                            <%--$("#imgPriview").attr('src', data).show();--%>
+                            <%--$("#imgDelButton").show();--%>
+                        <%--},--%>
+                        <%--onUploadError: function (data) {--%>
+                            <%--alert(data);--%>
+                        <%--}--%>
+                    <%--});--%>
+                <%--});--%>
 
-                $('#updateJoke').click(function (event) {
+                $('#updateJoke').click(function () {
                     $('#updateJoke').attr("disabled", "disabled");
+                    var id = $("#id").val();
+                    var title = $("#title").val();
+                    var content = $("#content2").val();
+                    var weight = $("#weight").val();
+
+                    if(weight == null || weight.length < 1 || isNaN(weight)){
+                        alert("权重必须是数字!");
+                        return false;
+                    }
+                    if(content.replace(/(^s*)|(s*$)/g, "").length ==0){
+                        alert("内容不能为空!");
+                        return false;
+                    }
+
                     post('joke/update',
-                            'id=' + $("#id").val() + '&title=' + $("#title").val() + '&img=' + $("#imgUrl").val() + '&content=' + $("#content2").val()
-                            + '&gif=' + $("#gifUrl").val() + '&width=' + $("#width").val() + '&height=' + $("#height").val() + '&weight=' + $("#weight").val(),
+                            'id=' + id + '&title=' + title + '&content=' + content + '&weight=' + weight,
                             function (data) {
                                 if (data['status']) {
                                     location.href = '<%=basePath%>joke/list';
@@ -150,7 +151,6 @@
                 });
 
                 function post(url, data, success, error) {
-                    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
                     $.ajax({
                         type: 'POST', url: url, data: data, success: success, error: error,

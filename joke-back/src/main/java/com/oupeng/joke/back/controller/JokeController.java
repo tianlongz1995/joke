@@ -154,24 +154,16 @@ public class JokeController {
 	 * @param id
 	 * @param title
 	 * @param content
-	 * @param img
-	 * @param gif
-	 * @param width
-	 * @param height
 	 * @return
 	 */
 	@RequestMapping(value="/update")
 	@ResponseBody
 	public Result update(@RequestParam(value = "id") Integer id,
 						 @RequestParam(value = "title", required = false) String title,
-						 @RequestParam(value = "content", required = false) String content,
-						 @RequestParam(value = "img", required = false) String img,
-						 @RequestParam(value = "gif", required = false) String gif,
-						 @RequestParam(value = "width") Integer width,
-						 @RequestParam(value = "height") Integer height,
+						 @RequestParam(value = "content") String content,
 						 @RequestParam(value = "weight",required = false) Integer weight) {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		boolean result = jokeService.updateJoke(id, title, img, gif,width,height,content, weight,username);
+		boolean result = jokeService.updateJoke(id, title,content, weight, username);
 		if(result){
 			return new Success();
 		}else{

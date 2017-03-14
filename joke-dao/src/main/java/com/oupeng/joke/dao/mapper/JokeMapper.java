@@ -44,10 +44,16 @@ public interface JokeMapper {
 			+ "create_time as createTime,update_time as updateTime,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id = ${id}")
 	@ResultType(value=Joke.class)
 	Joke getJokeById(@Param(value="id")Integer id);
-	
+
+    /**
+     * 修改段子信息
+     * @param joke
+     * @return
+     */
 	@UpdateProvider(method="updateJoke",type=JokeSqlProvider.class)
-	void updateJoke(Joke joke);
-	
+	int updateJoke(Joke joke);
+
+
 	@Select(value="select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
 			+ " and status = 1 and verify_user =#{user} group by type ")
 	List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value="user")String user);

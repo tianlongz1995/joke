@@ -120,45 +120,24 @@ public class JokeSqlProvider {
 	 */
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" update joke set update_time =now(),verify_time=now(), ");
-		sql.append(" status=1,");
-		sql.append(" verify_user='").append(joke.getVerifyUser()).append("',");
+		sql.append(" update joke set update_time = now(), verify_time = now(), status = 1,");
+		sql.append(" verify_user = '").append(joke.getVerifyUser()).append("',");
 		if(StringUtils.isNotBlank(joke.getTitle())){
-			sql.append(" title='").append(joke.getTitle().trim()).append("',");
+			sql.append(" title = '").append(joke.getTitle().trim()).append("',");
 		}else{
-			sql.append(" title=null,");
-		}
-		if(StringUtils.isNotBlank(joke.getImg())){
-			sql.append(" img='").append(joke.getImg()).append("',");
-		}else{
-			sql.append(" img=null,");
-		}
-		if(StringUtils.isNotBlank(joke.getGif())){
-			sql.append(" gif='").append(joke.getGif()).append("',");
-		}else{
-			sql.append(" gif=null,");
+			sql.append(" title = null,");
 		}
 		if(StringUtils.isNotBlank(joke.getContent())){
-			sql.append(" content='").append(joke.getContent().trim()).append("', ");
+			sql.append(" content= '").append(joke.getContent().trim()).append("', ");
 		}else{
-			sql.append(" content=null, ");
-		}
-		if(joke.getWidth() != null){
-			sql.append(" width =").append(joke.getWidth()).append(",");
-		}else{
-			sql.append(" width = 0, ");
-		}
-		if(joke.getHeight() != null){
-			sql.append(" height = ").append(joke.getHeight()).append(",");
-		}else{
-			sql.append(" height = 0, ");
+			sql.append(" content = null, ");
 		}
 		if (joke.getWeight() != null) {
 			sql.append(" weight = ").append(joke.getWeight());
 		}else{
 			sql.append(" weight = 0");
 		}
-		sql.append(" where id =").append(joke.getId());
+		sql.append(" where id = ").append(joke.getId());
 		return sql.toString();
 	}
 	
