@@ -87,36 +87,6 @@
                     }
                 });
 
-//                $('#imgDelButton').click(function () {
-//                    $('#img').val('');
-//                    $("#imgPriview").hide();
-//                });
-
-                <%--$('#img').change(function () {--%>
-                    <%--var file = $(this)[0].files[0];--%>
-                    <%--$(this).OupengUpload(file, {--%>
-                        <%--url: 'upload/img?${_csrf.parameterName}=${_csrf.token}',--%>
-                        <%--acceptFileTypes: 'image/*',--%>
-                        <%--maxFileSize: 1024 * 1024 * 5,--%>
-                        <%--minFileSize: 0,--%>
-                        <%--onUploadSuccess: function (data) {--%>
-                            <%--if (data.substring(data.length - 4) == ".gif") {--%>
-                                <%--$("#gifUrl").val(data);--%>
-                                <%--$("#imgUrl").val('');--%>
-                            <%--} else {--%>
-                                <%--$("#imgUrl").val(data);--%>
-                                <%--$("#gifUrl").val('');--%>
-                            <%--}--%>
-                            <%--$('#width').val('');--%>
-                            <%--$('#height').val('');--%>
-                            <%--$("#imgPriview").attr('src', data).show();--%>
-                            <%--$("#imgDelButton").show();--%>
-                        <%--},--%>
-                        <%--onUploadError: function (data) {--%>
-                            <%--alert(data);--%>
-                        <%--}--%>
-                    <%--});--%>
-                <%--});--%>
 
                 $('#updateJoke').click(function () {
                     $('#updateJoke').attr("disabled", "disabled");
