@@ -1,7 +1,7 @@
 package com.oupeng.joke.spider.domain;
 
 /**
- * Created by Administrator on 2017/3/13.
+ * Created by zongchao on 2017/3/13.
  */
 public class CommentT {
     private Integer uid;

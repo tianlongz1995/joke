@@ -1,6 +1,5 @@
 package com.oupeng.joke.spider.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -8,8 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 评论
- * Created by hushuang on 2017/1/13.
+ * Created by zongchao on 2017/3/13.
  */
 public class Comment {
     private Integer sid;

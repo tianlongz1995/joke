@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import java.util.Random;
 
 /**
- * Created by Administrator on 2017/3/8.
+ * Created by zongchao on 2017/3/8.
  */
 @Component("JobInfoDaoImgPipeline")
 public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {

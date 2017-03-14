@@ -9,7 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 
 /**
- * Created by Administrator on 2017/3/13.
+ * Created by zongchao on 2017/3/13.
  */
 @Configurable
 @PropertySources(value = {@PropertySource("classpath:db.properties")})

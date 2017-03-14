@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 /**
- * Created by Administrator on 2017/3/9.
+ * Created by zongchao on 2017/3/9.
  */
 public interface UserDao {
 

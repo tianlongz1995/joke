@@ -1,13 +1,13 @@
 package com.oupeng.joke.spider.mapper;
 
-import com.oupeng.joke.spider.domain.JokeText;
+
 import com.oupeng.joke.spider.domain.JokeImg;
 
 import org.apache.ibatis.annotations.*;
 
 
 /**
- * Created by Administrator on 2017/3/8.
+ * Created by zongchao on 2017/3/8.
  */
 public interface JobInfoDao {
 

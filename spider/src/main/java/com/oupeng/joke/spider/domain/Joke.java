@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+/**
+ * Created by zongchao on 2017/3/13.
+ */
 public class Joke {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String title;

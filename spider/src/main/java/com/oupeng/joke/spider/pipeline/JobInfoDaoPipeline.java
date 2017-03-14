@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
 import java.util.Random;
 
 /**
- * Created by Administrator on 2017/3/8.
+ * Created by zongchao on 2017/3/8.
  */
 @Component("JobInfoDaoPipeline")
 public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
@@ -38,6 +38,9 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     @PostConstruct
     public void init() {
@@ -83,7 +86,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             joke.setComment(null);
         }
         String message = JSON.toJSON(joke).toString();
-        KafkaProducer.sendMessage(message);
+        kafkaProducer.sendMessage(message);
     }
 
 

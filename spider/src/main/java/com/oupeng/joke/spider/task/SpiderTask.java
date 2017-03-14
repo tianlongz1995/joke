@@ -13,7 +13,7 @@ import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
 
 /**
- * Created by Administrator on 2017/3/13.
+ * Created by zongchao on 2017/3/13.
  */
 @Component
 public class SpiderTask {
@@ -34,11 +34,11 @@ public class SpiderTask {
     private PageModelPipeline jobInfoDaoPipeline;
 
 
-    @Scheduled(cron = "0 0/2 18,19 * * ?")
+    @Scheduled(cron = "0 30 23 * * ?")
     public void spiderImg() {
-        logger.info("spiderImg...");
+        logger.info("spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImg.class, imgUrl);
-        logger.info("spiderTxt...");
+        logger.info("spider text...");
         crawl(jobInfoDaoPipeline, JokeText.class, textUrl);
 
     }

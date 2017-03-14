@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -15,7 +14,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @EnableScheduling
-@ComponentScan(basePackages = {"com.oupeng.joke.spider.task", "com.oupeng.joke.spider.pipeline"})
+@ComponentScan(basePackages = {"com.oupeng.joke.spider.task", "com.oupeng.joke.spider.pipeline", "com.oupeng.joke.spider.producer"})
 @MapperScan("com.oupeng.joke.spider.mapper")
 public class MvcConfig extends WebMvcConfigurerAdapter {
 

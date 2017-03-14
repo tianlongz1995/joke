@@ -7,7 +7,7 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by Administrator on 2017/3/8.
+ * Created by zongchao on 2017/3/13.
  */
 @TargetUrl("http://www.laifudao.com/tupian/\\d{5,8}.htm")
 @HelpUrl("http://www.laifudao.com/tupian/\\w+_\\d{1,3}.htm")

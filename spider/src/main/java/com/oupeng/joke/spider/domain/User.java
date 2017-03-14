@@ -1,7 +1,7 @@
 package com.oupeng.joke.spider.domain;
 
 /**
- * Created by Administrator on 2017/3/9.
+ * Created by zongchao on 2017/3/13.
  */
 public class User {
     private Integer id;
