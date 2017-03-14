@@ -1,0 +1,65 @@
+package com.oupeng.joke.spider.pipeline;
+
+import com.alibaba.fastjson.JSON;
+import com.oupeng.joke.spider.domain.*;
+
+import com.oupeng.joke.spider.mapper.UserDao;
+import com.oupeng.joke.spider.producer.KafkaProducer;
+import org.apache.commons.lang3.StringUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.pipeline.PageModelPipeline;
+
+
+import java.util.Random;
+
+/**
+ * Created by Administrator on 2017/3/8.
+ */
+@Component("JobInfoDaoPipeline")
+public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
+
+    private Random random = new Random(3000);
+
+    @Autowired
+    private UserDao userDao;
+
+
+    @Override
+    public void process(JokeText jokeText, Task task) {
+        Joke joke = new Joke();
+        joke.setSource(jokeText.getSrc());
+        joke.setTitle(jokeText.getTitle());
+        joke.setSource_id(141);
+        joke.setStatus(0);
+        joke.setContent(jokeText.getContent());
+        if (jokeText.getAgreeTotal() != null && jokeText.getAgreeTotal() > 10) {
+
+            int id = random.nextInt(2090);
+            User u = userDao.select(id);
+            int last = u.getLast() + 1;
+
+            String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
+            int uid = id * 10000 + last;
+            int iconid = id % 20 + 1;
+            String avata = "http://joke2.oupeng.com/comment/images/" + iconid + ".png";
+            //添加评论
+            CommentT com = new CommentT();
+            com.setUid(uid);
+            com.setNickname(u.getNickname());
+            com.setContent(jokeText.getCommentContent());
+            com.setAvata(avata);
+            com.setGood(jokeText.getAgreeTotal());
+            joke.setComment(com);
+        } else {
+            joke.setComment(null);
+        }
+        String message = JSON.toJSON(joke).toString();
+        KafkaProducer.sendMessage(message);
+    }
+
+
+}
