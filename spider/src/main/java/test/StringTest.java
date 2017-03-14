@@ -1,6 +1,7 @@
 package test;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Administrator on 2017/3/10.
@@ -18,7 +19,7 @@ public class StringTest {
     }
 
     public static void main(String[] args){
-        String url="E:/url/1.jpg";
-        System.out.println(FilenameUtils.getFullPath(url)+FilenameUtils.getBaseName(url)+".gif");
+        String url="E:/url/%d.jpg";
+        System.out.println(url.replace("%d","123"));
     }
 }

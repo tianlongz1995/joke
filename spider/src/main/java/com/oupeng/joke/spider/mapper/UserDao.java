@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Update;
  */
 public interface UserDao {
 
-    @Select("select * from nickname where id=#{id}")
+    @Select("select nickname , last from nickname where id=#{id}")
     User select(Integer id);
 
-    @Update("update nickname set last=#{last},updatetime=now() where id=#{id}")
-    void update(@Param("last") Integer last,@Param("id") Integer id);
+    @Update("update nickname set last=#{last} , updatetime=now() where id=#{id}")
+    void update(@Param("last") Integer last, @Param("id") Integer id);
 }

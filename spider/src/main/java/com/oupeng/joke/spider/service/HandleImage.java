@@ -1,9 +1,14 @@
-package com.oupeng.joke.spider.utils;
+package com.oupeng.joke.spider.service;
 
 
+import com.oupeng.joke.spider.utils.ImageUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +20,36 @@ import java.util.UUID;
 /**
  * Created by zongchao on 2017/3/8.
  */
+@Component
 public class HandleImage {
     //图片路径
-    private static final String uploadPath = "E:/oupeng/joke/joke-back/target/joke-back-2.0/resources/image";
-    private static final String showPath = "http://localhost:8080/joke-back/resources/image/";
-    private static final String cropRealPath = "E:/oupeng/joke/joke-back/target/joke-back-2.0/resources/image/";
+    private  String uploadPath="/nh/java/back/resources/image" ;
+    private  String showPath ="http://joke2admin.oupeng.com/resources/image/";
+    private  String cropRealPath= "/nh/java/back/resources/image/";
 
-    public static String downloadImg(String imgUrl) {
+    @Autowired
+    private Environment env;
+
+
+    @PostConstruct
+    public void initPath() {
+        String u = env.getProperty("upload_image_path");
+        String s = env.getProperty("show_image_path");
+        String creal = env.getProperty("crop.img.url");
+
+        if (StringUtils.isNotEmpty(u)) {
+            uploadPath = u;
+        }
+        if (StringUtils.isNotEmpty(s)) {
+            showPath = s;
+        }
+        if (StringUtils.isNotBlank(creal)) {
+            cropRealPath = creal;
+        }
+
+    }
+
+    public  String downloadImg(String imgUrl) {
         //服务器上的图片地址
         String realUrl = null;
         OutputStream os = null;
@@ -84,7 +112,7 @@ public class HandleImage {
         return null;
     }
 
-    public static String handleImg(String imgUrl, boolean isCrop) {
+    private String handleImg(String imgUrl, boolean isCrop) {
         if (StringUtils.isNotBlank(imgUrl)) {
             String imgurl = ImageUtil.handleImg(cropRealPath, imgUrl, isCrop);
             if (imgurl != null && imgurl.length() != 0) {

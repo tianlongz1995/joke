@@ -30,6 +30,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     private static Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     private Random random = new Random(3000);
+    private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
 
     @Autowired
     private UserDao userDao;
@@ -47,6 +48,10 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         String maxCrawl = env.getProperty("max.crawl.page");
         if (StringUtils.isNumeric(maxCrawl)) {
             maxCrawlPage = Integer.valueOf(maxCrawl);
+        }
+        String n = env.getProperty("nick");
+        if (StringUtils.isNotBlank(n)) {
+            nick = n;
         }
     }
 
@@ -73,7 +78,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
             int uid = id * 10000 + last;
             int iconid = id % 20 + 1;
-            String avata = "http://joke2.oupeng.com/comment/images/" + iconid + ".png";
+            String avata = nick.replace("%d", String.valueOf(iconid));
             //添加评论
             CommentT com = new CommentT();
             com.setUid(uid);

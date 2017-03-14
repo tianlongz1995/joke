@@ -6,7 +6,7 @@ import com.oupeng.joke.spider.domain.User;
 import com.oupeng.joke.spider.mapper.CommentDao;
 import com.oupeng.joke.spider.mapper.JobInfoDao;
 import com.oupeng.joke.spider.mapper.UserDao;
-import com.oupeng.joke.spider.utils.HandleImage;
+import com.oupeng.joke.spider.service.HandleImage;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
@@ -29,14 +28,18 @@ import java.util.Random;
 public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     private static Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
     private Random random = new Random(3000);
+    private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
+    private int maxCrawlPage = 300;
+
     @Autowired
     private JobInfoDao jobInfoDao;
     @Autowired
     private UserDao userDao;
     @Autowired
     private CommentDao commentDao;
+    @Autowired
+    private HandleImage handleImage;
 
-    private int maxCrawlPage = 300;
 
     @Autowired
     private Environment env;
@@ -46,6 +49,10 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
         String maxCrawl = env.getProperty("max.crawl.page");
         if (StringUtils.isNumeric(maxCrawl)) {
             maxCrawlPage = Integer.valueOf(maxCrawl);
+        }
+        String n = env.getProperty("nick");
+        if (StringUtils.isNotBlank(n)) {
+            nick = n;
         }
     }
 
@@ -61,11 +68,10 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
         }
         jokeImg.setSourceId(141);
         //处理图片
-        String imgurl = HandleImage.downloadImg(jokeImg.getImg());
+        String imgurl = handleImage.downloadImg(jokeImg.getImg());
         if (("gif").equalsIgnoreCase(FilenameUtils.getExtension(jokeImg.getImg()))) {
             jokeImg.setGif(FilenameUtils.getFullPath(imgurl) + FilenameUtils.getBaseName(imgurl) + ".gif");
             jokeImg.setType(2);
-
         } else {
             jokeImg.setType(1);
         }
@@ -79,7 +85,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
             int uid = id * 10000 + last;
             int iconid = id % 20 + 1;
-            String avata = "http://joke2.oupeng.com/comment/images/" + iconid + ".png";
+            String avata = nick.replace("%d", String.valueOf(iconid));
             jokeImg.setAvata(avata);
             jokeImg.setNick(nick);
             jobInfoDao.addImg(jokeImg);

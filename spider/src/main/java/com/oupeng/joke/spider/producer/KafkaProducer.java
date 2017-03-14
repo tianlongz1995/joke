@@ -6,6 +6,7 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 import kafka.serializer.StringEncoder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class KafkaProducer {
     //创建Kafka的生产者, key是消息的key的类型, value是消息的类型
     private  Producer<Integer, String> producer ;
 
+    private String brokerList="172.18.100.86:9092";
+    private String zookeeper="172.18.100.86:2181";
+    private String acks="1";
+
     @Autowired
     private Environment env;
 
@@ -31,10 +36,23 @@ public class KafkaProducer {
     private  void initProducer() {
 
         Properties prop = new Properties();
+        String b=env.getProperty("metadata.broker.list");
+        if(StringUtils.isNotBlank(b)){
+            brokerList=b;
+        }
+        String z=env.getProperty("zookeeper.connect");
+        if(StringUtils.isNotBlank(b)){
+            zookeeper=z;
+        }
+        String a=env.getProperty("request.required.acks");
+        if(StringUtils.isNotBlank(b)){
+            acks=a;
+        }
 
-        prop.put("metadata.broker.list",env.getProperty("metadata.broker.list"));
-        prop.put("zookeeper.connect",env.getProperty("zookeeper.connect"));
-        prop.put("request.required.acks",env.getProperty("request.required.acks"));
+
+        prop.put("metadata.broker.list",brokerList);
+        prop.put("zookeeper.connect",zookeeper);
+        prop.put("request.required.acks",acks);
         prop.put("serializer.class", StringEncoder.class.getName());
 
         //创建Kafka的生产者, key是消息的key的类型, value是消息的类型
