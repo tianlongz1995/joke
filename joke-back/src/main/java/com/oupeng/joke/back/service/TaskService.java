@@ -410,7 +410,9 @@ public class TaskService {
                 }
             }
             //发送邮件
-            sendEmailByPub("推荐", imgCount, gifCount, textCount);
+            sendEmail("推荐", imgCount, gifCount, textCount, textTop, imgTop, gifTop);
+
+
 
             long end = System.currentTimeMillis();
             int allTotal = topSize + imgCount + gifCount + textCount;
@@ -463,6 +465,22 @@ public class TaskService {
     }
 
     /**
+     * 拼接字符串
+     * @param type  (0:趣图  1:动图 2:段子)
+     * @param typeVale
+     * @param counts
+     * @return
+     */
+    private String getSendMailString(Integer type, Integer typeVale, int[] counts, int topCount) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(PUBTYPE[type]).append("发布").append(typeVale)
+                .append("条，其中置顶").append(topCount).append("条")
+                .append("，已审核剩余").append(counts[1]).append("条")
+                .append("，未审核剩余").append(counts[0]).append("条").append("。\n");
+        return sb.toString();
+    }
+
+    /**
      * 根据段子频道类型发送邮件
      *
      * @param type
@@ -473,7 +491,7 @@ public class TaskService {
     private void sendEmailByPub(String type, Integer imgCount, Integer gifCount, Integer textCount) {
         //邮件内容
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(MAIL_PEOPLE).append("\t段子【").append(type).append("】频道发布段子信息:\n");
+        stringBuffer.append(MAIL_PEOPLE).append("\t【").append(type).append("】频道发布信息:\n");
 
         if (imgCount != null) {
             //趣图记录(0:未审核  1:审核）
@@ -490,6 +508,35 @@ public class TaskService {
             int[] textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
             stringBuffer.append(appendString(2, textCount, textAudAndNoCount));
         }
+
+        mailService.sendMail(recipient, cc, MAIL_SUBJECT, stringBuffer.toString());
+    }
+
+
+    /**
+     * 发送邮件
+     *  @param type
+     * @param imgCount
+     * @param gifCount
+     * @param textCount
+     * @param textTop
+     * @param imgTop
+     * @param gifTop
+     */
+    private void sendEmail(String type, int imgCount, int gifCount, int textCount, int textTop, int imgTop, int gifTop) {
+        //邮件内容
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(MAIL_PEOPLE).append("\t【").append(type).append("】频道发布信息:\n");
+
+        //趣图记录(0:未审核  1:审核）
+        int[] imgAudAndNoCount = getCount(Constants.JOKE_TYPE_IMG);
+        stringBuffer.append(getSendMailString(0, imgCount, imgAudAndNoCount, imgTop));
+        //动图记录(0:未审核  1:审核）
+        int[] gifAudAndNoCount = getCount(Constants.JOKE_TYPE_GIF);
+        stringBuffer.append(getSendMailString(1, gifCount, gifAudAndNoCount, gifTop));
+        //段子(0:未审核  1:审核）
+        int[] textAudAndNoCount = getCount(Constants.JOKE_TYPE_TEXT);
+        stringBuffer.append(getSendMailString(2, textCount, textAudAndNoCount, textTop));
 
         mailService.sendMail(recipient, cc, MAIL_SUBJECT, stringBuffer.toString());
     }

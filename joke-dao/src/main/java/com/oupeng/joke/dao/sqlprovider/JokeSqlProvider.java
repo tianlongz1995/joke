@@ -552,21 +552,6 @@ public class JokeSqlProvider {
      * @return
      */
     public static String addJoke(Joke joke){
-//        String title = (String) map.get("title");
-//        Integer type = (Integer) map.get("type");
-//        String img = (String) map.get("img");
-//        String gif = (String) map.get("gif");
-//        Integer good = (Integer) map.get("good");
-//        Integer bad = (Integer) map.get("bad");
-//        String uuid = (String) map.get("uuid");
-//        String avata = (String) map.get("avata");
-//        String nick = (String) map.get("nick");
-//        String content = (String) map.get("content");
-//        Integer weight = (Integer) map.get("weight");
-//        Integer width = (Integer) map.get("width");
-//        Integer height = (Integer) map.get("height");
-//        String username = (String) map.get("username");
-
         StringBuffer sql = new StringBuffer();
         sql.append("insert into joke(title, type, img, gif, good, bad, uuid, release_avata, release_nick, content, weight, width, height, create_by, create_time, source_id, audit, status) value(");
         if(StringUtils.isNotBlank(joke.getTitle())){
