@@ -958,7 +958,7 @@ public class JokeService {
         int good = 500 +(int)(Math.random()*500);
         String uuid = UUID.randomUUID().toString();
         Comment comment = HttpUtil.getRandomUser(randomUserUrl);
-        String fileName = getUrlImageFileName(img);
+        String fileName = HttpUtil.getUrlImageFileName(img);
         String storeName = "";
         String gif = null;
         Image image = new Image();
@@ -1040,16 +1040,5 @@ public class JokeService {
         }
     }
 
-    /**
-     * 获取远程URL图片名称
-     * @param img
-     * @return
-     */
-    private String getUrlImageFileName(String img) {
-        int pos = img.lastIndexOf("/");
-        if(pos < 0){
-            return null;
-        }
-        return img.substring(pos + 1);
-    }
+
 }

@@ -104,6 +104,19 @@ public class HttpUtil {
         }
     }
 
+    /**
+     * 获取远程URL图片名称
+     * @param img
+     * @return
+     */
+    public static String getUrlImageFileName(String img) {
+        int pos = img.lastIndexOf("/");
+        if(pos < 0){
+            return null;
+        }
+        return img.substring(pos + 1);
+    }
+
     public static void main(String[] a){
         HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
     }

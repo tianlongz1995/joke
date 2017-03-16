@@ -79,30 +79,12 @@ public class ChoiceController {
     @ResponseBody
     public Result addChoice(@RequestParam(value = "title") String title,
                             @RequestParam(value = "content") String content,
-                            @RequestParam(value = "publishTime", required = false) String publishTime,
-                            @RequestParam(value = "image") String image,
-                            @RequestParam(value = "width") Integer width,
-                            @RequestParam(value = "height") Integer height) {
-
-        List<String> tempUrl = choiceService.getImgUrl(content);
-        List<String> realUrl;
-        if (!CollectionUtils.isEmpty(tempUrl)) {
-            // 下载图片
-            realUrl = choiceService.downloadImg(tempUrl);
-            if (realUrl.size() == tempUrl.size()) {
-                // 1.替换图片地址为服务器上图片地址
-                for (int i = 0; i < realUrl.size(); i++) {
-                    content = content.replace(tempUrl.get(i), realUrl.get(i));
-                }
-            } else {
-                return new Failed("添加失败");
-            }
-        }
-        // 2.添加到数据库
-        boolean flag = choiceService.addChoice(title, content, image, width, height, publishTime);
-        if (flag) {
+                            @RequestParam(value = "publishTime",required = false)String publishTime,
+                            @RequestParam(value = "image") String image) {
+        boolean flag = choiceService.addChoice(title, content, image, publishTime);
+        if(flag){
             return new Success("添加成功!");
-        } else {
+        }else{
             return new Failed("添加失败!");
         }
 
@@ -116,38 +98,37 @@ public class ChoiceController {
      */
     @RequestMapping(value = "del")
     @ResponseBody
-    public Result delChoice(@RequestParam(value = "id") Integer id) {
+    public Result delChoice(@RequestParam(value = "id") Integer id){
         choiceService.delChoice(id);
-        return new Success("删除成功");
+        return  new Success("删除成功");
     }
 
     /**
      * 编辑
-     * @param id         精选id
-     * @param status     页面跳转参数
-     * @param pageSize   页面跳转参数
-     * @param pageNumber 页面跳转参数
+     * @param id            精选id
+     * @param status        页面跳转参数
+     * @param pageSize      页面跳转参数
+     * @param pageNumber    页面跳转参数
      * @return
      */
     @RequestMapping(value = "edit")
-    public String editChoice(@RequestParam(value = "id") Integer id,
+    public String editChoice(@RequestParam(value = "id")Integer id,
                              @RequestParam(value = "status") Integer status,
                              @RequestParam(value = "pageSize") Integer pageSize,
                              @RequestParam(value = "pageNumber") Integer pageNumber,
-                             Model model) {
+                             Model model){
         Choice c = choiceService.getChoiceById(id);
-        model.addAttribute("choice", c);
-        model.addAttribute("status", status);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("pageNumber", pageNumber);
-        return "/choice/edit";
+        model.addAttribute("choice",c);
+        model.addAttribute("status",status);
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("pageNumber",pageNumber);
+        return  "/choice/edit";
 
 
     }
 
     /**
      * 更新
-     *
      * @param id
      * @param title
      * @param content
@@ -155,45 +136,42 @@ public class ChoiceController {
      */
     @RequestMapping(value = "update")
     @ResponseBody
-    public Result update(@RequestParam(value = "id") Integer id,
-                         @RequestParam(value = "title") String title,
+    public Result update(@RequestParam(value = "id")      Integer id,
+                         @RequestParam(value = "title")   String title,
                          @RequestParam(value = "content") String content,
                          @RequestParam(value = "image") String image,
-                         @RequestParam(value = "width") Integer width,
-                         @RequestParam(value = "height") Integer height,
-                         @RequestParam(value = "publishTime") String publishTime) {
+                         @RequestParam(value = "publishTime") String publishTime){
         Choice choice = choiceService.getChoiceById(id);
-        if (choice.getStatus() != 3) {
-            List<String> tempUrl = choiceService.getImgUrl(content);
-            List<String> realUrl;
-            if (!CollectionUtils.isEmpty(tempUrl)) {
-                // 下载图片
-                realUrl = choiceService.downloadImg(tempUrl);
-                if (realUrl.size() == tempUrl.size()) {
-                    // 1.替换图片地址为服务器上图片地址
-                    for (int i = 0; i < realUrl.size(); i++) {
-                        content = content.replace(tempUrl.get(i), realUrl.get(i));
-                    }
-                } else {
-                    return new Failed("富文本中图片下载不成功，更新失败");
-                }
-            }
-            // 2.更新到数据库
-            boolean flag = choiceService.updateChoice(id, title, content, image, width, height, publishTime);
-            if (flag) {
-                return new Success("更新成功!");
-            } else {
-                return new Failed("数据库插入,上传图片处理不成功，更新失败");
-            }
-        } else {
-            return new Failed("更新失败,已发布精选，不允许编辑");
-        }
+       if(choice.getStatus() != 3) {
+           List<String> tempUrl = choiceService.getImgUrl(content);
+           List<String> realUrl;
+           if (!CollectionUtils.isEmpty(tempUrl)) {
+               // 下载图片
+               realUrl = choiceService.downloadImg(tempUrl);
+               if (realUrl.size() == tempUrl.size()) {
+                   // 1.替换图片地址为服务器上图片地址
+                   for (int i = 0; i < realUrl.size(); i++) {
+                       content = content.replace(tempUrl.get(i), realUrl.get(i));
+                   }
+               } else {
+                   return new Failed("富文本中图片下载不成功，更新失败");
+               }
+           }
+           // 2.更新到数据库
+           boolean flag = choiceService.updateChoice(id, title, content, image, publishTime);
+          if(flag) {
+              return new Success("更新成功!");
+          }else{
+              return new Failed("数据库插入,上传图片处理不成功，更新失败");
+          }
+       } else {
+           return new Failed("更新失败,已发布精选，不允许编辑");
+       }
     }
 
 
     /**
      * 上线下线
-     *
      * @param id
      * @param status
      * @return
@@ -202,16 +180,16 @@ public class ChoiceController {
     @RequestMapping(value = "offlineOnline")
     @ResponseBody
     public Result offlineOnline(@RequestParam(value = "id") Integer id,
-                                @RequestParam(value = "status") Integer status) {
+                                @RequestParam(value = "status")Integer status){
         String result;
         if (status == 4) {
             result = choiceService.publishChoiceNow(id);
         } else {
             result = choiceService.publishChoiceByTime(id, status);
         }
-        if (null == result) {
+        if(null == result){
             return new Success();
-        } else {
+        }else {
             return new Failed(result);
         }
     }
@@ -220,6 +198,6 @@ public class ChoiceController {
     @ResponseBody
     public Result getChoiceContent(@RequestParam(value = "id") Integer id) {
         String content = choiceService.getChoiceById(id).getContent();
-        return new Success(content);
+        return  new Success(content);
     }
 }

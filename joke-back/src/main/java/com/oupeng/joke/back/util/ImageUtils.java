@@ -71,7 +71,7 @@ public class ImageUtils {
      * @param target
      * @return
      */
-    public static boolean copyImageToCDN(String src,String target) {
+    public static boolean copyImageToCDN(String src, String target) {
         InputStream in = null;
         OutputStream out = null;
         try {

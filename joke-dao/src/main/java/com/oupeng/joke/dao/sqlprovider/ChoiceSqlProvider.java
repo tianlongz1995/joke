@@ -138,29 +138,20 @@ public class ChoiceSqlProvider {
         } else {
             sql.append("null,");
         }
-        sql.append(" img = ");
         if (null != image) {
-            sql.append("'").append(image).append("',");
-        } else {
-            sql.append("null,");
+            sql.append(" img = ").append("'").append(image).append("',");
         }
-        sql.append(" width = ");
         if (null != width) {
-            sql.append(width).append(",");
-        } else {
-            sql.append("0,");
+            sql.append(" width = ").append(width).append(",");
+        }
+        if (null != height) {
+            sql.append(" height = ").append(height).append(",");
         }
         sql.append(" publish_time = ");
         if(null != publishTime){
-            sql.append("'").append(publishTime).append("',");
+            sql.append("'").append(publishTime).append("' ");
         }else {
-            sql.append("null,");
-        }
-        sql.append(" height = ");
-        if (null != width) {
-            sql.append(height);
-        } else {
-            sql.append("0");
+            sql.append("null ");
         }
         sql.append(" where id = ").append(id);
         return sql.toString();
