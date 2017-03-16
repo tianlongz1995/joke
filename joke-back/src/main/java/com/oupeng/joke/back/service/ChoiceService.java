@@ -11,6 +11,8 @@ import com.oupeng.joke.domain.Choice;
 import com.oupeng.joke.domain.Comment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ import java.util.regex.Pattern;
  */
 @Service
 public class ChoiceService {
-
+    private static final Logger log = LoggerFactory.getLogger(ChoiceService.class);
     @Autowired
     private ChoiceMapper choiceMapper;
     @Autowired
@@ -173,7 +175,7 @@ public class ChoiceService {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             } finally {
                 //关闭所有链接
                 try {
@@ -181,8 +183,8 @@ public class ChoiceService {
                         is.close();
                         os.close();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException e1) {
+                    log.error(e1.getMessage(), e1);
                 }
             }
             //服务器上图片地址

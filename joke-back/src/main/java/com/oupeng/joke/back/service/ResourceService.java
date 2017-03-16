@@ -62,16 +62,6 @@ public class ResourceService {
 
 //        更新首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_INDEX, type));
-        } else if(type == 2){ // 备份配置只能在front配置文件中更改
-//            resourceMapper.updateIndex(libJs, "10021", "10020");
-//            resourceMapper.updateIndex(appJs, "10022", "10020");
-//            resourceMapper.updateIndex(appCss, "10023", "10020");
-//            indexResource.setLibJs(libJs);
-//            indexResource.setAppJs(appJs);
-//            indexResource.setAppCss(appCss);
-//            jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_BACK, JSON.toJSONString(indexResource));
-////        更新首页缓存
-//            indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_BACK, type));
         } else if(type == 3){
             resourceMapper.updateIndex(libJs, "10031", "10030");
             resourceMapper.updateIndex(appJs, "10032", "10030");
@@ -80,7 +70,7 @@ public class ResourceService {
             indexResource.setAppJs(appJs);
             indexResource.setAppCss(appCss);
             jedisCache.set(JedisKey.JOKE_RESOURCE_CONFIG_TEST, JSON.toJSONString(indexResource));
-//        更新首页缓存
+//        更新测试首页缓存
             indexCacheFlushService.updateIndex(new IndexItem(JedisKey.INDEX_CACHE_TEST, type));
         }
         return true;
