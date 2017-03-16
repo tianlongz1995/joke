@@ -107,6 +107,7 @@ public class ChoiceService {
      */
     public boolean addChoice(String title, String content, String image, String publishTime) {
 //      获取文件内容中的图片地址
+        content = content.replaceAll("'", "#").replaceAll("-","_");
         List<String> sourceUrl = getImgUrl(content);
         List<String> realUrl;
         if (!CollectionUtils.isEmpty(sourceUrl)) {
@@ -167,66 +168,6 @@ public class ChoiceService {
             return null;
         }
     }
-//    public String handleStaticImg(String imgUrl){
-//        String fileName = HttpUtil.getUrlImageFileName(imgUrl);
-//        String storeName = "";
-//        String gif = null;
-//        Image image = new Image();
-//        int random  = new Random().nextInt(3000);
-//        try {
-//            File dir = null;
-////        将图片从临时目录上传到CDN目录(images)
-//            if(type > 0){
-//                if(fileName == null && fileName.length() < 1){
-//                    log.error("上传的图片类型段子没有图片信息:[{}]", img);
-//                    return false;
-//                }
-//                dir = new File(cdnImagePath + random + "/");
-//                if(!dir.isDirectory()){
-//                    dir.mkdirs();
-//                }
-////                所有静图都格式化为jpg
-//                if(type.equals(1)){
-//                    storeName = fileName.substring(0, fileName.lastIndexOf("."));
-//                    storeName = storeName + ".jpg";
-////                    生成图片并获得宽高
-//                    ImageUtils.generateImage(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + storeName, "jpg", image);
-//                    img = random + "/" + storeName;
-//                } else if(type.equals(2)){
-//                    //            将图片拷贝到CDN目录下
-//                    boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + fileName);
-//                    if(!copyStatus){
-//                        return false;
-//                    }
-////                  获得宽高
-//                    ImageUtils.getImgWidthAndHeight(new File(dir.getCanonicalPath() + "/" + fileName), image);
-//                    img = random + "/" + fileName;
-//                }
-//
-//            }
-//            if(type == 2 & img != null && img.length() > 10){
-//                String newFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
-//                boolean copyStatus = ImageUtils.getGifOneFrame(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + newFileName, 5);
-//                if(!copyStatus){
-//                    return false;
-//                }
-//                gif = img;
-//                img = random + "/" + newFileName;
-//            }
-//        } catch (Exception e){
-//            logger.error(e.getMessage(), e);
-//            return false;
-//        }
-//    }
-//    public String handleImg(String imgUrl, boolean isCrop) {
-//        if (StringUtils.isNotBlank(imgUrl)) {
-//            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, isCrop);
-//            if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
-//                return imgRespDto.getImgUrl();
-//            }
-//        }
-//        return null;
-//    }
 
     /**
      * <pre>
@@ -369,6 +310,7 @@ public class ChoiceService {
     }
 
     public boolean updateChoice(Integer id, String title, String content, String image,String publishTime) {
+        content = content.replaceAll("'", "#").replaceAll("-","_");
         Image img = new Image();
         //重新上传的图片
         if (image.startsWith(showPath)) {
