@@ -18,4 +18,5 @@ public class BackConfig {
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
     }
+
 }

@@ -2,9 +2,7 @@ package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.back.util.ImageUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
@@ -12,7 +10,8 @@ import com.oupeng.joke.domain.Choice;
 import com.oupeng.joke.domain.Comment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,8 @@ import java.util.regex.Pattern;
  */
 @Service
 public class ChoiceService {
+
+    protected static final Logger logger= LoggerFactory.getLogger(ChoiceService.class);
 
     @Autowired
     private ChoiceMapper choiceMapper;
@@ -183,7 +184,7 @@ public class ChoiceService {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("download image failed ",e);
             } finally {
                 //关闭所有链接
                 try {
@@ -192,7 +193,7 @@ public class ChoiceService {
                         os.close();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("download image failed ",e);
                 }
             }
             //服务器上图片地址

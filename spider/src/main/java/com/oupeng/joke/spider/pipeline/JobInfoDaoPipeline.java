@@ -2,13 +2,9 @@ package com.oupeng.joke.spider.pipeline;
 
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.spider.domain.*;
-
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.producer.KafkaProducer;
 import org.apache.commons.lang3.StringUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -26,8 +22,6 @@ import java.util.Random;
  */
 @Component("JobInfoDaoPipeline")
 public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
-
-    private static Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     private Random random = new Random(3000);
     private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
@@ -66,7 +60,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         Joke joke = new Joke();
         joke.setSource(jokeText.getSrc());
         joke.setTitle(jokeText.getTitle());
-        joke.setSource_id(141);
+        joke.setSource_id(jokeText.getSourceId());
         joke.setStatus(0);
         joke.setContent(jokeText.getContent());
         if (jokeText.getAgreeTotal() != null && jokeText.getAgreeTotal() > 10) {
@@ -79,6 +73,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             int uid = id * 10000 + last;
             int iconid = id % 20 + 1;
             String avata = nick.replace("%d", String.valueOf(iconid));
+
             //添加评论
             CommentT com = new CommentT();
             com.setUid(uid);

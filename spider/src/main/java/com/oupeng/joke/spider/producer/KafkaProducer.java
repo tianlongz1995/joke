@@ -15,55 +15,52 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-
+/**
+ * 向kafka发送段子文本
+ */
 @Component
 public class KafkaProducer {
 
-
-    private static Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
 
     //创建Kafka的生产者, key是消息的key的类型, value是消息的类型
-    private  Producer<Integer, String> producer ;
+    private Producer<Integer, String> producer;
 
-    private String brokerList="172.18.100.86:9092";
-    private String zookeeper="172.18.100.86:2181";
-    private String acks="1";
+    private String brokerList = "192.168.2.216:9092";
+    private String zookeeper = "192.168.2.216:2181";
+    private String acks = "1";
 
     @Autowired
     private Environment env;
 
     @PostConstruct
-    private  void initProducer() {
+    private void initProducer() {
 
         Properties prop = new Properties();
-        String b=env.getProperty("metadata.broker.list");
-        if(StringUtils.isNotBlank(b)){
-            brokerList=b;
+        String b = env.getProperty("metadata.broker.list");
+        if (StringUtils.isNotBlank(b)) {
+            brokerList = b;
         }
-        String z=env.getProperty("zookeeper.connect");
-        if(StringUtils.isNotBlank(b)){
-            zookeeper=z;
+        String z = env.getProperty("zookeeper.connect");
+        if (StringUtils.isNotBlank(b)) {
+            zookeeper = z;
         }
-        String a=env.getProperty("request.required.acks");
-        if(StringUtils.isNotBlank(b)){
-            acks=a;
+        String a = env.getProperty("request.required.acks");
+        if (StringUtils.isNotBlank(b)) {
+            acks = a;
         }
-
-
-        prop.put("metadata.broker.list",brokerList);
-        prop.put("zookeeper.connect",zookeeper);
-        prop.put("request.required.acks",acks);
+        //kafka配置
+        prop.put("metadata.broker.list", brokerList);
+        prop.put("zookeeper.connect", zookeeper);
+        prop.put("request.required.acks", acks);
         prop.put("serializer.class", StringEncoder.class.getName());
 
         //创建Kafka的生产者, key是消息的key的类型, value是消息的类型
-       producer = new Producer<Integer, String>(
-                new ProducerConfig(prop));
+        producer = new Producer<Integer, String>(new ProducerConfig(prop));
     }
 
 
-
     public void sendMessage(String message) {
-
         //消息主题是test
         KeyedMessage<Integer, String> keyedMessage = new KeyedMessage<Integer, String>("joke_text", message);
         //message可以带key, 根据key来将消息分配到指定区, 如果没有key则随机分配到某个区
@@ -71,7 +68,7 @@ public class KafkaProducer {
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
-            logger.error("send message fail",e.getMessage());
+            logger.error("send message fail", e);
         }
     }
 

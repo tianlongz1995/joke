@@ -17,4 +17,7 @@ public interface JobInfoDao {
 
     @Select("select max(id) from joke")
     int getLastId();
+
+    @Select("select count(id) from  joke where src=#{src}")
+    int isExist(String src);
 }

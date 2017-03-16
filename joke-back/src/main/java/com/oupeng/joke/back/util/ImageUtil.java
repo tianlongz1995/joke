@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 /**
- * Created by Administrator on 2017/3/5.
+ * Created by chaoz on 2017/3/5.
  */
 public class ImageUtil {
 
@@ -27,6 +27,10 @@ public class ImageUtil {
      */
     public static String handleImg(String destUrl, String srcUrl, boolean isCrop) {
 
+        if (!isCrop) {
+            //不切图
+            return FilenameUtils.getName(srcUrl);
+        }
         //名称
         String baseName = FilenameUtils.getBaseName(srcUrl);
         //后缀
@@ -36,12 +40,6 @@ public class ImageUtil {
         String src = destUrl + FilenameUtils.getName(srcUrl);
         String dest = null;
 
-        if (!isCrop) {
-            //不切图
-            dest = destUrl + baseName + "." + JPG;
-            handleImg(src, dest, "X1000");
-            return dest.substring(dest.lastIndexOf("/") + 1);
-        }
         //静态图缩放
         dest = destUrl + baseName + "_X1000." + JPG;
         handleImg(src, dest, "X1000");
@@ -55,7 +53,6 @@ public class ImageUtil {
             }
         }
         return dest.substring(dest.lastIndexOf("/") + 1);
-
     }
 
     private static void handleImg(String src, String dest, String type) {

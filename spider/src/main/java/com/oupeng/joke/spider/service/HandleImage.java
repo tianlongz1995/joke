@@ -4,6 +4,8 @@ package com.oupeng.joke.spider.service;
 import com.oupeng.joke.spider.utils.ImageUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -22,10 +24,14 @@ import java.util.UUID;
  */
 @Component
 public class HandleImage {
+
+    private static final Logger logger = LoggerFactory.getLogger(HandleImage.class);
+
+
     //图片路径
-    private  String uploadPath="/nh/java/back/resources/image" ;
-    private  String showPath ="http://joke2admin.oupeng.com/resources/image/";
-    private  String cropRealPath= "/nh/java/back/resources/image/";
+    private String uploadPath = "/nh/java/back/resources/image";
+    private String showPath = "http://joke2admin.oupeng.com/resources/image/";
+    private String cropRealPath = "/nh/java/back/resources/image/";
 
     @Autowired
     private Environment env;
@@ -49,7 +55,7 @@ public class HandleImage {
 
     }
 
-    public  String downloadImg(String imgUrl) {
+    public String downloadImg(String imgUrl) {
         //服务器上的图片地址
         String realUrl = null;
         OutputStream os = null;
@@ -84,7 +90,6 @@ public class HandleImage {
             newFileName = newFileName + imgType;
             //TODO 修改图片上传地址
             String path = FilenameUtils.concat(uploadPath, newFileName);
-//                String path ="C:/Users/rainy/joke/"+newFileName;
             //保存路径
             os = new FileOutputStream(path);
             while ((len = is.read(bs)) != -1) {
@@ -92,7 +97,7 @@ public class HandleImage {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("download image failed ", e);
         } finally {
             //关闭所有链接
             try {
@@ -101,7 +106,7 @@ public class HandleImage {
                     os.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("download image failed ", e);
             }
         }
 
