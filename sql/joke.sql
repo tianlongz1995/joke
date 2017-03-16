@@ -399,3 +399,8 @@ alter table choice AUTO_INCREMENT = 20000000;
 alter table joke add COLUMN `create_by` varchar(128) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人';
 
 insert into source(id, name, status, create_time) value(1, '用户录入', 1, now());
+
+
+-- 新增发布段子用户头像url、发布段子用户昵称字段
+alter table joke add COLUMN `release_avata` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户头像url';
+alter table joke add COLUMN `release_nick` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户昵称';

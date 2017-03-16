@@ -58,4 +58,12 @@ public class Constants {
     public static final int AUD = 1;
     /**  段子已发布状态   */
     public static final int PUB = 3;
+    /**
+     * 段子未审核
+     */
+    public static final int NOAUD=0;
+
+
+
+
 }

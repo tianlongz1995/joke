@@ -67,11 +67,12 @@ public class MailService {
                     javaMailSender.send(message);
                 } catch (Exception e) {
                     logger.error(
-                    		String.format("邮件发送失败：[recipient:(%s),subject:(%s),subject:(%s),]"),recipient,subject,content
-                    		, e);
+                            String.format("邮件发送失败：[recipient:(%s),subject:(%s),subject:(%s),]"),recipient,subject,content
+                            , e);
                 }
             }
         });
     }
+
 
 }

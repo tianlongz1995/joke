@@ -92,4 +92,41 @@
         </dependency>
 
     </dependencies>
+
+    <!-- 代码依赖仓库 -->
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>public-repository</name>
+            <url>http://mvn.nhorizon.cn/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!--<repository>-->
+        <!--<id>io.spring.repo.maven.release</id>-->
+        <!--<url>http://repo.spring.io/release/</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
+        <!--</repository>-->
+        <!--<repository>-->
+        <!--<id>io.spring.repo.maven.milestone</id>-->
+        <!--<url>http://repo.spring.io/milestone/</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
+        <!--</repository>-->
+        <!--<repository>-->
+        <!--<id>central</id>-->
+        <!--<name>Central Repository</name>-->
+        <!--<url>http://repo.maven.apache.org/maven2</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
+        <!--</repository>-->
+
+
+    </repositories>
+
 </project>
