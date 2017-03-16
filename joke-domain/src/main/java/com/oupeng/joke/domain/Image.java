@@ -12,6 +12,11 @@ public class Image {
      * 高度
      */
     private Integer height;
+    /**
+     * 路径
+     */
+    private String path;
+
 
     public Integer getWidth() {
         return width;
@@ -27,5 +32,13 @@ public class Image {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
