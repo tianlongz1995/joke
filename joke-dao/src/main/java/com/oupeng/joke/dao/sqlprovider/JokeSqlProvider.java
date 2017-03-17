@@ -120,7 +120,7 @@ public class JokeSqlProvider {
 	 */
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" update joke set update_time = now(), verify_time = now(), status = 1,");
+		sql.append(" update joke set update_time = now(), verify_time = now(), status = 1,audit = 1,");
 		sql.append(" verify_user = '").append(joke.getVerifyUser()).append("',");
 		if(StringUtils.isNotBlank(joke.getTitle())){
 			sql.append(" title = '").append(joke.getTitle().trim()).append("',");

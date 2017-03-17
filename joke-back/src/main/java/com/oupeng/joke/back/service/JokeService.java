@@ -394,6 +394,8 @@ public class JokeService {
 		joke.setVerifyUser(user);
 		joke.setWeight(weight);
         int count = jokeMapper.updateJoke(joke);
+        // 加到缓存
+        jokeToCache(String.valueOf(id));
 		return count == 1;
 	}
 	
