@@ -32,7 +32,12 @@ public class LaiSpiderTask {
     @Autowired
     private Environment env;
 
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(2000).setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36");
+    private Site site = Site.me()
+            .setRetryTimes(3)
+            .setRetrySleepTime(10000)
+            .setSleepTime(5000)
+            .setTimeOut(10000)
+            .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
     @Qualifier("JobInfoDaoImgPipeline")
     @Autowired
