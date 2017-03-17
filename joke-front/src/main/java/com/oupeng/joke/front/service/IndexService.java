@@ -104,7 +104,14 @@ public class IndexService {
                     }
                 }
                 model.addAttribute(JedisKey.INDEX_CACHE_INDEX, testResource);
-                model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, configMap.get(DEFAULT_DID));
+                String config = configMap.get(did);
+                if(config == null){
+                    config = jedisCache.hget(JedisKey.JOKE_DISTRIBUTOR_CONFIG, did);
+                    if(config != null){
+                        configMap.put(did, config);
+                    }
+                }
+                model.addAttribute(JedisKey.INDEX_CACHE_CONFIG, config);
             } else {
                 IndexResource indexResource = resourceMap.get(JedisKey.INDEX_CACHE_INDEX);
                 if(indexResource == null){
