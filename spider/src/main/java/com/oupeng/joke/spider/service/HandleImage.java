@@ -11,12 +11,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -29,9 +27,8 @@ public class HandleImage {
 
 
     //图片路径
-    private String uploadPath = "/nh/java/back/resources/image";
-    private String showPath = "http://joke2admin.oupeng.com/resources/image/";
-    private String cropRealPath = "/nh/java/back/resources/image/";
+    private String cdnImagePath = "/data01/images/";
+
 
     @Autowired
     private Environment env;
@@ -39,18 +36,10 @@ public class HandleImage {
 
     @PostConstruct
     public void initPath() {
-        String u = env.getProperty("upload_image_path");
-        String s = env.getProperty("show_image_path");
-        String creal = env.getProperty("crop.img.url");
+        String c = env.getProperty("img.cdn.path");
 
-        if (StringUtils.isNotEmpty(u)) {
-            uploadPath = u;
-        }
-        if (StringUtils.isNotEmpty(s)) {
-            showPath = s;
-        }
-        if (StringUtils.isNotBlank(creal)) {
-            cropRealPath = creal;
+        if (StringUtils.isNotBlank(c)) {
+            cdnImagePath = c;
         }
 
     }
@@ -60,12 +49,20 @@ public class HandleImage {
         String realUrl = null;
         OutputStream os = null;
         InputStream is = null;
-
+        int random = new Random().nextInt(3000);
+        File dir;
         //新的文件名
         String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString() + FilenameUtils.EXTENSION_SEPARATOR_STR;
+        String imgType = "";
+
         try {
+
+            dir = new File(cdnImagePath + random + "/");
+            if (!dir.isDirectory()) {
+                dir.mkdirs();
+            }
+
             //文件类型
-            String imgType;
             URL url = new URL(imgUrl);
             URLConnection con = url.openConnection();
             //获取contentype,判断图片类型
@@ -89,7 +86,7 @@ public class HandleImage {
             // 输出的文件流
             newFileName = newFileName + imgType;
             //TODO 修改图片上传地址
-            String path = FilenameUtils.concat(uploadPath, newFileName);
+            String path = FilenameUtils.concat(dir.getCanonicalPath(), newFileName);
             //保存路径
             os = new FileOutputStream(path);
             while ((len = is.read(bs)) != -1) {
@@ -109,17 +106,17 @@ public class HandleImage {
                 logger.error("download image failed ", e);
             }
         }
-
-        String url = handleImg(showPath + newFileName, false);
-        if (StringUtils.isNotBlank(url)) {
-            return showPath + url;
+        String cdnUrl = cdnImagePath + random + "/" + newFileName;
+        String imgName = handleImg(cdnUrl, false);
+        if (StringUtils.isNotBlank(imgName)) {
+            return random + "/" + imgName;
         }
         return null;
     }
 
     private String handleImg(String imgUrl, boolean isCrop) {
         if (StringUtils.isNotBlank(imgUrl)) {
-            String imgurl = ImageUtil.handleImg(cropRealPath, imgUrl, isCrop);
+            String imgurl = ImageUtil.handleImg(imgUrl, isCrop);
             if (imgurl != null && imgurl.length() != 0) {
                 return imgurl;
             }
