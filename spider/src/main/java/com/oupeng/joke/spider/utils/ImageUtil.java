@@ -22,39 +22,27 @@ public class ImageUtil {
     private static final String JPG = "jpg";
     private static final String GIF = "gif";
 
-    /*
-     * src为源文件目录，dest为缩放后保存目录
+    /**
+     * cdn存放图片
+     *
+     * @param srcUrl
+     * @param isCrop
+     * @return
      */
-    public static String handleImg(String destUrl, String srcUrl, boolean isCrop) {
+    public static String handleImg(String srcUrl, boolean isCrop) {
 
         //名称
         String baseName = FilenameUtils.getBaseName(srcUrl);
-        //后缀
-        String suffix = FilenameUtils.getExtension(srcUrl);
 
-        //本机路径
-        String src = destUrl + FilenameUtils.getName(srcUrl);
         String dest = null;
 
         if (!isCrop) {
             //不切图
-            dest = destUrl + baseName + "." + JPG;
-            handleImg(src, dest, "X1000");
+            dest = FilenameUtils.getFullPath(srcUrl) + baseName + "." + JPG;
+            handleImg(srcUrl, dest, "X1000");
             return FilenameUtils.getName(dest);
         }
-        //静态图缩放
-        dest = destUrl + baseName + "_X1000." + JPG;
-        handleImg(src, dest, "X1000");
-        dest = destUrl + baseName + "_X200." + JPG;
-        handleImg(src, dest, "X200");
-        //切图后删除原图片(不包括动图)
-        if (!suffix.equalsIgnoreCase(GIF)) {
-            File file = new File(src);
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-        return dest.substring(dest.lastIndexOf("/") + 1);
+        return null;
     }
 
     private static void handleImg(String src, String dest, String type) {
