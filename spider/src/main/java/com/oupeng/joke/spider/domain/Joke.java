@@ -24,6 +24,10 @@ public class Joke {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String content;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String releaseAvata;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String releaseNick;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private CommentT comment;
 
 
@@ -76,6 +80,22 @@ public class Joke {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getReleaseAvata() {
+        return releaseAvata;
+    }
+
+    public void setReleaseAvata(String releaseAvata) {
+        this.releaseAvata = releaseAvata;
+    }
+
+    public String getReleaseNick() {
+        return releaseNick;
+    }
+
+    public void setReleaseNick(String releaseNick) {
+        this.releaseNick = releaseNick;
     }
 
     public CommentT getComment() {

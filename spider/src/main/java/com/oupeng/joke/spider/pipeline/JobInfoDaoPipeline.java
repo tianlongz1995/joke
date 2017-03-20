@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.spider.domain.*;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.producer.KafkaProducer;
+import com.oupeng.joke.spider.service.URLBloomFilterService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -23,13 +26,17 @@ import java.util.Random;
 @Component("JobInfoDaoPipeline")
 public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
+    private static final Logger logger= LoggerFactory.getLogger(JobInfoDaoPipeline.class);
+
     private Random random = new Random(3000);
     private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
+    private int maxCrawlPage = 300;
 
     @Autowired
     private UserDao userDao;
 
-    private int maxCrawlPage = 300;
+    @Autowired
+    private URLBloomFilterService urlBloomFilterService;
 
     @Autowired
     private Environment env;
@@ -52,42 +59,55 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     @Override
     public void process(JokeText jokeText, Task task) {
         long pageCount = ((Spider) task).getPageCount();
-
         if (pageCount > maxCrawlPage) {
-
             ((Spider) task).stop();
         }
-        Joke joke = new Joke();
-        joke.setSource(jokeText.getSrc());
-        joke.setTitle(jokeText.getTitle());
-        joke.setSource_id(jokeText.getSourceId());
-        joke.setStatus(0);
-        joke.setContent(jokeText.getContent());
-        if (jokeText.getAgreeTotal() != null && jokeText.getAgreeTotal() > 10) {
+        if (!urlBloomFilterService.contains(jokeText.getSrc())) {
+            urlBloomFilterService.add(jokeText.getSrc());
+            Joke joke = new Joke();
+            joke.setSource(jokeText.getSrc());
+            joke.setTitle(jokeText.getTitle());
+            joke.setSource_id(jokeText.getSourceId());
+            joke.setStatus(0);
+            joke.setContent(jokeText.getContent());
 
-            int id = random.nextInt(2090);
-            User u = userDao.select(id);
-            int last = u.getLast() + 1;
+            //发布人
+            int rid = random.nextInt(2089);
+            User ru = userDao.select(rid);
+            int rlast = ru.getLast() + 1;
+            userDao.update(rlast, rid);
+            String rnick = StringUtils.trim(ru.getNickname()) + Integer.toHexString(rlast);
+            joke.setReleaseNick(rnick);
+            int ruid = rid * 10000 + rlast;
+            int riconid = rid % 20 + 1;
+            String ravata = nick.replace("%d", String.valueOf(riconid));
+            joke.setReleaseAvata(ravata);
 
-            String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
-            int uid = id * 10000 + last;
-            int iconid = id % 20 + 1;
-            String avata = nick.replace("%d", String.valueOf(iconid));
+            if (jokeText.getAgreeTotal() != null && jokeText.getAgreeTotal() > 10) {
+                //评论
+                int id = rid + 1;
+                User u = userDao.select(id);
+                int last = u.getLast() + 1;
 
-            //添加评论
-            CommentT com = new CommentT();
-            com.setUid(uid);
-            com.setNickname(u.getNickname());
-            com.setContent(jokeText.getCommentContent());
-            com.setAvata(avata);
-            com.setGood(jokeText.getAgreeTotal());
-            joke.setComment(com);
-        } else {
-            joke.setComment(null);
+                String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
+                int uid = id * 10000 + last;
+                int iconid = id % 20 + 1;
+                String avata = nick.replace("%d", String.valueOf(iconid));
+
+                //添加评论
+                CommentT com = new CommentT();
+                com.setUid(uid);
+                com.setNickname(u.getNickname());
+                com.setContent(jokeText.getCommentContent());
+                com.setAvata(avata);
+                com.setGood(jokeText.getAgreeTotal());
+                joke.setComment(com);
+            } else {
+                joke.setComment(null);
+            }
+            String message = JSON.toJSON(joke).toString();
+            kafkaProducer.sendMessage(message);
         }
-        String message = JSON.toJSON(joke).toString();
-        kafkaProducer.sendMessage(message);
     }
-
 
 }

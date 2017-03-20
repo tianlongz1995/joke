@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.*;
 public interface JobInfoDao {
 
 
-    @Insert("insert into joke (`title`,`img`,`gif`,`width`,`height`,`comment`,`type`,`create_time`,`src`,`avata`,`nick`,`source_id`)values (#{title},#{img},#{gif},#{width},#{height},#{commentContent},#{type},now(),#{src},#{avata},#{nick},#{sourceId})")
+    @Insert("insert into joke (`title`,`img`,`gif`,`width`,`height`,`comment`,`type`,`create_time`,`src`,`avata`,`nick`,`source_id`,`release_avata`,`release_nick`)values (#{title},#{img},#{gif},#{width},#{height},#{commentContent},#{type},now(),#{src},#{avata},#{nick},#{sourceId},#{releaseAvata},#{releaseNick})")
     void addImg(JokeImg img);
 
     @Select("select max(id) from joke")
