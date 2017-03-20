@@ -54,11 +54,18 @@ public class JokeController {
      * 验证码收件人
      */
     private String recipient;
+
+    private String imgPrefix = "http://joke2-img.oupeng.com/";
+
     @PostConstruct
     public void init(){
         String re = env.getProperty("joke.delete.recipient");
         if(StringUtils.isNoneBlank(re)){
             recipient = re;
+        }
+        String url = env.getProperty("img.real.server.url");
+        if (StringUtils.isNoneBlank(url)) {
+            imgPrefix = url;
         }
     }
 
@@ -486,11 +493,49 @@ public class JokeController {
                           @RequestParam(value = "content", required = false) String content,
                           @RequestParam(value = "weight",required = false)  Integer weight) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean result = jokeService.addJoke(title, type, image, content, weight, username);
-        if (result) {
-            return new Success("添加成功!");
+        Joke joke = jokeService.addJoke(title, type, image, content, weight, username);
+        if (joke != null) {
+            return new Success(imgPrefix + joke.getImg(), joke.getId().toString());
         } else {
             return new Failed("添加失败!");
         }
     }
+
+    /**
+     * 获取动图封面图的下一帧
+     * @param img
+     * @param index
+     * @return
+     */
+    @RequestMapping(value="/nextFrame", produces = {"application/json"})
+    @ResponseBody
+    public Result nextFrame(@RequestParam(value = "img") String img,
+                            @RequestParam(value = "index") int index) {
+        Joke joke = jokeService.nextFrame(img, index);
+        if (joke != null) {
+            return new Success(joke.getImg());
+        } else {
+            return new Failed("添加失败!");
+        }
+    }
+
+    /**
+     * 确认动图封面图
+     * @param img
+     * @param img
+     * @return
+     */
+    @RequestMapping(value="/submitImage", produces = {"application/json"})
+    @ResponseBody
+    public Result submitImage(@RequestParam(value = "id") Integer id,
+                              @RequestParam(value = "img") String img) {
+        boolean result = jokeService.submitImage(id, img);
+        if (result) {
+            return new Success();
+        } else {
+            return new Failed("添加失败!");
+        }
+    }
+
+
 }

@@ -107,7 +107,7 @@ public class ChoiceService {
      */
     public boolean addChoice(String title, String content, String image, String publishTime) {
 //      获取文件内容中的图片地址
-        content = content.replaceAll("'", "#").replaceAll("-","_");
+        content = content.replaceAll("'", "#");
         List<String> sourceUrl = getImgUrl(content);
         List<String> realUrl;
         if (!CollectionUtils.isEmpty(sourceUrl)) {
@@ -310,7 +310,7 @@ public class ChoiceService {
     }
 
     public boolean updateChoice(Integer id, String title, String content, String image,String publishTime) {
-        content = content.replaceAll("'", "#").replaceAll("-","_");
+        content = content.replaceAll("'", "#");
         Image img = new Image();
         //重新上传的图片
         if (image.startsWith(showPath)) {

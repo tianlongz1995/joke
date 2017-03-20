@@ -35,11 +35,8 @@ public class ImageUtils {
         FileImageInputStream in = null;
         FileImageOutputStream out = null;
         try {
-//            String newFileName = src.substring(0, src.lastIndexOf("."));
             in = new FileImageInputStream(new File(src));
-            //GIFImageReader reader = null;
             ImageReaderSpi readerSpi = new GIFImageReaderSpi();
-            //readerSpi.canDecodeInput(in);
             GIFImageReader gifReader = (GIFImageReader) readerSpi.createReaderInstance();
             gifReader.setInput(in);
             int num = gifReader.getNumImages(true);
