@@ -69,12 +69,12 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
 
         Long count = ((OOSpider) task).getPageCount();
-
+        logger.info("图片——当前抓取页数:{}", count);
         if (count > maxCrawlPage) {
+            logger.info("图片——抓取总页数:{}", count);
             ((OOSpider) task).stop();
         }
         if (!urlFilter.contains(jokeImg.getSrc())) {
-            urlFilter.add(jokeImg.getSrc());
             //处理图片
             String imgurl = handleImage.downloadImg(jokeImg.getImg());
             if (("gif").equalsIgnoreCase(FilenameUtils.getExtension(jokeImg.getImg()))) {
@@ -123,7 +123,8 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 jokeImg.setComment(null);
                 jobInfoDao.addImg(jokeImg);
             }
-
+            urlFilter.add(jokeImg.getSrc());
+            logger.info("图片——处理页面结束:{}", jokeImg.getSrc());
         }
     }
 }

@@ -26,10 +26,10 @@ import java.util.Random;
 @Component("JobInfoDaoPipeline")
 public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
-    private static final Logger logger= LoggerFactory.getLogger(JobInfoDaoPipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     private Random random = new Random(3000);
-    private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
+    private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
     private int maxCrawlPage = 300;
 
     @Autowired
@@ -52,18 +52,19 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         }
         String n = env.getProperty("nick");
         if (StringUtils.isNotBlank(n)) {
-            nick = n;
+            avataStr = n;
         }
     }
 
     @Override
     public void process(JokeText jokeText, Task task) {
         long pageCount = ((Spider) task).getPageCount();
+        logger.info("段子——当前抓取页数:{}", pageCount);
         if (pageCount > maxCrawlPage) {
+            logger.info("段子——抓取总页数:{}", pageCount);
             ((Spider) task).stop();
         }
         if (!urlBloomFilterService.contains(jokeText.getSrc())) {
-            urlBloomFilterService.add(jokeText.getSrc());
             Joke joke = new Joke();
             joke.setSource(jokeText.getSrc());
             joke.setTitle(jokeText.getTitle());
@@ -80,7 +81,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             joke.setReleaseNick(rnick);
             int ruid = rid * 10000 + rlast;
             int riconid = rid % 20 + 1;
-            String ravata = nick.replace("%d", String.valueOf(riconid));
+            String ravata = avataStr.replace("%d", String.valueOf(riconid));
             joke.setReleaseAvata(ravata);
 
             if (jokeText.getAgreeTotal() != null && jokeText.getAgreeTotal() > 10) {
@@ -92,7 +93,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
                 int uid = id * 10000 + last;
                 int iconid = id % 20 + 1;
-                String avata = nick.replace("%d", String.valueOf(iconid));
+                String avata = avataStr.replace("%d", String.valueOf(iconid));
 
                 //添加评论
                 CommentT com = new CommentT();
@@ -107,6 +108,8 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             }
             String message = JSON.toJSON(joke).toString();
             kafkaProducer.sendMessage(message);
+            urlBloomFilterService.add(jokeText.getSrc());
+            logger.info("段子——处理页面结束:{}", jokeText.getSrc());
         }
     }
 
