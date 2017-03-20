@@ -59,10 +59,11 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     @Override
     public void process(JokeText jokeText, Task task) {
         long pageCount = ((Spider) task).getPageCount();
-        logger.info("段子——当前抓取页数:{}", pageCount);
+        logger.info("段子 - 当前抓取页数:{}", pageCount);
         if (pageCount > maxCrawlPage) {
-            logger.info("段子——抓取总页数:{}", pageCount);
             ((Spider) task).stop();
+            logger.info("段子 - 最大抓取总页数:{}", maxCrawlPage);
+            logger.info("段子 - 当前抓取总页数:{}", pageCount);
         }
         if (!urlBloomFilterService.contains(jokeText.getSrc())) {
             Joke joke = new Joke();
@@ -109,7 +110,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             String message = JSON.toJSON(joke).toString();
             kafkaProducer.sendMessage(message);
             urlBloomFilterService.add(jokeText.getSrc());
-            logger.info("段子——处理页面结束:{}", jokeText.getSrc());
+            logger.info("段子 - 处理页面结束:{}", jokeText.getSrc());
         }
     }
 
