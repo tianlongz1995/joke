@@ -1,19 +1,33 @@
-package com.oupeng.joke.spider.domain;
+package com.oupeng.joke.spider.domain.pengfu;
 
+import com.oupeng.joke.spider.domain.Comment;
+import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
+import us.codecraft.webmagic.model.annotation.HelpUrl;
+import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by Administrator on 2017/3/15.
+ * Created by zongchao on 2017/3/13.
  */
-public class JokeImg {
+
+@TargetUrl("http://www.pengfu.com/content_\\d{6,9}_1.html")
+@HelpUrl("http://www.pengfu.com/shen_30_\\d{1,3}.html")
+public class JokeImgPeng extends JokeImg {
 
     private Integer id;
+
+    @ExtractBy("//dl[@class='clearfix dl-con']//h1/text()")
     private String title;
 
+    @ExtractBy(value = "//div[@class='content-txt pt10']/img/@src", notNull = true)
     private String img;
 
     private String gif;
+
+    @ExtractBy("//div[@class='content-txt pt10']/img/@width")
     private Integer width;
+
+
     private Integer height;
     /**
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
@@ -28,13 +42,18 @@ public class JokeImg {
     private Integer status;
 
 
-
+    /**
+     * 来源
+     */
     private String src;
+
+    @ExtractBy("//div[@class='list-item bg1 b1 boxshadow']/@id")
+    private Integer srcId;
     /**
      * 评论内容
      */
 
-
+    @ExtractBy("//div[@class='shenhf-con']/text()")
     private String commentContent;
 
     /**
@@ -46,6 +65,7 @@ public class JokeImg {
      * 神评点赞数大于10
      */
 
+    @ExtractBy("//span[@class='shf-comment-ding fr none']//i/text()")
     private Integer agreeTotal;
     /**
      * 昵称
@@ -59,15 +79,6 @@ public class JokeImg {
     private Comment comment;
 
     private Integer sourceId;
-
-    /**
-     * 发布人头像
-     */
-    private String releaseAvata;
-    /**
-     * 发布人昵称
-     */
-    private String releaseNick;
 
 
     public Integer getId() {
@@ -86,6 +97,7 @@ public class JokeImg {
         this.title = title;
     }
 
+
     public String getImg() {
         return img;
     }
@@ -100,6 +112,39 @@ public class JokeImg {
 
     public void setGif(String gif) {
         this.gif = gif;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+
+    public Integer getGood() {
+        return good;
+    }
+
+    public void setGood(Integer good) {
+        this.good = good;
+    }
+
+    public Integer getBad() {
+        return bad;
+    }
+
+    public void setBad(Integer bad) {
+        this.bad = bad;
     }
 
     public Integer getWidth() {
@@ -118,45 +163,6 @@ public class JokeImg {
         this.height = height;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getGood() {
-        return good;
-    }
-
-    public void setGood(Integer good) {
-        this.good = good;
-    }
-
-    public Integer getBad() {
-        return bad;
-    }
-
-    public void setBad(Integer bad) {
-        this.bad = bad;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getSrc() {
-        return src;
-    }
-
-    public void setSrc(String src) {
-        this.src = src;
-    }
 
     public String getCommentContent() {
         return commentContent;
@@ -172,14 +178,6 @@ public class JokeImg {
 
     public void setAvata(String avata) {
         this.avata = avata;
-    }
-
-    public Integer getAgreeTotal() {
-        return agreeTotal;
-    }
-
-    public void setAgreeTotal(Integer agreeTotal) {
-        this.agreeTotal = agreeTotal;
     }
 
     public String getNick() {
@@ -198,27 +196,38 @@ public class JokeImg {
         this.comment = comment;
     }
 
+    public Integer getAgreeTotal() {
+        return agreeTotal;
+    }
+
+    public void setAgreeTotal(Integer agreeTotal) {
+        this.agreeTotal = agreeTotal;
+    }
+
+    public Integer getSrcId() {
+        return srcId;
+    }
+
+    public void setSrcId(Integer srcId) {
+        this.srcId = srcId;
+    }
+
+    public String getSrc() {
+        src = "http://www.pengfu.com/content_" + srcId + "_1.html";
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
     public Integer getSourceId() {
-        return sourceId;
+        return 146;
     }
 
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
     }
 
-    public String getReleaseAvata() {
-        return releaseAvata;
-    }
-
-    public void setReleaseAvata(String releaseAvata) {
-        this.releaseAvata = releaseAvata;
-    }
-
-    public String getReleaseNick() {
-        return releaseNick;
-    }
-
-    public void setReleaseNick(String releaseNick) {
-        this.releaseNick = releaseNick;
-    }
 }
+
