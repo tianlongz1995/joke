@@ -64,7 +64,7 @@ public class HuaSpiderTask {
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-//            spiderHua();
+            spiderHua();
         }
 
     }

@@ -55,7 +55,7 @@ public class NiuSpiderTask {
         String isRun=env.getProperty("init.spider.run");
         logger.info("爬虫初始化运行:{}",isRun);
         if(isRun!=null&&isRun.equalsIgnoreCase("true")){
-//            spiderNiu();
+            spiderNiu();
         }
 
 
