@@ -19,15 +19,15 @@
 
     <base href="<%=basePath%>">
     <%@ include file="../common/css.html"%>
-    <script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
-    <script src="ui/js/date/WdatePicker.js"></script>
-    <script src="ui/js/jquery.oupeng.upload.js"></script>
+    <script src="/ui/charisma/bower_components/jquery/jquery.min.js"></script>
+    <script src="/ui/js/date/WdatePicker.js"></script>
+    <script src="/ui/js/jquery.oupeng.upload.js"></script>
 
     <%--富文本编辑器--%>
-    <link  href="ui/richtext/css/wangEditor.css"rel="stylesheet" type="text/css">
-    <script src="ui/richtext/js/wangEditor.js"></script>
+    <link  href="/ui/richtext/css/wangEditor.css"rel="stylesheet" type="text/css">
+    <script src="/ui/richtext/js/wangEditor.js"></script>
     <!-- The fav icon -->
-    <link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
+    <link rel="shortcut icon" href="/ui/charisma/img/favicon.ico">
 </head>
 
 <body>
