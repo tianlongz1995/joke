@@ -29,10 +29,10 @@ import java.util.Random;
 @Component("JobInfoDaoImgPipeline")
 public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
-    private static final Logger logger= LoggerFactory.getLogger(JobInfoDaoPipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     private Random random = new Random(3000);
-    private String nick = "http://joke2.oupeng.com/comment/images/%d.png";
+    private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
     private int maxCrawlPage = 300;
 
     @Autowired
@@ -60,7 +60,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
         }
         String n = env.getProperty("nick");
         if (StringUtils.isNotBlank(n)) {
-            nick = n;
+            avataStr = n;
         }
     }
 
@@ -93,17 +93,17 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             jokeImg.setReleaseNick(rnick);
             int ruid = rid * 10000 + rlast;
             int riconid = rid % 20 + 1;
-            String ravata = nick.replace("%d", String.valueOf(riconid));
+            String ravata = avataStr.replace("%d", String.valueOf(riconid));
             jokeImg.setReleaseAvata(ravata);
             if (jokeImg.getAgreeTotal() != null && jokeImg.getAgreeTotal() > 10) {
-                int id = rid+1;
+                int id = rid + 1;
                 User u = userDao.select(id);
                 int last = u.getLast() + 1;
                 userDao.update(last, id);
                 String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
                 int uid = id * 10000 + last;
                 int iconid = id % 20 + 1;
-                String avata = nick.replace("%d", String.valueOf(iconid));
+                String avata = avataStr.replace("%d", String.valueOf(iconid));
                 jokeImg.setAvata(avata);
                 jokeImg.setNick(nick);
                 jobInfoDao.addImg(jokeImg);

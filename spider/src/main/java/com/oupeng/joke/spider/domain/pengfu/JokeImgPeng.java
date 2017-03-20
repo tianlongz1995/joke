@@ -27,7 +27,7 @@ public class JokeImgPeng extends JokeImg {
     @ExtractBy("//div[@class='content-txt pt10']/img/@width")
     private Integer width;
 
-    @ExtractBy("//div[@class='content-txt pt10']/img/@height")
+
     private Integer height;
     /**
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
@@ -213,7 +213,7 @@ public class JokeImgPeng extends JokeImg {
     }
 
     public String getSrc() {
-        src = "http://www.pengfu.com/content_" + id + "_1.html";
+        src = "http://www.pengfu.com/content_" + srcId + "_1.html";
         return src;
     }
 
@@ -222,7 +222,7 @@ public class JokeImgPeng extends JokeImg {
     }
 
     public Integer getSourceId() {
-        return 141;
+        return 146;
     }
 
     public void setSourceId(Integer sourceId) {

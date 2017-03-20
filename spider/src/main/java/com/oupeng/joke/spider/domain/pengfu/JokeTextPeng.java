@@ -154,7 +154,7 @@ public class JokeTextPeng extends JokeText {
     }
 
     public String getSrc() {
-        String src = "http://www.pengfu.com/content_" + id + "_1.html";
+        String src = "http://www.pengfu.com/content_" + srcId + "_1.html";
         return src;
     }
 
@@ -164,7 +164,7 @@ public class JokeTextPeng extends JokeText {
 
 
     public Integer getSourceId() {
-        return 141;
+        return 146;
     }
 
 

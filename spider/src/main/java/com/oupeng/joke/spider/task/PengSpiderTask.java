@@ -1,13 +1,15 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
+
+import com.oupeng.joke.spider.domain.pengfu.JokeImgPeng;
+import com.oupeng.joke.spider.domain.pengfu.JokeTextPeng;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.model.OOSpider;
@@ -60,7 +62,7 @@ public class PengSpiderTask {
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            // spiderPeng();
+             spiderPeng();
         }
 
     }
@@ -69,12 +71,12 @@ public class PengSpiderTask {
     /**
      * 抓取捧腹网
      */
-    // @Scheduled(cron = "0 30 5 * * ?")
+     @Scheduled(cron = "0 30 5 * * ?")
     public void spiderPeng() {
         logger.info("pengfu spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlPeng);
+        crawl(jobInfoDaoImgPipeline, JokeImgPeng.class, imgUrlPeng);
         logger.info("pengfu spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlPeng);
+        crawl(jobInfoDaoPipeline, JokeTextPeng.class, textUrlPeng);
 
     }
 
