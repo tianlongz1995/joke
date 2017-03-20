@@ -72,8 +72,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
         logger.info("图片 - 当前抓取页数:{}", count);
         if (count > maxCrawlPage) {
             ((OOSpider) task).stop();
-            logger.info("图片 - 最大抓取总页数:{}", maxCrawlPage);
-            logger.info("图片 - 当前抓取总页数:{}", count);
+            logger.info("图片 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, count);
         }
         if (!urlFilter.contains(jokeImg.getSrc())) {
             //处理图片

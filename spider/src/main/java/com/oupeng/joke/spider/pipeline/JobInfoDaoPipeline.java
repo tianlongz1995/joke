@@ -62,8 +62,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         logger.info("段子 - 当前抓取页数:{}", pageCount);
         if (pageCount > maxCrawlPage) {
             ((Spider) task).stop();
-            logger.info("段子 - 最大抓取总页数:{}", maxCrawlPage);
-            logger.info("段子 - 当前抓取总页数:{}", pageCount);
+            logger.info("段子 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, pageCount);
         }
         if (!urlBloomFilterService.contains(jokeText.getSrc())) {
             Joke joke = new Joke();

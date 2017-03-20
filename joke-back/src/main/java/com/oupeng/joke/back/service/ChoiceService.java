@@ -254,13 +254,6 @@ public class ChoiceService {
             //服务器上图片地址
 
         }
-//        List<String> realUrl2 = new ArrayList<>();
-//        for (String u : realUrl) {
-//            String url = "";// TODO handleImg(u, false);
-//            if (StringUtils.isNotBlank(url)) {
-//                realUrl2.add(realPath + url);
-//            }
-//        }
         return realUrl;
     }
 
