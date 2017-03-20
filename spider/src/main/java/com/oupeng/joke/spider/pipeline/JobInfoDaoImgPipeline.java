@@ -96,7 +96,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             String ravata = nick.replace("%d", String.valueOf(riconid));
             jokeImg.setReleaseAvata(ravata);
             if (jokeImg.getAgreeTotal() != null && jokeImg.getAgreeTotal() > 10) {
-                int id = ruid+1;
+                int id = rid+1;
                 User u = userDao.select(id);
                 int last = u.getLast() + 1;
                 userDao.update(last, id);
