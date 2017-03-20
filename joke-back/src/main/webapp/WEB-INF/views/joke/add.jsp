@@ -92,6 +92,27 @@
                 </div><!-- box col-md-12 end -->
             </div><!-- row end -->
 
+            <%--预览--%>
+            <div class="modal fade bs-example-modal-lg" id="reviewContent" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body"  style="max-width: 400px;overflow-x: scroll">
+                            <img id="imageView" src="">
+                            <input id="gifImage" type="hidden" value=""/>
+                            <input id="imageId" type="hidden" value=""/>
+                            <input id="imageIndex" type="hidden" value="0"/>
+                        </div>
+                        <div class="modal-footer" style="text-align: center;">
+                            <button id="nextFrame" onclick="nextFrame()" type="button" class="btn btn-default">下一张</button>
+                            <button id="submitImage" onclick="submitImage()" type="button" class="btn btn-default">确认</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <script type="text/javascript">
 
                 function checkMyRadio(type) {
@@ -176,8 +197,15 @@
                             'title=' + $("#title").val() + '&type=' + type + '&image=' + image
                             + '&content=' + content + '&weight=' + weight,
                             function (data) {
-                                if (data['status']) {
-                                    location.href = '<%=basePath%>joke/list';
+                                if (data.status == 1) {
+                                    if(type == 2){
+                                        $("#gifImage").val(data.info);
+                                        $("#imageView").attr('src', data.info);
+                                        $("#imageId").val(data.data);
+                                        $("#reviewContent").modal('show');
+                                    } else {
+                                        location.href = '<%=basePath%>joke/list';
+                                    }
                                 } else {
                                     alert('更新失败:' + data['info']);
                                     $('#addJoke').removeAttr("disabled");
@@ -187,6 +215,56 @@
                                 alert('请求失败，请检查网络环境');
                                 $('#addJoke').removeAttr("disabled");
                             });
+                };
+
+                function nextFrame(){
+                    $('#nextFrame').removeAttr("disabled");
+                    var img = $("#gifImage").val();
+                    var index = parseInt($("#imageIndex").val()) + 1;
+                    console.log('nextImage' + img);
+                    post('joke/nextFrame',
+                            'index=' + index + '&img=' + img,
+                            function (data) {
+                                if (data.status == 1) {
+                                    $("#imageIndex").val(index)
+                                    $("#imageView").attr('src', data.info);
+                                } else {
+                                    alert('更新失败:' + data['info']);
+                                    $('#nextFrame').removeAttr("disabled");
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                                $('#nextFrame').removeAttr("disabled");
+                            });
+
+
+                };
+
+                function submitImage(){
+                    $('#submitImage').removeAttr("disabled");
+                    var img = $("#imageView").attr('src');
+                    console.log('submitImage' + img);
+                    var index = parseInt($("#imageIndex").val());
+                    if(index == 0){
+                        location.href = '<%=basePath%>joke/list';
+                    } else {
+                        var id = $("#imageId").val();
+                        post('joke/submitImage',
+                                'id=' + id + '&img=' + img,
+                                function (data) {
+                                    if (data.status == 1) {
+                                        location.href = '<%=basePath%>joke/list';
+                                    } else {
+                                        alert('更新失败:' + data['info']);
+                                        $('#submitImage').removeAttr("disabled");
+                                    }
+                                },
+                                function () {
+                                    alert('请求失败，请检查网络环境');
+                                    $('#submitImage').removeAttr("disabled");
+                                });
+                    }
                 };
 
                 function post(url, data, success, error) {

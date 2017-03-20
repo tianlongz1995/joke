@@ -492,4 +492,12 @@ public interface JokeMapper {
     @InsertProvider(method = "addJoke",type = JokeSqlProvider.class)
     @SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
     void addJoke(Joke joke);
+
+    /**
+     * 修改图片地址
+     * @param id
+     * @param img
+     */
+    @Update("update joke set img = #{img} where id = #{id}")
+    void editImgPath(@Param("id")Integer id, @Param("img")String img);
 }
