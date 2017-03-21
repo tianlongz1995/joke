@@ -329,21 +329,23 @@ public class ChoiceService {
         String choiceKey = JedisKey.STRING_JOKE + id;
         //精选id列表，缓存key
         String choiceListKey = JedisKey.JOKE_CHANNEL + 4;
-        //上线
-        if(Constants.CHOICE_STATUS_VALID == status){
-            result = validChoice(choice,true);
-        }else if(Constants.CHOICE_STATUS_PUBLISH !=status){ //下线
+        // 上线
+        if (Constants.CHOICE_STATUS_VALID == status) {
+            result = validChoice(choice, true);
+        // 下线
+        } else if (Constants.CHOICE_STATUS_PUBLISH != status) {
             //删除精选
             jedisCache.del(choiceKey);
             //删除列表中Id
             jedisCache.zrem(choiceListKey, Integer.toString(id));
             //删除推荐中Id
             jedisCache.srem(JedisKey.SET_RELATED_JOKE_IMG, String.valueOf(choice.getId()));
+            log.info("删除精选缓存:[{}]", id);
         }
-         if(result == null){
-             choiceMapper.updateChoiceStatus(id,status);
-         }
-      return result;
+        if (result == null) {
+            choiceMapper.updateChoiceStatus(id, status);
+        }
+        return result;
     }
 
     /**

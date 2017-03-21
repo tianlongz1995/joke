@@ -343,6 +343,7 @@
                     var imgWidth = $("#imgWidth").val();
                     if(imgWidth<200){
                         alert("图片宽度必须大于200");
+                        $('#addNewChoice').removeAttr("disabled");
                         return false;
                     }
                     post('choice/add',
@@ -389,7 +390,7 @@
                                 'id=' + id + '&status=' + status,
                                 function (data) {
                                     if (data['status']) {
-                                        alert("操作成功");
+//                                        alert("操作成功");
                                         location.href = '<%=basePath%>choice/list?status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                     } else {
                                         alert('操作失败. info:' + data['info']);
@@ -434,21 +435,6 @@
                         }
 
                     };
-//                    // 普通的自定义菜单
-//                    editor.config.menus = [
-//                        'source',
-//                        '|',     // '|' 是菜单组的分割线
-//                        'bold',
-//                        'underline',
-//                        'italic',
-//                        'strikethrough',
-//                        'eraser',
-//                        'forecolor',
-//                        'bgcolor',
-//                        'alignleft',
-//                        'img',
-//                    ];
-
                     editor.create();
                 });
                 //预览
@@ -485,6 +471,7 @@
                             $("#imgWidth").val(result.width);
                             $("#imgHeight").val(result.height);
                             $("#imgDelButton").show();
+
                         },
                         onUploadError: function (data) {
                             alert(data);

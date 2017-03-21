@@ -85,7 +85,7 @@ public class IndexController {
     }
 
     /**
-     * 段子推荐
+     * 精选推荐
      * @param did
      * @param cid
      * @return
@@ -98,12 +98,35 @@ public class IndexController {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }
+        List<Relate> relates = indexService.getChoiceRelate(did, cid,jid);
+        if(relates == null){
+            return new Result("获取失败!", 1);
+        }
+        return new Result(relates);
+    }
+
+    /**
+     * 段子推荐
+     * @param did
+     * @param cid
+     * @return
+     */
+    @RequestMapping(value = "/joke2/relateJoke")
+    @ResponseBody
+    public Result relateJoke(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
+                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                         @RequestParam(value = "jid", required = false) Integer jid) {
+        if(log.isDebugEnabled()){
+            log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
+        }
         List<Relate> relates = indexService.getJokeRelate(did, cid,jid);
         if(relates == null){
             return new Result("获取失败!", 1);
         }
         return new Result(relates);
     }
+
+
     /**
      * 获取banner列表
      * @param cid 1 段子 2趣图 3推荐 4 精选
