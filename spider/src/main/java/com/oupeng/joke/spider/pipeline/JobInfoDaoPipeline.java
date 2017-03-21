@@ -31,7 +31,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     private Random random = new Random(3000);
     private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
     private int maxCrawlPage = 300;
-    private int txtLimtLength = 200;
+    private int txtLimitLength = 200;
 
     @Autowired
     private UserDao userDao;
@@ -55,9 +55,9 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         if (StringUtils.isNotBlank(n)) {
             avataStr = n;
         }
-        String length = env.getProperty("spider.text.limt.length");
+        String length = env.getProperty("spider.text.limit.length");
         if (StringUtils.isNumeric(length)) {
-            txtLimtLength = Integer.valueOf(length);
+            txtLimitLength = Integer.valueOf(length);
         }
     }
 
@@ -70,8 +70,8 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             logger.info("段子 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, pageCount);
         }
         //字数小于txtLength
-        boolean isLessLimt = jokeText.getContent().length() < txtLimtLength ? true : false;
-        if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimt) {
+        boolean isLessLimit = jokeText.getContent().length() < txtLimitLength ? true : false;
+        if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimit) {
             Joke joke = new Joke();
             joke.setSource(jokeText.getSrc());
             joke.setTitle(jokeText.getTitle());
