@@ -116,7 +116,7 @@ public class HandleImage {
 
     private String handleImg(String imgUrl, boolean isCrop) {
         if (StringUtils.isNotBlank(imgUrl)) {
-            String imgurl = ImageUtil.handleImg(imgUrl, isCrop);
+            String imgurl = ImageUtil.handleImg(imgUrl);
             if (imgurl != null && imgurl.length() != 0) {
                 return imgurl;
             }

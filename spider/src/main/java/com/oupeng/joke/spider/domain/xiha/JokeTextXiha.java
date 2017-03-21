@@ -3,6 +3,7 @@ package com.oupeng.joke.spider.domain.xiha;
 
 import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeText;
+import org.apache.commons.lang3.StringUtils;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
@@ -11,13 +12,13 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
-@TargetUrl("http://www.laifudao.com/wangwen/\\d{5,8}.htm")
-@HelpUrl("http://www.laifudao.com/wangwen/\\w+_\\d{1,3}.htm")
+@TargetUrl("http://www.xxhh.com/content/\\d{6,9}.html")
+@HelpUrl("http://www.xxhh.com/duanzi/page/\\d{1,2}")
 public class JokeTextXiha extends JokeText {
     private Integer id;
-    @ExtractBy("//header[@class='post-header']//a/text()")
+
     private String title;
-    @ExtractBy("//div[@class='post-content stickem-container']//p/text()")
+    @ExtractBy("//div[@class='article']/pre/text()")
     private String content;
 
     /**
@@ -29,7 +30,7 @@ public class JokeTextXiha extends JokeText {
     /**
      * 来源
      */
-    @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
+    @ExtractBy("//div[@class='section']/@id")
     private String src;
 
     /**
@@ -40,13 +41,13 @@ public class JokeTextXiha extends JokeText {
     /**
      * 评论内容
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+    @ExtractBy("//div[@class='comment-list-reply']/p/text()")
     private String commentContent;
 
     /**
      * 神评点赞数大于10
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
+    @ExtractBy("//div[@class='comment-list-action']/a/span/text()")
     private Integer agreeTotal;
     /**
      * 用户头像URL
@@ -142,7 +143,9 @@ public class JokeTextXiha extends JokeText {
     }
 
     public String getSrc() {
-        return src;
+
+        String srcStr = "http://www.xxhh.com/content/" + StringUtils.substringAfter(src, "-") + ".html";
+        return srcStr;
     }
 
     public void setSrc(String src) {
@@ -151,7 +154,7 @@ public class JokeTextXiha extends JokeText {
 
 
     public Integer getSourceId() {
-        return 141;
+        return 147;
     }
 
 
