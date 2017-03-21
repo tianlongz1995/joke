@@ -308,20 +308,22 @@ public class IndexService {
     }
 
     /**
-     * 获取推荐段子信息
+     * 精选推荐
      * @param did
      * @param cid
      * @return
      */
-    public List<Relate> getJokeRelate(Integer did, Integer cid, Integer id) {
+    public List<Relate> getChoiceRelate(Integer did, Integer cid, Integer id) {
         List<Relate> relatedList = Lists.newArrayList();
-        List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 4);
+        List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.SET_RELATED_JOKE_IMG, 5);
         if (!CollectionUtils.isEmpty(relatedImgIdList)) {
             Joke joke;
+            int index = 0;
             for (String jokeId : relatedImgIdList) {
                 joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId), Joke.class);
                 if (joke != null) {
                     if (id != null && joke.getId().equals(id)) {
+                        log.info("精选随机到自己不进行推荐:[{}]", jokeId);
                         continue;
                     }
                     Relate relate = new Relate();
@@ -333,7 +335,46 @@ public class IndexService {
                         relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
                     }
                     relatedList.add(relate);
+                    index++;
+                    if(index == 4){
+                        break;
+                    }
+                } else {
+                    log.error("精选内容为空:[{}]", jokeId);
+                }
+            }
+        }
+        return relatedList;
+    }
 
+    public List<Relate> getJokeRelate(Integer did, Integer cid, Integer id) {
+        List<Relate> relatedList = Lists.newArrayList();
+        List<String> relatedImgIdList = jedisCache.srandmember(JedisKey.JOKE_CHANNEL + 1, 5);
+        if (!CollectionUtils.isEmpty(relatedImgIdList)) {
+            Joke joke;
+            int index = 0;
+            for (String jokeId : relatedImgIdList) {
+                joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + jokeId), Joke.class);
+                if (joke != null) {
+                    if (id != null && joke.getId().equals(id)) {
+                        log.info("段子随机到自己不进行推荐:[{}]", jokeId);
+                        continue;
+                    }
+                    Relate relate = new Relate();
+                    relate.setId(joke.getId());
+                    relate.setCid(1);
+                    relate.setType(joke.getType());
+                    relate.setTxt(joke.getTitle());
+                    if (joke.getImg() != null) {
+                        relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
+                    }
+                    relatedList.add(relate);
+                    index++;
+                    if(index == 4){
+                        break;
+                    }
+                } else {
+                    log.error("段子内容为空:[{}]", jokeId);
                 }
             }
         }

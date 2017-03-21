@@ -229,24 +229,7 @@
                         }
 
                     };
-//                    // 普通的自定义菜单
-//                    editor.config.menus = [
-//                        'source',
-//                        '|',     // '|' 是菜单组的分割线
-//                        'bold',
-//                        'underline',
-//                        'italic',
-//                        'strikethrough',
-//                        'eraser',
-//                        'forecolor',
-//                        'bgcolor',
-//                        'alignleft',
-//                        'img',
-//                    ];
-
                     editor.create();
-
-
                 });
 
 
