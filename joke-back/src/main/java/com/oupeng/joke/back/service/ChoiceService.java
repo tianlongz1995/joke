@@ -3,15 +3,14 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
+import com.oupeng.joke.back.util.Im4JavaUtils;
 import com.oupeng.joke.back.util.ImageUtils;
-import com.oupeng.joke.back.util.ImgRespDto;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.ChoiceMapper;
 import com.oupeng.joke.domain.Choice;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.Image;
-import com.oupeng.joke.domain.response.Failed;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,8 +40,6 @@ public class ChoiceService {
     private Environment env;
     @Autowired
     private JedisCache jedisCache;
-    @Autowired
-    private IndexCacheFlushService indexCacheFlushService;
 
     private String uploadPath = "/nh/java/joke-back/resources/image/";
     private String showPath = "http://jokeback.bj.oupeng.com/resources/image/";
@@ -159,7 +156,7 @@ public class ChoiceService {
             storeName = fileName.substring(0, fileName.lastIndexOf("."));
             storeName = storeName + ".jpg";
 //          生成图片并获得宽高
-            ImageUtils.generateImage(uploadPath + fileName, dir.getCanonicalPath() + "/" + storeName, "jpg", image);
+            ImageUtils.generateImageForIm4Java(uploadPath + fileName, dir.getCanonicalPath() + "/" + storeName, image);
 
             image.setPath(random + "/" + storeName);
             return image;
@@ -194,7 +191,7 @@ public class ChoiceService {
     //            如果是服务器本地图片,就直接拷贝到CDN目录
                 if(imgUrl.startsWith(showPath)){
                     String localImageName = HttpUtil.getUrlImageFileName(imgUrl);
-                    boolean copyStatus = ImageUtils.copyImageToCDN(uploadPath + localImageName, dir.getCanonicalPath() + "/" + localImageName);
+                    boolean copyStatus = Im4JavaUtils.copyImage(uploadPath + localImageName, dir.getCanonicalPath() + "/" + localImageName);
                     if(copyStatus){
                         realUrl.add(realPath + random + "/" + localImageName);
                     }

@@ -3,10 +3,7 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.oupeng.joke.back.util.Constants;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImageUtils;
-import com.oupeng.joke.back.util.ImgRespDto;
+import com.oupeng.joke.back.util.*;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.JokeMapper;
@@ -982,11 +979,11 @@ public class JokeService {
                     storeName = fileName.substring(0, fileName.lastIndexOf("."));
                     storeName = storeName + ".jpg";
 //                    生成图片并获得宽高
-                    ImageUtils.generateImage(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + storeName, "jpg", image);
+                    ImageUtils.generateImageForIm4Java(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + storeName, image);
                     img = random + "/" + storeName;
                 } else if(type.equals(2)){
                     //            将图片拷贝到CDN目录下
-                    boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + fileName);
+                    boolean copyStatus = Im4JavaUtils.copyImage(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + fileName);
                     if(!copyStatus){
                         return null;
                     }
@@ -998,7 +995,7 @@ public class JokeService {
             }
             if(type == 2 & img != null && img.length() > 10){
                 String newFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
-                boolean copyStatus = ImageUtils.getGifOneFrame(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + newFileName, 0);
+                boolean copyStatus = Im4JavaUtils.getGifOneFrame(uploadImagePath + fileName, dir.getCanonicalPath() + "/" + newFileName, 0);
                 if(!copyStatus){
                     return null;
                 }
@@ -1052,7 +1049,7 @@ public class JokeService {
         try {
             String fileName = HttpUtil.getUrlImageFileName(img);
             String name =  uploadImagePath + "/" + System.currentTimeMillis() + "_" + UUID.randomUUID().toString() + ".jpg" ;
-            boolean copyStatus = ImageUtils.getGifOneFrame(uploadImagePath + fileName.replace(".jpg", ".gif"), name, index);
+            boolean copyStatus = Im4JavaUtils.getGifOneFrame(uploadImagePath + fileName.replace(".jpg", ".gif"), name, index);
             if (copyStatus) {
                 Joke joke = new Joke();
                 joke.setImg(name.replace(uploadImagePath, localImgPrefix));
@@ -1084,7 +1081,7 @@ public class JokeService {
             String fileName = HttpUtil.getUrlImageFileName(img);
             String target = dir.getCanonicalPath() + "/" + fileName;
 //        将图片拷贝到CDN目录下
-            boolean copyStatus = ImageUtils.copyImageToCDN(uploadImagePath + fileName, target);
+            boolean copyStatus = Im4JavaUtils.copyImage(uploadImagePath + fileName, target);
             if (!copyStatus) {
                 return false;
             }

@@ -1,8 +1,5 @@
 package com.oupeng.joke.back.util;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +10,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.math.BigDecimal;
 
 /**
  * Created by chaoz on 2017/3/5.
@@ -89,73 +84,5 @@ public class ImageUtil {
         } catch (Exception e) {
             logger.error("upload img to crop error !", e);
         }
-    }
-
-    /**
-     *
-     * @param src
-     * @return
-     */
-    public static BufferedImage zoomImage(String src, int targetWidth) {
-        BufferedImage result = null;
-        try {
-            File srcfile = new File(src);
-            if (!srcfile.exists()) {
-                logger.error("源文件不存在:{}", src);
-                return null;
-            }
-            BufferedImage im = ImageIO.read(srcfile);
-            /* 原始图像的宽度和高度 */
-            int width = im.getWidth();
-            int height = im.getHeight();
-            //压缩计算
-            float resizeTimes = (float)targetWidth / (float)width;
-            BigDecimal bd  =   new  BigDecimal((double)resizeTimes);
-            bd   =  bd.setScale(1 ,4); // (1:小数点位数, 2:表示四舍五入，可以选择其他舍值方式，例如去尾，等等.
-            resizeTimes   =  bd.floatValue();
-//            float resizeTimes = 0.3f;  /*这个参数是要转化成的倍数,如果是1就是转化成1倍*/
-            /* 调整后的图片的宽度和高度 */
-            int toWidth = (int) (width * resizeTimes);
-            int toHeight = (int) (height * resizeTimes);
-
-            /* 新生成结果图片 */
-            result = new BufferedImage(toWidth, toHeight, BufferedImage.TYPE_INT_RGB);
-            result.getGraphics().drawImage( im.getScaledInstance(toWidth, toHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
-        } catch (Exception e) {
-            System.out.println("创建缩略图发生异常" + e.getMessage());
-        }
-        return result;
-    }
-
-    public static boolean writeHighQuality(BufferedImage im, String fileFullPath) {
-        try {
-                /*输出到文件流*/
-            FileOutputStream newimage = new FileOutputStream(fileFullPath);
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(newimage);
-            JPEGEncodeParam jep = JPEGCodec.getDefaultJPEGEncodeParam(im);
-                /* 压缩质量 */
-            jep.setQuality(0.9f, true);
-            encoder.encode(im, jep);
-               /*近JPEG编码*/
-            newimage.close();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static boolean widthCutting(String source, String target, int width){
-        return ImageUtil.writeHighQuality(ImageUtil.zoomImage(source, width), target);
-    }
-
-    public static void main(String[] args) {
-        String src = "/Users/hushuang/Downloads/test2.jpg" ;
-         /*这儿填写你存放要缩小图片的文件夹全地址*/
-        String tar = "/Users/hushuang/Downloads/test2_200.jpg";
-        /*这儿填写你转化后的图片存放的文件夹*/
-
-//        ImageUtil.writeHighQuality(ImageUtil.zoomImage(src), tar);
-
-        ImageUtil.widthCutting(src, tar, 200);
     }
 }

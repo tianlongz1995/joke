@@ -1,10 +1,10 @@
 package com.oupeng.joke.back.util;
 
 import com.oupeng.joke.domain.Image;
-import com.sun.imageio.plugins.gif.GIFImageReader;
-import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
-import com.sun.imageio.plugins.gif.GIFImageWriter;
-import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
+//import com.sun.imageio.plugins.gif.GIFImageReader;
+//import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
+//import com.sun.imageio.plugins.gif.GIFImageWriter;
+//import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,71 +24,71 @@ public class ImageUtils {
 //        ImageUtils.getGifOneFrame("/nh/logs/c.gif", 5);
 //	}
 
-    /**
-     * 获取GIF图片一帧图片
-     * @param src       GIF图地址
-     * @param target    目标地址
-     * @param frame     第几帧
-     * @return
-     */
-    public static boolean getGifOneFrame(String src, String target, int frame) {
-        FileImageInputStream in = null;
-        FileImageOutputStream out = null;
-        try {
-            in = new FileImageInputStream(new File(src));
-            ImageReaderSpi readerSpi = new GIFImageReaderSpi();
-            GIFImageReader gifReader = (GIFImageReader) readerSpi.createReaderInstance();
-            gifReader.setInput(in);
-            int num = gifReader.getNumImages(true);
-            if (num > frame) {
-                ImageWriterSpi writerSpi = new GIFImageWriterSpi();
-                GIFImageWriter writer = (GIFImageWriter) writerSpi.createWriterInstance();
-                for (int i = 0; i < num; i++) {
-                    if (i == frame) {
-                        File newfile = new File(target);
-                        out = new FileImageOutputStream(newfile);
-                        writer.setOutput(out);
-                        writer.write(gifReader.read(i));
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return false;
-        } finally {
-            close(in, out);
-        }
-    }
+//    /**
+//     * 获取GIF图片一帧图片
+//     * @param src       GIF图地址
+//     * @param target    目标地址
+//     * @param frame     第几帧
+//     * @return
+//     */
+//    public static boolean getGifOneFrame(String src, String target, int frame) {
+//        FileImageInputStream in = null;
+//        FileImageOutputStream out = null;
+//        try {
+//            in = new FileImageInputStream(new File(src));
+//            ImageReaderSpi readerSpi = new GIFImageReaderSpi();
+//            GIFImageReader gifReader = (GIFImageReader) readerSpi.createReaderInstance();
+//            gifReader.setInput(in);
+//            int num = gifReader.getNumImages(true);
+//            if (num > frame) {
+//                ImageWriterSpi writerSpi = new GIFImageWriterSpi();
+//                GIFImageWriter writer = (GIFImageWriter) writerSpi.createWriterInstance();
+//                for (int i = 0; i < num; i++) {
+//                    if (i == frame) {
+//                        File newfile = new File(target);
+//                        out = new FileImageOutputStream(newfile);
+//                        writer.setOutput(out);
+//                        writer.write(gifReader.read(i));
+//                        return true;
+//                    }
+//                }
+//            }
+//            return false;
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//            return false;
+//        } finally {
+//            close(in, out);
+//        }
+//    }
 
-    /**
-     * 复制文件
-     * @param src
-     * @param target
-     * @return
-     */
-    public static boolean copyImageToCDN(String src, String target) {
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            File srcFile = new File(src);
-            File targetFile = new File(target);
-            in = new FileInputStream(srcFile);
-            out = new FileOutputStream(targetFile);
-            byte[] bytes = new byte[1024];
-            int len = -1;
-            while ((len = in.read(bytes)) != -1) {
-                out.write(bytes, 0, len);
-            }
-            return true;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return false;
-        } finally {
-            close(in, out);
-        }
-    }
+//    /**
+//     * 复制文件
+//     * @param src
+//     * @param target
+//     * @return
+//     */
+//    public static boolean copyImageToCDN(String src, String target) {
+//        InputStream in = null;
+//        OutputStream out = null;
+//        try {
+//            File srcFile = new File(src);
+//            File targetFile = new File(target);
+//            in = new FileInputStream(srcFile);
+//            out = new FileOutputStream(targetFile);
+//            byte[] bytes = new byte[1024];
+//            int len = -1;
+//            while ((len = in.read(bytes)) != -1) {
+//                out.write(bytes, 0, len);
+//            }
+//            return true;
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//            return false;
+//        } finally {
+//            close(in, out);
+//        }
+//    }
 
     /**
      * 获取图片宽高
@@ -185,7 +185,30 @@ public class ImageUtils {
      * @param format
      * @return
      */
-    public static Image generateImage(String src, String target, String format, Image image) {
+//    public static Image generateImage(String src, String target, String format, Image image) {
+//        try {
+//            if(image == null){
+//                image = new Image();
+//            }
+//            File input = new File(src);
+//            BufferedImage bim = ImageIO.read(input);
+//            image.setWidth(bim.getWidth());
+//            image.setHeight(bim.getHeight());
+//            File output = new File(target);
+//            ImageIO.write(bim, format, output);
+//        } catch (IOException e) {
+//            log.error(e.getMessage(), e);
+//        }
+//        return image;
+//    }
+
+    /**
+     * 生成图片
+     * @param src
+     * @param target
+     * @return
+     */
+    public static Image generateImageForIm4Java(String src, String target, Image image) {
         try {
             if(image == null){
                 image = new Image();
@@ -194,14 +217,12 @@ public class ImageUtils {
             BufferedImage bim = ImageIO.read(input);
             image.setWidth(bim.getWidth());
             image.setHeight(bim.getHeight());
-            File output = new File(target);
-            ImageIO.write(bim, format, output);
-        } catch (IOException e) {
+            Im4JavaUtils.copyImage(src, target);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return image;
     }
-
 
 
     private static void close(Closeable in, Closeable out) {
