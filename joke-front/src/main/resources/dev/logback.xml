@@ -15,6 +15,7 @@
     <appender name="impr" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/impr.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -26,6 +27,7 @@
     <appender name="clk" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/clk.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -37,7 +39,7 @@
     <appender name="dfl" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/dfl.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>5</maxHistory>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -49,7 +51,7 @@
     <appender name="ufl" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/ufl.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>5</maxHistory>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -61,7 +63,7 @@
     <appender name="iol" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/iol.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>5</maxHistory>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
@@ -73,6 +75,7 @@
     <appender name="client" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/nh/logs/joke/client.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
