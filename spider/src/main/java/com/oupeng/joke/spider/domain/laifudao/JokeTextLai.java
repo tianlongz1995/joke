@@ -17,7 +17,7 @@ public class JokeTextLai extends JokeText {
     private Integer id;
     @ExtractBy("//header[@class='post-header']//a/text()")
     private String title;
-    @ExtractBy("//div[@class='post-content stickem-container']//p/text()")
+    @ExtractBy(value = "//div[@class='post-content stickem-container']//p/text()", notNull = true)
     private String content;
 
     /**

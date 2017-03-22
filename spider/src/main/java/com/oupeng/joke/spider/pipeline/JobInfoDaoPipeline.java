@@ -69,15 +69,17 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             ((Spider) task).stop();
             logger.info("段子 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, pageCount);
         }
+        //过滤空格
+        String content = StringUtils.replace(jokeText.getContent(), "　", "");
         //字数小于txtLength
-        boolean isLessLimit = jokeText.getContent().length() < txtLimitLength ? true : false;
+        boolean isLessLimit = content.length() < txtLimitLength ? true : false;
         if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimit) {
             Joke joke = new Joke();
             joke.setSource(jokeText.getSrc());
             joke.setTitle(jokeText.getTitle());
             joke.setSource_id(jokeText.getSourceId());
             joke.setStatus(0);
-            joke.setContent(jokeText.getContent());
+            joke.setContent(content);
 
             //发布人
             int rid = random.nextInt(2089);

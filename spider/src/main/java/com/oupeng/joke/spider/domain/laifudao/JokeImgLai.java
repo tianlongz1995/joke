@@ -18,7 +18,7 @@ public class JokeImgLai extends JokeImg {
     @ExtractBy("//header[@class='post-header']//a/text()")
     private String title;
 
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@src")
+    @ExtractBy(value = "//div[@class='post-content stickem-container']//a/img/@src", notNull = true)
     private String img;
 
     private String gif;

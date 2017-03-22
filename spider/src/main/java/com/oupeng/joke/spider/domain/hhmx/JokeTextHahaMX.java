@@ -1,8 +1,10 @@
-package com.oupeng.joke.spider.domain.zuiyou;
+package com.oupeng.joke.spider.domain.hhmx;
 
 
 import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeText;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
@@ -11,13 +13,13 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
-@TargetUrl("http://www.laifudao.com/wangwen/\\d{5,8}.htm")
-@HelpUrl("http://www.laifudao.com/wangwen/\\w+_\\d{1,3}.htm")
-public class JokeTextZui extends JokeText {
+@TargetUrl("http://www.haha.mx/joke/\\d{6,9}")
+@HelpUrl("http://www.haha.mx/topic/13/new/\\d{1,2}")
+public class JokeTextHahaMX extends JokeText implements AfterExtractor {
     private Integer id;
-    @ExtractBy("//header[@class='post-header']//a/text()")
+
     private String title;
-    @ExtractBy("//div[@class='post-content stickem-container']//p/text()")
+    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/text()", notNull = true)
     private String content;
 
     /**
@@ -29,24 +31,24 @@ public class JokeTextZui extends JokeText {
     /**
      * 来源
      */
-    @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
+    @ExtractBy("//link[@rel='canonical']/@href")
     private String src;
 
     /**
-     * 内容源id
+     * 内容源
      */
     private Integer sourceId;
 
     /**
      * 评论内容
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+    @ExtractBy("//div[@class='joke-comment_content']/text()")
     private String commentContent;
 
     /**
      * 神评点赞数大于10
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
+    @ExtractBy("//div[@class='joke-comment_header-buttons-light']/text()")
     private Integer agreeTotal;
     /**
      * 用户头像URL
@@ -58,6 +60,11 @@ public class JokeTextZui extends JokeText {
      */
 
     private String nick;
+
+    @ExtractBy("//img[@class='joke-main-content-img']/@src")
+    private String img;
+
+
     /**
      * 评论
      */
@@ -147,14 +154,29 @@ public class JokeTextZui extends JokeText {
         this.src = src;
     }
 
-    @Override
+
     public Integer getSourceId() {
-        return 143;
+        return 148;
+    }
+
+
+    public void setSourceId(Integer sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     @Override
-    public void setSourceId(Integer sourceId) {
-        this.sourceId = sourceId;
+    public void afterProcess(Page page) {
+        if (img == null || img.length() <= 0) {
+            page.setSkip(true);
+        }
     }
 }
 

@@ -1,9 +1,7 @@
-package com.oupeng.joke.spider.domain.zuiyou;
+package com.oupeng.joke.spider.domain.hhmx;
 
 import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeImg;
-import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
@@ -11,20 +9,24 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
+@TargetUrl("http://www.haha.mx/joke/\\d{6,9}")
+@HelpUrl("http://www.haha.mx/topic/16/new/\\d{1,2}")
+public class JokeImgHahaMX extends JokeImg {
 
-@TargetUrl("http://www.izuiyou.com/home")
-public class JokeImgZui extends  JokeImg implements AfterExtractor{
     private Integer id;
-    @ExtractBy("//div[@class='review']/text()")
+
+    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/text()", notNull = true)
     private String title;
 
-    @ExtractBy("//div[@class='box-wrap box-wrap1']//a/img/@src")
+    @ExtractBy(value = "//img[@class='joke-main-content-img']/@src", notNull = true)
     private String img;
 
     private String gif;
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@width")
+
+
     private Integer width;
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@height")
+
+
     private Integer height;
     /**
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
@@ -42,15 +44,14 @@ public class JokeImgZui extends  JokeImg implements AfterExtractor{
     /**
      * 来源
      */
-    @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
+    @ExtractBy("//link[@rel='canonical']/@href")
     private String src;
-
     /**
      * 评论内容
      */
 
-    // @ExtractBy("//div[@class='comment-box']//ul/li/div[@class='text']/text()")
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+
+    @ExtractBy("//div[@class='joke-comment_content']/text()")
     private String commentContent;
 
     /**
@@ -61,8 +62,8 @@ public class JokeImgZui extends  JokeImg implements AfterExtractor{
     /**
      * 神评点赞数大于10
      */
-    // @ExtractBy("//div[@class='comment-box']//p/span/em/text()")
-    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
+
+    @ExtractBy("//div[@class='joke-comment_header-buttons-light']/text()")
     private Integer agreeTotal;
     /**
      * 昵称
@@ -210,16 +211,12 @@ public class JokeImgZui extends  JokeImg implements AfterExtractor{
     }
 
     public Integer getSourceId() {
-        return 143;
+        return 148;
     }
 
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
     }
 
-    @Override
-    public void afterProcess(Page page) {
-
-    }
 }
 

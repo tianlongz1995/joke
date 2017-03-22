@@ -1,7 +1,8 @@
 package com.oupeng.joke.spider.service;
 
 
-import com.oupeng.joke.spider.utils.ImageUtil;
+import com.oupeng.joke.spider.domain.ImageDto;
+import com.oupeng.joke.spider.utils.Im4JavaUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,17 +45,18 @@ public class HandleImage {
 
     }
 
-    public String downloadImg(String imgUrl) {
-        //服务器上的图片地址
-        String realUrl = null;
+    public ImageDto downloadImg(String imgUrl) {
+
         OutputStream os = null;
         InputStream is = null;
         int random = new Random().nextInt(3000);
+        ImageDto image = new ImageDto();
         File dir;
         //新的文件名
         String newFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString() + FilenameUtils.EXTENSION_SEPARATOR_STR;
         String imgType = "";
-
+        //是否为gif
+        boolean isGif = false;
         try {
 
             dir = new File(cdnImagePath + random + "/");
@@ -70,12 +72,13 @@ public class HandleImage {
             if (cType.startsWith("image")) {
                 if (cType.contains("gif")) {
                     imgType = "gif";
+                    isGif = true;
                 } else {
                     imgType = "jpg";
                 }
             } else {
                 //文件类型不对
-                return realUrl;
+                return image;
             }
             // 输入流
             is = con.getInputStream();
@@ -107,19 +110,32 @@ public class HandleImage {
             }
         }
         String cdnUrl = cdnImagePath + random + "/" + newFileName;
-        String imgName = handleImg(cdnUrl, false);
-        if (StringUtils.isNotBlank(imgName)) {
-            return random + "/" + imgName;
+
+        int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
+        image.setWidth(widthHeight[0]);
+        image.setHeight(widthHeight[1]);
+
+        if (isGif) {
+            String imgName = handleImg(cdnUrl);
+            //动图切图是否成功
+            if (StringUtils.isNotBlank(imgName)) {
+                image.setImgUrl(random + "/" + imgName);
+            }
         }
-        return null;
+        image.setImgUrl(random + "/" + newFileName);
+        return image;
     }
 
-    private String handleImg(String imgUrl, boolean isCrop) {
+    private String handleImg(String imgUrl) {
         if (StringUtils.isNotBlank(imgUrl)) {
-            String imgurl = ImageUtil.handleImg(imgUrl, isCrop);
-            if (imgurl != null && imgurl.length() != 0) {
-                return imgurl;
+            //静态图
+            String target = StringUtils.replace(imgUrl, "gif", "jpg");
+            //获取第一帧
+            boolean isSuccess = Im4JavaUtils.getGifOneFrame(imgUrl, target, 1);
+            if (isSuccess) {
+                return FilenameUtils.getName(target);
             }
+            return null;
         }
         return null;
     }
