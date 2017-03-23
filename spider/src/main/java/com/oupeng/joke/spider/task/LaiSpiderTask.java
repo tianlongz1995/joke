@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
 import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
+import com.oupeng.joke.spider.domain.laifudao.JokeShenLai;
 import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class LaiSpiderTask {
     //来福岛
     private String textUrlLai;
     private String imgUrlLai;
+    private String shenUrlLai;
 
 
     @Autowired
@@ -59,6 +61,10 @@ public class LaiSpiderTask {
         if (StringUtils.isNotBlank(li)) {
             imgUrlLai = li;
         }
+        String shen = env.getProperty("lai.spider.shen.url");
+        if (StringUtils.isNotBlank(shen)) {
+            shenUrlLai = shen;
+        }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderLai();
@@ -75,6 +81,8 @@ public class LaiSpiderTask {
         crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
         logger.info("laifudao spider text...");
         crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
+        logger.info("laifudao spider shenhuifu...");
+        crawl(jobInfoDaoPipeline, JokeShenLai.class, shenUrlLai);
 
     }
 

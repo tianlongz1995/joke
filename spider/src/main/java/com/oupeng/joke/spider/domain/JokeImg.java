@@ -1,9 +1,8 @@
 package com.oupeng.joke.spider.domain;
 
-import us.codecraft.webmagic.model.annotation.ExtractBy;
 
 /**
- * Created by Administrator on 2017/3/15.
+ * Created by zongchao on 2017/3/15.
  */
 public class JokeImg {
 
@@ -26,7 +25,6 @@ public class JokeImg {
     private Integer bad;
 
     private Integer status;
-
 
 
     private String src;

@@ -1,10 +1,8 @@
-package com.oupeng.joke.spider.domain.hhmx;
+package com.oupeng.joke.spider.domain.laifudao;
 
 
 import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeText;
-import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
@@ -13,17 +11,20 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
-@TargetUrl("http://www.haha.mx/joke/\\d{6,9}")
-@HelpUrl("http://www.haha.mx/topic/13/new/\\d{1,2}")
-public class JokeTextHahaMX extends JokeText implements AfterExtractor {
+@TargetUrl("http://www.laifudao.com/wangwen/\\d{5,8}.htm")
+@HelpUrl("http://www.laifudao.com/shenhuifu.htm")
+public class JokeShenLai extends JokeText {
 
-    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/text()", notNull = true)
+    @ExtractBy("//header[@class='post-header']//a/text()")
+    private String title;
+    @ExtractBy(value = "//div[@class='post-content stickem-container']//p/text()", notNull = true)
     private String content;
+
 
     /**
      * 来源
      */
-    @ExtractBy("//link[@rel='canonical']/@href")
+    @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
     private String src;
 
     /**
@@ -34,19 +35,23 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='joke-comment_content']/text()")
+    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
     private String commentContent;
 
     /**
      * 神评点赞数大于10
      */
-    @ExtractBy("//div[@class='joke-comment_header-buttons-light']/text()")
+    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
     private Integer agreeTotal;
 
 
-    @ExtractBy("//img[@class='joke-main-content-img']/@src")
-    private String img;
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getContent() {
         return content;
@@ -64,6 +69,7 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent;
     }
+
 
     public Integer getAgreeTotal() {
         return agreeTotal;
@@ -83,27 +89,12 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
 
 
     public Integer getSourceId() {
-        return 148;
+        return 141;
     }
 
 
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    @Override
-    public void afterProcess(Page page) {
-        if (img == null || img.length() <= 0) {
-            page.setSkip(true);
-        }
     }
 }
 

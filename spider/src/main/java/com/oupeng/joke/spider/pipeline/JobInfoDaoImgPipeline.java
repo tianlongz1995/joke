@@ -114,12 +114,12 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     jobInfoDao.addImg(jokeImg);
 
                     //获得sid
-                    int sid = jobInfoDao.getLastId();
+                    int sid = jobInfoDao.getLastId(jokeImg.getImg());
                     //添加评论
                     Comment com = new Comment();
                     com.setSid(sid);
                     com.setUid(uid);
-                    com.setNickname(u.getNickname());
+                    com.setNickname(nick);
                     com.setContent(jokeImg.getCommentContent());
                     com.setAvata(avata);
                     com.setGood(jokeImg.getAgreeTotal());

@@ -100,14 +100,16 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 int last = u.getLast() + 1;
 
                 String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
+                joke.setNick(nick);
                 int uid = id * 10000 + last;
                 int iconid = id % 20 + 1;
                 String avata = avataStr.replace("%d", String.valueOf(iconid));
+                joke.setAvata(avata);
 
                 //添加评论
                 CommentT com = new CommentT();
                 com.setUid(uid);
-                com.setNickname(u.getNickname());
+                com.setNickname(nick);
                 com.setContent(jokeText.getCommentContent());
                 com.setAvata(avata);
                 com.setGood(jokeText.getAgreeTotal());
