@@ -131,7 +131,7 @@ public class HandleImage {
             //静态图
             String target = StringUtils.replace(imgUrl, "gif", "jpg");
             //获取第一帧
-            boolean isSuccess = Im4JavaUtils.getGifOneFrame(imgUrl, target, 1);
+            boolean isSuccess = Im4JavaUtils.getGifOneFrame(imgUrl, target, 0);
             if (isSuccess) {
                 return FilenameUtils.getName(target);
             }
