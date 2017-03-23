@@ -1,7 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
+import com.oupeng.joke.spider.domain.xiha.JokeImgXiha;
+import com.oupeng.joke.spider.domain.xiha.JokeTextXiha;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +17,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 来福岛
- * Created by zongchao on 2017/3/13.
+ * Created by zongchao on 2017/3/21.
  */
 @Component
-public class LaiSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(LaiSpiderTask.class);
+public class SpiderTask_XiHa {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_XiHa.class);
 
-    //来福岛
-    private String textUrlLai;
-    private String imgUrlLai;
+    //嘻嘻哈哈
+    private String textUrlXiha;
+    private String imgUrlXiha;
 
 
     @Autowired
@@ -51,31 +50,30 @@ public class LaiSpiderTask {
 
     @PostConstruct
     public void init() {
-        String lt = env.getProperty("lai.spider.text.url");
-        if (StringUtils.isNotBlank(lt)) {
-            textUrlLai = lt;
+        String xhtext = env.getProperty("xiha.spider.text.url");
+        if (StringUtils.isNotBlank(xhtext)) {
+            textUrlXiha = xhtext;
         }
-        String li = env.getProperty("lai.spider.img.url");
-        if (StringUtils.isNotBlank(li)) {
-            imgUrlLai = li;
+        String xhimg = env.getProperty("xiha.spider.img.url");
+        if (StringUtils.isNotBlank(xhimg)) {
+            imgUrlXiha = xhimg;
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderLai();
+            spiderXiha();
         }
     }
 
 
     /**
-     * 抓取来福岛
+     * 抓取嘻嘻哈哈
      */
-    @Scheduled(cron = "0 10 1 * * ?")
-    public void spiderLai() {
-        logger.info("laifudao spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
-        logger.info("laifudao spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
-
+    @Scheduled(cron = "0 30 23 * * ?")
+    public void spiderXiha() {
+        logger.info("xixihaha spider image...");
+        crawl(jobInfoDaoImgPipeline, JokeImgXiha.class, imgUrlXiha);
+        logger.info("xixihaha spider text...");
+        crawl(jobInfoDaoPipeline, JokeTextXiha.class, textUrlXiha);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {
@@ -84,5 +82,4 @@ public class LaiSpiderTask {
                 .thread(1)
                 .start();
     }
-
 }

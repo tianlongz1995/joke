@@ -2,6 +2,7 @@ package com.oupeng.joke.spider.domain.xiha;
 
 import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeImg;
+import org.apache.commons.lang3.StringUtils;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
@@ -9,24 +10,24 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
-@TargetUrl("http://www.laifudao.com/tupian/\\d{5,8}.htm")
-@HelpUrl("http://www.laifudao.com/tupian/\\w+_\\d{1,3}.htm")
+@TargetUrl("http://www.xxhh.com/content/\\d{6,9}.html")
+@HelpUrl("http://www.xxhh.com/pics/page/\\d{1,2}")
 public class JokeImgXiha extends JokeImg {
 
     private Integer id;
 
-    @ExtractBy("//header[@class='post-header']//a/text()")
+    @ExtractBy("//div[@class='article']/pre/text()")
     private String title;
 
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@src")
+    @ExtractBy(value = "//div[@class='article']/img/@src", notNull = true)
     private String img;
 
     private String gif;
 
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@width")
+    @ExtractBy("//div[@class='article']/img/@width")
     private Integer width;
 
-    @ExtractBy("//div[@class='post-content stickem-container']//a/img/@height")
+    @ExtractBy("//div[@class='article']/img/@height")
     private Integer height;
     /**
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
@@ -44,26 +45,24 @@ public class JokeImgXiha extends JokeImg {
     /**
      * 来源
      */
-    @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
+    @ExtractBy("//div[@class='section']/@id")
     private String src;
     /**
      * 评论内容
      */
 
 
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
     private String commentContent;
 
     /**
      * 用户头像URL
      */
-
+    @ExtractBy("//div[@class='comment-list-reply']/p/text()")
     private String avata;
     /**
      * 神评点赞数大于10
      */
-
-    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
+    @ExtractBy("//div[@class='comment-list-action']/a/span/text()")
     private Integer agreeTotal;
     /**
      * 昵称
@@ -203,7 +202,8 @@ public class JokeImgXiha extends JokeImg {
     }
 
     public String getSrc() {
-        return src;
+        String srcStr = "http://www.xxhh.com/content/" + StringUtils.substringAfter(src, "-") + ".html";
+        return srcStr;
     }
 
     public void setSrc(String src) {
@@ -211,7 +211,7 @@ public class JokeImgXiha extends JokeImg {
     }
 
     public Integer getSourceId() {
-        return 141;
+        return 147;
     }
 
     public void setSourceId(Integer sourceId) {

@@ -24,7 +24,7 @@ public class JokeTextNiu extends JokeText implements AfterExtractor {
 
     private String title;
 
-    @ExtractBy("//div[@class='postcontent']/p/text()")
+    @ExtractBy(value = "//div[@class='postcontent']/p/text()",notNull = true)
     private String content;
 
     /**
