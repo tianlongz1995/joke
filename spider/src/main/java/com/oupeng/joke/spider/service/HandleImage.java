@@ -121,8 +121,9 @@ public class HandleImage {
             if (StringUtils.isNotBlank(imgName)) {
                 image.setImgUrl(random + "/" + imgName);
             }
+        } else {
+            image.setImgUrl(random + "/" + newFileName);
         }
-        image.setImgUrl(random + "/" + newFileName);
         return image;
     }
 
@@ -135,7 +136,6 @@ public class HandleImage {
             if (isSuccess) {
                 return FilenameUtils.getName(target);
             }
-            return null;
         }
         return null;
     }
