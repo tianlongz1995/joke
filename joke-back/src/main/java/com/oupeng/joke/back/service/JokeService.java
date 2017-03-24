@@ -402,6 +402,10 @@ public class JokeService {
 		String textKey = "type0";
 		String imgKey = "type1";
 		String gifKey = "type2";
+        List<JokeVerifyInfo> topList = jokeMapper.getJokeTopVerifyInfoByUser(user);
+        String textTopKey = "type3";
+        String imgTopKey = "type4";
+        String gifTopKey = "type5";
 		if(!CollectionUtils.isEmpty(list)){
 			for(JokeVerifyInfo jokeVerifyInfo : list){
 				if(Constants.JOKE_TYPE_GIF == jokeVerifyInfo.getType()){
@@ -413,9 +417,23 @@ public class JokeService {
 				}
 			}
 		}
+        if(!CollectionUtils.isEmpty(topList)){
+            for(JokeVerifyInfo jokeVerifyInfo : topList){
+                if(Constants.JOKE_TYPE_GIF == jokeVerifyInfo.getType()){
+                    map.put(gifTopKey, jokeVerifyInfo.getNum());
+                }else if(Constants.JOKE_TYPE_IMG == jokeVerifyInfo.getType()){
+                    map.put(imgTopKey, jokeVerifyInfo.getNum());
+                }else if(Constants.JOKE_TYPE_TEXT == jokeVerifyInfo.getType()){
+                    map.put(textTopKey, jokeVerifyInfo.getNum());
+                }
+            }
+        }
 		if(!map.containsKey(textKey)) map.put(textKey, 0);
 		if(!map.containsKey(imgKey)) map.put(imgKey, 0);
 		if(!map.containsKey(gifKey)) map.put(gifKey, 0);
+        if(!map.containsKey(textTopKey)) map.put(textTopKey, 0);
+        if(!map.containsKey(imgTopKey)) map.put(imgTopKey, 0);
+        if(!map.containsKey(gifTopKey)) map.put(gifTopKey, 0);
 		return map;
 	}
 	
@@ -713,9 +731,15 @@ public class JokeService {
 				}
                 //		更新缓存中的段子评论数
                 Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
-                if(joke != null && joke.getComment() != null){
-                    Comment comment = joke.getComment();
-                    comment.setTotal(comment.getTotal() + 1);
+                if(joke != null){
+                    if(joke.getComment() != null){
+                        Comment comment = joke.getComment();
+                        comment.setTotal(comment.getTotal() + 1);
+                    } else {
+                        Comment comment = new Comment();
+                        comment.setTotal(1);
+                        joke.setComment(comment);
+                    }
                     jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
                 } else {
                     logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);

@@ -183,6 +183,10 @@
                         alert("权重必须是数字!");
                         return false;
                     }
+                    if(content != null && content.length > 200){
+                        alert("段子内容不能超过200字!");
+                        return false;
+                    }
                     if (type == null) {
                         alert("没有选中类型!");
                         return false;
@@ -203,6 +207,7 @@
                                         $("#imageView").attr('src', data.info);
                                         $("#imageId").val(data.data);
                                         $("#reviewContent").modal('show');
+                                        $('#addJoke').removeAttr("disabled");
                                     } else {
                                         location.href = '<%=basePath%>joke/list';
                                     }

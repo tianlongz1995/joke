@@ -357,13 +357,13 @@ public interface JokeMapper {
 	 * 更新段子2.0文字段子已发布状态
 	 * @param idsStr
 	 */
-	@Update("update joke set update_time = now(), status = #{status}, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+	@Update("update joke set update_time = now(), status = #{status} where id in (${idsStr})")
 	void updateJoke2PublishStatus(@Param("idsStr")String idsStr, @Param("status")Integer status);
     /**
      * 更新段子2.0文字段子已推荐状态
      * @param idsStr
      */
-    @Update("update joke set update_time = now(), status = 4, audit = 4, verify_time=now(), verify_user= 'systemTask' where id in (${idsStr})")
+    @Update("update joke set update_time = now(), status = 4, audit = 4 where id in (${idsStr})")
     void updateJoke2RecommendPublishStatus(@Param("idsStr")String idsStr);
 
 	/**
@@ -500,4 +500,12 @@ public interface JokeMapper {
      */
     @Update("update joke set img = #{img} where id = #{id}")
     void editImgPath(@Param("id")Integer id, @Param("img")String img);
+
+    /**
+     * 获取置顶段子已审核统计
+     * @param user
+     * @return
+     */
+    @Select("select j.type, count(j.id) as num from joke j right join joke_top jt on j.id=jt.jid where DATE_FORMAT(j.verify_time,'%y-%m-%d') = CURDATE() and j.status = 1 and j.audit = 6 and j.verify_user = #{user} and jt.status = 0 group by j.type")
+    List<JokeVerifyInfo> getJokeTopVerifyInfoByUser(@Param("user")String user);
 }

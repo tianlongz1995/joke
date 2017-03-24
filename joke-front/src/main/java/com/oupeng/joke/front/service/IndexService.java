@@ -206,6 +206,7 @@ public class IndexService {
 //                            joke.setContent(content);
                         }
                     }
+                    joke.setSrc(null);
                     list.add(joke);
                 }
             }
@@ -231,6 +232,9 @@ public class IndexService {
             joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
             if(joke != null){
                 if(joke.getImg() != null){
+                    if(cid.equals(4)){
+                        joke.setImg(joke.getImg().replace(".jpg", "_w600.jpg"));
+                    }
                     joke.setImg(IMG_PREFIX + joke.getImg());
                 }
                 if(joke.getType().equals(Constants.JOKE_TYPE_GIF)){
@@ -262,6 +266,9 @@ public class IndexService {
             }
             if(joke.getType().equals(Constants.JOKE_TYPE_GIF)){
                 joke.setGif(IMG_PREFIX + joke.getGif());
+            }
+            if(joke.getType().equals(0)){
+                joke.setSrc(null);
             }
             String key = JedisKey.JOKE_CHANNEL + cid;
             Long index = jedisCache.zrevrank(key, String.valueOf(jid));
@@ -332,7 +339,7 @@ public class IndexService {
                     relate.setType(joke.getType());
                     relate.setTxt(joke.getTitle());
                     if (joke.getImg() != null) {
-                        relate.setImg(IMG_PREFIX + joke.getImg().replace("_600x_", "_200x_"));
+                        relate.setImg(IMG_PREFIX + joke.getImg().replace(".jpg", "_w200.jpg"));
                     }
                     relatedList.add(relate);
                     index++;

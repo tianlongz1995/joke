@@ -30,6 +30,9 @@ public class JokeDetail {
 	/** 评论数量(commentNumber)	*/
 	@JsonInclude(Include.NON_NULL)
 	private Integer commentNumber;
+    /** 来源网址	*/
+    @JsonInclude(Include.NON_NULL)
+    private String src;
 
 
 	public String getTitle() {
@@ -100,4 +103,12 @@ public class JokeDetail {
 	public void setCommentNumber(Integer commentNumber) {
 		this.commentNumber = commentNumber;
 	}
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
 }

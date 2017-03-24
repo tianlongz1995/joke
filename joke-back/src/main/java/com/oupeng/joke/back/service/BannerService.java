@@ -3,7 +3,8 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.oupeng.joke.back.util.Constants;
 import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.ImgRespDto;
+import com.oupeng.joke.back.util.Im4JavaUtils;
+import com.oupeng.joke.back.util.ImageUtils;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
@@ -18,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class BannerService {
@@ -42,14 +45,14 @@ public class BannerService {
     private String uploadPath = "/nh/java/back/resources/image/";
     private String showPath = "http://joke2admin.oupeng.com/resources/image/";
     private String realPath = "http://joke2-img.oupeng.com/";
-    private String cropPath = "http://192.168.10.90:3000/upload";
+    private String cdnPath = "/data01/images/";
 
     @PostConstruct
     public void initPath() {
         String u = env.getProperty("upload_image_path");
         String s = env.getProperty("show_image_path");
         String r = env.getProperty("img.real.server.url");
-        String c = env.getProperty("remote.crop.img.server.url");
+        String c = env.getProperty("img.cdn.path");
         if(StringUtils.isNotEmpty(u)){
             uploadPath = u;
         }
@@ -60,7 +63,7 @@ public class BannerService {
             realPath = r;
         }
         if(StringUtils.isNotEmpty(c)){
-            cropPath = c;
+            cdnPath = c;
         }
     }
 
@@ -77,27 +80,47 @@ public class BannerService {
      * @return
      */
     public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime,Integer did) {
-        Banner banner = new Banner();
-        banner.setContent(content);
-        //内容上传图片
-        String newImg = handleImg(img);
-        if (StringUtils.isBlank(newImg) && type == 0) {
+        try {
+            String fileName = HttpUtil.getUrlImageFileName(img);
+            File file = new File(uploadPath + fileName);
+            if(!file.exists()){
+                log.error("文件不存在:[{}]!", file.toString());
+                return false;
+            }
+            Banner banner = new Banner();
+            banner.setContent(content);
+
+            int random = new Random().nextInt(3000);
+            File dir = new File(cdnPath + random);
+            if(!dir.isDirectory()){
+                dir.mkdirs();
+            }
+            String newFile = dir.getCanonicalPath() + "/" + fileName;
+            //内容上传图片
+            boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
+            if (!result) {
+                log.error("拷贝图片[{}]到目[{}]失败!");
+                return false;
+            }
+            Image image = ImageUtils.getImgWidthAndHeight(file);
+            banner.setImg(newFile.replace(cdnPath, ""));
+            banner.setTitle(title);
+            banner.setCid(cid);
+            banner.setDid(did);
+            banner.setJid(jid);
+            banner.setType(type);
+            banner.setSlot(adid);
+            //新建banner，设置sort值为0
+            banner.setSort(0);
+            banner.setWidth(image.getWidth());
+            banner.setHeight(image.getHeight());
+            banner.setPublishTimeString(publishTime);
+            bannerMapper.addBanner(banner);
+            return true;
+        } catch (Exception e){
+            log.error(e.getMessage(), e);
             return false;
         }
-        banner.setImg(newImg);
-        banner.setTitle(title);
-        banner.setCid(cid);
-        banner.setDid(did);
-        banner.setJid(jid);
-        banner.setType(type);
-        banner.setSlot(adid);
-        //新建banner，设置sort值为0
-        banner.setSort(0);
-        banner.setWidth(width);
-        banner.setHeight(height);
-        banner.setPublishTimeString(publishTime);
-        bannerMapper.addBanner(banner);
-        return true;
     }
 
 
@@ -166,44 +189,66 @@ public class BannerService {
      * @return
      */
     public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer width,Integer height,Integer did) {
-        Banner banner = new Banner();
-        banner.setTitle(title);
-        banner.setId(id);
-        banner.setCid(cid);
-        banner.setDid(did);
-        //重新上传的图片
-        if (img.startsWith(showPath)) {
-            String newImg = handleImg(img);
-            if (StringUtils.isEmpty(newImg)) {
-                return false;
+        try {
+            Banner banner = new Banner();
+            banner.setTitle(title);
+            banner.setId(id);
+            banner.setCid(cid);
+            banner.setDid(did);
+            // 重新上传的图片
+            if (img.startsWith(showPath)) {
+                String fileName = HttpUtil.getUrlImageFileName(img);
+                File file = new File(uploadPath + fileName);
+                if (!file.exists()) {
+                    log.error("文件不存在:[{}]!", file.toString());
+                    return false;
+                }
+                int random = new Random().nextInt(3000);
+                File dir = new File(cdnPath + random);
+                if (!dir.isDirectory()) {
+                    dir.mkdirs();
+                }
+                String newFile = dir.getCanonicalPath() + fileName;
+                //内容上传图片
+                boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
+                if (!result) {
+                    log.error("拷贝图片[{}]到目[{}]失败!");
+                    return false;
+                }
+                banner.setImg(newFile.replace(cdnPath, ""));
+                Image image = ImageUtils.getImgWidthAndHeight(file);
+                banner.setWidth(image.getWidth());
+                banner.setHeight(image.getWidth());
+            } else {
+                //已经上传的图片
+                img = img.replace(realPath, "");
+                banner.setImg(img);
             }
-            banner.setImg(newImg);
-        } else {
-            //已经上传的图片
-            img = img.replace(realPath, "");
-            banner.setImg(img);
+            banner.setContent(content);
+            banner.setJid(jid);
+            banner.setType(type);
+            banner.setSlot(adId);
+            banner.setPublishTimeString(publishTime);
+
+            bannerMapper.updateBanner(banner);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
         }
-        banner.setContent(content);
-        banner.setJid(jid);
-        banner.setType(type);
-        banner.setSlot(adId);
-        banner.setPublishTimeString(publishTime);
-        banner.setWidth(width);
-        banner.setHeight(height);
-        bannerMapper.updateBanner(banner);
-        return true;
     }
 
-    public String handleImg(String imgUrl) {
-        if (StringUtils.isNotBlank(imgUrl)) {
-            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
-            log.debug("获取图片处理返回结果:{}", JSON.toJSONString(imgRespDto));
-            if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
-                return imgRespDto.getImgUrl();
-            }
-        }
-        return null;
-    }
+//    public Image handleImg(String imgUrl) {
+//        if (StringUtils.isNotBlank(imgUrl)) {
+//            Im4JavaUtils.
+//            ImgRespDto imgRespDto = HttpUtil.handleImg(cropPath, imgUrl, false);
+//            log.debug("获取图片处理返回结果:{}", JSON.toJSONString(imgRespDto));
+//            if (imgRespDto != null && imgRespDto.getErrorCode() == 0) {
+//                return imgRespDto.getImgUrl();
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 删除banner

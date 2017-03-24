@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- 
+
+import com.oupeng.joke.domain.Image;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IMOperation;
 import org.im4java.core.IdentifyCmd;
@@ -261,17 +262,38 @@ public class Im4JavaUtils {
      * @param quality           图片质量(0~100)
      * @throws Exception
      */
-    public static void cropImage(String source, String target, int width, int subImageHeight, double quality) throws Exception {
+    public static void cropImageByWidth(String source, String target, int width, Integer subImageHeight, double quality) throws Exception {
         createDirectory(target);
         IMOperation op = new IMOperation();
         op.addImage(source);
         op.resize(width, null);
         op.quality(quality);
-        op.crop(null, subImageHeight, 0, 15);
+        if(subImageHeight != null){
+            op.crop(null, subImageHeight, 0, 0);
+        }
         op.addImage(target);
         ConvertCmd cmd = (ConvertCmd) getImageCommand("convert");
         cmd.run(op);
     }
+
+    /**
+     * 拷贝本地图片 - 同步
+     * @param source
+     * @param target
+     * @return
+     * @throws Exception
+     */
+    public static boolean copyLocalImage(String source, String target) throws Exception {
+        createDirectory(target);
+        IMOperation op = new IMOperation();
+        op.addImage(source);
+        op.addImage(target);
+        ConvertCmd cmd = (ConvertCmd) getImageCommand("convert");
+        cmd.setAsyncMode(false);
+        cmd.run(op);
+        return true;
+    }
+
     /**
      * 拷贝图片 - 同步
      * @param source
@@ -379,6 +401,8 @@ public class Im4JavaUtils {
         cmd.run(op);
     }
 
+
+
     public static void main(String[] args) throws Exception {
 
         String src = "/Users/hushuang/Downloads/test2.jpg";
@@ -408,7 +432,7 @@ public class Im4JavaUtils {
         // System.out.println(new File("C:\\4.jpg").isDirectory());
 
 //        List<String> list = ____Hd(src, target, 200, 86, 100);
-        cropImage(src, target, 200, 131, 75);
+        cropImageByWidth(src, target, 200, 131, 75);
 
 //        copyImage(src, target);
 //        getGifOneFrame(src, target, 1);
@@ -416,7 +440,5 @@ public class Im4JavaUtils {
 //        System.out.println(list.toString().replace("[", "").replace("]", "").replaceAll(", ", "\r\n"));
         System.out.println("完成");
     }
-
-
 
 }

@@ -94,9 +94,14 @@
                     var title = $("#title").val();
                     var content = $("#content2").val();
                     var weight = $("#weight").val();
-
+                    if(content != null && content.length > 200){
+                        alert("段子内容不能超过200字!");
+                        $('#updateJoke').removeAttr("disabled");
+                        return false;
+                    }
                     if(weight == null || weight.length < 1 || isNaN(weight)){
                         alert("权重必须是数字!");
+                        $('#updateJoke').removeAttr("disabled");
                         return false;
                     }
 

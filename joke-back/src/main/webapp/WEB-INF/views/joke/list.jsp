@@ -53,6 +53,20 @@
                                 <label style="padding-right:30px;">
                                     <span>动图:<c:out value="${type2}"></c:out></span>
                                 </label>
+
+                                <label style="padding-right:30px;margin: auto;vertical-align: middle;">
+                                    <span>已置顶未处理:</span>
+                                </label>
+                                <label style="padding-right:30px;">
+                                    <span>文字:<c:out value="${type3}"></c:out></span>
+                                </label>
+                                <label style="padding-right:30px;">
+                                    <span>图片:<c:out value="${type4}"></c:out></span>
+                                </label>
+                                <label style="padding-right:30px;">
+                                    <span>动图:<c:out value="${type5}"></c:out></span>
+                                </label>
+
                                 <div style="float: right">
                                     <a class="btn btn-success btn-sm" href="joke/addJokePage" >
                                         <i class="glyphicon glyphicon-add icon-white"></i>新增段子

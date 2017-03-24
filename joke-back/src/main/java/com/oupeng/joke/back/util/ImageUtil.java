@@ -85,4 +85,22 @@ public class ImageUtil {
             logger.error("upload img to crop error !", e);
         }
     }
+
+    /**
+     * 获取图片的目录
+     * @param path
+     * @return
+     */
+    public static String getImageFileDir(String path) {
+        int pos = path.lastIndexOf("/");
+        if(pos < 0){
+            return null;
+        }
+        return path.substring(0, pos);
+    }
+
+    public static void main(String[] a){
+        logger.info(getImageFileDir("http://joke2.oupeng.com/comment/joke/user.jpg"));
+    }
+
 }

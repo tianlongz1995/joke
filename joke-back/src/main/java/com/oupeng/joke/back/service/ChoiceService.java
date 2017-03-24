@@ -157,6 +157,10 @@ public class ChoiceService {
             storeName = storeName + ".jpg";
 //          生成图片并获得宽高
             ImageUtils.generateImageForIm4Java(uploadPath + fileName, dir.getCanonicalPath() + "/" + storeName, image);
+            String resizeWidth600Name = storeName.replace(".jpg", "_w600.jpg");
+            Im4JavaUtils.cropImageByWidth(uploadPath + fileName, dir.getCanonicalPath() + "/" + resizeWidth600Name, 600, 257, 50.0f);
+            String resizeWidth200Name = storeName.replace(".jpg", "_w200.jpg");
+            Im4JavaUtils.cropImageByWidth(uploadPath + fileName, dir.getCanonicalPath() + "/" + resizeWidth200Name, 200, 86, 50.0f);
 
             image.setPath(random + "/" + storeName);
             return image;
