@@ -42,7 +42,7 @@ public class UserController {
     
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAutheROLE_ADMINnticated()")
     public String showUserPage(ModelMap model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("username", authentication.getName());

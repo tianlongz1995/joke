@@ -92,9 +92,9 @@ public class IndexController {
      */
     @RequestMapping(value = "/joke2/relate")
     @ResponseBody
-    public Result relate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
-                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
-                         @RequestParam(value = "jid", required = false) Integer jid) {
+    public Result choiceRelate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
+                               @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                               @RequestParam(value = "jid", required = false) Integer jid) {
         if(log.isDebugEnabled()){
             log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }

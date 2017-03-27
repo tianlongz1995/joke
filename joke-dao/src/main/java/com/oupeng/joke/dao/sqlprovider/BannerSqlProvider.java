@@ -210,17 +210,11 @@ public class BannerSqlProvider {
         }else{
             sql.append("null, ");
         }
-        sql.append(" width = ");
         if(null != banner.getWidth()){
-            sql.append("'").append(banner.getWidth()).append("', ");
-        }else{
-            sql.append("0,");
+            sql.append(" width = '").append(banner.getWidth()).append("', ");
         }
-        sql.append(" height = ");
-        if(null != banner.getWidth()){
-            sql.append("'").append(banner.getHeight()).append("', ");
-        }else{
-            sql.append("0,");
+        if(null != banner.getHeight()){
+            sql.append(" height = '").append(banner.getHeight()).append("', ");
         }
         sql.append(" content=");
         if(StringUtils.isNotBlank(banner.getContent())){

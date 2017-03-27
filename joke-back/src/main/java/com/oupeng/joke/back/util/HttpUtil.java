@@ -117,7 +117,10 @@ public class HttpUtil {
         return img.substring(pos + 1);
     }
 
+
     public static void main(String[] a){
         HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
     }
+
+
 }

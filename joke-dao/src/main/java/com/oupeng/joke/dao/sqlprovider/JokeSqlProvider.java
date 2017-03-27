@@ -107,7 +107,7 @@ public class JokeSqlProvider {
 		sql.append(" status= ").append(status);
 		sql.append(" ,audit = ").append(status);
 		if(user != null && !"".equals(user)){
-			sql.append(",verify_time=now(),").append("verify_user= '").append(user).append("' ");
+			sql.append(",verify_time = now(), ").append("verify_user= '").append(user).append("' ");
 		}
 		sql.append(" where id in (").append(ids).append(")");
 		return sql.toString();
