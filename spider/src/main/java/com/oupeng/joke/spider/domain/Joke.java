@@ -28,6 +28,10 @@ public class Joke {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nick;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer good;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer bad;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String releaseAvata;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String releaseNick;
@@ -120,6 +124,22 @@ public class Joke {
 
     public CommentT getComment() {
         return comment;
+    }
+
+    public Integer getGood() {
+        return 500;
+    }
+
+    public void setGood(Integer good) {
+        this.good = good;
+    }
+
+    public Integer getBad() {
+        return 150;
+    }
+
+    public void setBad(Integer bad) {
+        this.bad = bad;
     }
 
     public void setComment(CommentT comment) {

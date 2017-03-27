@@ -125,7 +125,7 @@ public class JokeImg {
     }
 
     public Integer getGood() {
-        return good;
+        return 500;
     }
 
     public void setGood(Integer good) {
@@ -133,7 +133,7 @@ public class JokeImg {
     }
 
     public Integer getBad() {
-        return bad;
+        return 150;
     }
 
     public void setBad(Integer bad) {
