@@ -75,6 +75,10 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         boolean isLessLimit = content.length() < txtLimitLength ? true : false;
         if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimit) {
             Joke joke = new Joke();
+            int bad = 150 - (int) (Math.random() * 150);
+            int good = 500 + (int) (Math.random() * 500);
+            joke.setBad(bad);
+            joke.setGood(good);
             joke.setSource(jokeText.getSrc());
             joke.setTitle(jokeText.getTitle());
             joke.setSource_id(jokeText.getSourceId());

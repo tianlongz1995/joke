@@ -89,6 +89,11 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 jokeImg.setImg(imgurl);
                 jokeImg.setWidth(img.getWidth());
                 jokeImg.setHeight(img.getHeight());
+                //点赞数和点踩数
+                int bad = 150 - (int) (Math.random() * 150);
+                int good = 500 + (int) (Math.random() * 500);
+                jokeImg.setBad(bad);
+                jokeImg.setGood(good);
                 //发布人
                 int rid = random.nextInt(2089);
                 User ru = userDao.select(rid);
