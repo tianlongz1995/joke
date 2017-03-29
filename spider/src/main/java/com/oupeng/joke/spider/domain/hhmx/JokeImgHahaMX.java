@@ -13,7 +13,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.haha.mx/topic/16/new/\\d{1,2}")
 public class JokeImgHahaMX extends JokeImg {
 
-    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/text()", notNull = true)
+    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/allText()", notNull = true)
     private String title;
 
     @ExtractBy(value = "//img[@class='joke-main-content-img']/@src", notNull = true)
@@ -29,7 +29,7 @@ public class JokeImgHahaMX extends JokeImg {
      */
 
 
-    @ExtractBy("//div[@class='joke-comment_content']/text()")
+    @ExtractBy("//div[@class='joke-comment_content']/allText()")
     private String commentContent;
 
     /**

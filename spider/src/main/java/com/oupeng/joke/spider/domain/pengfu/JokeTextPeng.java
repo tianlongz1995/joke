@@ -18,9 +18,9 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeTextPeng extends JokeText implements AfterExtractor {
 
 
-    @ExtractBy("//dl[@class='clearfix dl-con']//h1/text()")
+    @ExtractBy("//dl[@class='clearfix dl-con']//h1/allText()")
     private String title;
-    @ExtractBy(value = "//div[@class='content-txt pt10']/text()", notNull = true)
+    @ExtractBy(value = "//div[@class='content-txt pt10']/allText()", notNull = true)
     private String content;
 
     /**
@@ -37,7 +37,7 @@ public class JokeTextPeng extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/allText()")
     private String commentContent;
 
     /**

@@ -18,13 +18,13 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.mahua.com/newjokes/\\w+_\\d{1,3}.htm")
 public class JokeTextHua extends JokeText {
 
-    @ExtractBy("////h1[@class='joke-title']/text()")
+    @ExtractBy("//h1[@class='joke-title']/allText()")
     private String title;
 
     @ExtractBy(value = "//dl[@joke-type='text']/text()", notNull = true)
     private String jokeType;
 
-    @ExtractBy("//div[@class='joke-content']/text()")
+    @ExtractBy("//div[@class='joke-content']/allText()")
     private String content;
     /**
      * 来源
@@ -40,7 +40,7 @@ public class JokeTextHua extends JokeText {
     /**
      * 评论内容
      */
-    @ExtractBy("//ul[@class='comment-list']/li/div[@class='comment-content']/p[2]/text()")
+    @ExtractBy("//ul[@class='comment-list']/li/div[@class='comment-content']/p[2]/allText()")
     private String commentContent;
 
     /**

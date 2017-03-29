@@ -17,7 +17,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.haha.mx/topic/13/new/\\d{1,2}")
 public class JokeTextHahaMX extends JokeText implements AfterExtractor {
 
-    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/text()", notNull = true)
+    @ExtractBy(value = "//p[@class='word-wrap joke-main-content-text']/allText()", notNull = true)
     private String content;
 
     /**
@@ -34,7 +34,7 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='joke-comment_content']/text()")
+    @ExtractBy("//div[@class='joke-comment_content']/allText()")
     private String commentContent;
 
     /**

@@ -17,9 +17,9 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.cuntuba520.com/duanzi/list_\\d{1,2}.html")
 public class JokeTextCtb extends JokeText implements AfterExtractor {
 
-    @ExtractBy("//div[@class='main']//h3/text()")
+    @ExtractBy("//div[@class='main']//h3/allText()")
     private String title;
-    @ExtractBy(value = "//div[@class='cont']/text()", notNull = true)
+    @ExtractBy(value = "//div[@class='cont']/allText()", notNull = true)
     private String content;
 
     /**

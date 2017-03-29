@@ -17,7 +17,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeImgPeng extends JokeImg implements AfterExtractor {
 
 
-    @ExtractBy("//dl[@class='clearfix dl-con']//h1/text()")
+    @ExtractBy("//dl[@class='clearfix dl-con']//h1/allText()")
     private String title;
 
     @ExtractBy(value = "//div[@class='content-txt pt10']/img/@src", notNull = true)
@@ -32,7 +32,7 @@ public class JokeImgPeng extends JokeImg implements AfterExtractor {
      * 评论内容
      */
 
-    @ExtractBy("//div[@class='shenhf-con']/text()")
+    @ExtractBy("//div[@class='shenhf-con']/allText()")
     private String commentContent;
 
     /**

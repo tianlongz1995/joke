@@ -17,7 +17,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeImgXiha extends JokeImg implements AfterExtractor {
 
 
-    @ExtractBy("//div[@class='article']/pre/text()")
+    @ExtractBy("//div[@class='article']/pre/allText()")
     private String title;
 
     @ExtractBy(value = "//div[@class='article']/img/@src", notNull = true)
@@ -31,7 +31,7 @@ public class JokeImgXiha extends JokeImg implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='comment-list-reply']/p/text()")
+    @ExtractBy("//div[@class='comment-list-reply']/p/allText()")
     private String commentContent;
 
     /**

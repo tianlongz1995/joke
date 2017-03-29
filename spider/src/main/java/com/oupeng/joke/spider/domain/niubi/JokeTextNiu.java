@@ -21,14 +21,11 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeTextNiu extends JokeText implements AfterExtractor {
 
 
-
-    @ExtractBy(value = "//div[@class='postcontent']/p/text()",notNull = true)
+    @ExtractBy(value = "//div[@class='postcontent']/p/allText()", notNull = true)
     private String content;
     /**
      * 来源
      */
-
-    @ExtractByUrl("http://nbsw\\.cc/page/\\d{1,3}")
     private String src;
     /**
      * 内容源id
@@ -37,7 +34,7 @@ public class JokeTextNiu extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='commentcontent']/p/text()")
+    @ExtractBy("//div[@class='commentcontent']/p/allText()")
     private String commentContent;
 
     /**
@@ -49,7 +46,6 @@ public class JokeTextNiu extends JokeText implements AfterExtractor {
     private Integer agreeTotal;
 
 
-
     public String getContent() {
         return content;
     }
@@ -57,7 +53,6 @@ public class JokeTextNiu extends JokeText implements AfterExtractor {
     public void setContent(String content) {
         this.content = content;
     }
-
 
 
     public String getCommentContent() {
@@ -103,6 +98,7 @@ public class JokeTextNiu extends JokeText implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
+        src = page.getUrl().toString();
         //点赞书设定
         if (StringUtils.isNotBlank(liketotal)) {
             String total = liketotal.replace("+", "");

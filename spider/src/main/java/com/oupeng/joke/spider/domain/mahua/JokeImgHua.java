@@ -14,19 +14,14 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeImgHua extends JokeImg {
 
 
-
-    @ExtractBy("////h1[@class='joke-title']/text()")
+    @ExtractBy("//h1[@class='joke-title']/allText()")
     private String title;
 
     @ExtractBy(value = "//div[@class='joke-content']/img/@src", notNull = true)
     private String img;
 
     private String gif;
-    @ExtractBy("//div[@class='joke-content']/img/@width")
 
-    private Integer width;
-    @ExtractBy("//div[@class='joke-content']/img/@height")
-    private Integer height;
 
     /**
      * 来源
@@ -37,7 +32,7 @@ public class JokeImgHua extends JokeImg {
     /**
      * 评论内容
      */
-    @ExtractBy("//ul[@class='comment-list']/li/div[@class='comment-content']/p[2]/text()")
+    @ExtractBy("//ul[@class='comment-list']/li/div[@class='comment-content']/p[2]/allText()")
     private String commentContent;
     /**
      * 神评点赞数大于10
@@ -46,8 +41,6 @@ public class JokeImgHua extends JokeImg {
     private Integer agreeTotal;
 
     private Integer sourceId;
-
-
 
 
     public String getTitle() {
@@ -74,24 +67,6 @@ public class JokeImgHua extends JokeImg {
     public void setGif(String gif) {
         this.gif = gif;
     }
-
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
 
     public String getCommentContent() {
         return commentContent;

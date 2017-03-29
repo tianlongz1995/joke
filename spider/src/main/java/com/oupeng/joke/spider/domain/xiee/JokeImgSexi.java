@@ -14,7 +14,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.mhkkm.com/sexi/list_44_d{1,2}.html")
 public class JokeImgSexi extends JokeImg implements AfterExtractor {
 
-    @ExtractBy("//h1[@class='mhtitle yahei']/text()")
+    @ExtractBy("//h1[@class='mhtitle yahei']/allText()")
     private String title;
 
     @ExtractBy(value = "//ul[@class='mnlt']//img/@src", notNull = true)
@@ -29,7 +29,7 @@ public class JokeImgSexi extends JokeImg implements AfterExtractor {
      */
 
 
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/allText()")
     private String commentContent;
 
     /**

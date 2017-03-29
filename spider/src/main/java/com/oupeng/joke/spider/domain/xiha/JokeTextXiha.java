@@ -18,7 +18,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.xxhh.com/duanzi/page/\\d{1,2}")
 public class JokeTextXiha extends JokeText implements AfterExtractor {
 
-    @ExtractBy(value = "//div[@class='article']/pre/text()", notNull = true)
+    @ExtractBy(value = "//div[@class='article']/pre/allText()", notNull = true)
     private String content;
 
     /**
@@ -34,7 +34,7 @@ public class JokeTextXiha extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='comment-list-reply']/p/text()")
+    @ExtractBy("//div[@class='comment-list-reply']/p/allText()")
     private String commentContent;
 
     /**

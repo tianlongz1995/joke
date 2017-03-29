@@ -15,9 +15,9 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.laifudao.com/shenhuifu.htm")
 public class JokeShenLai extends JokeText {
 
-    @ExtractBy("//header[@class='post-header']//a/text()")
+    @ExtractBy("//header[@class='post-header']//a/allText()")
     private String title;
-    @ExtractBy(value = "//div[@class='post-content stickem-container']//p/text()", notNull = true)
+    @ExtractBy(value = "//div[@class='post-content stickem-container']//p/allText()", notNull = true)
     private String content;
 
 
@@ -35,7 +35,7 @@ public class JokeShenLai extends JokeText {
     /**
      * 评论内容
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/text()")
+    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/allText()")
     private String commentContent;
 
     /**
