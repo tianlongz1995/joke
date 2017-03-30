@@ -41,9 +41,9 @@ public class RedisService {
             timeOut = Integer.valueOf(t.toString());
         }
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxWaitMillis(timeOut);
+        jedisPoolConfig.setMaxWaitMillis(-1);
 
-        jedisPool = new JedisPool(jedisPoolConfig, host, port, timeOut);
+        jedisPool = new JedisPool(jedisPoolConfig, host, port, 0);
     }
 
     public Jedis getJedis() {
