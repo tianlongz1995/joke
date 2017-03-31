@@ -97,11 +97,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 //发布人
                 int rid = random.nextInt(2089);
                 User ru = userDao.select(rid);
-                int rlast = ru.getLast() + 1;
-                userDao.update(rlast, rid);
-                String rnick = StringUtils.trim(ru.getNickname()) + Integer.toHexString(rlast);
-                jokeImg.setReleaseNick(rnick);
-                int ruid = rid * 10000 + rlast;
+                jokeImg.setReleaseNick(ru.getNickname());
                 int riconid = rid % 20 + 1;
                 String ravata = avataStr.replace("%d", String.valueOf(riconid));
                 jokeImg.setReleaseAvata(ravata);

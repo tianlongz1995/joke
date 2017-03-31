@@ -88,11 +88,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             //发布人
             int rid = random.nextInt(2089);
             User ru = userDao.select(rid);
-            int rlast = ru.getLast() + 1;
-            userDao.update(rlast, rid);
-            String rnick = StringUtils.trim(ru.getNickname()) + Integer.toHexString(rlast);
-            joke.setReleaseNick(rnick);
-            int ruid = rid * 10000 + rlast;
+            joke.setReleaseNick(ru.getNickname());
             int riconid = rid % 20 + 1;
             String ravata = avataStr.replace("%d", String.valueOf(riconid));
             joke.setReleaseAvata(ravata);
@@ -102,7 +98,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 int id = rid + 1;
                 User u = userDao.select(id);
                 int last = u.getLast() + 1;
-
+                userDao.update(last, id);
                 String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
                 joke.setNick(nick);
                 int uid = id * 10000 + last;
@@ -122,7 +118,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 joke.setComment(null);
             }
             String message = JSON.toJSON(joke).toString();
-            kafkaProducer.sendMessage(message);
+          //  kafkaProducer.sendMessage(message);
             urlBloomFilterService.add(jokeText.getSrc());
             logger.info("段子 - 处理页面结束:{}", jokeText.getSrc());
         }
