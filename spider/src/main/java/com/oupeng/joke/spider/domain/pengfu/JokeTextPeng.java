@@ -37,13 +37,13 @@ public class JokeTextPeng extends JokeText implements AfterExtractor {
     /**
      * 评论内容
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/allText()")
+    @ExtractBy("//div[@class='shenhf-con']/allText()")
     private String commentContent;
 
     /**
      * 神评点赞数大于10
      */
-    @ExtractBy("//div[@class='shenhf-con']/text()")
+    @ExtractBy("//span[@class='shf-comment-ding fr none']//i/text()")
     private Integer agreeTotal;
 
 
