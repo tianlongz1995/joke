@@ -112,6 +112,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     String avata = avataStr.replace("%d", String.valueOf(iconid));
                     jokeImg.setAvata(avata);
                     jokeImg.setNick(nick);
+                    jokeImg.setCommentNumber(1);
                     jobInfoDao.addImg(jokeImg);
 
                     //获得sid
@@ -126,6 +127,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     com.setGood(jokeImg.getAgreeTotal());
                     commentDao.addComment(com);
                 } else {
+                    jokeImg.setCommentNumber(0);
                     jokeImg.setComment(null);
                     jobInfoDao.addImg(jokeImg);
                 }

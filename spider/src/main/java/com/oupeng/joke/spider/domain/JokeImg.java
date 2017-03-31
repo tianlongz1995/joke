@@ -50,6 +50,11 @@ public class JokeImg {
      */
 
     private String nick;
+
+    /**
+     * 评论数量
+     */
+    private Integer commentNumber;
     /**
      * 评论
      */
@@ -218,5 +223,13 @@ public class JokeImg {
 
     public void setReleaseNick(String releaseNick) {
         this.releaseNick = releaseNick;
+    }
+
+    public Integer getCommentNumber() {
+        return commentNumber;
+    }
+
+    public void setCommentNumber(Integer commentNumber) {
+        this.commentNumber = commentNumber;
     }
 }
