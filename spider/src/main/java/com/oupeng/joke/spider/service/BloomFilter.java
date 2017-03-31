@@ -1,7 +1,10 @@
-package com.oupeng.joke.spider.utils;
+package com.oupeng.joke.spider.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -11,17 +14,10 @@ import java.util.Collection;
 /**
  * 布隆过滤器
  */
+@Component
 public class BloomFilter<E> implements Serializable {
-    private RedisBitSet bitset;
-    private int bitSetSize;
-    private double bitsPerElement;
-    private int expectedNumberOfFilterElements; // expected (maximum) number of elements to be added
-    private int numberOfAddedElements; // number of elements actually added to the Bloom filter
-    private int k; // number of hash functions
-
 
     static final String charset = "UTF-8"; // encoding used for storing hash values as strings
-
     static final String hashName = "MD5"; // MD5 gives good enough accuracy in most circumstances. Change to SHA1 if it's needed
     static final MessageDigest digestFunction;
 
@@ -35,16 +31,28 @@ public class BloomFilter<E> implements Serializable {
         digestFunction = tmp;
     }
 
-    /**
-     * Bind the Redis cluster and the key which will be opreated.
-     *
-     * @param jedis
-     * @param name
-     */
-    public void bind(Jedis jedis, String name) {
-        this.bitset = new RedisBitSet(jedis, name);
-    }
+    @Autowired
+    public RedisBitSet bitset;
+    private int bitSetSize;
+    private double bitsPerElement;
+    private int expectedNumberOfFilterElements; // expected (maximum) number of elements to be added
+    private int numberOfAddedElements; // number of elements actually added to the Bloom filter
+    private int k; // number of hash functions
 
+
+//
+//    /**
+//     * Bind the Redis cluster and the key which will be opreated.
+//     *
+//     * @param jedis
+//     * @param name
+//     */
+//    public void bind(Jedis jedis, String name) {
+//        this.bitset = new RedisBitSet(jedis, name);
+//    }
+    public BloomFilter(){
+        super();
+    }
     /**
      * Constructs an empty Bloom filter. The total length of the Bloom filter w    ill be
      * c*n.
@@ -60,7 +68,6 @@ public class BloomFilter<E> implements Serializable {
         this.bitSetSize = (int) Math.ceil(c * n);
         numberOfAddedElements = 0;
     }
-
     /**
      * Constructs an empty Bloom filter. The optimal number of hash functions (k) is estimated from the total size of the Bloom
      * and the number of expected elements.
@@ -172,6 +179,28 @@ public class BloomFilter<E> implements Serializable {
             }
         }
         return result;
+    }
+
+    @PostConstruct
+    public void init(){
+//        t = new BloomFilter<>(0.000001, (int) (15000000 * 1.5));
+//        this(Math.ceil(-(Math.log(0.000001) / Math.log(2))) / Math.log(2), // c = k / ln(2)
+//                15000000,
+//                (int) Math.ceil(-(Math.log(0.000001) / Math.log(2)))); // k = ceil(-log_2(false prob.))
+
+//        this(0.000001, 15000000);
+
+        double c1 = Math.ceil(-(Math.log(0.000001) / Math.log(2))) / Math.log(2);
+         int n1 =       15000000;
+         int k1 =       (int) Math.ceil(-(Math.log(0.000001) / Math.log(2))); // k = ceil(-log_2(false prob.))
+
+
+
+        this.expectedNumberOfFilterElements = n1;
+        this.k = k1;
+        this.bitsPerElement = c1;
+        this.bitSetSize = (int) Math.ceil(c1 * n1);
+        numberOfAddedElements = 0;
     }
 
     /**

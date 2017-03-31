@@ -553,7 +553,7 @@ public class JokeSqlProvider {
      */
     public static String addJoke(Joke joke){
         StringBuffer sql = new StringBuffer();
-        sql.append("insert into joke(title, type, img, gif, good, bad, uuid, release_avata, release_nick, content, weight, width, height, create_by, create_time, source_id, audit, status) value(");
+        sql.append("insert into joke(title, type, img, gif, good, bad, uuid, release_avata, release_nick, content, weight, width, height, create_by, create_time, verify_user, verify_time, source_id, audit, status) value(");
         if(StringUtils.isNotBlank(joke.getTitle())){
             sql.append("'").append(joke.getTitle()).append("', ");
         } else {
@@ -589,13 +589,13 @@ public class JokeSqlProvider {
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(joke.getReleaseAvata())){
-            sql.append("'").append(joke.getReleaseAvata()).append("', ");
+        if(StringUtils.isNotBlank(joke.getRa())){
+            sql.append("'").append(joke.getRa()).append("', ");
         } else {
             sql.append("null, ");
         }
-        if(StringUtils.isNotBlank(joke.getReleaseNick())){
-            sql.append("'").append(joke.getReleaseNick()).append("', ");
+        if(StringUtils.isNotBlank(joke.getRn())){
+            sql.append("'").append(joke.getRn()).append("', ");
         } else {
             sql.append("null, ");
         }
@@ -621,6 +621,12 @@ public class JokeSqlProvider {
         }
         if(StringUtils.isNotBlank(joke.getCreateBy())){
             sql.append("'").append(joke.getCreateBy()).append("', ");
+        } else {
+            sql.append("null, ");
+        }
+        sql.append(" now(), ");
+        if(StringUtils.isNotBlank(joke.getVerifyUser())){
+            sql.append("'").append(joke.getVerifyUser()).append("', ");
         } else {
             sql.append("null, ");
         }

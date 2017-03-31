@@ -1038,8 +1038,8 @@ public class JokeService {
         joke.setGood(good);
         joke.setBad(bad);
         joke.setUuid(uuid);
-        joke.setReleaseAvata(comment.getAvata());
-        joke.setReleaseNick(comment.getNick());
+        joke.setRa(comment.getAvata());
+        joke.setRn(comment.getNick());
         joke.setContent(content);
         joke.setWeight(weight);
         joke.setWidth(image.getWidth());
@@ -1048,6 +1048,7 @@ public class JokeService {
         joke.setSourceId(1);
         joke.setAudit(6);
         joke.setStatus(1);
+        joke.setVerifyUser(username);
 
         jokeMapper.addJoke(joke);
         if(joke.getId() != null){

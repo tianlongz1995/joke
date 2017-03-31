@@ -74,12 +74,12 @@ public class Joke {
     /** 评审状态 */
     @JsonInclude(Include.NON_NULL)
     private Integer audit;
-    /** 发布用户头像  */
+    /** 发布用户头像  releaseAvatar */
     @JsonInclude(Include.NON_NULL)
-    private String releaseAvata;
-    /** 发布用户昵称 */
+    private String ra;
+    /** 发布用户昵称 releaseNick */
     @JsonInclude(Include.NON_NULL)
-    private String releaseNick;
+    private String rn;
 
 	public Integer getId() {
 		return id;
@@ -274,27 +274,27 @@ public class Joke {
         this.audit = audit;
     }
 
-    public String getReleaseAvata() {
-        return releaseAvata;
-    }
-
-    public void setReleaseAvata(String releaseAvata) {
-        this.releaseAvata = releaseAvata;
-    }
-
-    public String getReleaseNick() {
-        return releaseNick;
-    }
-
-    public void setReleaseNick(String releaseNick) {
-        this.releaseNick = releaseNick;
-    }
-
     public String getCreateBy() {
         return createBy;
     }
 
     public void setCreateBy(String createBy) {
         this.createBy = createBy;
+    }
+
+    public String getRa() {
+        return ra;
+    }
+
+    public void setRa(String ra) {
+        this.ra = ra;
+    }
+
+    public String getRn() {
+        return rn;
+    }
+
+    public void setRn(String rn) {
+        this.rn = rn;
     }
 }

@@ -106,8 +106,8 @@ public class ManagerService {
             String key = JedisKey.STRING_JOKE + id;
             Joke joke = JSON.parseObject(jedisCache.get(key), Joke.class);
             if(joke != null){
-                joke.setReleaseAvata(comment.getAvata());
-                joke.setReleaseNick(comment.getNick());
+                joke.setRa(comment.getAvata());
+                joke.setRn(comment.getNick());
                 jedisCache.set(key, JSON.toJSONString(joke));
             }
         }

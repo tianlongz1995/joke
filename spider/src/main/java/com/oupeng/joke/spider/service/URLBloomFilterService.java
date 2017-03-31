@@ -1,7 +1,6 @@
 package com.oupeng.joke.spider.service;
 
 
-import com.oupeng.joke.spider.utils.BloomFilter;
 import com.oupeng.joke.spider.utils.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ public class URLBloomFilterService {
     /**
      * 布隆过滤器
      */
+    @Autowired
     private BloomFilter<String> bloomFilter;
     @Autowired
     private RedisService redisService;
@@ -34,9 +34,9 @@ public class URLBloomFilterService {
     public void init() {
         log.info("布隆过滤器服务 - 开始启动.....");
 
-        bloomFilter = new BloomFilter<>(0.000001, (int) (10000000 * 1.5));
-        Jedis jedis = redisService.getJedis();
-        bloomFilter.bind(jedis, Key.BLOOM_FILTER_URL);
+//        bloomFilter = new BloomFilter<>(0.000001, (int) (10000000 * 1.5));
+//        Jedis jedis = redisService.getJedis();
+//        bloomFilter.bind(jedis, Key.BLOOM_FILTER_URL);
 
         log.info("布隆过滤器服务 - 启动完成.....");
 
@@ -48,7 +48,7 @@ public class URLBloomFilterService {
      * @param key
      * @return
      */
-    public boolean contains(String key) {
+    public boolean  contains(String key) {
         return bloomFilter.contains(key);
     }
 

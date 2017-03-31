@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport", "/joke/incrementComment", "/resources/image/*").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
+		http.csrf().ignoringAntMatchers("/statistics/dayDetailExport","/source/crawlExport","/source/qualityExport", "/joke/incrementComment", "/joke/decrementComment", "/resources/image/*").and().formLogin().loginPage("/login.jsp").and().formLogin().loginProcessingUrl("/login").and()
 				.formLogin().defaultSuccessUrl("/home").and().formLogin().failureUrl("/?error=1");
 		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 		http.rememberMe().tokenValiditySeconds(1209600).and().rememberMe().rememberMeParameter("remember-me");

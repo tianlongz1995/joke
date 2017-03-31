@@ -51,4 +51,27 @@ public class RedisService {
     }
 
 
+    public void setBit(String name, int bitIndex, boolean value) {
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            jedis.setbit(name, bitIndex, value);
+        }finally{
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+    }
+
+    public boolean getBit(String name, int bitIndex) {
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            return jedis.getbit(name, bitIndex);
+        }finally{
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+    }
 }
