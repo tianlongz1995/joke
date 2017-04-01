@@ -120,9 +120,19 @@ public class JokeSqlProvider {
 	 */
 	public static String updateJoke(Joke joke){
 		StringBuffer sql = new StringBuffer();
-		sql.append(" update joke set update_time = now(), verify_time = now(), status = 1,audit = 1,");
-		sql.append(" verify_user = '").append(joke.getVerifyUser()).append("',");
-		if(StringUtils.isNotBlank(joke.getTitle())){
+		sql.append(" update joke set update_time = now(), verify_time = now(), ");
+        if (joke.getStatus() != null) {
+            sql.append(" status = ").append(joke.getStatus()).append(", ");
+        }else{
+            sql.append(" status = 1, ");
+        }
+        if (joke.getAudit() != null) {
+            sql.append(" audit = ").append(joke.getAudit()).append(", ");
+        }else{
+            sql.append(" audit = 6, ");
+        }
+        sql.append(" verify_user = '").append(joke.getVerifyUser()).append("',");
+        if(StringUtils.isNotBlank(joke.getTitle())){
 			sql.append(" title = '").append(joke.getTitle().trim()).append("',");
 		}else{
 			sql.append(" title = null,");

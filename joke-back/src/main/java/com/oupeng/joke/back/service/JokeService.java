@@ -390,9 +390,13 @@ public class JokeService {
 		joke.setTitle(title);
 		joke.setVerifyUser(user);
 		joke.setWeight(weight);
+        joke.setAudit(6);
+        joke.setStatus(1);
         int count = jokeMapper.updateJoke(joke);
         // 加到缓存
         jokeToCache(String.valueOf(id));
+        //            保存段子置顶数据
+        jokeMapper.insertJokeTop(String.valueOf(id));
 		return count == 1;
 	}
 	

@@ -309,7 +309,7 @@ public class JokeController {
 	 * @param jid
 	 * @return
 	 */
-	@RequestMapping(value="/incrementComment")
+	@RequestMapping(value="/incrementComment", produces = {"application/json"})
 	@ResponseBody
 	public Result incrementComment(@RequestParam(value="jid")Integer[] jid){
 		if(jokeService.incrementComment(jid)){
@@ -324,7 +324,7 @@ public class JokeController {
 	 * @param jid
 	 * @return
 	 */
-	@RequestMapping(value="/decrementComment")
+	@RequestMapping(value="decrementComment", produces = {"application/json"})
 	@ResponseBody
 	public Result decrementComment(@RequestParam(value="jid")Integer[] jid){
 		if(jokeService.decrementComment(jid)){
