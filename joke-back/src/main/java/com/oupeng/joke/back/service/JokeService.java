@@ -99,6 +99,7 @@ public class JokeService {
             jidString.append(joke.getId()).append(",");
         }
         String jid = jidString.substring(0, jidString.length() - 1);
+        //获取神评数
         List<Comment> list = jokeMapper.getReplyNum(jid);
         Map<Integer, Integer> map = new HashMap<>();
         for (Comment c : list) {
@@ -106,7 +107,6 @@ public class JokeService {
         }
         for (Joke joke : jokeList) {
             Integer t = map.get(joke.getId());
-            logger.info("comment:"+map.get(joke.getId()));
             if (t != null&&t>0) {
                 joke.setReplyNum(t);
             } else {
