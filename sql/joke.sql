@@ -404,3 +404,13 @@ insert into source(id, name, status, create_time) value(1, '用户录入', 1, no
 -- 新增发布段子用户头像url、发布段子用户昵称字段
 alter table joke add COLUMN `release_avata` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户头像url';
 alter table joke add COLUMN `release_nick` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT '发布段子用户昵称';
+
+-- 新增段子内容源
+INSERT INTO `source` VALUES ('141', '来福岛', 'http://www.laifudao.com/', '1', '2017-03-13 14:14:09', '2017-03-13 14:14:09');
+INSERT INTO `source` VALUES ('144', '快乐麻花', 'http://www.mahua.com', '1', '2017-03-16 13:47:02', '2017-03-16 13:47:02');
+INSERT INTO `source` VALUES ('145', '牛逼思维', 'http://nbsw.cc', '1', '2017-03-16 13:47:38', '2017-03-16 13:47:38');
+INSERT INTO `source` VALUES ('146', '捧腹网', 'http://www.pengfu.com', '1', '2017-03-20 18:06:44', '2017-03-20 18:06:44');
+INSERT INTO `source` VALUES ('147', '嘻嘻哈哈', 'www.xxhh.com', '1', '2017-03-20 18:10:05', '2017-03-20 18:10:05');
+INSERT INTO `source` VALUES ('148', '哈哈MX', 'http://www.haha.mx/', '1', '2017-03-20 18:10:52', '2017-03-20 18:10:52');
+INSERT INTO `source` VALUES ('149', '寸土吧', 'http://www.cuntuba520.com', '1', '2017-03-23 11:59:59', '2017-03-23 11:59:59');
+INSERT INTO `source` VALUES ('150', '邪恶漫画', 'http://www.mhkkm.com', '1', '2017-03-27 12:29:18', '2017-03-27 12:29:18');
