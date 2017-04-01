@@ -33,6 +33,12 @@ public class JokeDetail {
     /** 来源网址	*/
     @JsonInclude(Include.NON_NULL)
     private String src;
+    /** 发布用户头像  releaseAvatar */
+    @JsonInclude(Include.NON_NULL)
+    private String ra;
+    /** 发布用户昵称 releaseNick */
+    @JsonInclude(Include.NON_NULL)
+    private String rn;
 
 
 	public String getTitle() {
@@ -110,5 +116,21 @@ public class JokeDetail {
 
     public void setSrc(String src) {
         this.src = src;
+    }
+
+    public String getRa() {
+        return ra;
+    }
+
+    public void setRa(String ra) {
+        this.ra = ra;
+    }
+
+    public String getRn() {
+        return rn;
+    }
+
+    public void setRn(String rn) {
+        this.rn = rn;
     }
 }
