@@ -80,6 +80,9 @@ public class Joke {
     /** 发布用户昵称 releaseNick */
     @JsonInclude(Include.NON_NULL)
     private String rn;
+	/** 神回复评数 */
+	@JsonInclude(Include.NON_NULL)
+	private Integer replyNum;
 
 	public Integer getId() {
 		return id;
@@ -297,4 +300,12 @@ public class Joke {
     public void setRn(String rn) {
         this.rn = rn;
     }
+
+	public Integer getReplyNum() {
+		return replyNum;
+	}
+
+	public void setReplyNum(Integer replyNum) {
+		this.replyNum = replyNum;
+	}
 }

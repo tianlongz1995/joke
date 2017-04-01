@@ -7,24 +7,42 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * Created by hushuang on 2017/1/13.
  */
 public class Comment {
-    /** 评论数量(total)	*/
+    /**
+     * 评论数量(total)
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer total;
-    /** 评论内容 (content)	*/
+    /**
+     * 评论内容 (content)
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String bc;
-    /** 用户头像 (avata)	*/
+    /**
+     * 用户头像 (avata)
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String avata;
-    /** 昵称 (nick)	*/
+    /**
+     * 昵称 (nick)
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nick;
+    /**
+     * 段子id (sid)
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer jokeId;
 
     public Comment(Integer total, String content, String avata, String nick) {
         this.total = total;
         this.bc = content;
         this.avata = avata;
         this.nick = nick;
+    }
+
+    public Comment(Integer total, Integer jokeId) {
+        this.total = total;
+        this.jokeId = jokeId;
     }
 
     public Comment() {
@@ -60,5 +78,13 @@ public class Comment {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public Integer getJokeId() {
+        return jokeId;
+    }
+
+    public void setJokeId(Integer jokeId) {
+        this.jokeId = jokeId;
     }
 }

@@ -188,6 +188,7 @@
                                     <th style="width: 12%;text-align: center; vertical-align: middle;">来源</th>
                                     <th style="width: 15%;text-align: center; vertical-align: middle;">抓取时间</th>
                                     <th style="width: 15%;text-align: center; vertical-align: middle;">分值</th>
+                                    <th style="width: 6%;text-align: center; vertical-align: middle;">神评数</th>
                                     <th style="width: 6%;text-align: center; vertical-align: middle;">状态</th>
                                     <th style="width: 22%;text-align: center; vertical-align: middle;">操作</th>
                                 </tr>
@@ -226,6 +227,9 @@
                                         </td>
                                         <td>
                                                 ${joke.weight}
+                                        </td>
+                                        <td>
+                                                ${joke.replyNum}
                                         </td>
                                         <td>
                                             <c:if test="${joke.status == 0}">未审核</c:if>

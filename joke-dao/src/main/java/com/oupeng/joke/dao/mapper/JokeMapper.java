@@ -508,4 +508,12 @@ public interface JokeMapper {
      */
     @Select("select j.type, count(j.id) as num from joke j right join joke_top jt on j.id=jt.jid where DATE_FORMAT(j.verify_time,'%y-%m-%d') = CURDATE() and j.audit = 6 and j.verify_user = #{user} and jt.status = 0 group by j.type")
     List<JokeVerifyInfo> getJokeTopVerifyInfoByUser(@Param("user")String user);
+
+	/**
+	 * 获取段子神评数量
+	 * @param id
+	 * @return
+	 */
+	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good > 10 and c.sid in (${id})  group by c.sid")
+	List<Comment> getReplyNum(@Param("id") String id);
 }
