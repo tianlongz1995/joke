@@ -2,6 +2,7 @@ package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.BannerSqlProvider;
 import com.oupeng.joke.domain.Banner;
+import com.oupeng.joke.domain.Distributor;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -137,4 +138,19 @@ public interface BannerMapper {
      */
     @Select("select d_id from distributors_banner where b_id = #{id}")
     List<Integer> getDistributorsBanners(@Param("id")Integer id);
+
+    /**
+     * 删除渠道横幅关联关系
+     * @param id
+     */
+    @Delete("delete from distributors_banner where b_id = #{id}")
+    void delDistributorsBanners(@Param("id")Integer id);
+
+    /**
+     * 获取渠道列表
+     * @param id
+     * @return
+     */
+    @Select("select d.id, d.name from distributors d left join distributors_banner db on d.id = db.d_id where db.b_id = #{id}")
+    List<Distributor> distributorList(@Param("id")Integer id);
 }

@@ -103,7 +103,6 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input" id="didSearch" onchange="search()">
-                                            <option value="">全部</option>
                                             <c:forEach items="${distributor}" var="dis">
                                                 <option value="${dis.id}"
                                                         <c:if test="${dis.id == did}">selected="selected"</c:if> >${dis.name}</option>
@@ -176,6 +175,9 @@
                                             <td><c:out value="${banner.sort}"/></td>
                                         </c:if>
                                         <td>
+                                            <a class="btn btn-info btn-sm" href="#" onclick="showDistibutorList(${banner.id})">
+                                                <i class="glyphicon glyphicon-th-list icon-white"></i> 渠道列表
+                                            </a>
                                                 <%--新建状态--%>
                                             <c:if test="${banner.status == 0}">
                                                 <a class="btn btn-info btn-sm"
@@ -372,6 +374,28 @@
                 </div>
             </div>
 
+
+            <div class="modal fade" id="dList" tabindex="-1" role="dialog" aria-labelledby="dListModal"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span
+                                    aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="dListModal">渠道列表</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table id="dListBody" class="table table-hover">
+
+                            </table>
+                        </div>
+                        <div class="modal-footer" style="text-align: center;">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script type="text/javascript">
                 $('#allcheck').on('click', function () {
                     if ($(this).prop("checked")) {
@@ -557,6 +581,35 @@
                     }
                 }
                 ;
+                function showDistibutorList(id) {
+                    post('banner/distributorList',
+                            'id=' + id,
+                            function (data) {
+                                if (data.status == 1) {
+                                    console.log(data.data);
+                                    $("#dListBody").html('');
+                                    $("#dListBody").append('<tr><th>渠道编号</th><th>渠道名称</th></tr>');
+                                    var array = data.data;
+                                    var body = $("#dListBody");
+                                    var html = '';
+                                    for(var index in array){
+                                        console.log(array[index].id + "=" + array[index].name);
+                                        html += '<tr><td>';
+                                        html += array[index].id;
+                                        html += '</td><td>';
+                                        html += array[index].name;
+                                        html += '</td></tr>';
+                                    }
+                                    body.append(html);
+                                    $("#dList").modal('show');
+                                } else {
+                                    alert('获取失败:' + data.info);
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
+                }
             </script>
 
         </div><!-- content end -->

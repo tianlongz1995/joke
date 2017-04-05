@@ -49,23 +49,16 @@
                                 <tr>
                                     <th width="207px">内容类型</th>
                                     <td>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="type" value="0" <c:if test="${!empty banner.type && banner.type == 0}">checked</c:if>> 内容
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="type" value="1" <c:if test="${!empty banner.type && banner.type == 1}">checked</c:if>> 广告
-                                        </label>
-
-                                        <%--<select class="form-control input" style="width: 100%;" id="type" onclick="hideOthers()">--%>
-                                            <%--<option style="width: 90%;" value="0"--%>
-                                                    <%--<c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >--%>
-                                                <%--内容--%>
-                                            <%--</option>--%>
-                                            <%--<option style="width: 90%;" value="1"--%>
-                                                    <%--<c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >--%>
-                                                <%--广告--%>
-                                            <%--</option>--%>
-                                        <%--</select>--%>
+                                        <select class="form-control input" style="width: 100%;" id="type" onclick="hideOthers()">
+                                            <option style="width: 90%;" value="0"
+                                                    <c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >
+                                                内容
+                                            </option>
+                                            <option style="width: 90%;" value="1"
+                                                    <c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >
+                                                广告
+                                            </option>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
@@ -135,7 +128,7 @@
                                 <tr>
                                     <th>渠道类型</th>
                                     <td>
-                                        <select id="did" style="width: 100%;" multiple="multiple">
+                                        <select id="did" style="max-width: 80%;min-width: 50%;" multiple="multiple">
                                             <c:forEach items="${distributor}" var="dis">
                                                 <option value="${dis.id}" >${dis.name}</option>
                                             </c:forEach>
@@ -230,7 +223,7 @@
                         maxHeight: 500
 
                     });
-                    $("select").multipleSelect("setSelects", ${did});
+                    $("#did").multipleSelect("setSelects", ${did});
                 });
 
                 $('#imgDelButton').click(function () {
@@ -285,7 +278,7 @@
                         }
                     }
                     var imgWidth = $("#imgWidth").val();
-                    var type = $('input[name="type"]:checked ').val();
+                    var type = $('#type').val();
                     if (type == 0 && imgWidth < 200) {
                         alert("图片宽度必须大于200");
                         return false;
@@ -298,7 +291,7 @@
                             function (data) {
                                 if (data['status']) {
                                     alert("更新成功");
-                                    location.href = '<%=basePath%>banner/list?cid=${cid}&did=${did}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
+                                    location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';
                                 } else {
                                     alert('更新失败. info:' + data['info']);
                                     $('#updateBanner').removeAttr("disabled");
@@ -311,7 +304,6 @@
                 });
 
                 function post(url, data, success, error) {
-                    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var csrfToken = $("meta[name='_csrf']").attr("content");
                     $.ajax({
                         type: 'POST', url: url, data: data, success: success, error: error,

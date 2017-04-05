@@ -114,6 +114,10 @@
                                             <a class="btn btn-danger btn-xs" href="#" onclick="deleteStatus(${distributors.id})">
                                                 <i class="glyphicon glyphicon-trash icon-white"></i>删除
                                             </a>
+
+                                            <a class="btn btn-success btn-xs" href="<%=basePath%>banner/list?did=${distributors.id}&status=3">
+                                                <i class="glyphicon glyphicon-th-list icon-white"></i> Banner
+                                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>

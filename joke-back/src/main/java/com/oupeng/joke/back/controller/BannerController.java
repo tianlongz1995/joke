@@ -3,6 +3,7 @@ package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.BannerService;
 import com.oupeng.joke.domain.Banner;
+import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.Distributor;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
@@ -10,6 +11,7 @@ import com.oupeng.joke.domain.response.Success;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,7 +39,7 @@ public class BannerController {
     @RequestMapping(value = "/list")
     public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
                                 @RequestParam(value = "cid", required = false) Integer cid,
-                                @RequestParam(value = "did",required = false) Integer did,
+                                @RequestParam(value = "did",required = false, defaultValue = "1") Integer did,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
@@ -47,7 +49,7 @@ public class BannerController {
         int offset;//开始条数index
         List<Banner> list = null;
         List<Distributor> distributorList = null;
-        int count = bannerService.getBannerListCount(status, cid,did);//总条数
+        int count = bannerService.getBannerListCount(status, cid, did);//总条数
         if (count > 0) {
             if (count % pageSize == 0) {
                 pageCount = count / pageSize;
@@ -63,7 +65,7 @@ public class BannerController {
             }
             offset = (pageNumber - 1) * pageSize;
 
-            list = bannerService.getBannerList(status, cid,did,offset, pageSize);
+            list = bannerService.getBannerList(status, cid, did, offset, pageSize);
 
         }
         distributorList = bannerService.getDistributorIdAndName();
@@ -170,11 +172,11 @@ public class BannerController {
                          @RequestParam(value = "adId")    Integer adId,
                          @RequestParam(value = "width",required = false) Integer width,
                          @RequestParam(value = "height",required = false) Integer height,
-                         @RequestParam(value = "did") Integer did) {
+                         @RequestParam(value = "did") Integer[] did) {
         Banner banner = bannerService.getBannerById(id);
         //下线和新建的的banner可以编辑
         if (banner.getStatus() == 0 || banner.getStatus()== 1) {
-           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime,width,height,did);
+           boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId,publishTime,did);
             if(flag) {
                 return new Success("更新成功!");
             }else{
@@ -245,4 +247,21 @@ public class BannerController {
             return new Failed("banner移动失败");
         }
     }
+
+    /**
+     *  获取渠道列表
+      * @param id
+     * @return
+     */
+    @RequestMapping(value = "distributorList", produces = {"application/json"})
+    @ResponseBody
+    public Result distributorList(@RequestParam(value = "id")Integer id){
+        List<Distributor> list = bannerService.distributorList(id);
+        if(!CollectionUtils.isEmpty(list)){
+            return new Success(list);
+        }else{
+            return new Failed("渠道列表获取失败!");
+        }
+    }
+
 }

@@ -197,13 +197,13 @@ public class BannerService {
      * @param adId
      * @return
      */
-    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer width,Integer height,Integer did) {
+    public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer[] did) {
         try {
             Banner banner = new Banner();
             banner.setTitle(title);
             banner.setId(id);
             banner.setCid(cid);
-            banner.setDid(did);
+//            banner.setDid(did);
             // 重新上传的图片
             if (img.startsWith(showPath)) {
                 String fileName = HttpUtil.getUrlImageFileName(img);
@@ -240,6 +240,10 @@ public class BannerService {
             banner.setPublishTimeString(publishTime);
 
             bannerMapper.updateBanner(banner);
+
+            bannerMapper.delDistributorsBanners(id);
+            bannerMapper.addDistributorBanner(id, did);
+
             return true;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -521,5 +525,14 @@ public class BannerService {
      */
     public List<Integer> getDistributorsBanners(Integer id) {
         return bannerMapper.getDistributorsBanners(id);
+    }
+
+    /**
+     * 获取渠道列表
+     * @param id
+     * @return
+     */
+    public List<Distributor> distributorList(Integer id) {
+        return bannerMapper.distributorList(id);
     }
 }
