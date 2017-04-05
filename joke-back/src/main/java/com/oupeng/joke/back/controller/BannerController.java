@@ -109,7 +109,7 @@ public class BannerController {
                             @RequestParam(value = "publishTime",required = false) String publishTime,
                             @RequestParam(value = "width",required = false) Integer width,
                             @RequestParam(value = "height",required = false) Integer height,
-                            @RequestParam(value = "did") Integer did) {
+                            @RequestParam(value = "did") Integer[] did) {
         boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height,publishTime,did);
         if (result) {
             return new Success("添加成功!");
@@ -132,18 +132,17 @@ public class BannerController {
     public String edit(@RequestParam(value = "id") Integer id,
                        @RequestParam(value = "status",required = false)     Integer status,
                        @RequestParam(value = "cid",required = false)        Integer cid,
-                       @RequestParam(value = "did",required = false)        Integer did,
                        @RequestParam(value = "pageSize",required = false)   Integer pageSize,
                        @RequestParam(value = "pageNumber",required = false) Integer pageNumber,
                        Model model) {
-        List<Distributor> distributorList =  bannerService.getDistributorIdAndName();
+        List<Distributor> distributorList = bannerService.getDistributorIdAndName();
         model.addAttribute("banner", bannerService.getBannerById(id));
-        model.addAttribute("cid",cid);
-        model.addAttribute("did",did);
-        model.addAttribute("status",status);
-        model.addAttribute("distributor",distributorList);
-        model.addAttribute("pageSize",pageSize);
-        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("cid", cid);
+        model.addAttribute("did", bannerService.getDistributorsBanners(id));
+        model.addAttribute("status", status);
+        model.addAttribute("distributor", distributorList);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageNumber", pageNumber);
         return "/banner/edit";
     }
 

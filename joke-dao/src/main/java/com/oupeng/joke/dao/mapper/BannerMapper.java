@@ -3,6 +3,7 @@ package com.oupeng.joke.dao.mapper;
 import com.oupeng.joke.dao.sqlprovider.BannerSqlProvider;
 import com.oupeng.joke.domain.Banner;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface BannerMapper {
      * @param banner
      */
     @InsertProvider(method = "addBanner", type = BannerSqlProvider.class)
+    @SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
     void addBanner(Banner banner);
 
     /**
@@ -119,4 +121,20 @@ public interface BannerMapper {
      */
     @Select("select count(1) from banner where cid = #{cid} and did=#{did} and status in (2, 3)")
     Integer getBannerCount(@Param("did")Integer did, @Param("cid")Integer cid);
+
+    /**
+     * 添加渠道横幅关联
+     * @param id
+     * @param did
+     */
+    @InsertProvider(method="addDistributorBanner",type=BannerSqlProvider.class)
+    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did);
+
+    /**
+     * 获取已配置横幅的渠道编号列表
+     * @param id
+     * @return
+     */
+    @Select("select d_id from distributors_banner where b_id = #{id}")
+    List<Integer> getDistributorsBanners(@Param("id")Integer id);
 }

@@ -414,3 +414,11 @@ INSERT INTO `source` VALUES ('147', '嘻嘻哈哈', 'http://www.xxhh.com', '0', 
 INSERT INTO `source` VALUES ('148', '哈哈MX', 'http://www.haha.mx/', '0', '2017-03-20 18:10:52', '2017-03-20 18:10:52');
 INSERT INTO `source` VALUES ('149', '寸土吧', 'http://www.cuntuba520.com', '0', '2017-03-23 11:59:59', '2017-03-23 11:59:59');
 INSERT INTO `source` VALUES ('150', '邪恶漫画', 'http://www.mhkkm.com', '0', '2017-03-27 12:29:18', '2017-03-27 12:29:18');
+
+
+CREATE TABLE `distributors_banner` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `d_id` int(11) NOT NULL COMMENT '渠道ID',
+  `b_id` int(11) DEFAULT NULL COMMENT '横幅ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

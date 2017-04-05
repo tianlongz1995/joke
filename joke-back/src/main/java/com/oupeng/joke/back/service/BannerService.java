@@ -79,7 +79,7 @@ public class BannerService {
      * @param type
      * @return
      */
-    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime,Integer did) {
+    public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime,Integer[] did) {
         try {
             String fileName = HttpUtil.getUrlImageFileName(img);
             File file = new File(uploadPath + fileName);
@@ -102,11 +102,16 @@ public class BannerService {
                 log.error("拷贝图片[{}]到目[{}]失败!");
                 return false;
             }
+            if(did == null || did.length < 1){
+                log.error("新增横幅失败, 渠道编号为空!");
+                return false;
+            }
+
             Image image = ImageUtils.getImgWidthAndHeight(file);
             banner.setImg(newFile.replace(cdnPath, ""));
             banner.setTitle(title);
             banner.setCid(cid);
-            banner.setDid(did);
+//            banner.setDid(did);
             banner.setJid(jid);
             banner.setType(type);
             banner.setSlot(adid);
@@ -116,6 +121,10 @@ public class BannerService {
             banner.setHeight(image.getHeight());
             banner.setPublishTimeString(publishTime);
             bannerMapper.addBanner(banner);
+
+//            添加渠道横幅关联
+            bannerMapper.addDistributorBanner(banner.getId(), did);
+
             return true;
         } catch (Exception e){
             log.error(e.getMessage(), e);
@@ -497,9 +506,20 @@ public class BannerService {
     }
 
 
-
+    /**
+     * 获取渠道编号和名称
+     * @return
+     */
     public List<Distributor> getDistributorIdAndName(){
         return  distributorsMapper.getDistributorIdAndName();
     }
 
+    /**
+     * 获取已配置横幅的渠道编号列表
+     * @param id
+     * @return
+     */
+    public List<Integer> getDistributorsBanners(Integer id) {
+        return bannerMapper.getDistributorsBanners(id);
+    }
 }

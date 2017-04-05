@@ -226,4 +226,17 @@ public class BannerSqlProvider {
         sql.append(" where id = ").append(banner.getId());
         return sql.toString();
     }
+
+
+    public static String addDistributorBanner(Map<String, Object> map){
+        Object id      = map.get("id");
+        Integer[] dids = (Integer[]) map.get("did");
+        StringBuffer sql = new StringBuffer();
+        sql.append("insert into  distributors_banner(d_id, b_id) values");
+
+        for(Integer did : dids){
+            sql.append("(").append(did).append(",").append(id).append("),");
+        }
+        return sql.substring(0, sql.length() - 1);
+    }
 }

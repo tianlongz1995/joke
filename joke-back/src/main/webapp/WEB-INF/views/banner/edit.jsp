@@ -24,6 +24,8 @@
     <script src="/ui/js/date/WdatePicker.js"></script>
     <script src="ui/js/jquery.oupeng.upload.js"></script>
 
+    <script src="/ui/js/multiple-select.js"></script>
+    <link href="/ui/css/multiple-select.css" rel="stylesheet" />
     <!-- The fav icon -->
     <link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
@@ -47,16 +49,23 @@
                                 <tr>
                                     <th width="207px">内容类型</th>
                                     <td>
-                                        <select class="form-control input" id="type" onclick="hideOthers()">
-                                            <option value="0"
-                                                    <c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >
-                                                内容
-                                            </option>
-                                            <option value="1"
-                                                    <c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >
-                                                广告
-                                            </option>
-                                        </select>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" value="0" <c:if test="${!empty banner.type && banner.type == 0}">checked</c:if>> 内容
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" value="1" <c:if test="${!empty banner.type && banner.type == 1}">checked</c:if>> 广告
+                                        </label>
+
+                                        <%--<select class="form-control input" style="width: 100%;" id="type" onclick="hideOthers()">--%>
+                                            <%--<option style="width: 90%;" value="0"--%>
+                                                    <%--<c:if test="${!empty banner.type && banner.type == 0}">selected</c:if> >--%>
+                                                <%--内容--%>
+                                            <%--</option>--%>
+                                            <%--<option style="width: 90%;" value="1"--%>
+                                                    <%--<c:if test="${!empty banner.type && banner.type == 1}">selected</c:if> >--%>
+                                                <%--广告--%>
+                                            <%--</option>--%>
+                                        <%--</select>--%>
                                     </td>
                                 </tr>
                                 <tr>
@@ -126,10 +135,9 @@
                                 <tr>
                                     <th>渠道类型</th>
                                     <td>
-                                        <select id="did" class="form-control">
+                                        <select id="did" style="width: 100%;" multiple="multiple">
                                             <c:forEach items="${distributor}" var="dis">
-                                                <option value="${dis.id}"
-                                                        <c:if test="${dis.id == banner.did}">selected="selected"</c:if>>${dis.name}</option>
+                                                <option value="${dis.id}" >${dis.name}</option>
                                             </c:forEach>
                                         </select>
                                     </td>
@@ -214,6 +222,15 @@
                         $("#imgPriview").css('display', 'block');
                         $("#imgDelButton").css('display', 'block');
                     }
+                    $('#did').multipleSelect({
+                        multiple: true,
+                        selectAllText: '全选',
+                        multipleWidth: 180,
+                        placeholder: '请选择',
+                        maxHeight: 500
+
+                    });
+                    $("select").multipleSelect("setSelects", ${did});
                 });
 
                 $('#imgDelButton').click(function () {
@@ -247,7 +264,7 @@
                     var jid = $("#jokeId").val();
                     var adId = $("#adId").val();
                     var img = $("#imgPriview").attr("src");
-                    var did = $("#did").val();
+                    var did = $("#did").multipleSelect("getSelects");
                     //内容 段子id不能为空
                     if ($("#type").val() == 0) {
                         if (jid == "") {
@@ -268,12 +285,13 @@
                         }
                     }
                     var imgWidth = $("#imgWidth").val();
-                    var type =  $('#type').val();
+                    var type = $('input[name="type"]:checked ').val();
                     if (type == 0 && imgWidth < 200) {
                         alert("图片宽度必须大于200");
                         return false;
                     }
                     $('#updateBanner').attr("disabled", "disabled");
+
                     post('banner/update',
                             'id=' + $("#bannerId").val() + '&title=' + $("#title").val() + '&jid=' + $("#jokeId").val() + '&cid=' + $("#cid").val() + '&content=' + $('#bannerContent').val() + '&type=' + type
                             + '&img=' + $('#image').val() + '&adId=' + $('#adId').val() + '&publishTime=' + $("#publishTime").val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&did=' + did,
