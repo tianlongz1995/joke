@@ -20,10 +20,12 @@
 
     <base href="<%=basePath%>">
     <%@ include file="../common/css.html" %>
-    <script src="ui/charisma/bower_components/jquery/jquery.min.js"></script>
+    <script src="/ui/charisma/bower_components/jquery/jquery.min.js"></script>
     <script src="/ui/js/date/WdatePicker.js"></script>
-    <script src="ui/js/jquery.oupeng.upload.js"></script>
+    <script src="/ui/js/jquery.oupeng.upload.js"></script>
 
+    <script src="/ui/js/multiple-select.js"></script>
+    <link href="/ui/css/multiple-select.css" rel="stylesheet" />
     <!-- The fav icon -->
     <link rel="shortcut icon" href="ui/charisma/img/favicon.ico">
 </head>
@@ -149,12 +151,6 @@
                                             <c:if test="${banner.cid == 4}">精选</c:if>
                                         </td>
                                         <td>
-                                            <%--<c:forEach items="distributor" var="dis">--%>
-                                                <%--<c:if test="dis.id == banner.did">--%>
-                                                    <%--${dis.name}--%>
-                                                <%--</c:if>--%>
-
-                                            <%--</c:forEach>--%>
                                                 <c:out value="${banner.dName}"/>
                                         </td>
                                         <td>
@@ -194,10 +190,6 @@
                                                    onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
-                                                <%--<a class="btn btn-danger btn-sm" href="#"--%>
-                                                <%--onclick="offlineOnline(1,${banner.id})">--%>
-                                                <%--<i class="glyphicon glyphicon-remove icon-white"></i>下线--%>
-                                                <%--</a>--%>
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="offlineOnline(4,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
@@ -343,7 +335,7 @@
                                 <tr>
                                     <th>渠道</th>
                                     <td>
-                                        <select id="did" class="form-control">
+                                        <select id="did" style="width: 100%;" multiple="multiple">
                                             <c:forEach items="${distributor}" var="dis">
                                                 <option value="${dis.id}">${dis.name}</option>
                                             </c:forEach>
@@ -394,8 +386,9 @@
                     $('#addNewBanner').attr("disabled", "disabled");
                     var jid = $("#jokeId").val();
                     var adId = $("#adId").val();
-                    var did = $("#did").val();
+                    var did = $("#did").multipleSelect("getSelects");
                     var img = $("#imgPriview").attr("src");
+                    var cid = $('#cid').val();
                     if ($("#type").val() == 0) {
                         if (jid == "") {
                             alert("必须填写段子编号");
@@ -418,10 +411,11 @@
                     var type =  $('#type').val();
                     if (type == 0 && imgWidth < 200) {
                         alert("图片宽度必须大于200");
+                        $('#addNewBanner').removeAttr("disabled");
                         return false;
                     }
                     post('banner/add',
-                            'title=' + $('#addTitle').val() + '&cid=' + $('#cid').val() + '&type=' + type + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val() + '&did=' + did,
+                            'title=' + $('#addTitle').val() + '&cid=' + cid + '&type=' + type + '&jid=' + $('#jokeId').val() + '&img=' + $('#image').val() + '&content=' + $('#addContent').val() + '&adid=' + $('#adId').val() + '&width=' + $("#imgWidth").val() + '&height=' + $("#imgHeight").val() + '&publishTime=' + $("#publishTime").val() + '&did=' + did,
                             function (data) {
                                 if (data['status']) {
                                     alert("添加成功");
@@ -538,6 +532,14 @@
                 //初始化新增模态框显示
                 function init() {
                     $("#adIdTr").hide();
+                    $('#did').multipleSelect({
+                        multiple: true,
+                        selectAllText: '全选',
+                        multipleWidth: 400,
+                        placeholder: '请选择',
+                        maxHeight: 500
+
+                    });
                 }
                 //控制新增模态框显示内容
                 function hideOthers() {
