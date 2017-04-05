@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * 牛逼思维
  * Created by zongchao on 2017/3/13.
  */
-@Component
+//@Component
 public class NiuSpiderTask {
     private static final Logger logger = LoggerFactory.getLogger(NiuSpiderTask.class);
 
