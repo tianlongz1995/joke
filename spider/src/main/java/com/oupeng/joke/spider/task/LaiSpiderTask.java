@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
  * 来福岛
  * Created by zongchao on 2017/3/13.
  */
-@Component
+//@Component
 public class LaiSpiderTask {
     private static final Logger logger = LoggerFactory.getLogger(LaiSpiderTask.class);
 
