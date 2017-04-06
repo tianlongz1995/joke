@@ -181,6 +181,6 @@ public interface BannerMapper {
      * @param id
      * @return
      */
-    @Select("")
+    @Select("select b.id, b.title, b.jid, b.cid, b.img, b.type, b.slot, db.sort, db.d_id as did from banner b left join distributors_banner db on b.id = db.b_id where db.b_id = #{id} order by db.sort asc, b.update_time desc")
     List<Banner> getDistributorsBannersList(@Param("id")Integer id);
 }

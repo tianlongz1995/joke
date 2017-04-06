@@ -338,8 +338,34 @@ public class BannerService {
         String result;
 //        查询有几个渠道需要发布
         List<Banner> list = bannerMapper.getDistributorsBannersList(id);
+        if(CollectionUtils.isEmpty(list)){
+            return "查询Banner为空!";
+        }
+        long scope = System.currentTimeMillis();
+        long index = 0;
+        for(Banner banner : list){
+            String bannerKey = JedisKey.STRING_BANNER + banner.getDid() + "_" + banner.getCid() + "_" + id;
+            String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid() + "_" + banner.getCid();
+            result = validBanner(banner, false);
+            if(null == result) { //验证通过
+//              当前发布的banner使用当前时间, 保证倒序排列靠前
+                jedisCache.set(bannerKey, JSON.toJSONString(banner));
+                jedisCache.zadd(bannerListKey, scope - index, Integer.toString(id));
+                index++;
+                //2 修改发布状态
+                bannerMapper.updateBannerStatus(banner.getId(), 3);
+//          修改Channel表显示状态
+                distributorsMapper.updateChannelsBanner(1, banner.getCid());
 
+                //根据缓存中banner的个数，修改channel表中banner状态
+                Long bannerCount = jedisCache.zcard(bannerListKey);
+                if(bannerCount == 1){
+//                修改渠道配置中banner显示状态
+                    changeBannerStatus(banner.getCid(), banner.getDid(), true);
+                }
+            }
 
+        }
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
         String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
@@ -349,23 +375,23 @@ public class BannerService {
             jedisCache.set(bannerKey, JSON.toJSONString(banner));
             jedisCache.zadd(bannerListKey, System.currentTimeMillis(), Integer.toString(id));
 
-            //已发布的banner的最大排序值
-            Integer maxScore = bannerMapper.getMaxSortByCidAndDid(banner.getCid(),banner.getDid());
-            //更改立即发布的banner的排序值 maxScore+1
-            if (null == maxScore) {
-                bannerMapper.updateBannerSort(id, 1);
-            } else {
-                bannerMapper.updateBannerSort(id, maxScore + 1);
-            }
-            //修改所有待发布的banner的排序值+1
-            List<Banner> bannerList = bannerMapper.getBannerList(2,banner.getCid(),banner.getDid(),0,5);
-            if (!CollectionUtils.isEmpty(bannerList)) {
-                for (Banner b:bannerList){
-                bannerMapper.updateBannerSort(b.getId(),b.getSort()+1);
-                }
-            }
+//            //已发布的banner的最大排序值
+//            Integer maxScore = bannerMapper.getMaxSortByCidAndDid(banner.getCid(),banner.getDid());
+//            //更改立即发布的banner的排序值 maxScore+1
+//            if (null == maxScore) {
+//                bannerMapper.updateBannerSort(id, 1);
+//            } else {
+//                bannerMapper.updateBannerSort(id, maxScore + 1);
+//            }
+//            //修改所有待发布的banner的排序值+1
+//            List<Banner> bannerList = bannerMapper.getBannerList(2,banner.getCid(),banner.getDid(),0,5);
+//            if (!CollectionUtils.isEmpty(bannerList)) {
+//                for (Banner b:bannerList){
+//                bannerMapper.updateBannerSort(b.getId(),b.getSort()+1);
+//                }
+//            }
             //2 修改发布状态
-            bannerMapper.updateBannerStatus(banner.getId(),3);
+            bannerMapper.updateBannerStatus(banner.getId(), 3);
 //          修改Channel表显示状态
             distributorsMapper.updateChannelsBanner(1, banner.getCid());
 
