@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * 牛逼思维
  * Created by zongchao on 2017/3/13.
  */
-//@Component
+@Component
 public class NiuSpiderTask {
     private static final Logger logger = LoggerFactory.getLogger(NiuSpiderTask.class);
 
@@ -39,7 +39,6 @@ public class NiuSpiderTask {
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
 
-
     @Qualifier("JobInfoDaoPipeline")
     @Autowired
     private PageModelPipeline jobInfoDaoPipeline;
@@ -52,15 +51,14 @@ public class NiuSpiderTask {
         if (StringUtils.isNotBlank(nt)) {
             textUrlNiu = nt;
         }
-        String isRun=env.getProperty("init.spider.run");
-        logger.info("爬虫初始化运行:{}",isRun);
-        if(isRun!=null&&isRun.equalsIgnoreCase("true")){
+        String isRun = env.getProperty("init.spider.run");
+        logger.info("爬虫初始化运行:{}", isRun);
+        if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderNiu();
         }
 
 
     }
-
 
 
     /**

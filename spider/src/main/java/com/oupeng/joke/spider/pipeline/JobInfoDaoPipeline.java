@@ -28,6 +28,11 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
+    //无效字符串
+    private static final String[] SEARCH = {"　", "&quot;"};
+    //替换字符串
+    private static final String[] REPLACE = {"", ""};
+
     private Random random = new Random(3000);
     private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
     private int maxCrawlPage = 300;
@@ -69,8 +74,8 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             ((Spider) task).stop();
             logger.info("段子 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, pageCount);
         }
-        //过滤空格
-        String content = StringUtils.replace(jokeText.getContent(), "　", "");
+        //过滤无效字符
+        String content = StringUtils.replaceEach(jokeText.getContent(), SEARCH, REPLACE);
         //字数小于txtLength
         boolean isLessLimit = content.length() < txtLimitLength ? true : false;
         if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimit) {
