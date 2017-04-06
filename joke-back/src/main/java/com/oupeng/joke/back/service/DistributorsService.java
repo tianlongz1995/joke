@@ -265,4 +265,13 @@ public class DistributorsService {
     public boolean exist(Integer id) {
         return distributorsMapper.getDistributorsCount(id) > 0;
     }
+
+    /**
+     * 查询渠道横幅列表
+     * @param id
+     * @return
+     */
+    public List<Banner> getDistributorsBanners(Integer id) {
+        return distributorsMapper.getDistributorsBanners(id);
+    }
 }

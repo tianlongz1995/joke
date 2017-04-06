@@ -394,27 +394,30 @@ public class IndexService {
      * @return
      */
     public Result getBannerList(Integer did,Integer cid) {
-        String key = JedisKey.JOKE_BANNER + did+"_"+cid;
-        Long size = jedisCache.zcard(JedisKey.JOKE_BANNER + did+"_"+cid);
+        String key = JedisKey.JOKE_BANNER + did + "_" + cid;
+        //        Long size = jedisCache.zcard(key);
+        int size = 0;
         Set<String> bannerSet = jedisCache.zrevrange(key, 0L, -1L);
         List<Banner> bannerList = new ArrayList<>();
         Banner banner;
-        if(!CollectionUtils.isEmpty(bannerSet)){
-            for(String b: bannerSet){
-                banner = JSON.parseObject(jedisCache.get(JedisKey.STRING_BANNER + b),Banner.class);
-                if(null != banner){
+        if (!CollectionUtils.isEmpty(bannerSet)) {
+            size = bannerSet.size();
+            for (String bannerId : bannerSet) {
+                String bannerKey = JedisKey.STRING_BANNER + did + "_" + cid + "_" + bannerId;
+                banner = JSON.parseObject(jedisCache.get(bannerKey), Banner.class);
+                if (null != banner) {
                     banner.setImg(IMG_PREFIX + banner.getImg());
                     bannerList.add(banner);
                 } else {
-                    log.error("获取banner缓存异常:{}", JedisKey.STRING_BANNER + b);
+                    log.error("获取banner缓存异常:{}", bannerKey);
                 }
             }
-            if(CollectionUtils.isEmpty(bannerList)){
+            if (CollectionUtils.isEmpty(bannerList)) {
                 return new Result("获取数据为空!", 2);
             }
         } else {
             return new Result("获取数据为空!", 1);
         }
-        return new Result(size.intValue(), bannerList);
+        return new Result(size, bannerList);
     }
 }

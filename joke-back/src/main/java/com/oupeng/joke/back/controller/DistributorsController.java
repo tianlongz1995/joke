@@ -245,32 +245,25 @@ public class DistributorsController {
 		return new Success();
 	}
 
-
-//	/**
-//	 * 渠道广告配置缓存页面
-//	 * @param managerKey
-//	 * @return
-//	 */
-//	@RequestMapping(value="/dataManager")
-//	public String dataManager(@RequestParam(value="managerKey",required=true)String managerKey){
-//		boolean status = distributorService.checkManagerKey(managerKey);
-//		if(status){
-//			return "/distributor/manager";
-//		}else {
-//			return "/distributor/list";
-//		}
-//	}
-
-//	/**
-//	 * 更新渠道广告配置缓存
-//	 * @param managerKey
-//	 * @return
-//	 */
-//	@RequestMapping(value="/updateDistributorAdConfigCache", produces = {"application/json"})
-//	@ResponseBody
-//	public Result updateDistributorAdConfigCache(@RequestParam(value="managerKey",required=true)String managerKey){
-//		return distributorService.updateDistributorAdConfigCache(managerKey);
-//	}
+    /**
+     * 渠道横幅列表
+     * @param did
+     * @param model
+     * @return
+     */
+    @RequestMapping(value="/banner")
+    public String banner(@RequestParam(value="did")Integer did,
+                         @RequestParam(value="status")Integer status,
+                         @RequestParam(value="limit")Integer limit,
+                         @RequestParam(value="pageNo")Integer pageNo,
+                         Model model){
+        model.addAttribute("list", distributorsService.getDistributorsBanners(did));
+        model.addAttribute("did", did);
+        model.addAttribute("status", status);
+        model.addAttribute("limit", limit);
+        model.addAttribute("pageNo", pageNo);
+        return "/distributors/banner";
+    }
 
 	/**
 	 * 获取当前登录用户名

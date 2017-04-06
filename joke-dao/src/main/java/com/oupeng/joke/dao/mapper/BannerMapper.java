@@ -84,7 +84,7 @@ public interface BannerMapper {
      * @param id
      * @param status
      */
-    @Update("update banner set update_time=now(),status = #{status} where id = #{id}")
+    @Update("update banner set update_time = now(), status = #{status} where id = #{id}")
     void updateBannerStatus(@Param(value = "id") Integer id,
                             @Param(value = "status") Integer status);
 
@@ -121,9 +121,8 @@ public interface BannerMapper {
      * 获取带发布的banner
      * @return
      */
-    @Select(value = "select id,title,jid,type,img,sort,cid,did,slot,status,content,width,height," +
-            "create_time as createTime,update_time as updateTime,publish_time as publishTime from banner where `status` = 2 and DATE_FORMAT(publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
-    List<Banner> getBannerForPublish();
+    @Select(value = "select b.id from banner b where b.status = 2 and DATE_FORMAT(b.publish_time,'%Y-%m-%d %H') = DATE_FORMAT(now(),'%Y-%m-%d %H')")
+    List<Integer> getBannerForPublish();
 
     /**
      * 发布上线banner数量

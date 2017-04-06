@@ -253,7 +253,7 @@ public class BannerSqlProvider {
         Object id      = map.get("id");
         Integer[] dids = (Integer[]) map.get("did");
         StringBuffer sql = new StringBuffer();
-        sql.append("insert into  distributors_banner(d_id, b_id, publish_time) values");
+        sql.append("insert into  distributors_banner(d_id, b_id) values");
 
         for(Integer did : dids){
             sql.append("(").append(did).append(",").append(id).append("),");

@@ -226,27 +226,27 @@ public class BannerController {
         }
     }
 
-    /**
-     * banner 移动
-     * @param id
-     * @param type
-     * @param sort
-     * @return
-     */
-    @RequestMapping(value = "bannerMove")
-    @ResponseBody
-    public Result bannerMove(@RequestParam(value = "id")   Integer id,
-                             @RequestParam(value = "cid")  Integer cid,
-                             @RequestParam(value = "type") Integer type,
-                             @RequestParam(value = "sort") Integer sort,
-                             @RequestParam(value = "did")  Integer did){
-        Boolean flag = bannerService.bannerMove(id,cid,did,type,sort);
-        if(flag){
-            return new Success("banner移动成功");
-        }else{
-            return new Failed("banner移动失败");
-        }
-    }
+//    /**
+//     * banner 移动
+//     * @param id
+//     * @param type
+//     * @param sort
+//     * @return
+//     */
+//    @RequestMapping(value = "bannerMove")
+//    @ResponseBody
+//    public Result bannerMove(@RequestParam(value = "id")   Integer id,
+//                             @RequestParam(value = "cid")  Integer cid,
+//                             @RequestParam(value = "type") Integer type,
+//                             @RequestParam(value = "sort") Integer sort,
+//                             @RequestParam(value = "did")  Integer did){
+//        Boolean flag = bannerService.bannerMove(id,cid,did,type,sort);
+//        if(flag){
+//            return new Success("banner移动成功");
+//        }else{
+//            return new Failed("banner移动失败");
+//        }
+//    }
 
     /**
      *  获取渠道列表
@@ -270,15 +270,16 @@ public class BannerController {
      * @param sorts
      * @return
      */
-    @RequestMapping(value="/editSorts")
+    @RequestMapping(value="/editSorts", produces = {"application/json"})
     @ResponseBody
     public Result editSorts(@RequestParam(value="ids")Integer[] ids,
+                            @RequestParam(value="did")Integer did,
                             @RequestParam(value="sorts")Integer[] sorts){
         String username = getUserName();
         if(username == null){
             return new Failed("登录信息失效,请重新登录!");
         }
-        return bannerService.editSorts(ids, sorts, username);
+        return bannerService.editSorts(ids, sorts, did, username);
     }
 
 

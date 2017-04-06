@@ -224,11 +224,11 @@
                                                 <%--上线 --%>
                                             <c:if test="${banner.status == 2 }">
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(1,${banner.dbId})">
+                                                   onclick="offlineOnline(1,${banner.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(4,${banner.dbId})">
+                                                   onclick="offlineOnline(4,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
                                                 </a>
                                             </c:if>

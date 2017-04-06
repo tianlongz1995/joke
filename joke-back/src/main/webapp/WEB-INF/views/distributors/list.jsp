@@ -115,7 +115,7 @@
                                                 <i class="glyphicon glyphicon-trash icon-white"></i>删除
                                             </a>
 
-                                            <a class="btn btn-success btn-xs" href="<%=basePath%>banner/list?did=${distributors.id}&status=3">
+                                            <a class="btn btn-success btn-xs" href="#" onclick="toBanner(${distributors.id})">
                                                 <i class="glyphicon glyphicon-th-list icon-white"></i> Banner
                                             </a>
                                         </td>
@@ -507,6 +507,9 @@
                     }
                     location.href = '<%=basePath%>distributors/dataManager?managerKey=' + managerId;
                 });
+                function toBanner(did) {
+                    location.href = '<%=basePath%>distributors/banner?did=' + did +'&status=' + $("#status").val() + '&limit=' + $("#pageSize").val() + '&pageNo=' + $("#pageNumber").val();
+                }
             </script>
 
         </div><!-- content end -->
