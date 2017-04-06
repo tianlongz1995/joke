@@ -63,7 +63,7 @@ public class DistributorsSqlProvider {
      */
     public static String addAd(Ads ads) {
         StringBuffer sql = new StringBuffer();
-        sql.append("insert into ads(did, create_time, create_by, s, lc, lb, dt, dc , db, di) value(");
+        sql.append("insert into ads(did, create_time, create_by, s, lc, lb, dt, dc , db, di, dr) value(");
         sql.append(ads.getDid()).append(", now(),");
         if (ads.getCreateBy() != null) {
             sql.append(" '").append(ads.getCreateBy()).append("', ");
@@ -101,7 +101,12 @@ public class DistributorsSqlProvider {
             sql.append(" 0, ");
         }
         if (ads.getDi() != null) {
-            sql.append(ads.getDi()).append(")");
+            sql.append(ads.getDi()).append(",");
+        } else {
+            sql.append(" 0, ");
+        }
+        if (ads.getDr() != null) {
+            sql.append(ads.getDr()).append(")");
         } else {
             sql.append(" 0) ");
         }
