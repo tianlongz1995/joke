@@ -76,7 +76,7 @@ public interface BannerMapper {
      * 删除Banner
      * @param id
      */
-    @Delete(value = "delete from banner where id = #{id}")
+    @Delete(value = "update banner set status = 4 where id = #{id}")
     void delBanner(Integer id);
 
     /**

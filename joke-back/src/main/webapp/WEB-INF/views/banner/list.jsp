@@ -172,11 +172,11 @@
                                                             pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
 
-                                        <c:if test="${!empty status && status == 3}">
-                                            <td>
-                                                <input id="sort${banner.dbId}" type="text" class="form-control input-sm" style="width: 20px;padding: 1px;text-align: center;" value="${banner.sort}">
-                                            </td>
-                                        </c:if>
+                                        <%--<c:if test="${!empty status && status == 3}">--%>
+                                            <%--<td>--%>
+                                                <%--<input id="sort${banner.dbId}" type="text" class="form-control input-sm" style="width: 20px;padding: 1px;text-align: center;" value="${banner.sort}">--%>
+                                            <%--</td>--%>
+                                        <%--</c:if>--%>
                                         <td>
                                             <a class="btn btn-info btn-xs" href="#" onclick="showDistibutorList(${banner.id})">
                                                 <i class="glyphicon glyphicon-th-list icon-white"></i> 渠道列表
@@ -184,19 +184,19 @@
                                                 <%--新建状态--%>
                                             <c:if test="${banner.status == 0}">
                                                 <a class="btn btn-info btn-xs"
-                                                   href="banner/edit?id=${banner.dbId}&status=${status}&cid=${cid}&did=${did}&pageSize=${pageSize}&pageNumber=${pageNumber}">
+                                                   href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&did=${did}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                                 </a>
                                                 <a class="btn btn-warning btn-xs" href="#"
-                                                   onclick="delBanner(${banner.dbId},${banner.cid})">
+                                                   onclick="delBanner(${banner.id})">
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(2,${banner.dbId})">
+                                                   onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(4,${banner.dbId})">
+                                                   onclick="offlineOnline(4,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
                                                 </a>
                                             </c:if>
@@ -205,19 +205,19 @@
                                             <c:if test="${banner.status == 1}">
 
                                                 <a class="btn btn-info btn-xs"
-                                                   href="banner/edit?id=${banner.dbId}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
+                                                   href="banner/edit?id=${banner.id}&status=${status}&cid=${cid}&pageSize=${pageSize}&pageNumber=${pageNumber}">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                                 </a>
                                                 <a class="btn btn-warning btn-xs" href="#"
-                                                   onclick="delBanner(${banner.dbId},${banner.cid})">
+                                                   onclick="delBanner(${banner.id})">
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(2,${banner.dbId})">
+                                                   onclick="offlineOnline(2,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i> 上线
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(4,${banner.dbId})">
+                                                   onclick="offlineOnline(4,${banner.id})">
                                                     <i class="glyphicon glyphicon-ok icon-white"></i>立即发布
                                                 </a>
                                             </c:if>
@@ -236,15 +236,15 @@
                                                 <%--已发布--%>
                                             <c:if test="${banner.status == 3 }">
                                                 <a class="btn btn-danger btn-xs" href="#"
-                                                   onclick="offlineOnline(1,${banner.dbId})">
+                                                   onclick="offlineOnline(1,${banner.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                             </c:if>
-                                            <c:if test="${!empty status && status == 3}">
-                                                <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${banner.dbId})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 排序
-                                                </a>
-                                            </c:if>
+                                            <%--<c:if test="${!empty status && status == 3}">--%>
+                                                <%--<a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${banner.dbId})">--%>
+                                                    <%--<i class="glyphicon glyphicon-ok icon-white"></i> 排序--%>
+                                                <%--</a>--%>
+                                            <%--</c:if>--%>
 
 
                                         </td>
@@ -478,10 +478,10 @@
                     });
                 });
 
-                function delBanner(id, cid) {
+                function delBanner(id) {
                     if (confirm("确认删除么？")) {
                         post('banner/del',
-                                'id=' + id + '&cid=' + cid,
+                                'id=' + id,
                                 function (data) {
                                     if (data['status']) {
                                         location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';

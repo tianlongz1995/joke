@@ -156,7 +156,13 @@ public class DistributorsService {
 		ad.setS(s);
 		ad.setDid(id);
 		ad.setUpdateBy(username);
-		distributorsMapper.editAd(ad);
+        Ads ads = distributorsMapper.getAds(id);
+        if(ads == null){
+            ad.setCreateBy(username);
+            distributorsMapper.addAd(ad);
+        } else {
+            distributorsMapper.editAd(ad);
+        }
 		if(status == 1){
 //		缓存渠道菜单
 			ad.setCreateBy(null);

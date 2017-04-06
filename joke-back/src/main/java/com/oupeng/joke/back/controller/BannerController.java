@@ -123,7 +123,7 @@ public class BannerController {
 
     /**
      * Banner 编辑页面
-     * @param id         banner关联id
+     * @param id         banner id
      * @param status     状态        跳回列表页参数
      * @param cid        频道id      跳回列表页参数
      * @param pageSize   页面显示条数  跳回列表页参数
@@ -139,10 +139,10 @@ public class BannerController {
                        @RequestParam(value = "pageNumber",required = false) Integer pageNumber,
                        Model model) {
         List<Distributor> distributorList = bannerService.getDistributorIdAndName();
-        Banner banner = bannerService.getBannerByDbId(id);
+        Banner banner = bannerService.getBannerById(id);
         model.addAttribute("banner", banner);
         model.addAttribute("cid", cid);
-        model.addAttribute("did", bannerService.getDistributorsBanners(banner.getId()));
+        model.addAttribute("did", bannerService.getDistributorsBanners(id));
         model.addAttribute("status", status);
         model.addAttribute("distributor", distributorList);
         model.addAttribute("pageSize", pageSize);
@@ -175,7 +175,7 @@ public class BannerController {
                          @RequestParam(value = "width",required = false) Integer width,
                          @RequestParam(value = "height",required = false) Integer height,
                          @RequestParam(value = "did") Integer[] did) {
-        Banner banner = bannerService.getBannerByDbId(id);
+        Banner banner = bannerService.getBannerById(id);
         //下线和新建的的banner可以编辑
         if (banner.getStatus() == 0 || banner.getStatus()== 1) {
            boolean flag = bannerService.updateBanner(id, title, cid, img, content, jid, type, adId, publishTime, did);

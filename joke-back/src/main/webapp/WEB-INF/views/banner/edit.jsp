@@ -47,6 +47,27 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
+                                    <th>ID</th>
+                                    <td><input id="bannerId" type="text" class="form-control" disabled="disabled" value="${banner.id}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>状态</th>
+                                    <td>
+                                        <c:if test="${banner.status == 0}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="新建"/>
+                                        </c:if>
+                                        <c:if test="${banner.status == 1}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="下线"/>
+                                        </c:if>
+                                        <c:if test="${banner.status == 2}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="上线"/>
+                                        </c:if>
+                                        <c:if test="${banner.status == 3}">
+                                            <input id="bannerStatus" type="text" class="form-control" disabled="disabled" value="已发布"/>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th width="207px">内容类型</th>
                                     <td>
                                         <select class="form-control input" style="width: 100%;" id="type" onclick="hideOthers()">
@@ -70,11 +91,6 @@
                                                value="${banner.publishTimeString}"/>
                                     </td>
                                 <tr/>
-                                <tr>
-                                    <th>ID</th>
-                                    <td><input id="bannerId" type="text" class="form-control" disabled="disabled"
-                                               value="${banner.id}"/></td>
-                                </tr>
                                 <tr>
                                     <th>标题</th>
                                     <td>
@@ -136,28 +152,6 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <th>状态</th>
-                                    <td>
-                                        <c:if test="${banner.status == 0}">
-                                            <input id="bannerStatus" type="text" class="form-control"
-                                                   disabled="disabled" value="新建"/>
-                                        </c:if>
-                                        <c:if test="${banner.status == 1}">
-                                            <input id="bannerStatus" type="text" class="form-control"
-                                                   disabled="disabled" value="下线"/>
-                                        </c:if>
-                                        <c:if test="${banner.status == 2}">
-                                            <input id="bannerStatus" type="text" class="form-control"
-                                                   disabled="disabled" value="上线"/>
-                                        </c:if>
-                                        <c:if test="${banner.status == 3}">
-                                            <input id="bannerStatus" type="text" class="form-control"
-                                                   disabled="disabled" value="已发布"/>
-                                        </c:if>
-
-                                    </td>
-                                </tr>
                                 <tr id="imgTr">
                                     <th>图片</th>
                                     <td>

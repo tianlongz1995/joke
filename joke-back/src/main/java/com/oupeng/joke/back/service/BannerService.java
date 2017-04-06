@@ -175,11 +175,11 @@ public class BannerService {
     /**
      * 根据id获取banner
      *
-     * @param dbid
+     * @param id
      * @return
      */
-    public Banner getBannerByDbId(Integer dbid) {
-        Banner banner = bannerMapper.getBannerByDbId(dbid);
+    public Banner getBannerById(Integer id) {
+        Banner banner = bannerMapper.getBannerById(id);
         if (banner != null && StringUtils.isNotBlank(banner.getImg())) {
             banner.setImg(realPath + banner.getImg());
         }
@@ -336,6 +336,10 @@ public class BannerService {
      */
     public String publishBannerNow(Integer id){
         String result;
+//        查询有几个渠道需要发布
+
+
+
         Banner banner = bannerMapper.getBannerById(id);
         String bannerKey = JedisKey.STRING_BANNER + id;
         String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid()+"_"+banner.getCid();
