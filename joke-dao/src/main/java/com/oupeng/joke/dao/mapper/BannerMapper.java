@@ -29,7 +29,8 @@ public interface BannerMapper {
     @SelectProvider(method = "getBannerListCount", type = BannerSqlProvider.class)
     Integer getBannerListCount(@Param(value = "status")Integer status,
                                @Param(value = "cid")   Integer cid,
-                               @Param(value = "did") Integer did);
+                               @Param(value = "did")   Integer did);
+
 
     /**
      * 获取banner列表
@@ -45,6 +46,7 @@ public interface BannerMapper {
                                @Param(value = "did") Integer did,
                                @Param(value= "offset")Integer offset,
                                @Param(value ="pageSize")Integer pageSize);
+
 
     /**
      * 根据id获取banner
@@ -137,7 +139,7 @@ public interface BannerMapper {
      * @param did
      */
     @InsertProvider(method="addDistributorBanner",type=BannerSqlProvider.class)
-    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did, @Param("publishTime")String publishTime);
+    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did);
 
     /**
      * 获取已配置横幅的渠道编号列表

@@ -335,7 +335,7 @@ public class IndexService {
                     }
                     Relate relate = new Relate();
                     relate.setId(joke.getId());
-                    relate.setCid(1);
+                    relate.setCid(cid);
                     relate.setType(joke.getType());
                     relate.setTxt(joke.getTitle());
                     if (joke.getImg() != null) {
@@ -369,7 +369,7 @@ public class IndexService {
                     }
                     Relate relate = new Relate();
                     relate.setId(joke.getId());
-                    relate.setCid(1);
+                    relate.setCid(cid);
                     relate.setType(joke.getType());
                     relate.setTxt(joke.getTitle());
                     if (joke.getImg() != null) {

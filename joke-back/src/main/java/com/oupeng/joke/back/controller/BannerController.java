@@ -41,7 +41,7 @@ public class BannerController {
     @RequestMapping(value = "/list")
     public String getBannerList(@RequestParam(value = "status", required = false) Integer status,
                                 @RequestParam(value = "cid", required = false) Integer cid,
-                                @RequestParam(value = "did",required = false, defaultValue = "1") Integer did,
+                                @RequestParam(value = "did", required = false) Integer did,
                                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 Model model) {
@@ -68,7 +68,6 @@ public class BannerController {
             offset = (pageNumber - 1) * pageSize;
 
             list = bannerService.getBannerList(status, cid, did, offset, pageSize);
-
         }
         distributorList = bannerService.getDistributorIdAndName();
         model.addAttribute("count", count);
@@ -80,11 +79,11 @@ public class BannerController {
         model.addAttribute("status", status);
         model.addAttribute("cid", cid);
         model.addAttribute("did",did);
-        if (list != null){
-            model.addAttribute("firstElement",bannerService.getBannerList(status, cid,did, 0, 1).get(0).getId());
-        }else{
-            model.addAttribute("firstElement","");
-        }
+//        if (list != null){
+//            model.addAttribute("firstElement",bannerService.getBannerList(status, cid,did, 0, 1).get(0).getId());
+//        }else{
+//            model.addAttribute("firstElement","");
+//        }
         return "/banner/list";
     }
 
@@ -114,7 +113,7 @@ public class BannerController {
                             @RequestParam(value = "width",required = false) Integer width,
                             @RequestParam(value = "height",required = false) Integer height,
                             @RequestParam(value = "did") Integer[] did) {
-        boolean result = bannerService.addBanner(title, img, cid, content, jid,type,adid,width,height,publishTime,did);
+        boolean result = bannerService.addBanner(title, img, cid, content, jid, type, adid, width, height, publishTime, did);
         if (result) {
             return new Success("添加成功!");
         } else {

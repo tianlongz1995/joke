@@ -104,17 +104,27 @@ public class BannerSqlProvider {
         Object cid = map.get("cid");
         Object did = map.get("did");
         StringBuffer sql = new StringBuffer();
-        sql.append("select count(b.id) from banner b left join distributors_banner db on b.id = db.b_id where 1 = 1 ");
-        if (status != null) {
-            sql.append(" and b.status = ").append(status);
+        if(did == null){
+            sql.append("select count(b.id) from banner b where 1 = 1 ");
+            if (status != null) {
+                sql.append(" and b.status = ").append(status);
+            } else {
+                sql.append(" and b.status != 4 ");
+            }
+            if (cid != null) {
+                sql.append(" and b.cid = ").append(cid);
+            }
         } else {
-            sql.append(" and b.status != 4 ");
-        }
-        if (cid != null) {
-            sql.append(" and b.cid = ").append(cid);
-        }
-        if(did  != null){
+            sql.append("select count(b.id) from banner b left join distributors_banner db on b.id = db.b_id where 1 = 1 ");
             sql.append(" and db.d_id = ").append(did);
+            if (status != null) {
+                sql.append(" and b.status = ").append(status);
+            } else {
+                sql.append(" and b.status != 4 ");
+            }
+            if (cid != null) {
+                sql.append(" and b.cid = ").append(cid);
+            }
         }
         return sql.toString();
     }
@@ -132,22 +142,34 @@ public class BannerSqlProvider {
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,db.sort,b.create_time as createTime,db.update_time as updateTime,db.publish_time as publishTime,d.name as dName, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1");
-        if(status != null){
-            sql.append(" and b.status = ").append(status);
+        if(did == null){
+            sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,b.create_time as createTime,b.update_time as updateTime,b.publish_time as publishTime from banner b where 1 = 1 ");
+            if (status != null) {
+                sql.append(" and b.status = ").append(status);
+            } else {
+                sql.append(" and b.status != 4 ");
+            }
+            if (cid != null) {
+                sql.append(" and b.cid = ").append(cid);
+            }
         } else {
-            sql.append(" and b.status != 4 ");
-        }
-        if(null != cid){
-            sql.append(" and b.cid = ").append(cid);
-        }
-        if(null != did){
+            sql.append("select b.id,b.title,b.jid,b.img,b.cid,db.d_id as did,b.type,b.status,b.content,b.slot,b.create_time as createTime,b.update_time as updateTime,b.publish_time as publishTime,d.name as dName, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1 ");
             sql.append(" and db.d_id = ").append(did);
+            if(status != null){
+                sql.append(" and b.status = ").append(status);
+            } else {
+                sql.append(" and b.status != 4 ");
+            }
+            if(null != cid){
+                sql.append(" and b.cid = ").append(cid);
+            }
+
         }
-        sql.append(" order by db.sort asc, db.update_time desc ");
+        sql.append(" order by b.update_time desc ");
         if(offset != null && pageSize != null){
             sql.append(" limit ").append(offset).append(" , ").append(pageSize);
         }
+
         return sql.toString();
     }
 
@@ -230,12 +252,11 @@ public class BannerSqlProvider {
     public static String addDistributorBanner(Map<String, Object> map){
         Object id      = map.get("id");
         Integer[] dids = (Integer[]) map.get("did");
-        String publishTime = (String) map.get("publishTime");
         StringBuffer sql = new StringBuffer();
         sql.append("insert into  distributors_banner(d_id, b_id, publish_time) values");
 
         for(Integer did : dids){
-            sql.append("(").append(did).append(",").append(id).append(", '").append(publishTime).append("'),");
+            sql.append("(").append(did).append(",").append(id).append("),");
         }
         return sql.substring(0, sql.length() - 1);
     }

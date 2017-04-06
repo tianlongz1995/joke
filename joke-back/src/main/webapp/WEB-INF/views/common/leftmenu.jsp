@@ -58,12 +58,12 @@
 					</a>
 				</li>
 
-                <li>
-                	<a class="ajax-link" href="ad/list">
-                		<i class="glyphicon glyphicon-picture"></i>
-                		<span> 广告管理</span>
-                	</a>
-                </li>
+                <%--<li>--%>
+                	<%--<a class="ajax-link" href="ad/list">--%>
+                		<%--<i class="glyphicon glyphicon-picture"></i>--%>
+                		<%--<span> 广告管理</span>--%>
+                	<%--</a>--%>
+                <%--</li>--%>
                 <li class="accordion">
 					<a href="#"><i class="glyphicon glyphicon-link"></i><span> 内容源管理</span></a>
 					<ul class="nav nav-pills nav-stacked">

@@ -103,6 +103,7 @@
                                     </div>
                                     <label style="padding-right:10px;">
                                         <select class="form-control input-sm" id="didSearch" onchange="search()">
+                                            <option value="">全部</option>
                                             <c:forEach items="${distributor}" var="dis">
                                                 <option value="${dis.id}"
                                                         <c:if test="${dis.id == did}">selected="selected"</c:if> >${dis.name}</option>

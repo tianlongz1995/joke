@@ -121,11 +121,11 @@ public class BannerService {
             banner.setSort(0);
             banner.setWidth(image.getWidth());
             banner.setHeight(image.getHeight());
-//            banner.setPublishTimeString(publishTime);
+            banner.setPublishTimeString(publishTime);
             bannerMapper.addBanner(banner);
 
 //            添加渠道横幅关联
-            bannerMapper.addDistributorBanner(banner.getId(), did, publishTime);
+            bannerMapper.addDistributorBanner(banner.getId(), did);
 
             return true;
         } catch (Exception e){
@@ -143,7 +143,7 @@ public class BannerService {
      * @return
      */
     public Integer getBannerListCount(Integer status, Integer cid,Integer did) {
-        return bannerMapper.getBannerListCount(status, cid,did);
+        return bannerMapper.getBannerListCount(status, cid, did);
     }
 
     /**
@@ -156,7 +156,7 @@ public class BannerService {
      */
     public List<Banner> getBannerList(Integer status, Integer cid,Integer did, Integer offset, Integer pageSize) {
         try {
-            List<Banner> bannerList = bannerMapper.getBannerList(status, cid, did,offset, pageSize);
+            List<Banner> bannerList = bannerMapper.getBannerList(status, cid, did, offset, pageSize);
             if (!CollectionUtils.isEmpty(bannerList)) {
                 for (Banner banner : bannerList) {
                     if (StringUtils.isNotBlank(banner.getImg())) {
@@ -239,13 +239,13 @@ public class BannerService {
             banner.setJid(jid);
             banner.setType(type);
             banner.setSlot(adId);
-//            banner.setPublishTimeString(publishTime);
+            banner.setPublishTimeString(publishTime);
         //  更新横幅
             bannerMapper.updateBanner(banner);
         //  删除渠道横幅关联关系
             bannerMapper.delDistributorsBanners(id);
         //  添加新的渠道横幅关联关系
-            bannerMapper.addDistributorBanner(id, did, publishTime);
+            bannerMapper.addDistributorBanner(id, did);
 
             return true;
         } catch (Exception e) {
