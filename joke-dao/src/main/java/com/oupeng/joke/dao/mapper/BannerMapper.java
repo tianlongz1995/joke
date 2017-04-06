@@ -56,6 +56,14 @@ public interface BannerMapper {
     Banner getBannerById(Integer id);
 
     /**
+     * 根据dbid获取banner
+     * @param id banner id
+     * @return
+     */
+    @Select(value="select b.id,b.title,b.jid,b.type,b.img,db.sort,b.cid,b.did,b.slot,b.status,b.content,b.width,b.height,b.create_time as createTime,b.update_time as updateTime,b.publish_time as publishTime from banner b left join distributors_banner db on b.id = db.b_id where db.id = #{id}")
+    Banner getBannerByDbId(Integer id);
+
+    /**
      * 更新banner
      * @param banner
      */
@@ -129,7 +137,7 @@ public interface BannerMapper {
      * @param did
      */
     @InsertProvider(method="addDistributorBanner",type=BannerSqlProvider.class)
-    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did);
+    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did, @Param("publishTime")String publishTime);
 
     /**
      * 获取已配置横幅的渠道编号列表

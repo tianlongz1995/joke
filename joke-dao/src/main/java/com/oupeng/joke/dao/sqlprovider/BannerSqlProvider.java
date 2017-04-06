@@ -132,7 +132,7 @@ public class BannerSqlProvider {
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,db.sort,b.create_time as createTime,db.update_time as updateTime,b.publish_time as publishTime,d.name as dName, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1");
+        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,db.sort,b.create_time as createTime,db.update_time as updateTime,db.publish_time as publishTime,d.name as dName, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1");
         if(status != null){
             sql.append(" and b.status = ").append(status);
         } else {
@@ -230,11 +230,12 @@ public class BannerSqlProvider {
     public static String addDistributorBanner(Map<String, Object> map){
         Object id      = map.get("id");
         Integer[] dids = (Integer[]) map.get("did");
+        String publishTime = (String) map.get("publishTime");
         StringBuffer sql = new StringBuffer();
-        sql.append("insert into  distributors_banner(d_id, b_id) values");
+        sql.append("insert into  distributors_banner(d_id, b_id, publish_time) values");
 
         for(Integer did : dids){
-            sql.append("(").append(did).append(",").append(id).append("),");
+            sql.append("(").append(did).append(",").append(id).append(", '").append(publishTime).append("'),");
         }
         return sql.substring(0, sql.length() - 1);
     }

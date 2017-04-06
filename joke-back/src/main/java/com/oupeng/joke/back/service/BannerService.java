@@ -121,11 +121,11 @@ public class BannerService {
             banner.setSort(0);
             banner.setWidth(image.getWidth());
             banner.setHeight(image.getHeight());
-            banner.setPublishTimeString(publishTime);
+//            banner.setPublishTimeString(publishTime);
             bannerMapper.addBanner(banner);
 
 //            添加渠道横幅关联
-            bannerMapper.addDistributorBanner(banner.getId(), did);
+            bannerMapper.addDistributorBanner(banner.getId(), did, publishTime);
 
             return true;
         } catch (Exception e){
@@ -175,11 +175,11 @@ public class BannerService {
     /**
      * 根据id获取banner
      *
-     * @param id
+     * @param dbid
      * @return
      */
-    public Banner getBannerById(Integer id) {
-        Banner banner = bannerMapper.getBannerById(id);
+    public Banner getBannerByDbId(Integer dbid) {
+        Banner banner = bannerMapper.getBannerByDbId(dbid);
         if (banner != null && StringUtils.isNotBlank(banner.getImg())) {
             banner.setImg(realPath + banner.getImg());
         }
@@ -239,12 +239,13 @@ public class BannerService {
             banner.setJid(jid);
             banner.setType(type);
             banner.setSlot(adId);
-            banner.setPublishTimeString(publishTime);
-
+//            banner.setPublishTimeString(publishTime);
+        //  更新横幅
             bannerMapper.updateBanner(banner);
-
+        //  删除渠道横幅关联关系
             bannerMapper.delDistributorsBanners(id);
-            bannerMapper.addDistributorBanner(id, did);
+        //  添加新的渠道横幅关联关系
+            bannerMapper.addDistributorBanner(id, did, publishTime);
 
             return true;
         } catch (Exception e) {
@@ -266,14 +267,15 @@ public class BannerService {
 //    }
 
     /**
-     * 删除banner
+     * 删除横幅
      *
      * @param id
-     * @param cid
      */
-    public void delBanner(Integer id, Integer cid) {
-        //删除记录
+    public void delBanner(Integer id) {
+        //删除横幅记录
         bannerMapper.delBanner(id);
+//        删除横幅渠道关联关系
+        bannerMapper.delDistributorsBanners(id);
     }
 
     /**
@@ -522,11 +524,11 @@ public class BannerService {
 
     /**
      * 获取已配置横幅的渠道编号列表
-     * @param id
+     * @param bannerId
      * @return
      */
-    public List<Integer> getDistributorsBanners(Integer id) {
-        return bannerMapper.getDistributorsBanners(id);
+    public List<Integer> getDistributorsBanners(Integer bannerId) {
+        return bannerMapper.getDistributorsBanners(bannerId);
     }
 
     /**
@@ -552,9 +554,13 @@ public class BannerService {
         int count = 0;
         for(int i = 0; i < ids.length; i++){
             bannerMapper.editSort(ids[i], sorts[i], username);
-//          更新缓存
-            Banner banner = bannerMapper.getBannerById(ids[i]);
-
+            Banner banner = bannerMapper.getBannerByDbId(ids[i]);
+//          更新缓存排序值
+            String key = JedisKey.STRING_BANNER + banner.getId();
+            if(banner != null){
+                banner.setSort(sorts[i]);
+                jedisCache.set(key, JSON.toJSONString(banner));
+            }
             count++;
         }
 

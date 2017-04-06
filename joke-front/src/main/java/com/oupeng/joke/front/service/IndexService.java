@@ -405,6 +405,8 @@ public class IndexService {
                 if(null != banner){
                     banner.setImg(IMG_PREFIX + banner.getImg());
                     bannerList.add(banner);
+                } else {
+                    log.error("获取banner缓存异常:{}", JedisKey.STRING_BANNER + b);
                 }
             }
             if(CollectionUtils.isEmpty(bannerList)){
