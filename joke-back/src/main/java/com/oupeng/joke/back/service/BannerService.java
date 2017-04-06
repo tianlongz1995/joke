@@ -337,7 +337,7 @@ public class BannerService {
     public String publishBannerNow(Integer id){
         String result;
 //        查询有几个渠道需要发布
-
+        List<Banner> list = bannerMapper.getDistributorsBannersList(id);
 
 
         Banner banner = bannerMapper.getBannerById(id);

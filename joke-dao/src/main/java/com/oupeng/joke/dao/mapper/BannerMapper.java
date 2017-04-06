@@ -175,4 +175,12 @@ public interface BannerMapper {
     int editSort(@Param("id")Integer id,
                  @Param("sort")Integer sort,
                  @Param("username")String username);
+
+    /**
+     * 获取渠道横幅列表
+     * @param id
+     * @return
+     */
+    @Select("")
+    List<Banner> getDistributorsBannersList(@Param("id")Integer id);
 }
