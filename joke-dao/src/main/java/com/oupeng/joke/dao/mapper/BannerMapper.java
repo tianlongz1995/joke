@@ -153,4 +153,16 @@ public interface BannerMapper {
      */
     @Select("select d.id, d.name from distributors d left join distributors_banner db on d.id = db.d_id where db.b_id = #{id}")
     List<Distributor> distributorList(@Param("id")Integer id);
+
+    /**
+     * 修改排序值
+     * @param id
+     * @param sort
+     * @param username
+     * @return
+     */
+    @Update("update distributors_banner set update_time = now(), update_by= #{username}, sort = #{sort} where id = #{id}")
+    int editSort(@Param("id")Integer id,
+                 @Param("sort")Integer sort,
+                 @Param("username")String username);
 }

@@ -132,7 +132,7 @@ public class BannerSqlProvider {
         Object offset    = map.get("offset");
         Object pageSize  = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,b.sort,b.create_time as createTime,b.update_time as updateTime,b.publish_time as publishTime,d.name as dName from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1");
+        sql.append("select b.id,b.title,b.jid,b.img,b.cid,b.did,b.type,b.status,b.content,b.slot,db.sort,b.create_time as createTime,db.update_time as updateTime,b.publish_time as publishTime,d.name as dName, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id left join distributors d on db.d_id = d.id  where 1 = 1");
         if(status != null){
             sql.append(" and b.status = ").append(status);
         } else {
@@ -144,7 +144,7 @@ public class BannerSqlProvider {
         if(null != did){
             sql.append(" and db.d_id = ").append(did);
         }
-        sql.append(" order by b.sort asc ");
+        sql.append(" order by db.sort asc, db.update_time desc ");
         if(offset != null && pageSize != null){
             sql.append(" limit ").append(offset).append(" , ").append(pageSize);
         }

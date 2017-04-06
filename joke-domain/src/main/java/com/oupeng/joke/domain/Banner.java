@@ -45,6 +45,9 @@ public class Banner {
     /** 渠道名称*/
     @JsonInclude(Include.NON_NULL)
     private String dName;
+    /** 渠道横幅关联ID*/
+    @JsonInclude(Include.NON_NULL)
+    private Integer dbId;
 
     public Integer getId() {
         return id;
@@ -198,6 +201,14 @@ public class Banner {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Integer getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(Integer dbId) {
+        this.dbId = dbId;
     }
 }
 

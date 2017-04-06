@@ -10,6 +10,8 @@ import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BannerMapper;
 import com.oupeng.joke.dao.mapper.DistributorsMapper;
 import com.oupeng.joke.domain.*;
+import com.oupeng.joke.domain.response.*;
+import com.oupeng.joke.domain.response.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -534,5 +536,32 @@ public class BannerService {
      */
     public List<Distributor> distributorList(Integer id) {
         return bannerMapper.distributorList(id);
+    }
+
+    /**
+     * 修改排序值
+     * @param ids
+     * @param sorts
+     * @param username
+     * @return
+     */
+    public Result editSorts(Integer[] ids, Integer[] sorts, String username) {
+        if(ids == null || ids.length < 1 || sorts == null || ids.length != sorts.length){
+            return new Failed("参数错误!");
+        }
+        int count = 0;
+        for(int i = 0; i < ids.length; i++){
+            bannerMapper.editSort(ids[i], sorts[i], username);
+//          更新缓存
+            Banner banner = bannerMapper.getBannerById(ids[i]);
+
+            count++;
+        }
+
+        if(count > 0){
+            return new Success("修改成功!");
+        } else {
+            return new Failed("["+ JSON.toJSONString(ids)+"]修改排序值["+JSON.toJSONString(sorts)+"]失败!");
+        }
     }
 }

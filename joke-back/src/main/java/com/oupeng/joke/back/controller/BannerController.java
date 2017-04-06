@@ -9,6 +9,8 @@ import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -264,4 +266,34 @@ public class BannerController {
         }
     }
 
+    /**
+     * 修改排序值
+     * @param ids
+     * @param sorts
+     * @return
+     */
+    @RequestMapping(value="/editSorts")
+    @ResponseBody
+    public Result editSorts(@RequestParam(value="ids")Integer[] ids,
+                            @RequestParam(value="sorts")Integer[] sorts){
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        return bannerService.editSorts(ids, sorts, username);
+    }
+
+
+
+    /**
+     * 获取当前登录用户名
+     * @return
+     */
+    private String getUserName() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userDetails != null && userDetails.getUsername() != null){
+            return userDetails.getUsername();
+        }
+        return null;
+    }
 }
