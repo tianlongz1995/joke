@@ -80,6 +80,16 @@ public class JokeService {
         } else {
             logger.error("getProperty(\"random.user.url\") is null:{}", userUrl);
         }
+
+//        缓存段子昵称
+        List<String> nicks = jokeMapper.getJokeNick();
+        if(CollectionUtils.isEmpty(nicks)){
+            logger.error("段子昵称表为空!!!");
+        } else {
+            jedisCache.sadd(JedisKey.JOKE_NICK_NAME, nicks.toArray(new String[nicks.size()]));
+            logger.info("段子昵称缓存完成[{}]条", nicks.size());
+        }
+
     }
 
 	/**
@@ -209,6 +219,10 @@ public class JokeService {
         //加到缓存
         for (Joke joke : jokes) {
             if (joke != null) {
+                String nike = getReleaseNick(joke.getNick());
+                String avatar = getReleaseAvatar(joke.getId());
+                joke.setRa(avatar);
+                joke.setRn(nike);
                 if(joke.getCommentNumber() != null
                         && joke.getCommentContent() != null
                         && joke.getAvata() != null
@@ -219,9 +233,39 @@ public class JokeService {
                     joke.setAvata(null);
                     joke.setNick(null);
                 }
+
+
                 jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
             }
         }
+    }
+
+    /**
+     * 获取发布者头像
+     * @param id
+     * @return
+     */
+    private String getReleaseAvatar(Integer id) {
+        int i =  id % 20;
+        return "1/" + i + ".jpg";
+    }
+
+    /**
+     * 获取段子发布人昵称
+     * @param name
+     * @return
+     */
+    private String getReleaseNick(String name) {
+        List<String> nickNames = jedisCache.srandmember(JedisKey.JOKE_NICK_NAME, 5);
+        if(CollectionUtils.isEmpty(nickNames)){
+            return "笑料百出用户" + new Random().nextInt(10);
+        }
+        for(String nick : nickNames){
+            if(nick != name){
+                return nick;
+            }
+        }
+        return "笑料百出用户" + new Random().nextInt(10);
     }
 
     /**

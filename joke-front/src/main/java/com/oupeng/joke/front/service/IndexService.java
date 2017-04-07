@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.JOptCommandLinePropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -240,6 +241,9 @@ public class IndexService {
                 if(joke.getType().equals(Constants.JOKE_TYPE_GIF)){
                     joke.setGif(IMG_PREFIX + joke.getGif());
                 }
+                if(joke.getRa() != null && !joke.getRa().startsWith("http")){
+                    joke.setRa( IMG_PREFIX + joke.getRa());
+                }
                 if(cid == 4){
                     joke.setContent(null);
                 }
@@ -269,6 +273,9 @@ public class IndexService {
             }
             if(joke.getType().equals(0)){
                 joke.setSrc(null);
+            }
+            if(joke.getRa() != null && !joke.getRa().startsWith("http")){
+                joke.setRa( IMG_PREFIX + joke.getRa());
             }
             String key = JedisKey.JOKE_CHANNEL + cid;
             Long index = jedisCache.zrevrank(key, String.valueOf(jid));

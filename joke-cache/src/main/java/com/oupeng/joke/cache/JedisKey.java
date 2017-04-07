@@ -95,4 +95,7 @@ public class JedisKey {
 
     /** 用户段子浏览位置  */
     public static final String UID_POS = "uid.pos";
+
+    /** 段子昵称  */
+    public static String JOKE_NICK_NAME = "joke.nick.name";
 }
