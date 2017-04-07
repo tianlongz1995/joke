@@ -46,6 +46,30 @@
                                 <a href="<%=basePath%>distributors/list?status=${status}&limit=${limit}&pageNo=${pageNo}" class="btn btn-success btn-sm" >返回</a>
                             </div>
                             <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
+                                <div class="dataTables_filter" id="DataTables_Table_0_filter">
+                                    <div class="form-group" style="display: inline-block;padding-left:10px;">
+                                        <label>
+                                            <label for="cidSearch" style="display: inline-block;">频道 : </label>
+                                        </label>
+                                    </div>
+                                    <label style="padding-right:10px;">
+                                        <select class="form-control input-sm" id="cidSearch" onchange="search()">
+                                            <option value="1"
+                                                    <c:if test="${!empty cid && cid == 1}">selected</c:if> >趣图
+                                            </option>
+                                            <option value="2"
+                                                    <c:if test="${!empty cid && cid == 2}">selected</c:if> >段子
+                                            </option>
+                                            <option value="3"
+                                                    <c:if test="${!empty cid && cid == 3}">selected</c:if> >推荐
+                                            </option>
+                                            <option value="4"
+                                                    <c:if test="${!empty cid && cid == 4}">selected</c:if> >精选
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+
                                 <thead>
                                 <tr>
                                     <th>ID</th>
@@ -101,7 +125,7 @@
                             'ids=' + id  + '&sorts=' + sort + '&did=' + did,
                             function (data) {
                                 if (data.status == 1) {
-                                    location.href = '<%=basePath%>distributors/banner?did=${did}&status=${status}&limit=${limit}&pageNo=${pageNo}';
+                                    location.href = '<%=basePath%>distributors/banner?did=${did}&cid='+$("#cidSearch").val()+'&status=${status}&limit=${limit}&pageNo=${pageNo}';
                                 } else {
                                     alert('处理失败:' + data.info);
                                 }
@@ -110,6 +134,10 @@
                                 alert('请求失败，请检查网络环境');
                             });
                 };
+                //banner 查询
+                function search() {
+                    location.href = '<%=basePath%>distributors/banner?did=${did}&cid='+$("#cidSearch").val()+'&status=${status}&limit=${limit}&pageNo=${pageNo}';
+                }
             </script>
 
         </div><!-- content end -->

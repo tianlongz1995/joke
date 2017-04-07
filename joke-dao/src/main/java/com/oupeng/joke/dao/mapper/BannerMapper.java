@@ -138,7 +138,7 @@ public interface BannerMapper {
      * @param did
      */
     @InsertProvider(method="addDistributorBanner",type=BannerSqlProvider.class)
-    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did);
+    void addDistributorBanner(@Param("id")Integer id, @Param("did")Integer[] did, @Param("cid")Integer cid);
 
     /**
      * 获取已配置横幅的渠道编号列表

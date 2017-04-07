@@ -14,6 +14,7 @@ import com.oupeng.joke.domain.response.*;
 import com.oupeng.joke.domain.response.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.javassist.compiler.ast.DoubleConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,7 @@ public class BannerService {
             bannerMapper.addBanner(banner);
 
 //            添加渠道横幅关联
-            bannerMapper.addDistributorBanner(banner.getId(), did);
+            bannerMapper.addDistributorBanner(banner.getId(), did, cid);
 
             return true;
         } catch (Exception e){
@@ -243,7 +244,7 @@ public class BannerService {
         //  删除渠道横幅关联关系
             bannerMapper.delDistributorsBanners(id);
         //  添加新的渠道横幅关联关系
-            bannerMapper.addDistributorBanner(id, did);
+            bannerMapper.addDistributorBanner(id, did, cid);
 
             return true;
         } catch (Exception e) {
@@ -257,7 +258,7 @@ public class BannerService {
      *
      * @param id
      */
-    public void delBanner(Integer id) {
+    public void delBanner(Integer id, Integer cid) {
         //删除横幅记录
         bannerMapper.delBanner(id);
 //        删除横幅渠道关联关系
@@ -277,14 +278,16 @@ public class BannerService {
         if(CollectionUtils.isEmpty(list)){
             return "查询Banner为空!";
         }
-
-        Banner b = bannerMapper.getBannerById(id);
-        result = validBanner(b, true);
-        if(result != null){
-            return result;
+//      上线时验证
+        if(status.equals(2)){
+            Banner b = bannerMapper.getBannerById(id);
+            result = validBanner(b, true);
+            if(result != null){
+                return result;
+            }
         }
 
-        for(Banner banner : list){
+        for(Banner banner : list) {
             String bannerKey = JedisKey.STRING_BANNER + banner.getDid() + "_" + banner.getCid() + "_" + id;
             String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid() + "_" + banner.getCid();
 //          上线
@@ -293,10 +296,13 @@ public class BannerService {
                 distributorsMapper.updateChannelsBanner(1, banner.getCid());
 //          下线
             } else if (Constants.TOPIC_STATUS_PUBLISH != status) {
-//              更新横幅不显示
-                distributorsMapper.updateChannelsBanner(0, banner.getCid());
-//              更新菜单缓存横幅不显示
-                changeBannerStatus(banner.getCid(), banner.getDid(), false);
+                Long bannerCount = jedisCache.zcard(bannerListKey);
+                if (bannerCount < 1) {
+//                  更新数据库横幅不显示
+                    distributorsMapper.updateChannelsBanner(0, banner.getCid());
+//                  更新缓存菜单缓存横幅不显示
+                    changeBannerStatus(banner.getCid(), banner.getDid(), false);
+                }
                 //删除缓存
                 jedisCache.del(bannerKey);
                 jedisCache.zrem(bannerListKey, Integer.toString(id));
@@ -320,14 +326,19 @@ public class BannerService {
         if(CollectionUtils.isEmpty(list)){
             return "查询Banner为空!";
         }
+
+        //      上线时验证
+        Banner b = bannerMapper.getBannerById(id);
+        result = validBanner(b, false);
+        if(result != null){
+            return result;
+        }
+
         long scope = System.currentTimeMillis();
         long index = 0;
         for(Banner banner : list){
             String bannerKey = JedisKey.STRING_BANNER + banner.getDid() + "_" + banner.getCid() + "_" + id;
             String bannerListKey = JedisKey.JOKE_BANNER + banner.getDid() + "_" + banner.getCid();
-            result = validBanner(banner, false);
-            if(null == result) { //验证通过
-
 //              当前发布的banner使用当前时间, 保证倒序排列靠前
                 jedisCache.set(bannerKey, JSON.toJSONString(banner));
                 jedisCache.zadd(bannerListKey, scope - index, Integer.toString(id));
@@ -338,7 +349,7 @@ public class BannerService {
 
                 //根据缓存中banner的个数，修改channel表中banner状态
                 Long bannerCount = jedisCache.zcard(bannerListKey);
-                if (bannerCount == 1) {
+                if (bannerCount > 0) {
 //                修改渠道配置中banner显示状态
                     changeBannerStatus(banner.getCid(), banner.getDid(), true);
                 } else if (bannerCount > 5) {
@@ -348,9 +359,6 @@ public class BannerService {
                         jedisCache.zrem(bannerListKey, key);
                     }
                 }
-
-            }
-
         }
         //2 修改发布状态
         bannerMapper.updateBannerStatus(id, 3);
@@ -529,9 +537,13 @@ public class BannerService {
             return new Failed("参数错误!");
         }
         int count = 0;
+        long scope = System.currentTimeMillis();
+        Map<String, Integer> map = new HashMap<>();
+        Integer cid = null;
         for(int i = 0; i < ids.length; i++){
             bannerMapper.editSort(ids[i], sorts[i], username);
             Banner banner = bannerMapper.getBannerByDbId(ids[i]);
+            cid = banner.getCid();
 //          更新缓存排序值
             String key = JedisKey.STRING_BANNER + did + "_" + banner.getCid() + "_" + banner.getId();
             if(banner != null){
@@ -547,7 +559,19 @@ public class BannerService {
                 banner.setSort(sorts[i]);
                 jedisCache.set(key, JSON.toJSONString(banner));
             }
+            map.put(String.valueOf(ids[i]), sorts[i]);
             count++;
+        }
+//        重新更新分数
+        String bannerListKey = JedisKey.JOKE_BANNER + did + "_" + cid;
+        Set<String> set = jedisCache.zrevrange(bannerListKey, 0l, -1l);
+        for(String id : set){
+            Integer s = map.get(id);
+            Double scopeTemp = Double.valueOf(scope);
+            if(s != null){
+                scopeTemp = scopeTemp - s;
+            }
+            jedisCache.zadd(bannerListKey, scopeTemp, id);
         }
 
         if(count > 0){

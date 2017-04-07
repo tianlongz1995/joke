@@ -255,10 +255,12 @@ public class DistributorsController {
     public String banner(@RequestParam(value="did")Integer did,
                          @RequestParam(value="status")Integer status,
                          @RequestParam(value="limit")Integer limit,
+                         @RequestParam(value="cid", required = false, defaultValue = "3")Integer cid,
                          @RequestParam(value="pageNo")Integer pageNo,
                          Model model){
-        model.addAttribute("list", distributorsService.getDistributorsBanners(did));
+        model.addAttribute("list", distributorsService.getDistributorsBanners(did, cid));
         model.addAttribute("did", did);
+        model.addAttribute("cid", cid);
         model.addAttribute("status", status);
         model.addAttribute("limit", limit);
         model.addAttribute("pageNo", pageNo);

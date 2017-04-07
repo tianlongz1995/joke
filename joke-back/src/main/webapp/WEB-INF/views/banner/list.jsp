@@ -172,11 +172,6 @@
                                                             pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
 
-                                        <%--<c:if test="${!empty status && status == 3}">--%>
-                                            <%--<td>--%>
-                                                <%--<input id="sort${banner.dbId}" type="text" class="form-control input-sm" style="width: 20px;padding: 1px;text-align: center;" value="${banner.sort}">--%>
-                                            <%--</td>--%>
-                                        <%--</c:if>--%>
                                         <td>
                                             <a class="btn btn-info btn-xs" href="#" onclick="showDistibutorList(${banner.id})">
                                                 <i class="glyphicon glyphicon-th-list icon-white"></i> 渠道列表
@@ -188,7 +183,7 @@
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                                 </a>
                                                 <a class="btn btn-warning btn-xs" href="#"
-                                                   onclick="delBanner(${banner.id})">
+                                                   onclick="delBanner(${banner.id}, ${banner.cid})">
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
@@ -209,7 +204,7 @@
                                                     <i class="glyphicon glyphicon-edit icon-white"></i> 编辑
                                                 </a>
                                                 <a class="btn btn-warning btn-xs" href="#"
-                                                   onclick="delBanner(${banner.id})">
+                                                   onclick="delBanner(${banner.id}, ${banner.cid})">
                                                     <i class="glyphicon glyphicon-trash"></i> 删除
                                                 </a>
                                                 <a class="btn btn-danger btn-xs" href="#"
@@ -240,12 +235,6 @@
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>下线
                                                 </a>
                                             </c:if>
-                                            <%--<c:if test="${!empty status && status == 3}">--%>
-                                                <%--<a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${banner.dbId})">--%>
-                                                    <%--<i class="glyphicon glyphicon-ok icon-white"></i> 排序--%>
-                                                <%--</a>--%>
-                                            <%--</c:if>--%>
-
 
                                         </td>
                                     </tr>
@@ -405,6 +394,13 @@
                     var did = $("#did").multipleSelect("getSelects");
                     var img = $("#imgPriview").attr("src");
                     var cid = $('#cid').val();
+                    console.log('did='+did);
+
+                    if(did.length < 1){
+                        alert("必须选择渠道!");
+                        $('#addNewBanner').removeAttr("disabled");
+                        return false;
+                    }
                     if ($("#type").val() == 0) {
                         if (jid == "") {
                             alert("必须填写段子编号");
@@ -478,10 +474,10 @@
                     });
                 });
 
-                function delBanner(id) {
+                function delBanner(id, cid) {
                     if (confirm("确认删除么？")) {
                         post('banner/del',
-                                'id=' + id,
+                                'id=' + id + '&cid=' + cid,
                                 function (data) {
                                     if (data['status']) {
                                         location.href = '<%=basePath%>banner/list?cid=${cid}&status=${status}&pageSize=${pageSize}&pageNumber=${pageNumber}';

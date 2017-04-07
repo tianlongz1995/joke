@@ -33,6 +33,7 @@ public class Banner {
     private Integer slot;
     @JsonInclude(Include.NON_NULL)
     private Integer sort;
+    @JsonInclude(Include.NON_NULL)
     private Integer width;
     @JsonInclude(Include.NON_NULL)
     private Integer height;
@@ -186,6 +187,7 @@ public class Banner {
         this.dName = dName;
     }
 
+    @JsonInclude(Include.NON_NULL)
     public String getPublishTimeString() {
         String result = null;
         if(publishTime != null){

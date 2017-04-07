@@ -252,22 +252,23 @@
                     var adId = $("#adId").val();
                     var img = $("#imgPriview").attr("src");
                     var did = $("#did").multipleSelect("getSelects");
+                    if(did.length < 1){
+                        alert("必须选择渠道!");
+                        return false;
+                    }
                     //内容 段子id不能为空
                     if ($("#type").val() == 0) {
                         if (jid == "") {
                             alert("必须填写段子编号");
-                            $('#addNewBanner').removeAttr("disabled");
                             return false;
                         }
                         if (img == "") {
                             alert("必须上传图片");
-                            $('#addNewBanner').removeAttr("disabled");
                             return false;
                         }
                     } else { //广告 广告位id不为空
                         if (adId == "") {
                             alert("必须填写广告位id");
-                            $('#addNewBanner').removeAttr("disabled");
                             return false;
                         }
                     }

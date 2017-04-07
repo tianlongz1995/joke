@@ -159,9 +159,9 @@ public interface DistributorsMapper {
 
     /**
      * 查询渠道横幅列表
-     * @param id
+     * @param did
      * @return
      */
-    @Select("select b.id, b.title, b.cid, db.sort, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id where db.d_id = #{id} and b.status = 3 order by db.sort asc")
-    List<Banner> getDistributorsBanners(@Param("id")Integer id);
+    @Select("select b.id, b.title, b.cid, db.sort, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id where db.d_id = #{did} and db.cid = #{cid} and b.status = 3 order by db.sort asc")
+    List<Banner> getDistributorsBanners(@Param("did")Integer did, @Param("cid")Integer cid);
 }

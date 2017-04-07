@@ -268,10 +268,11 @@ public class DistributorsService {
 
     /**
      * 查询渠道横幅列表
-     * @param id
+     * @param did
+     * @param cid
      * @return
      */
-    public List<Banner> getDistributorsBanners(Integer id) {
-        return distributorsMapper.getDistributorsBanners(id);
+    public List<Banner> getDistributorsBanners(Integer did, Integer cid) {
+        return distributorsMapper.getDistributorsBanners(did, cid);
     }
 }

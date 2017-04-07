@@ -196,8 +196,8 @@ public class BannerController {
      */
     @RequestMapping(value = "del")
     @ResponseBody
-    public Result del(@RequestParam(value = "id") Integer id) {
-        bannerService.delBanner(id);
+    public Result del(@RequestParam(value = "id") Integer id, @RequestParam(value = "cid") Integer cid) {
+        bannerService.delBanner(id, cid);
         return new Success("删除成功!");
     }
 
