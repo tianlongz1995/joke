@@ -1,13 +1,12 @@
 package com.oupeng.joke.spider.domain.niubi;
 
 
-import com.oupeng.joke.spider.domain.Comment;
+
 import com.oupeng.joke.spider.domain.JokeText;
 import org.apache.commons.lang3.StringUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
-import us.codecraft.webmagic.model.annotation.ExtractByUrl;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
@@ -15,9 +14,8 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by zongchao on 2017/3/13.
  */
-@TargetUrl("http://nbsw.cc/page/\\d{1,2}")
-@HelpUrl("http://nbsw.cc/")
-@ExtractBy("//ul[@id='postlist']/li")
+@TargetUrl("http://nbsw.cc/\\d{5,7}")
+@HelpUrl("http://nbsw.cc/hot/page/\\d{1,2}")
 public class JokeTextNiu extends JokeText implements AfterExtractor {
 
 
