@@ -18,14 +18,13 @@ import java.util.Collection;
 @Component
 public class URLBloomFilterService {
     private static final Logger log = LoggerFactory.getLogger(URLBloomFilterService.class);
-
+    private static final String KEY = Key.BLOOM_FILTER_URL;
     /**
      * 布隆过滤器
      */
     @Autowired
     private BloomFilter<String> bloomFilter;
-    @Autowired
-    private RedisService redisService;
+
 
     /**
      * 初始化
@@ -33,11 +32,7 @@ public class URLBloomFilterService {
     @PostConstruct
     public void init() {
         log.info("布隆过滤器服务 - 开始启动.....");
-
-//        bloomFilter = new BloomFilter<>(0.000001, (int) (10000000 * 1.5));
-//        Jedis jedis = redisService.getJedis();
-//        bloomFilter.bind(jedis, Key.BLOOM_FILTER_URL);
-
+        bloomFilter.setBloomFilterName(KEY);
         log.info("布隆过滤器服务 - 启动完成.....");
 
     }
@@ -48,7 +43,7 @@ public class URLBloomFilterService {
      * @param key
      * @return
      */
-    public boolean  contains(String key) {
+    public boolean contains(final String key) {
         return bloomFilter.contains(key);
     }
 

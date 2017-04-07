@@ -2,7 +2,6 @@ package com.oupeng.joke.spider.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -38,21 +37,13 @@ public class BloomFilter<E> implements Serializable {
     private int expectedNumberOfFilterElements; // expected (maximum) number of elements to be added
     private int numberOfAddedElements; // number of elements actually added to the Bloom filter
     private int k; // number of hash functions
+    private String bloomFilterName;
 
 
-//
-//    /**
-//     * Bind the Redis cluster and the key which will be opreated.
-//     *
-//     * @param jedis
-//     * @param name
-//     */
-//    public void bind(Jedis jedis, String name) {
-//        this.bitset = new RedisBitSet(jedis, name);
-//    }
-    public BloomFilter(){
+    public BloomFilter() {
         super();
     }
+
     /**
      * Constructs an empty Bloom filter. The total length of the Bloom filter w    ill be
      * c*n.
@@ -68,6 +59,7 @@ public class BloomFilter<E> implements Serializable {
         this.bitSetSize = (int) Math.ceil(c * n);
         numberOfAddedElements = 0;
     }
+
     /**
      * Constructs an empty Bloom filter. The optimal number of hash functions (k) is estimated from the total size of the Bloom
      * and the number of expected elements.
@@ -182,18 +174,10 @@ public class BloomFilter<E> implements Serializable {
     }
 
     @PostConstruct
-    public void init(){
-//        t = new BloomFilter<>(0.000001, (int) (15000000 * 1.5));
-//        this(Math.ceil(-(Math.log(0.000001) / Math.log(2))) / Math.log(2), // c = k / ln(2)
-//                15000000,
-//                (int) Math.ceil(-(Math.log(0.000001) / Math.log(2)))); // k = ceil(-log_2(false prob.))
-
-//        this(0.000001, 15000000);
-
+    public void init() {
         double c1 = Math.ceil(-(Math.log(0.000001) / Math.log(2))) / Math.log(2);
-         int n1 =       15000000;
-         int k1 =       (int) Math.ceil(-(Math.log(0.000001) / Math.log(2))); // k = ceil(-log_2(false prob.))
-
+        int n1 = 15000000;
+        int k1 = (int) Math.ceil(-(Math.log(0.000001) / Math.log(2))); // k = ceil(-log_2(false prob.))
 
 
         this.expectedNumberOfFilterElements = n1;
@@ -331,7 +315,7 @@ public class BloomFilter<E> implements Serializable {
     public void add(byte[] bytes) {
         int[] hashes = createHashes(bytes, k);
         for (int hash : hashes)
-            bitset.set(Math.abs(hash % bitSetSize), true);
+            bitset.set(bloomFilterName, Math.abs(hash % bitSetSize), true);
         numberOfAddedElements++;
     }
 
@@ -374,7 +358,7 @@ public class BloomFilter<E> implements Serializable {
     public boolean contains(byte[] bytes) {
         int[] hashes = createHashes(bytes, k);
         for (int hash : hashes) {
-            if (!bitset.get(Math.abs(hash % bitSetSize))) {
+            if (!bitset.get(bloomFilterName, Math.abs(hash % bitSetSize))) {
                 return false;
             }
         }
@@ -445,4 +429,7 @@ public class BloomFilter<E> implements Serializable {
         return this.numberOfAddedElements;
     }
 
+    public void setBloomFilterName(String name) {
+        bloomFilterName = name;
+    }
 }

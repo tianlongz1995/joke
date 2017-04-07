@@ -46,10 +46,6 @@ public class RedisService {
         jedisPool = new JedisPool(jedisPoolConfig, host, port, 0);
     }
 
-    public Jedis getJedis() {
-        return jedisPool.getResource();
-    }
-
 
     public void setBit(String name, int bitIndex, boolean value) {
         Jedis jedis = null;
