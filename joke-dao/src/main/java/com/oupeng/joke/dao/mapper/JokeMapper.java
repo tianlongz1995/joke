@@ -472,7 +472,7 @@ public interface JokeMapper {
      * @param jokeIds
      * @return
      */
-    @Select("select id,title,content,img,gif,type,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id in (${jokeIds})")
+    @Select("select id,title,content,img,gif,type,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src, release_avata ra ,release_nick rn from joke where id in (${jokeIds})")
     List<Joke> getCacheJokeListByIds(@Param("jokeIds")String jokeIds);
 
     /**
@@ -515,4 +515,12 @@ public interface JokeMapper {
      */
     @Select("select nickname from nickname")
     List<String> getJokeNick();
+
+	/**
+	 * 获取段子神评数量
+	 * @param id
+	 * @return
+	 */
+	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good > 10 and c.sid in (${id})  group by c.sid")
+	List<Comment> getReplyNum(@Param("id") String id);
 }
