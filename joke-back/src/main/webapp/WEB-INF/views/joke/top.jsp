@@ -39,26 +39,32 @@
                             <h2><i class="glyphicon glyphicon-user"></i> 首页置顶列表</h2>
                         </div>
                         <div class="box-content" style="vertical-align: middle;">
-                            <table id="table_list" class="table table-striped table-bordered bootstrap-datatable responsive">
+                            <table id="table_list"
+                                   class="table table-striped table-bordered bootstrap-datatable responsive">
                                 <div class="dataTables_filter" id="DataTables_Table_0_filter" style="margin: 15px 5px;">
                                     <label style="padding-right:10px;">
                                         <span>开始</span>
                                         <c:if test="${empty startDay}">
-                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value=""
+                                            <input type="text" id="startDay"
+                                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" value=""
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                         <c:if test="${!empty startDay}">
-                                            <input type="text" id="startDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="${startDay}"
+                                            <input type="text" id="startDay"
+                                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate"
+                                                   value="${startDay}"
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                     </label>
                                     <label style="padding-right:10px;">
                                         <span>结束</span>
                                         <c:if test="${empty endDay}">
-                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="" style="max-width: 160px;"/>
+                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
+                                                   class="Wdate" value="" style="max-width: 160px;"/>
                                         </c:if>
                                         <c:if test="${!empty endDay}">
-                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="${endDay}"
+                                            <input type="text" id="endDay" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
+                                                   class="Wdate" value="${endDay}"
                                                    style="max-width: 160px;"/>
                                         </c:if>
                                     </label>
@@ -114,7 +120,8 @@
                                     </label>
                                     <c:if test="${status == 0}">
                                         <label style="padding-right:10px;">
-                                            <a class="btn btn-success btn-sm" href="#" onclick="process('batch', 'batch')">
+                                            <a class="btn btn-success btn-sm" href="#"
+                                               onclick="process('batch', 'batch')">
                                                 <i class="glyphicon glyphicon-time icon-white"></i> 批量置顶
                                             </a>
                                         </label>
@@ -128,7 +135,8 @@
 
                                 <thead>
                                 <tr>
-                                    <th style="width: 5%;text-align: center; vertical-align: middle;">全选 <input type="checkbox" id="allcheck"/></th>
+                                    <th style="width: 5%;text-align: center; vertical-align: middle;">全选 <input
+                                            type="checkbox" id="allcheck"/></th>
                                     <th style="width: 40%;text-align: center; vertical-align: middle;">内容</th>
                                     <th style="width: 5%;text-align: center; vertical-align: middle;">格式</th>
                                     <th style="width: 10%;text-align: center; vertical-align: middle;">来源</th>
@@ -145,10 +153,12 @@
                                 <c:forEach items="${list}" var="joke">
                                     <tr>
                                         <td style="text-align: center; vertical-align: middle;">
-                                            <input type="checkbox" name="jokeId" value="${joke.id}" sort="${joke.sort}"/>
+                                            <input type="checkbox" name="jokeId" value="${joke.id}"
+                                                   sort="${joke.sort}"/>
                                         </td>
                                         <td>
-                                            <div class="table-item" style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;"
+                                            <div class="table-item"
+                                                 style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;"
                                                  <c:if test="${joke.type == 1}">data-origin="${joke.img}"</c:if>
                                                  <c:if test="${joke.type == 2}">data-src="${joke.gif}"</c:if> >
                                                 <c:if test="${!empty joke.title}">
@@ -175,14 +185,18 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                            <input id="sort${joke.id}" type="text" <c:if test="${joke.status != 0}">disabled</c:if> class="form-control input-sm" style="width: 40px;padding: 5px;" value="${joke.sort}">
+                                            <input id="sort${joke.id}" type="text"
+                                                   <c:if test="${joke.status != 0}">disabled</c:if>
+                                                   class="form-control input-sm" style="width: 40px;padding: 5px;"
+                                                   value="${joke.sort}">
                                         </td>
 
                                         <td>
                                                 <%-- 状态 --%>
                                             <c:if test="${joke.status == 0}">
                                                 <a class="btn btn-default btn-xs" href="#">
-                                                    <i class="glyphicon glyphicon-question-sign" style="color: sandybrown;"></i> 未处理
+                                                    <i class="glyphicon glyphicon-question-sign"
+                                                       style="color: sandybrown;"></i> 未处理
                                                 </a>
                                             </c:if>
                                             <c:if test="${joke.status == 2}">
@@ -198,17 +212,19 @@
                                         </td>
                                         <td>
                                                 <%--未审核--%>
-                                                <c:if test="${!empty status && status == 0}">
-                                                    <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;" onclick="editSort(${joke.id})">
-                                                        <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
-                                                    </a>
-                                                    <a class="btn btn-success btn-xs" href="#" onclick="process(${joke.id}, ${joke.sort})">
-                                                        <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
-                                                    </a>
-                                                </c:if>
-                                                <a class="btn btn-danger btn-xs" href="#" onclick="offline(${joke.id})">
-                                                    <i class="glyphicon glyphicon-remove icon-white"></i> 下线
+                                            <c:if test="${!empty status && status == 0}">
+                                                <a class="btn btn-primary btn-xs" href="#" style="margin-bottom: 2px;"
+                                                   onclick="editSort(${joke.id})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 修改排序
                                                 </a>
+                                                <a class="btn btn-success btn-xs" href="#"
+                                                   onclick="process(${joke.id}, ${joke.sort})">
+                                                    <i class="glyphicon glyphicon-ok icon-white"></i> 发布置顶
+                                                </a>
+                                            </c:if>
+                                            <a class="btn btn-danger btn-xs" href="#" onclick="offline(${joke.id})">
+                                                <i class="glyphicon glyphicon-remove icon-white"></i> 下线
+                                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -239,29 +255,23 @@
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
                                 <tr>
-                                    <th>发布日期</th>
+                                    <th>发布时间</th>
                                     <td>
-                                        <input id="ids" value="" type="hidden" >
-                                        <input id="sorts" value="" type="hidden" >
-                                        <input id="releaseDate" type="text"
-                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+                                        <input id="ids" value="" type="hidden">
+                                        <input id="sorts" value="" type="hidden">
+                                        <input id="releaseTime" type="text"
+                                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
                                                class="form-control"
                                                value=""/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>发布时间</th>
-                                    <td>
-                                        <input id="releaseHours" type="text"
-                                               onfocus="WdatePicker({dateFmt:'HH'})"
-                                               class="form-control"
-                                               value=""/>
-                                    </td>
-                                <tr/>
+
                             </table>
                         </div>
                         <div class="modal-footer" style="text-align: center;">
-                            <button onclick="processSubmit()" type="button" class="btn btn-sm btn-primary" data-dismiss="modal">提交</button>
+                            <button onclick="processSubmit()" type="button" class="btn btn-sm btn-primary"
+                                    data-dismiss="modal">提交
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -311,17 +321,17 @@
                     var sort = $("#sort" + id).val();
                     console.log(id + ":" + sort);
                     post('joke/editTopJokeSort',
-                            'id=' + id  + '&sort=' + sort,
-                            function (data) {
-                                if (data.status == 1) {
-                                    alert('成功:' + data.info);
-                                } else {
-                                    alert('处理失败:' + data.info);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
+                        'id=' + id + '&sort=' + sort,
+                        function (data) {
+                            if (data.status == 1) {
+                                alert('成功:' + data.info);
+                            } else {
+                                alert('处理失败:' + data.info);
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境');
+                        });
                 }
 
                 /** 修改排序值   */
@@ -342,17 +352,17 @@
                     var sort = sorts.toString();
 //                    alert(id + "=" + sort);
                     post('joke/editTopJokeSorts',
-                            'ids=' + id  + '&sorts=' + sort,
-                            function (data) {
-                                if (data.status == 1) {
-                                    alert('成功:' + data.info);
-                                } else {
-                                    alert('处理失败:' + data.info);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
+                        'ids=' + id + '&sorts=' + sort,
+                        function (data) {
+                            if (data.status == 1) {
+                                alert('成功:' + data.info);
+                            } else {
+                                alert('处理失败:' + data.info);
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境');
+                        });
                 }
 
                 /** 打开处理窗口   */
@@ -383,42 +393,41 @@
 
                 function offline(id) {
                     post('joke/topOffline',
-                            'ids=' + id,
-                            function (data) {
-                                if (data.status == 1) {
-                                    turnPage();
-                                } else {
-                                    alert('处理失败:' + data.info);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
+                        'ids=' + id,
+                        function (data) {
+                            if (data.status == 1) {
+                                turnPage();
+                            } else {
+                                alert('处理失败:' + data.info);
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境');
+                        });
                 };
 
                 /** 提交处理结果   */
                 function processSubmit() {
                     var id = $("#ids").val();
                     var sorts = $("#sorts").val();
-                    var releaseDate = $("#releaseDate").val();
-                    var releaseHours = $("#releaseHours").val();
+                    var releaseTime = $("#releaseTime").val();
                     post('joke/releaseTopJoke',
-                            'ids=' + id  + '&sorts=' + sorts + '&releaseDate=' + releaseDate + '&releaseHours=' + releaseHours,
-                            function (data) {
-                                if (data.status == 1) {
-                                    turnPage();
-                                } else {
-                                    alert('处理失败:' + data.info);
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                            });
+                        'ids=' + id + '&sorts=' + sorts + '&releaseTime=' + releaseTime,
+                        function (data) {
+                            if (data.status == 1) {
+                                turnPage();
+                            } else {
+                                alert('处理失败:' + data.info);
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境');
+                        });
                 }
                 /** 查询   */
                 $('#selectVerifyJokeList').click(function (event) {
                     location.href = '<%=basePath%>joke/top?type=' + $("#type").val() + '&status=' + $("#status").val() + '&source=' + $("#source").val()
-                            + '&startDay=' + $("#startDay").val() + '&endDay=' + $("#endDay").val();
+                        + '&startDay=' + $("#startDay").val() + '&endDay=' + $("#endDay").val();
                 });
 
                 function post(url, data, success, error) {
@@ -432,8 +441,8 @@
                 /** 分页请求   */
                 function turnPage() {
                     location.href = '<%=basePath%>joke/top?type=' + $("#type").val() + '&status=' + $("#status").val() + '&source=' + $("#source").val()
-                            + '&startDay=' + $("#startDay").val() + '&endDay=' + $("#endDay").val()
-                            + '&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
+                        + '&startDay=' + $("#startDay").val() + '&endDay=' + $("#endDay").val()
+                        + '&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
                 }
                 ;
             </script>
@@ -443,7 +452,8 @@
 
 
     <!--  图片展示页面	-->
-    <div id="showPic" style="display: none;text-align: center;position: fixed; _position:absolute;left:50%;top:50%;margin: -141px 0 0 -201px;border:0px;">
+    <div id="showPic"
+         style="display: none;text-align: center;position: fixed; _position:absolute;left:50%;top:50%;margin: -141px 0 0 -201px;border:0px;">
         <img id="pic" src=""/>
     </div>
 </div><!-- ch-container end -->

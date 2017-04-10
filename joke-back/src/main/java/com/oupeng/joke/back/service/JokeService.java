@@ -205,6 +205,7 @@ public class JokeService {
         List<Joke> jokes = jokeMapper.getCacheJokeListByIds(jokeIds);
         if(CollectionUtils.isEmpty(jokes)){
             logger.error("缓存段子失败! 获取段子列表为空:[{}]", jokeIds);
+            return;
         }
         //加到缓存
         for (Joke joke : jokes) {
@@ -878,17 +879,16 @@ public class JokeService {
     /**
      * 发布推荐置顶段子
      * @param ids
-     * @param releaseDate
-     * @param releaseHours
+     * @param releaseTime
      * @return
      */
-    public Result releaseTopJoke(Integer[] ids, Integer[] sorts, String releaseDate, String releaseHours, String username) {
+    public Result releaseTopJoke(Integer[] ids, Integer[] sorts, String releaseTime, String username) {
         if(ids == null || ids.length < 1 || sorts == null || ids.length != sorts.length){
             return new Failed("参数错误!");
         }
         int count = 0;
         for(int i = 0; i < ids.length; i++){
-            jokeMapper.releaseTopJoke(ids[i], sorts[i], releaseDate, releaseHours, username);
+            jokeMapper.releaseTopJoke(ids[i], sorts[i], releaseTime, username);
             count++;
         }
 

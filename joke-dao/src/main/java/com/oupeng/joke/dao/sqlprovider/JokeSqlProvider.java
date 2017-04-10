@@ -534,7 +534,7 @@ public class JokeSqlProvider {
         StringBuffer sql = new StringBuffer();
         sql.append("select j.id, j.title, j.content, j.img, j.gif, j.type, s.name as sourceName, j.create_time as createTime, jt.sort, jt.release_date as releaseDate, jt.release_hours as releaseHours, jt.status from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
         if(startDay != null && endDay != null){
-            sql.append(" and jt.release_date >= '").append(startDay).append("' and jt.release_date <= '").append(endDay).append("' ");
+            sql.append(" and jt.release_time >= '").append(startDay).append("' and jt.release_time <= '").append(endDay).append("' ");
         }
         if(type != null){
             sql.append("  and j.type = ").append(type).append(" ");

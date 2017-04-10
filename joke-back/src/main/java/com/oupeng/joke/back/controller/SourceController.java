@@ -124,8 +124,8 @@ public class SourceController {
 	public String modify(@RequestParam(value="id",required=true)Integer id,Model model){
 		try{
 			model.addAttribute("source", sourceService.getSourceById(id));
-			Distributor distributor = new Distributor();
-			distributor.setStatus(1);
+//			Distributor distributor = new Distributor();
+//			distributor.setStatus(1);
 			model.addAttribute("dList", distributorService.getAllDistributorList());
 		} catch (Exception e){
 			logger.error(e.getMessage(), e);
