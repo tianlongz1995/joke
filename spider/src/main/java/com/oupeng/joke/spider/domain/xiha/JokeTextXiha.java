@@ -21,6 +21,9 @@ public class JokeTextXiha extends JokeText implements AfterExtractor {
     @ExtractBy(value = "//div[@class='article']/pre/allText()", notNull = true)
     private String content;
 
+    @ExtractBy(value = "//div[@class='article']/img/@src")
+    private String imgsrc;
+
     /**
      * 来源
      */
@@ -87,9 +90,20 @@ public class JokeTextXiha extends JokeText implements AfterExtractor {
         this.sourceId = sourceId;
     }
 
+    public String getImgsrc() {
+        return imgsrc;
+    }
+
+    public void setImgsrc(String imgsrc) {
+        this.imgsrc = imgsrc;
+    }
+
     @Override
     public void afterProcess(Page page) {
         src = page.getUrl().toString();
+        if(StringUtils.isNotBlank(imgsrc)){
+            page.setSkip(true);
+        }
     }
 }
 
