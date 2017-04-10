@@ -39,7 +39,7 @@ public interface JokeMapper {
 	@SelectProvider(method="getJokeList",type=JokeSqlProvider.class)
 	List<Joke> getJokeList(@Param(value="type")Integer type, @Param(value="status")Integer status,
 						   @Param(value="id")Integer id, @Param(value="content")String content, @Param(value="isTopic")boolean isTopic);
-	
+
 	@Select(value="select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
 			+ "create_time as createTime,update_time as updateTime,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id = ${id}")
 	@ResultType(value=Joke.class)
@@ -92,11 +92,11 @@ public interface JokeMapper {
 	 */
 	@Insert("INSERT INTO feedback (d_id, c_id, type, content, create_time) VALUES (#{distributorId}, #{channelId}, #{type}, #{content}, now())")
 	void insertJokeFeedback(Feedback feedback);
-	
+
 	@SelectProvider(method="getJokeListForChannel",type=JokeSqlProvider.class)
 	List<Joke> getJokeListForChannel(@Param(value="contentType")String contentType,@Param(value="start")Integer start,
 			@Param(value="size")Integer size);
-	
+
 	@SelectProvider(method="getJokeCountForChannel",type=JokeSqlProvider.class)
 	int getJokeCountForChannel(String contentType);
 
@@ -117,7 +117,7 @@ public interface JokeMapper {
 	@SelectProvider(method = "getJokeForPublishChannel",type=JokeSqlProvider.class)
 	List<Joke> getJokeForPublishChannel(@Param(value = "contentType") String contentType,
 										@Param(value = "size")Integer size);
-	
+
 	@Select(value="select count(1) from joke t where t.`status` = #{status} and "
 			+ "t.type in (${contentType}) and not EXISTS ( select 1 from topic_joke where j_id = t.id) ")
 	int getJokeCountForPublishChannel(@Param(value="contentType")String contentType,@Param(value="status")Integer status);
@@ -141,7 +141,7 @@ public interface JokeMapper {
 	@SelectProvider(method = "getJokeListForPublishRecommend", type = JokeSqlProvider.class)
 	List<String> getJokeListForPublishRecommend(@Param(value="type")Integer type,
 												@Param(value="num")Integer num);
-	
+
 	@Select(value=" select t1.source_id as soureId,t1.validNum as validNum,case when t2.inValidNum is null then 0 else t2.inValidNum end as inValidNum from "
 			+ " (select source_id,count(1) as validNum,0 as inValidNum from joke where `status` = 1 and  DATE_FORMAT(verify_time,'%Y-%m-%d') = date_sub(curdate(),interval 1 day) GROUP BY source_id)t1 "
 			+ " LEFT JOIN"
@@ -521,6 +521,6 @@ public interface JokeMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good > 10 and c.sid in (${id})  group by c.sid")
+	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good >= 10 and c.sid in (${id})  group by c.sid")
 	List<Comment> getReplyNum(@Param("id") String id);
 }
