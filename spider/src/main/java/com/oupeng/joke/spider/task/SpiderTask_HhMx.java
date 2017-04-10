@@ -17,6 +17,7 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
+ * 哈哈mx
  * Created by zongchao on 2017/3/21.
  */
 //@Component

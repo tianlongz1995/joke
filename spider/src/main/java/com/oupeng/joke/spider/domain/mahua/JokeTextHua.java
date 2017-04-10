@@ -1,17 +1,15 @@
 package com.oupeng.joke.spider.domain.mahua;
 
 
-import com.oupeng.joke.spider.domain.Comment;
+
 import com.oupeng.joke.spider.domain.JokeText;
-import org.apache.commons.lang3.StringUtils;
-import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 
 /**
+ * 快乐麻花 文本抓取
  * Created by zongchao on 2017/3/13.
  */
 @TargetUrl("http://www.mahua.com/xiaohua/\\d{5,8}.htm")
