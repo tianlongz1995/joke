@@ -2,7 +2,6 @@ package com.oupeng.joke.spider.task;
 
 
 import com.oupeng.joke.spider.domain.mahua.JokeImgHua;
-import com.oupeng.joke.spider.domain.mahua.JokeTextHua;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +20,11 @@ import javax.annotation.PostConstruct;
  * 快乐麻花
  * Created by zongchao on 2017/3/13.
  */
-//@Component
+@Component
 public class HuaSpiderTask {
     private static final Logger logger = LoggerFactory.getLogger(HuaSpiderTask.class);
 
     //快乐麻花
-    private String textUrlHua;
     private String imgUrlHua;
 
 
@@ -45,19 +43,10 @@ public class HuaSpiderTask {
     private PageModelPipeline jobInfoDaoImgPipeline;
 
 
-    @Qualifier("JobInfoDaoPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
-
-
     @PostConstruct
     public void init() {
 
 
-        String ht = env.getProperty("hua.spider.text.url");
-        if (StringUtils.isNotBlank(ht)) {
-            textUrlHua = ht;
-        }
         String hi = env.getProperty("hua.spider.img.url");
         if (StringUtils.isNotBlank(hi)) {
             imgUrlHua = hi;
@@ -76,8 +65,6 @@ public class HuaSpiderTask {
     public void spiderHua() {
         logger.info("kuailemahua spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);
-        logger.info("kuailemahua spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextHua.class, textUrlHua);
 
     }
 

@@ -19,6 +19,7 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
+ * 邪恶漫画
  * Created by zongchao on 2017/3/23.
  */
 //@Component

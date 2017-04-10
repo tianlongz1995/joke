@@ -15,13 +15,11 @@ public class RedisBitSet extends BitSet{
     private RedisService redisService;
 
     public void set(String name, int bitIndex, boolean value) {
-//        jedis.setbit(name,bitIndex, value);
         redisService.setBit(name, bitIndex, value);
     }
 
-//    @Override
+
     public boolean get(String name, int bitIndex) {
-//        return jedis.getbit(name,bitIndex);
         return redisService.getBit(name, bitIndex);
     }
 }
