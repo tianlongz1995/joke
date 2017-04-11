@@ -571,6 +571,6 @@ public interface JokeMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good >= 10 and c.sid in (${id})  group by c.sid")
+	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good >= 10 and c.state = 1 and c.sid in (${id})  group by c.sid")
 	List<Comment> getReplyNum(@Param("id") String id);
 }
