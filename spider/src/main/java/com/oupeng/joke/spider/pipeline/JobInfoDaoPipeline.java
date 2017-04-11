@@ -29,9 +29,9 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     //无效字符串
-    private static final String[] SEARCH = {"　", "&quot;"};
+    private static final String[] SEARCH = {"　", "&quot;","&rdquo;"};
     //替换字符串
-    private static final String[] REPLACE = {"", ""};
+    private static final String[] REPLACE = {"", "",""};
 
     private Random random = new Random(3000);
     private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
