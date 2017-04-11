@@ -20,11 +20,11 @@ public class Im4JavaUtils {
     /**
      * ImageMagick 安装目录
      **/
-    private static final String IMAGE_MAGICK_PATH = "F:/ImageMagick-7.0.5-Q16";
+    private static final String IMAGE_MAGICK_PATH = "C:/Program Files/ImageMagick";
     /**
      * GraphicsMagick 安装目录
      **/
-    private static final String GRAPHICS_MAGICK_PATH = "F:/GraphicsMagick";
+    private static final String GRAPHICS_MAGICK_PATH = "C:/Program Files/GraphicsMagick";
 
     /**
      * 获取 ImageCommand
