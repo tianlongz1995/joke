@@ -27,9 +27,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Calendar;
 
 /**
  * 定时任务服务
@@ -46,17 +45,29 @@ public class TaskService {
     private static final String MAIL_SUBJECT = "段子发布通知";
     private static final String MAIL_PEOPLE = "各位:\n";
     private static final String[] PUBTYPE = {"\t趣图:", "\t动图:", "\t段子:"};
-    /**	文字权重	*/
+    /**
+     * 文字权重
+     */
     private static Integer TEXT_WEIGHT = 2;
-    /**	静图权重	*/
+    /**
+     * 静图权重
+     */
     private static Integer IMG_WEIGHT = 2;
-    /**	动图权重	*/
+    /**
+     * 动图权重
+     */
     private static Integer GIF_WEIGHT = 1;
-    /**	发布文字数量	*/
+    /**
+     * 发布文字数量
+     */
     private static Integer PUBLISH_TEXT_SIZE = 200;
-    /**	发布静图数量	*/
+    /**
+     * 发布静图数量
+     */
     private static Integer PUBLISH_IMG_SIZE = 200;
-    /**	发布动图数量	*/
+    /**
+     * 发布动图数量
+     */
     private static Integer PUBLISH_GIF_SIZE = 100;
     @Autowired
     private StdSchedulerFactory stdSchedulerFactory;
@@ -68,11 +79,17 @@ public class TaskService {
     private MailService mailService;
     @Autowired
     private Environment env;
-    /** 收件人    */
+    /**
+     * 收件人
+     */
     private String recipient = "shuangh@oupeng.com";
-    /** 抄送    */
+    /**
+     * 抄送
+     */
     private String cc = "shuangh@oupeng.com";
-    /** 邮件主题    */
+    /**
+     * 邮件主题
+     */
     private String subject = "段子发布通知";
     /**
      * 任务调度器
@@ -87,9 +104,9 @@ public class TaskService {
             sched.start();
 //            初始化任务
             List<Task> tasks = jokeService.getJoke2PublishTask();
-            if(!CollectionUtils.isEmpty(tasks)){
-                for(Task task : tasks){
-                    if(task.getPolicy() != null){
+            if (!CollectionUtils.isEmpty(tasks)) {
+                for (Task task : tasks) {
+                    if (task.getPolicy() != null) {
                         JSONObject jsonObject = JSON.parseObject(task.getPolicy());
                         task.setObject(jsonObject);
                         task.setCron(jsonObject.getString("role"));
@@ -99,11 +116,11 @@ public class TaskService {
             }
 //            加载发布邮件提醒信息
             String r = env.getProperty("data.publish.recipient");
-            if(StringUtils.isNotBlank(r)){
+            if (StringUtils.isNotBlank(r)) {
                 recipient = r;
             }
             String c = env.getProperty("data.publish.cc");
-            if(StringUtils.isNotBlank(c)){
+            if (StringUtils.isNotBlank(c)) {
                 cc = c;
             }
 
@@ -128,7 +145,7 @@ public class TaskService {
             jobDetail.setName(task.getId());
             jobDetail.setJobClass(Joke2PublishTask.class);
             JobDataMap jobDataMap = new JobDataMap();
-			jobDataMap.put("task", task);
+            jobDataMap.put("task", task);
             jobDataMap.put("taskService", this);
             jobDetail.setJobDataMap(jobDataMap);
             jobInfo.setJobDetail(jobDetail);
@@ -148,16 +165,17 @@ public class TaskService {
 
     /**
      * 更新任务
+     *
      * @param task
      * @return
      */
-    public boolean updateTask(Task task){
+    public boolean updateTask(Task task) {
         try {
             JobKey jobKey = new JobKey(task.getId());
             JobDetail jobDetail = sched.getJobDetail(jobKey);
             if (jobDetail != null) {
                 boolean del = sched.deleteJob(jobKey);
-                if(del){
+                if (del) {
                     log.info("更新定时任务[{}]完成:[{}]", jobDetail.getKey(), task.getObject());
                 } else {
                     log.error("更新定时任务[{}]异常:[{}]", jobDetail.getKey(), task.getObject());
@@ -174,6 +192,7 @@ public class TaskService {
     /**
      * 发布段子(文字)
      * 段子2.0
+     *
      * @param task
      */
     public void publishText(Task task) {
@@ -212,9 +231,10 @@ public class TaskService {
     /**
      * 发布趣图
      * 段子2.0
+     *
      * @param task
      */
-    public void publishImage(Task task){
+    public void publishImage(Task task) {
         long start = System.currentTimeMillis();
         try {
             int imgCount = 0, gifCount = 0;
@@ -280,7 +300,7 @@ public class TaskService {
 
             long end = System.currentTimeMillis();
             log.info("发布趣图[{}]条(img:{}, gif:{}), 耗时[{}], cron:{}", imgCount + gifCount, imgCount, gifCount, FormatUtil.getTimeStr(end - start), task.getObject());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
@@ -288,31 +308,37 @@ public class TaskService {
     /**
      * 发布推荐消息
      * 段子2.0
+     *
      * @param task
      */
     public void publishRecommend(Task task) {
         try {
             long start = System.currentTimeMillis();
             int imgCount = 0, gifCount = 0, textCount = 0;
-            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHH0000").format(new Date()));
+            Date date = new Date();
+            Double baseScore = Double.parseDouble(new SimpleDateFormat("yyyyMMddHH0000").format(date));
             processPublishSize(task);
             Map<String, Double> map = Maps.newHashMap();
             StringBuffer ids = new StringBuffer();
             StringBuffer topIds = new StringBuffer();
-            String releaseDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-            String releaseHours = new SimpleDateFormat("HH").format(new Date());
+            String releaseTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+            //获取当前日期的前一小时
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(java.util.Calendar.HOUR, calendar.get(Calendar.HOUR) - 1);
+            String preReleaseHour = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.getTime());
 //            查询当前可用的推荐首页置顶段子
-            List<Joke> topList = jokeService.getJoke2RecommendTopList(releaseDate, releaseHours);
+            List<Joke> topList = jokeService.getJoke2RecommendTopList(preReleaseHour, releaseTime);
             int topSize = 0;
             int textTop = 0, imgTop = 0, gifTop = 0;
             int index = 9999;
-            if(!CollectionUtils.isEmpty(topList)){
-                for(Joke j : topList){
-                    if(j.getType().equals(0)){
+            if (!CollectionUtils.isEmpty(topList)) {
+                for (Joke j : topList) {
+                    if (j.getType().equals(0)) {
                         textTop++;
-                    } else if(j.getType().equals(1)){
+                    } else if (j.getType().equals(1)) {
                         imgTop++;
-                    } else if(j.getType().equals(2)){
+                    } else if (j.getType().equals(2)) {
                         gifTop++;
                     }
                     map.put(String.valueOf(j.getId()), baseScore + Double.valueOf(index));
@@ -325,15 +351,15 @@ public class TaskService {
 
             PUBLISH_TEXT_SIZE = PUBLISH_TEXT_SIZE - textTop;
             List<Joke> textList = null, imgList = null, gifList = null;
-            if(PUBLISH_TEXT_SIZE > 0){
+            if (PUBLISH_TEXT_SIZE > 0) {
                 textList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 0, PUBLISH_TEXT_SIZE);
             }
             PUBLISH_IMG_SIZE = PUBLISH_IMG_SIZE - imgTop;
-            if(PUBLISH_IMG_SIZE > 0){
+            if (PUBLISH_IMG_SIZE > 0) {
                 imgList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 1, PUBLISH_IMG_SIZE);
             }
             PUBLISH_GIF_SIZE = PUBLISH_GIF_SIZE - gifTop;
-            if(PUBLISH_GIF_SIZE > 0){
+            if (PUBLISH_GIF_SIZE > 0) {
                 gifList = jokeService.getJoke2RecommendPublishList(Constants.PUB, 2, PUBLISH_GIF_SIZE);
             }
 //          获取推荐信息列表 - 不含置顶的段子
@@ -404,14 +430,13 @@ public class TaskService {
 //            // 更新已发布状态为 已推荐(4)
                 jokeService.updateJoke2RecommendPublishStatus(idStr);
 //                更新首页置顶段子状态为已发布
-                if(topSize > 0){
+                if (topSize > 0) {
                     String topIdStr = topIds.substring(0, topIds.length() - 1);
                     jokeService.updateJokeTopPublishStatus(topIdStr);
                 }
             }
             //发送邮件
             sendEmail("推荐", imgCount, gifCount, textCount, textTop, imgTop, gifTop);
-
 
 
             long end = System.currentTimeMillis();
@@ -423,9 +448,9 @@ public class TaskService {
     }
 
 
-
     /**
      * 处理发布数据数量
+     *
      * @param task
      */
     private void processPublishSize(Task task) {
@@ -451,7 +476,8 @@ public class TaskService {
 
     /**
      * 拼接字符串
-     * @param type  (0:趣图  1:动图 2:段子)
+     *
+     * @param type     (0:趣图  1:动图 2:段子)
      * @param typeVale
      * @param counts
      * @return
@@ -466,7 +492,8 @@ public class TaskService {
 
     /**
      * 拼接字符串
-     * @param type  (0:趣图  1:动图 2:段子)
+     *
+     * @param type     (0:趣图  1:动图 2:段子)
      * @param typeVale
      * @param counts
      * @return
@@ -515,7 +542,8 @@ public class TaskService {
 
     /**
      * 发送邮件
-     *  @param type
+     *
+     * @param type
      * @param imgCount
      * @param gifCount
      * @param textCount

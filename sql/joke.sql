@@ -414,3 +414,13 @@ INSERT INTO `source` VALUES ('147', '嘻嘻哈哈', 'http://www.xxhh.com', '0', 
 INSERT INTO `source` VALUES ('148', '哈哈MX', 'http://www.haha.mx/', '0', '2017-03-20 18:10:52', '2017-03-20 18:10:52');
 INSERT INTO `source` VALUES ('149', '寸土吧', 'http://www.cuntuba520.com', '0', '2017-03-23 11:59:59', '2017-03-23 11:59:59');
 INSERT INTO `source` VALUES ('150', '邪恶漫画', 'http://www.mhkkm.com', '0', '2017-03-27 12:29:18', '2017-03-27 12:29:18');
+
+
+-- 新增详情页评论广告
+alter table ads add COLUMN `dm` INT (11) NOT NULL DEFAULT '0' COMMENT '详情页评论中广告';
+alter table ads add COLUMN `dms` INT (11) NOT NULL DEFAULT '0' COMMENT '详情页评论中广告间隔';
+
+-- 段子置顶发布时间
+alter table joke_top add COLUMN `release_time` datetime DEFAULT NULL COMMENT '发布时间';
+
+

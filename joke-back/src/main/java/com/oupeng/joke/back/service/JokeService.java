@@ -830,12 +830,12 @@ public class JokeService {
 
     /**
      * 获取当前时间发布的段子列表
-     * @param releaseDate
-     * @param releaseHours
+	 * @param preReleaseHour
+     * @param releaseTime
      * @return
      */
-    public List<Joke> getJoke2RecommendTopList(String releaseDate, String releaseHours) {
-        return jokeMapper.getJoke2RecommendTopList(releaseDate, releaseHours);
+    public List<Joke> getJoke2RecommendTopList(String preReleaseHour,String releaseTime) {
+        return jokeMapper.getJoke2RecommendTopList(preReleaseHour,releaseTime);
     }
 
     /**

@@ -180,8 +180,8 @@
                                                 ${joke.sourceName}
                                         </td>
                                         <td>
-                                            <c:if test="${!empty joke.releaseDate}">
-                                                ${joke.releaseDate}&nbsp;${joke.releaseHours}点
+                                            <c:if test="${!empty joke.releaseTime}">
+                                                ${joke.releaseTime}
                                             </c:if>
                                         </td>
                                         <td>

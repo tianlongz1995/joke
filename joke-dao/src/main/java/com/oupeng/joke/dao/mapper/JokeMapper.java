@@ -423,13 +423,12 @@ public interface JokeMapper {
 
     /**
      * 获取当前时间发布的段子列表
-     *
-     * @param releaseDate
-     * @param releaseHours
+     * @param preReleaseHour
+     * @param releaseTime
      * @return
      */
-    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_date = #{releaseDate} and t.release_hours = #{releaseHours} and t.status = 1 and j.audit = 6 order by t.sort asc")
-    List<Joke> getJoke2RecommendTopList(@Param("releaseDate") String releaseDate, @Param("releaseHours") String releaseHours);
+    @Select("select t.jid as id, j.type, t.sort from joke_top t left join joke j on t.jid = j.id where t.release_time <= #{releaseTime} and t.release_time >= #{preReleaseHour} and t.status = 1 and j.audit = 6 order by t.sort asc")
+    List<Joke> getJoke2RecommendTopList(@Param("preReleaseHour") String preReleaseHour, @Param("releaseTime") String releaseTime);
 
     /**
      * 更新首页置顶段子状态
@@ -488,7 +487,7 @@ public interface JokeMapper {
     @Update("update joke_top set update_time = now(), status = 1, sort = #{sort}, update_user= #{username}, release_time = #{releaseTime} where jid = #{id}")
     int releaseTopJoke(@Param("id") Integer id,
                        @Param("sort") Integer sort,
-                       @Param("releaseDate") String releaseTime,
+                       @Param("releaseTime") String releaseTime,
                        @Param("username") String username);
 
     /**

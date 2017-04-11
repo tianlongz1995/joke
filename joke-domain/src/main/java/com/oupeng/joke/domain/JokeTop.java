@@ -31,6 +31,8 @@ public class JokeTop {
     private String releaseDate;
     /** 发布时间    */
     private String releaseHours;
+    /** 发布时间    */
+    private String releaseTime;
 
     public Integer getId() {
         return id;
@@ -142,5 +144,13 @@ public class JokeTop {
 
     public void setReleaseHours(String releaseHours) {
         this.releaseHours = releaseHours;
+    }
+
+    public String getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setReleaseTime(String releaseTime) {
+        this.releaseTime = releaseTime;
     }
 }
