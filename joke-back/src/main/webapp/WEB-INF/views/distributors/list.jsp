@@ -394,7 +394,7 @@
                             } else if (i == 6) {
                                 ads = ads + '&dm=' + adsValue[i].value;
                             }
-                            if (i == 5) {
+                            if (i == 6) {
                                 var detailInterval = $("#detailInterval").val();
                                 if (detailInterval == null || detailInterval.length < 1) {
                                     alert("详情页评论广告间隔必须设置!");
