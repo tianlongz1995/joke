@@ -767,23 +767,28 @@ public class JokeService {
 	/**
 	 * 新增评论数量记录
 	 * @param jid
-	 * @return  TODO
+	 * @return
 	 */
     public boolean incrementComment(Integer[] jid) {
 //    	更新数据库中段子评论数
-        for(Integer id : jid){
-            if(id != null){
-            	if(id>20000000){
-            		jokeMapper.incrementChoiceComment(id);
-				}else{
-					jokeMapper.incrementComment(id);
-				}
+        for (Integer id : jid) {
+            if (id != null) {
+                if (id > 20000000) {
+                    jokeMapper.incrementChoiceComment(id);
+                } else {
+                    jokeMapper.incrementComment(id);
+                }
                 //		更新缓存中的段子评论数
-                Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
-                if(joke != null){
-                    if(joke.getComment() != null){
+                Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
+                if (joke != null) {
+                    if (joke.getComment() != null) {
                         Comment comment = joke.getComment();
-                        comment.setTotal(comment.getTotal() + 1);
+                        Integer total = comment.getTotal();
+                        if (total != null) {
+                            comment.setTotal(total + 1);
+                        } else {
+                            comment.setTotal(1);
+                        }
                     } else {
                         Comment comment = new Comment();
                         comment.setTotal(1);
@@ -795,36 +800,44 @@ public class JokeService {
                 }
             }
         }
-    	return true;
+        return true;
     }
 
 	/**
 	 * 减少评论数量记录
 	 * @param jid
-	 * @return  TODO
+	 * @return
 	 */
 	public boolean decrementComment(Integer[] jid) {
 //    	更新数据库中段子评论数
-		for(Integer id : jid){
-			if(id != null){
-				if(id>20000000) {
-					jokeMapper.decrementChoiceComment(id);
-				}else{
-					jokeMapper.decrementComment(id);
-				}
-				//		更新缓存中的段子评论数
-				Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id),Joke.class);
-				if(joke != null && joke.getComment() != null){
-					Comment comment = joke.getComment();
-					comment.setTotal(comment.getTotal() - 1);
-					jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
-				} else {
-					logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);
-				}
-			}
-		}
-		return true;
-	}
+        for (Integer id : jid) {
+            if (id != null) {
+                Joke j = jokeMapper.getJokeById(id);
+                if (j.getCommentNumber() != null && j.getCommentNumber() > 0) {
+                    if (id > 20000000) {
+                        jokeMapper.decrementChoiceComment(id);
+                    } else {
+                        jokeMapper.decrementComment(id);
+                    }
+                    //		更新缓存中的段子评论数
+                    Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
+                    if (joke != null && joke.getComment() != null) {
+                        Comment comment = joke.getComment();
+                        Integer total = comment.getTotal();
+                        if (total != null && total > 0) {
+                            comment.setTotal(total - 1);
+                        } else {
+                            comment.setTotal(0);
+                        }
+                        jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
+                    } else {
+                        logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
 
 
@@ -1186,4 +1199,5 @@ public class JokeService {
             return false;
         }
     }
+
 }

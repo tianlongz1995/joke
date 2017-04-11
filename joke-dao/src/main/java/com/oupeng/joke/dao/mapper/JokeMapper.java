@@ -43,6 +43,11 @@ public interface JokeMapper {
     List<Joke> getJokeList(@Param(value = "type") Integer type, @Param(value = "status") Integer status,
                            @Param(value = "id") Integer id, @Param(value = "content") String content, @Param(value = "isTopic") boolean isTopic);
 
+    /**
+     * 获取段子信息
+     * @param id
+     * @return
+     */
     @Select(value = "select id,title,content,img,gif,type,status,source_id as sourceId,verify_user as verifyUser,verify_time as verifyTime,"
             + "create_time as createTime,update_time as updateTime,good,bad,width,height,weight,comment_number as commentNumber, comment as commentContent, avata, nick, src from joke where id = ${id}")
     @ResultType(value = Joke.class)
