@@ -47,7 +47,7 @@ public class DistributorsService {
 	 * @param username
 	 * @return
 	 */
-	public void add(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di) {
+	public void add(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dm,Integer dms) {
 	    Distributor distributors = new Distributor();
         distributors.setId(id);
         distributors.setName(name);
@@ -76,6 +76,8 @@ public class DistributorsService {
 			ad.setDb(db);
 			ad.setDi(di);
 			ad.setS(s);
+			ad.setDm(dm);
+			ad.setDms(dms);
 			ad.setDid(distributors.getId());
 			ad.setCreateBy(username);
 			distributorsMapper.addAd(ad);
@@ -123,7 +125,7 @@ public class DistributorsService {
 	 * @param status
 	 * @param channelIds
 	 */
-	public void edit(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dr) {
+	public void edit(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dr,Integer dm,Integer dms) {
 		Distributor distributors = new Distributor();
 		distributors.setId(id);
 		distributors.setName(name);
@@ -155,6 +157,8 @@ public class DistributorsService {
 		ad.setDr(dr);
 		ad.setS(s);
 		ad.setDid(id);
+		ad.setDm(dm);
+		ad.setDms(dms);
 		ad.setUpdateBy(username);
         Ads ads = distributorsMapper.getAds(id);
         if(ads == null){

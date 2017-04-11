@@ -23,6 +23,7 @@ public class DistributorsSqlProvider {
 
     /**
      * 获取渠道列表
+     *
      * @param distributor
      * @return
      */
@@ -39,6 +40,7 @@ public class DistributorsSqlProvider {
 
     /**
      * 修改渠道
+     *
      * @param distributor
      * @return
      */
@@ -58,12 +60,13 @@ public class DistributorsSqlProvider {
 
     /**
      * 存储广告
+     *
      * @param ads
      * @return
      */
     public static String addAd(Ads ads) {
         StringBuffer sql = new StringBuffer();
-        sql.append("insert into ads(did, create_time, create_by, s, lc, lb, dt, dc , db, di, dr) value(");
+        sql.append("insert into ads(did, create_time, create_by, s, lc, lb, dt, dc , db, di, dr, dm, dms) value(");
         sql.append(ads.getDid()).append(", now(),");
         if (ads.getCreateBy() != null) {
             sql.append(" '").append(ads.getCreateBy()).append("', ");
@@ -108,6 +111,16 @@ public class DistributorsSqlProvider {
         if (ads.getDr() != null) {
             sql.append(ads.getDr()).append(")");
         } else {
+            sql.append(" 0, ");
+        }
+        if (ads.getDm() != null) {
+            sql.append(ads.getDm()).append(",");
+        } else {
+            sql.append(" 0, ");
+        }
+        if (ads.getDms() != null) {
+            sql.append(ads.getDms()).append(")");
+        } else {
             sql.append(" 0) ");
         }
         return sql.toString();
@@ -115,6 +128,7 @@ public class DistributorsSqlProvider {
 
     /**
      * 更新广告
+     *
      * @param ads
      * @return
      */
@@ -160,9 +174,19 @@ public class DistributorsSqlProvider {
             sql.append(" dr = 0 ,");
         }
         if (ads.getDi() != null) {
-            sql.append(" di = ").append(ads.getDi());
+            sql.append(" di = ").append(ads.getDi()).append(",");
         } else {
-            sql.append(" di = 0 ");
+            sql.append(" di = 0 ,");
+        }
+        if (ads.getDm() != null) {
+            sql.append(" dm = ").append(ads.getDm()).append(",");
+        } else {
+            sql.append(" dm = 0 ,");
+        }
+        if (ads.getDms() != null) {
+            sql.append(" dms = ").append(ads.getDms());
+        } else {
+            sql.append(" dms = 0 ");
         }
         sql.append(" where did = ").append(ads.getDid());
         return sql.toString();

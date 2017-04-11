@@ -504,7 +504,7 @@ public class JokeSqlProvider {
         StringBuffer sql = new StringBuffer();
         sql.append("select count(j.id) from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
         if(startDay != null && endDay != null){
-            sql.append(" and jt.release_date >= '").append(startDay).append("' and jt.release_date <= '").append(endDay).append("' ");
+            sql.append(" and jt.release_time >= '").append(startDay).append("' and jt.release_time <= '").append(endDay).append("' ");
         }
         if(type != null){
             sql.append("  and j.type = ").append(type).append(" ");
@@ -532,9 +532,9 @@ public class JokeSqlProvider {
         Object offset = map.get("offset");
         Object pageSize = map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append("select j.id, j.title, j.content, j.img, j.gif, j.type, s.name as sourceName, j.create_time as createTime, jt.sort, jt.release_date as releaseDate, jt.release_hours as releaseHours, jt.status from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
+        sql.append("select j.id, j.title, j.content, j.img, j.gif, j.type, s.name as sourceName, j.create_time as createTime, jt.sort, jt.release_time as releaseTime,  jt.status from joke j right join joke_top jt on j.id = jt.jid left join source s on j.source_id = s.id where 1 = 1 ");
         if(startDay != null && endDay != null){
-            sql.append(" and jt.release_date >= '").append(startDay).append("' and jt.release_date <= '").append(endDay).append("' ");
+            sql.append(" and jt.release_time >= '").append(startDay).append("' and jt.release_time <= '").append(endDay).append("' ");
         }
         if(type != null){
             sql.append("  and j.type = ").append(type).append(" ");
@@ -547,7 +547,7 @@ public class JokeSqlProvider {
         }
         sql.append(" order by ");
         if(status != null && status.equals(1)){ // 已处理 - 审核通过 - 待发布
-            sql.append(" jt.release_date asc, jt.release_hours asc ");
+            sql.append("  jt.release_time asc ");
         } else {
             sql.append(" jt.sort desc ");
         }

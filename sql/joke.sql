@@ -416,6 +416,16 @@ INSERT INTO `source` VALUES ('149', '寸土吧', 'http://www.cuntuba520.com', '0
 INSERT INTO `source` VALUES ('150', '邪恶漫画', 'http://www.mhkkm.com', '0', '2017-03-27 12:29:18', '2017-03-27 12:29:18');
 
 
+-- 新增详情页评论广告
+alter table ads add COLUMN `dm` INT (11) NOT NULL DEFAULT '0' COMMENT '详情页评论中广告';
+alter table ads add COLUMN `dms` INT (11) NOT NULL DEFAULT '0' COMMENT '详情页评论中广告间隔';
+
+-- 段子置顶发布时间
+alter table joke_top add COLUMN `release_time` datetime DEFAULT NULL COMMENT '发布时间';
+
+
+
+
 CREATE TABLE `distributors_banner` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `d_id` int(11) NOT NULL COMMENT '渠道ID',

@@ -33,7 +33,8 @@
         <noscript>
             <div class="alert alert-block col-md-12">
                 <h4 class="alert-heading">Warning!</h4>
-                <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>enabled to use this site.
+                <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>enabled
+                    to use this site.
                 </p>
             </div>
         </noscript>
@@ -51,25 +52,31 @@
                             <table class="table table-hover">
                                 <tr>
                                     <div class="row" style="padding: 8px;vertical-align: middle;">
-                                        <div class="col-lg-1 col-sm-1"  style="padding: 5px;text-align: right;">
+                                        <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             ID
                                         </div>
                                         <div class="col-lg-3 col-sm-3">
-                                            <input id="distributorid" type="text" class="form-control input-sm" disabled="disabled" value="${distributors.id}"/>
+                                            <input id="distributorid" type="text" class="form-control input-sm"
+                                                   disabled="disabled" value="${distributors.id}"/>
                                         </div>
-                                        <div class="col-lg-1 col-sm-1"  style="padding: 5px;text-align: right;">
+                                        <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             名称
                                         </div>
                                         <div class="col-lg-3 col-sm-3">
-                                            <input id="name" type="text" class="form-control input-sm" value="${distributors.name}"/>
+                                            <input id="name" type="text" class="form-control input-sm"
+                                                   value="${distributors.name}"/>
                                         </div>
-                                        <div class="col-lg-1 col-sm-1"  style="padding: 5px;text-align: right;">
+                                        <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             状态
                                         </div>
                                         <div class="col-lg-3 col-sm-3">
                                             <select id="status" class="form-control input-sm">
-                                                <option value="0" <c:if test="${0 == distributors.status}">selected</c:if>>下线</option>
-                                                <option value="1" <c:if test="${1 == distributors.status}">selected</c:if>>上线</option>
+                                                <option value="0"
+                                                        <c:if test="${0 == distributors.status}">selected</c:if>>下线
+                                                </option>
+                                                <option value="1"
+                                                        <c:if test="${1 == distributors.status}">selected</c:if>>上线
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -96,8 +103,12 @@
                                                         <c:out value="${channel.name}"/>
                                                     </th>
                                                     <th>
-                                                        <button class="btn btn-info btn-xs" onclick="up(this)"><i class="glyphicon glyphicon-arrow-up icon-white"></i> 上移</button>
-                                                        <button class="btn btn-info btn-xs" onclick="down(this)"><i class="glyphicon glyphicon-arrow-down icon-white"></i> 下移
+                                                        <button class="btn btn-info btn-xs" onclick="up(this)"><i
+                                                                class="glyphicon glyphicon-arrow-up icon-white"></i> 上移
+                                                        </button>
+                                                        <button class="btn btn-info btn-xs" onclick="down(this)"><i
+                                                                class="glyphicon glyphicon-arrow-down icon-white"></i>
+                                                            下移
                                                         </button>
                                                     </th>
                                                 </tr>
@@ -117,51 +128,85 @@
                                                 <th>投放频率 n（内容）+ 1（广告）</th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.lc}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.lc}">checked="checked"</c:if> ></th>
                                                 <th>列表页中间</th>
-                                                <th><input id="listCenter" type="text" name="adsValue" class="form-control input-sm" value="${ads.lc}"/></th>
-                                                <th><input id="interval" type="text" class="form-control input-sm" value="${ads.s}"/></th>
+                                                <th><input id="listCenter" type="text" name="adsValue"
+                                                           class="form-control input-sm" value="${ads.lc}"/></th>
+                                                <th><input id="interval" type="text" class="form-control input-sm"
+                                                           value="${ads.s}"/></th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.lb}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.lb}">checked="checked"</c:if> ></th>
                                                 <th>列表页底部</th>
-                                                <th colspan="2"><input id="listBottom" name="adsValue" type="text" class="form-control input-sm" value="${ads.lb}"/></th>
+                                                <th colspan="2"><input id="listBottom" name="adsValue" type="text"
+                                                                       class="form-control input-sm" value="${ads.lb}"/>
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.dt}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.dt}">checked="checked"</c:if> ></th>
                                                 <th>详情页上方</th>
-                                                <th colspan="2"><input id="detailsTop" name="adsValue" type="text" class="form-control input-sm" value="${ads.dt}"/></th>
+                                                <th colspan="2"><input id="detailsTop" name="adsValue" type="text"
+                                                                       class="form-control input-sm" value="${ads.dt}"/>
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.dc}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.dc}">checked="checked"</c:if> ></th>
                                                 <th>详情页中部</th>
-                                                <th colspan="2"><input id="detailsCentor" name="adsValue" type="text" class="form-control input-sm" value="${ads.dc}"/></th>
+                                                <th colspan="2"><input id="detailsCentor" name="adsValue" type="text"
+                                                                       class="form-control input-sm" value="${ads.dc}"/>
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.db}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.db}">checked="checked"</c:if> ></th>
                                                 <th>详情页底部</th>
-                                                <th colspan="2"><input id="detailsBottom" name="adsValue" type="text" class="form-control input-sm" value="${ads.db}"/></th>
+                                                <th colspan="2"><input id="detailsBottom" name="adsValue" type="text"
+                                                                       class="form-control input-sm" value="${ads.db}"/>
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.di}">checked="checked"</c:if> ></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.di}">checked="checked"</c:if> ></th>
                                                 <th>详情页插屏</th>
-                                                <th colspan="2"><input id="detailsInterstitial" name="adsValue" type="text" class="form-control input-sm" value="${ads.di}"/></th>
+                                                <th colspan="2"><input id="detailsInterstitial" name="adsValue"
+                                                                       type="text" class="form-control input-sm"
+                                                                       value="${ads.di}"/></th>
                                             </tr>
 
                                             <tr>
-                                                <th><input type="checkbox" name="ads" <c:if test="${!empty ads.dr}">checked="checked"</c:if>></th>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.dr}">checked="checked"</c:if>></th>
                                                 <th>详情页推荐广告</th>
-                                                <th colspan="2"><input id="detailsRecommendAd" name="adsValue" type="text" class="form-control input-sm" value="${ads.dr}"/></th>
+                                                <th colspan="2"><input id="detailsRecommendAd" name="adsValue"
+                                                                       type="text" class="form-control input-sm"
+                                                                       value="${ads.dr}"/></th>
 
+                                            </tr>
+                                            <tr>
+                                                <th><input type="checkbox" name="ads"
+                                                           <c:if test="${!empty ads.dm}">checked="checked"</c:if> ></th>
+                                                <th>详情页评论广告</th>
+                                                <th><input id="detailAd" type="text" name="adsValue"
+                                                           class="form-control input-sm" value="${ads.dm}"/></th>
+                                                <th><input id="detailInterval" type="text" class="form-control input-sm"
+                                                           value="${ads.dms}"/></th>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
                             </table>
                             <div style="width: 100%;text-align: center;">
-                                <button type="button" class="btn btn-default" onclick="javascript:window.history.go(-1)" >返回</button>
+                                <button type="button" class="btn btn-default"
+                                        onclick="javascript:window.history.go(-1)">返回
+                                </button>
                                 &nbsp;&nbsp;
-                                <button id="updateDistributor" type="button" class="btn btn-primary" data-dismiss="modal">提交</button>
+                                <button id="updateDistributor" type="button" class="btn btn-primary"
+                                        data-dismiss="modal">提交
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -174,7 +219,7 @@
                     var id = document.getElementsByName('channelIds');
                     var value = new Array();
                     for (var i = 0; i < id.length; i++) {
-                        if (id[i].checked){
+                        if (id[i].checked) {
                             value.push(id[i].value);
                         }
                     }
@@ -185,7 +230,7 @@
                     }
                     var name = $("#name").val();
                     var status = $('#status').val();
-                    if(name == null || name.length < 1 || status == null || status.length < 1){
+                    if (name == null || name.length < 1 || status == null || status.length < 1) {
                         alert("名称、状态不能为空!");
                         $('#updateDistributor').removeAttr("disabled");
                         return false;
@@ -195,59 +240,70 @@
                     var ads = '';
                     var index = 0;
                     for (var i = 0; i < id.length; i++) {
-                        if (id[i].checked){
+                        if (id[i].checked) {
                             index++;
-                            if(adsValue[i].value == null || adsValue[i].value.length < 1){
+                            if (adsValue[i].value == null || adsValue[i].value.length < 1) {
                                 alert("选中的广告编号不能为空!");
                                 $('#updateDistributor').removeAttr("disabled");
                                 return false;
                             }
-                            if(i == 0){
+                            if (i == 0) {
                                 var interval = $("#interval").val();
-                                if(interval == null || interval.length < 1){
+                                if (interval == null || interval.length < 1) {
                                     alert("列表页中间广告间隔必须设置!");
                                     $('#updateDistributor').removeAttr("disabled");
                                     return false;
                                 }
                                 ads = '&s=' + interval;
                             }
-                            if(i == 0){
-                               ads = ads + '&lc=' + adsValue[i].value;
-                            } else if(i == 1){
+                            if (i == 0) {
+                                ads = ads + '&lc=' + adsValue[i].value;
+                            } else if (i == 1) {
                                 ads = ads + '&lb=' + adsValue[i].value;
-                            } else if(i == 2){
+                            } else if (i == 2) {
                                 ads = ads + '&dt=' + adsValue[i].value;
-                            } else if(i == 3){
+                            } else if (i == 3) {
                                 ads = ads + '&dc=' + adsValue[i].value;
-                            } else if(i == 4){
+                            } else if (i == 4) {
                                 ads = ads + '&db=' + adsValue[i].value;
-                            } else if(i == 5){
+                            } else if (i == 5) {
                                 ads = ads + '&di=' + adsValue[i].value;
-                            }else if(i == 6){
+                            } else if (i == 6) {
                                 ads = ads + '&dr=' + adsValue[i].value;
+                            } else if (i == 7) {
+                                ads = ads + '&dm=' + adsValue[i].value;
+                            }
+                            if (i == 7) {
+                                var detailInterval = $("#detailInterval").val();
+                                if (detailInterval == null || detailInterval.length < 1) {
+                                    alert("详情页评论广告间隔必须设置!");
+                                    $('#updateDistributor').removeAttr("disabled");
+                                    return false;
+                                }
+                                ads = ads + '&dms=' + detailInterval;
                             }
                         }
                     }
-                    if(index < 1){
+                    if (index < 1) {
                         alert("必须设置广告默认值!");
                         $('#updateDistributor').removeAttr("disabled");
                         return false;
                     }
 
                     post('distributors/edit',
-                            'id=' + $("#distributorid").val() + '&name=' + name + '&status=' + status + '&channelIds=' + value.toString() + ads,
-                            function (data) {
-                                if (data.status == 1) {
-                                    location.href = '<%=basePath%>distributors/list';
-                                } else {
-                                    alert('更新失败:' + data.info);
-                                    $('#updateDistributor').removeAttr("disabled");
-                                }
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
+                        'id=' + $("#distributorid").val() + '&name=' + name + '&status=' + status + '&channelIds=' + value.toString() + ads,
+                        function (data) {
+                            if (data.status == 1) {
+                                location.href = '<%=basePath%>distributors/list';
+                            } else {
+                                alert('更新失败:' + data.info);
                                 $('#updateDistributor').removeAttr("disabled");
-                            });
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境');
+                            $('#updateDistributor').removeAttr("disabled");
+                        });
                 });
                 function up(obj) {
                     var objParentTR = $(obj).parent().parent();

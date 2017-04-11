@@ -7,33 +7,69 @@ import java.util.Date;
  * Created by hushuang on 16/7/13.
  */
 public class Ads {
-    /**	广告编号	*/
+    /**
+     * 广告编号
+     */
     private Integer id;
-    /**	渠道编号	*/
+    /**
+     * 渠道编号
+     */
     private Integer did;
-    /**	广告插入间隔（位置pos=1时，）	*/
+    /**
+     * 广告插入间隔（位置pos=1时，）
+     */
     private Integer s;
-    /**	列表页中间 listCenter	*/
+    /**
+     * 列表页中间 listCenter
+     */
     private Integer lc;
-    /**	列表页底部 listBottom	*/
+    /**
+     * 列表页底部 listBottom
+     */
     private Integer lb;
-    /**	详情页上方 detailsTop	*/
+    /**
+     * 详情页上方 detailsTop
+     */
     private Integer dt;
-    /**	详情页中部 detailsCentor	*/
+    /**
+     * 详情页中部 detailsCentor
+     */
     private Integer dc;
-    /**	详情页底部 detailsBottom	*/
+    /**
+     * 详情页底部 detailsBottom
+     */
     private Integer db;
-    /**	详情页插屏 detailsInterstitial	*/
+    /**
+     * 详情页插屏 detailsInterstitial
+     */
     private Integer di;
-    /**详情页推荐广告 detailsRecommendAd*/
+    /**
+     * 详情页推荐广告 detailsRecommendAd
+     */
     private Integer dr;
-    /**	创建时间	*/
+    /**
+     * 详情页评论广告 detailsCommentAd
+     */
+    private Integer dm;
+    /**
+     * 详情页评论广告间隔
+     */
+    private Integer dms;
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /**	创建人	*/
+    /**
+     * 创建人
+     */
     private String createBy;
-    /**	更新时间	*/
+    /**
+     * 更新时间
+     */
     private Date updateTime;
-    /**	更新人	*/
+    /**
+     * 更新人
+     */
     private String updateBy;
 
 
@@ -147,5 +183,21 @@ public class Ads {
 
     public void setDr(Integer dr) {
         this.dr = dr;
+    }
+
+    public Integer getDm() {
+        return dm;
+    }
+
+    public void setDm(Integer dm) {
+        this.dm = dm;
+    }
+
+    public Integer getDms() {
+        return dms;
+    }
+
+    public void setDms(Integer dms) {
+        this.dms = dms;
     }
 }

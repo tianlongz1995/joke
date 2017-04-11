@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * 段子控制器
+ *
  */
 @Controller
 @RequestMapping(value = "/joke")
@@ -317,7 +318,7 @@ public class JokeController {
      * @param jid
      * @return
      */
-    @RequestMapping(value = "/incrementComment")
+    @RequestMapping(value = "/incrementComment", produces = {"application/json"})
     @ResponseBody
     public Result incrementComment(@RequestParam(value = "jid") Integer[] jid) {
         if (jokeService.incrementComment(jid)) {
@@ -333,7 +334,7 @@ public class JokeController {
      * @param jid
      * @return
      */
-    @RequestMapping(value = "/decrementComment")
+    @RequestMapping(value = "/decrementComment", produces = {"application/json"})
     @ResponseBody
     public Result decrementComment(@RequestParam(value = "jid") Integer[] jid) {
         if (jokeService.decrementComment(jid)) {
@@ -412,21 +413,19 @@ public class JokeController {
      * 发布推荐置顶段子
      *
      * @param ids
-     * @param releaseDate
-     * @param releaseHours
+     * @param releaseTime
      * @return
      */
     @RequestMapping(value = "/releaseTopJoke")
     @ResponseBody
     public Result releaseTopJoke(@RequestParam(value = "ids") Integer[] ids,
                                  @RequestParam(value = "sorts") Integer[] sorts,
-                                 @RequestParam(value = "releaseDate") String releaseDate,
-                                 @RequestParam(value = "releaseHours") String releaseHours) {
+                                 @RequestParam(value = "releaseTime") String releaseTime) {
         String username = getUserName();
         if (username == null) {
             return new Failed("登录信息失效,请重新登录!");
         }
-        return jokeService.releaseTopJoke(ids, sorts, releaseDate, releaseHours, username);
+        return jokeService.releaseTopJoke(ids, sorts, releaseTime, username);
     }
 
 

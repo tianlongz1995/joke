@@ -103,7 +103,7 @@ public interface DistributorsMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select id, did, s, lc, lb, dt, dc, db, di, dr from ads where did = #{id}")
+	@Select("select id, did, s, lc, lb, dt, dc, db, di, dr, dm, dms from ads where did = #{id}")
 	Ads getAds(Integer id);
 
 	/**
