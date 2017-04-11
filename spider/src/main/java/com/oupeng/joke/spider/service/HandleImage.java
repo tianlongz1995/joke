@@ -64,21 +64,14 @@ public class HandleImage {
                 dir.mkdirs();
             }
 
-            //文件类型
             URL url = new URL(imgUrl);
             URLConnection con = url.openConnection();
-            //获取contentype,判断图片类型
-            String cType = con.getContentType();
-            if (cType.startsWith("image")) {
-                if (cType.contains("gif")) {
-                    imgType = "gif";
-                    isGif = true;
-                } else {
-                    imgType = "jpg";
-                }
+            //文件类型
+            if (imgUrl.contains(".gif")) {
+                imgType = "gif";
+                isGif = true;
             } else {
-                //文件类型不对
-                return image;
+                imgType = "jpg";
             }
             // 输入流
             is = con.getInputStream();
@@ -98,6 +91,7 @@ public class HandleImage {
 
         } catch (Exception e) {
             logger.error("download image failed ", e);
+            return image;
         } finally {
             //关闭所有链接
             try {
@@ -110,7 +104,6 @@ public class HandleImage {
             }
         }
         String cdnUrl = cdnImagePath + random + "/" + newFileName;
-
         int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
         image.setWidth(widthHeight[0]);
         image.setHeight(widthHeight[1]);
@@ -139,4 +132,5 @@ public class HandleImage {
         }
         return null;
     }
+
 }

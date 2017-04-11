@@ -1,28 +1,26 @@
-package com.oupeng.joke.spider.domain.xiha;
+package com.oupeng.joke.spider.domain.threegif;
 
-
-import com.oupeng.joke.spider.domain.Comment;
-import com.oupeng.joke.spider.domain.JokeText;
-import org.apache.commons.lang3.StringUtils;
+import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
-
 /**
- * Created by zongchao on 2017/3/13.
+ * Created by zongchao on 2017/4/11.
  */
-@TargetUrl("http://www.xxhh.com/content/\\d{6,9}.html")
-@HelpUrl("http://www.xxhh.com/duanzi/page/\\d{1,2}")
-public class JokeTextXiha extends JokeText implements AfterExtractor {
 
-    @ExtractBy(value = "//div[@class='article']/pre/allText()", notNull = true)
-    private String content;
+@TargetUrl("http://www.3gifs.com/gif/\\w+")
+@HelpUrl("http://www.3gifs.com")
+public class JokeImgThreeGif extends JokeImg implements AfterExtractor {
 
-    @ExtractBy(value = "//div[@class='article']/img/@src")
-    private String imgsrc;
+
+    @ExtractBy(value = "//h1/allText()",notNull = true)
+    private String title;
+
+    @ExtractBy(value = "//div[@class='animated-container']/img/@src", notNull = true)
+    private String img;
 
     /**
      * 来源
@@ -30,30 +28,39 @@ public class JokeTextXiha extends JokeText implements AfterExtractor {
     private String src;
 
     /**
-     * 内容源
-     */
-    private Integer sourceId;
-
-    /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='comment-list-reply']/p/allText()")
+
+    @ExtractBy("//div[@class='comment_box']//div[@class='comment_box_content']/text()")
     private String commentContent;
 
     /**
      * 神评点赞数大于10
      */
-    @ExtractBy("//div[@class='comment-list-action']/a/span/text()")
+
+    @ExtractBy("//div[@class='comment_box']//span[@class='comment_box_points']/text()")
     private Integer agreeTotal;
 
+    private Integer sourceId;
 
-    public String getContent() {
-        return content;
+
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
+
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
 
     public String getCommentContent() {
         return commentContent;
@@ -80,30 +87,17 @@ public class JokeTextXiha extends JokeText implements AfterExtractor {
         this.src = src;
     }
 
-
     public Integer getSourceId() {
-        return 147;
+        return 151;
     }
-
 
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
     }
 
-    public String getImgsrc() {
-        return imgsrc;
-    }
-
-    public void setImgsrc(String imgsrc) {
-        this.imgsrc = imgsrc;
-    }
-
     @Override
     public void afterProcess(Page page) {
         src = page.getUrl().toString();
-        if(StringUtils.isNotBlank(imgsrc)){
-            page.setSkip(true);
-        }
     }
 }
 
