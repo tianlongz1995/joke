@@ -64,28 +64,14 @@ public class HandleImage {
                 dir.mkdirs();
             }
 
-            //文件类型
             URL url = new URL(imgUrl);
             URLConnection con = url.openConnection();
-//            //获取contentype,判断图片类型
-//            String cType = con.getContentType();
-//            System.out.println("ctype:"+cType);
-//            if (cType.startsWith("image")) {
-//                if (cType.contains("gif")) {
-//                    imgType = "gif";
-//                    isGif = true;
-//                } else {
-//                    imgType = "gif";
-//                }
-//            } else {
-//                //文件类型不对
-//                return image;
-//            }
-            if(imgUrl.contains(".gif")){
-                imgType="gif";
-                isGif=true;
-            }else {
-                imgType="jpg";
+            //文件类型
+            if (imgUrl.contains(".gif")) {
+                imgType = "gif";
+                isGif = true;
+            } else {
+                imgType = "jpg";
             }
             // 输入流
             is = con.getInputStream();
@@ -147,10 +133,4 @@ public class HandleImage {
         return null;
     }
 
-//    public static void main(String[] args){
-//        HandleImage handleImage=new HandleImage();
-//        String img="http://wx1.sinaimg.cn/mw690/5eef6257gy1fehdf52eclg205k05knph.gif";
-//        ImageDto imageDto= handleImage.downloadImg(img);
-//        System.out.println(imageDto.getImgUrl());
-//    }
 }

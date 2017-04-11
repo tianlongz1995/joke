@@ -11,7 +11,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
  * 搞笑gif 热门
  * Created by zongchao on 2017/4/11.
  */
-@TargetUrl("http://www.gaoxiaogif.com/hot/\\w+/\\d{4,5}.html")
+@TargetUrl("http://www.gaoxiaogif.com/\\w+/\\d{4,5}.html")
 @HelpUrl("http://www.gaoxiaogif.com/hot/index_\\d{1,2}.html")
 public class JokeHotGao extends JokeImg implements AfterExtractor {
 
