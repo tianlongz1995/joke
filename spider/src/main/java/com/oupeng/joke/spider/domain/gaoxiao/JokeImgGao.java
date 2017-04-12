@@ -97,6 +97,7 @@ public class JokeImgGao extends JokeImg implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
+        //若存在多图 放弃抓取该页面
         if (StringUtils.isNotBlank(moreImg)) {
             page.setSkip(true);
         }
