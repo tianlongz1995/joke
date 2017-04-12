@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.domain.gaoxiao;
 
 import com.oupeng.joke.spider.domain.JokeImg;
+import org.apache.commons.lang3.StringUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
@@ -16,12 +17,13 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeImgGao extends JokeImg implements AfterExtractor {
 
 
-    @ExtractBy(value = "//h1/allText()",notNull = true)
+    @ExtractBy(value = "//h1/allText()", notNull = true)
     private String title;
 
     @ExtractBy(value = "//div[@class='listgif-giftu content_pic']/p/img/@src", notNull = true)
     private String img;
-
+    @ExtractBy(value = "//div[@class='listgif-giftu content_pic']/p[3]/img/@src")
+    private String moreImg;
 
     /**
      * 来源
@@ -95,6 +97,9 @@ public class JokeImgGao extends JokeImg implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
+        if (StringUtils.isNotBlank(moreImg)) {
+            page.setSkip(true);
+        }
         src = page.getUrl().toString();
     }
 }
