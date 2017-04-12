@@ -18,7 +18,7 @@ public class JokeImgCtb extends JokeImg implements AfterExtractor {
     @ExtractBy("//div[@class='main']//h3/allText()")
     private String title;
 
-    @ExtractBy(value = "//div[@class='cont']/img/@src", notNull = true)
+    @ExtractBy(value = "//div[@class='cont']//img/@src", notNull = true)
     private String img;
     /**
      * 来源
