@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
  * 搞笑gif
  * Created by java_zong on 2017/4/11.
  */
-@Component
+//@Component
 public class SpiderTask_Gaoxiao {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Gaoxiao.class);
     //推荐
@@ -59,7 +59,6 @@ public class SpiderTask_Gaoxiao {
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGaoxiao();
         }
-        spiderGaoxiao();
     }
 
     /**
