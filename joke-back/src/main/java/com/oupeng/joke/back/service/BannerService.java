@@ -77,53 +77,65 @@ public class BannerService {
      * @param cid
      * @param content
      * @param jid
-     * @param type
+     * @param type 0:内容、1:广告
      * @return
      */
     public boolean addBanner(String title, String img, Integer cid, String content, Integer jid, Integer type, Integer adid, Integer width, Integer height,String publishTime,Integer[] did) {
         try {
-            String fileName = HttpUtil.getUrlImageFileName(img);
-            File file = new File(uploadPath + fileName);
-            if(!file.exists()){
-                log.error("文件不存在:[{}]!", file.toString());
-                return false;
-            }
             Banner banner = new Banner();
-            banner.setContent(content);
-
-            int random = new Random().nextInt(3000);
-            File dir = new File(cdnPath + random);
-            if(!dir.isDirectory()){
-                dir.mkdirs();
-            }
-            String newFile = dir.getCanonicalPath() + "/" + fileName;
-            //内容上传图片
-            boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
-            if (!result) {
-                log.error("拷贝图片[{}]到目[{}]失败!");
-                return false;
-            }
-            if(did == null || did.length < 1){
-                log.error("新增横幅失败, 渠道编号为空!");
-                return false;
-            }
-
-            Image image = ImageUtils.getImgWidthAndHeight(file);
-            banner.setImg(newFile.replace(cdnPath, ""));
-            banner.setTitle(title);
-            banner.setCid(cid);
-//            banner.setDid(did);
-            banner.setJid(jid);
             banner.setType(type);
-            banner.setSlot(adid);
-            //新建banner，设置sort值为0
-            banner.setSort(0);
-            banner.setWidth(image.getWidth());
-            banner.setHeight(image.getHeight());
-            banner.setPublishTimeString(publishTime);
-            bannerMapper.addBanner(banner);
+            if(type.equals(0)){
+                String fileName = HttpUtil.getUrlImageFileName(img);
+                File file = new File(uploadPath + fileName);
+                if(!file.exists()){
+                    log.error("文件不存在:[{}]!", file.toString());
+                    return false;
+                }
 
-//            添加渠道横幅关联
+                banner.setContent(content);
+
+                int random = new Random().nextInt(3000);
+                File dir = new File(cdnPath + random);
+                if(!dir.isDirectory()){
+                    dir.mkdirs();
+                }
+                String newFile = dir.getCanonicalPath() + "/" + fileName;
+                //内容上传图片
+                boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
+                if (!result) {
+                    log.error("拷贝图片[{}]到目[{}]失败!");
+                    return false;
+                }
+                if(did == null || did.length < 1){
+                    log.error("新增横幅失败, 渠道编号为空!");
+                    return false;
+                }
+
+                Image image = ImageUtils.getImgWidthAndHeight(file);
+                banner.setImg(newFile.replace(cdnPath, ""));
+                banner.setTitle(title);
+                banner.setCid(cid);
+//            banner.setDid(did);
+                banner.setJid(jid);
+
+                banner.setSlot(adid);
+                //新建banner，设置sort值为0
+                banner.setSort(0);
+                banner.setWidth(image.getWidth());
+                banner.setHeight(image.getHeight());
+                banner.setPublishTimeString(publishTime);
+                bannerMapper.addBanner(banner);
+
+
+
+            } else {
+                banner.setTitle(title);
+                banner.setCid(cid);
+                banner.setSlot(adid);
+                banner.setPublishTimeString(publishTime);
+                bannerMapper.addAdBanner(banner);
+            }
+            //            添加渠道横幅关联
             bannerMapper.addDistributorBanner(banner.getId(), did, cid);
 
             return true;

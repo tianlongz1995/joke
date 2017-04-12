@@ -182,4 +182,13 @@ public interface BannerMapper {
      */
     @Select("select b.id, b.title, b.jid, b.cid, b.img, b.type, b.slot, db.sort, db.d_id as did from banner b left join distributors_banner db on b.id = db.b_id where db.b_id = #{id} order by db.sort asc, b.update_time desc")
     List<Banner> getDistributorsBannersList(@Param("id")Integer id);
+
+    /**
+     * 添加广告横幅
+     * @param banner
+     * @return
+     */
+    @Insert("insert into banner(title, cid, status, type, slot, publish_time, create_time, update_time) value (#{title},#{cid},0,#{type},#{slot},#{publishTimeString},now(),now())")
+    @SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
+    void addAdBanner(Banner banner);
 }
