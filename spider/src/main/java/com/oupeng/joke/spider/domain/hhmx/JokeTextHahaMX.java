@@ -47,6 +47,9 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
     @ExtractBy("//img[@class='joke-main-content-img']/@src")
     private String img;
 
+    @ExtractBy("//img[@class='joke-main-img lazy']/@src")
+    private String textImg;
+
 
     public String getContent() {
         return content;
@@ -99,9 +102,17 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
         this.img = img;
     }
 
+    public String getTextImg() {
+        return textImg;
+    }
+
+    public void setTextImg(String textImg) {
+        this.textImg = textImg;
+    }
+
     @Override
     public void afterProcess(Page page) {
-        if (img == null || img.length() <= 0) {
+        if (img != null || textImg != null) {
             page.setSkip(true);
         }
     }
