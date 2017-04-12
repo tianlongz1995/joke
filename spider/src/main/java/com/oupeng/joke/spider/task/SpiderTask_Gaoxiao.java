@@ -59,7 +59,6 @@ public class SpiderTask_Gaoxiao {
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGaoxiao();
         }
-        spiderGaoxiao();
     }
 
     /**

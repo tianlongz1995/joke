@@ -1,8 +1,8 @@
 package com.oupeng.joke.spider.domain.hhmx;
 
 
-import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeText;
+import com.oupeng.joke.spider.utils.StringUtil;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
@@ -112,6 +112,7 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
+        content = StringUtil.substringAfter(content, "  ");
         if (img != null || textImg != null) {
             page.setSkip(true);
         }
