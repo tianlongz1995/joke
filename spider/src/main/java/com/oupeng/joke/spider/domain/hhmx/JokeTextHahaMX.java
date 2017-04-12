@@ -112,7 +112,7 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
-        content = StringUtil.substringAfter(content, "  ");
+        content = StringUtil.substringAfter(content, "　");
         if (img != null || textImg != null) {
             page.setSkip(true);
         }
