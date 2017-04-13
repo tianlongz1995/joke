@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
  * 邪恶漫画
  * Created by zongchao on 2017/3/23.
  */
-//@Component
+@Component
 public class SpiderTask_Xiee {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Xiee.class);
 

@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * 3GIFS
  * Created by java_zong on 2017/4/11.
  */
-//@Component
+@Component
 public class SpiderTask_ThreeGif {
   private static final Logger logger= LoggerFactory.getLogger(SpiderTask_ThreeGif.class);
 

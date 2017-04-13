@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
  * 寸土吧
  * Created by zongchao on 2017/3/23.
  */
-//@Component
+@Component
 public class SpiderTask_Cuntuba {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Cuntuba.class);
 

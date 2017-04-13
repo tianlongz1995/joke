@@ -115,19 +115,14 @@ public class BannerService {
                 banner.setImg(newFile.replace(cdnPath, ""));
                 banner.setTitle(title);
                 banner.setCid(cid);
-//            banner.setDid(did);
                 banner.setJid(jid);
-
-                banner.setSlot(adid);
+                banner.setSlot(null);
                 //新建banner，设置sort值为0
                 banner.setSort(0);
                 banner.setWidth(image.getWidth());
                 banner.setHeight(image.getHeight());
                 banner.setPublishTimeString(publishTime);
                 bannerMapper.addBanner(banner);
-
-
-
             } else {
                 banner.setTitle(title);
                 banner.setCid(cid);
@@ -213,50 +208,61 @@ public class BannerService {
     public boolean updateBanner(Integer id, String title, Integer cid, String img, String content, Integer jid, Integer type, Integer adId,String publishTime,Integer[] did) {
         try {
             Banner banner = new Banner();
-            banner.setTitle(title);
-            banner.setId(id);
-            banner.setCid(cid);
-//            banner.setDid(did);
-            // 重新上传的图片
-            if (img.startsWith(showPath)) {
-                String fileName = HttpUtil.getUrlImageFileName(img);
-                File file = new File(uploadPath + fileName);
-                if (!file.exists()) {
-                    log.error("文件不存在:[{}]!", file.toString());
-                    return false;
-                }
-                int random = new Random().nextInt(3000);
-                File dir = new File(cdnPath + random);
-                if (!dir.isDirectory()) {
-                    dir.mkdirs();
-                }
-                String newFile = dir.getCanonicalPath() + fileName;
-                //内容上传图片
-                boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
-                if (!result) {
-                    log.error("拷贝图片[{}]到目[{}]失败!");
-                    return false;
-                }
-                banner.setImg(newFile.replace(cdnPath, ""));
-                Image image = ImageUtils.getImgWidthAndHeight(file);
-                banner.setWidth(image.getWidth());
-                banner.setHeight(image.getWidth());
-            } else {
-                //已经上传的图片
-                img = img.replace(realPath, "");
-                banner.setImg(img);
-            }
-            banner.setContent(content);
-            banner.setJid(jid);
             banner.setType(type);
-            banner.setSlot(adId);
-            banner.setPublishTimeString(publishTime);
-        //  更新横幅
+            if(type.equals(0)){ // 内容
+                banner.setSlot(null);
+                banner.setTitle(title);
+                banner.setId(id);
+                banner.setCid(cid);
+                // 重新上传的图片
+                if (img.startsWith(showPath)) {
+                    String fileName = HttpUtil.getUrlImageFileName(img);
+                    File file = new File(uploadPath + fileName);
+                    if (!file.exists()) {
+                        log.error("文件不存在:[{}]!", file.toString());
+                        return false;
+                    }
+                    int random = new Random().nextInt(3000);
+                    File dir = new File(cdnPath + random);
+                    if (!dir.isDirectory()) {
+                        dir.mkdirs();
+                    }
+                    String newFile = dir.getCanonicalPath() + fileName;
+                    //内容上传图片
+                    boolean result = Im4JavaUtils.copyImage(file.getCanonicalPath(), newFile);
+                    if (!result) {
+                        log.error("拷贝图片[{}]到目[{}]失败!");
+                        return false;
+                    }
+                    banner.setImg(newFile.replace(cdnPath, ""));
+                    Image image = ImageUtils.getImgWidthAndHeight(file);
+                    banner.setWidth(image.getWidth());
+                    banner.setHeight(image.getWidth());
+                } else {
+                    //已经上传的图片
+                    img = img.replace(realPath, "");
+                    banner.setImg(img);
+                }
+                banner.setContent(content);
+                banner.setJid(jid);
+                banner.setPublishTimeString(publishTime);
+
+
+            } else {
+                banner.setId(id);
+                banner.setTitle(title);
+                banner.setCid(cid);
+                banner.setSlot(adId);
+                banner.setContent(content);
+                banner.setPublishTimeString(publishTime);
+            }
+            //  更新横幅
             bannerMapper.updateBanner(banner);
-        //  删除渠道横幅关联关系
+            //  删除渠道横幅关联关系
             bannerMapper.delDistributorsBanners(id);
-        //  添加新的渠道横幅关联关系
+            //  添加新的渠道横幅关联关系
             bannerMapper.addDistributorBanner(id, did, cid);
+
 
             return true;
         } catch (Exception e) {
