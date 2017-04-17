@@ -139,5 +139,12 @@ public class IndexController {
 
         return indexService.getBannerList(did,cid);
     }
+    @RequestMapping(value = "/joke2/getComment")
+    @ResponseBody
+    public Result getComment(@RequestParam(value = "did") Integer did,
+                             @RequestParam(value = "cid") Integer cid,
+                             @RequestParam(value = "jid") Integer jid){
 
+        return indexService.getComment(did,cid, jid);
+    }
 }

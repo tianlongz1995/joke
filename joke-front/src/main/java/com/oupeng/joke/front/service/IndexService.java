@@ -427,4 +427,8 @@ public class IndexService {
         }
         return new Result(size, bannerList);
     }
+
+    public Result getComment(Integer did, Integer cid, Integer jid) {
+        return null;
+    }
 }
