@@ -105,9 +105,21 @@ public class HandleImage {
         }
         String cdnUrl = cdnImagePath + random + "/" + newFileName;
         int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
-        image.setWidth(widthHeight[0]);
-        image.setHeight(widthHeight[1]);
+        //图片宽和高 取原图75%
+        Double width = widthHeight[0] * 0.75;
+        int wid = width.intValue();
+        Double height = widthHeight[1] * 0.75;
+        int he = height.intValue();
 
+        //压缩
+        boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, wid, he, false);
+        if (isSuccess){ //压缩成功
+            image.setWidth(wid);
+            image.setHeight(he);
+        }else {
+            image.setWidth(widthHeight[0]);
+            image.setHeight(widthHeight[1]);
+        }
         if (isGif) {
             String imgName = handleImg(cdnUrl);
             //动图切图是否成功
@@ -120,6 +132,12 @@ public class HandleImage {
         return image;
     }
 
+    /**
+     * gif取第一帧处理
+     *
+     * @param imgUrl
+     * @return
+     */
     private String handleImg(String imgUrl) {
         if (StringUtils.isNotBlank(imgUrl)) {
             //静态图
