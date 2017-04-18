@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
 
+import com.oupeng.joke.spider.domain.threegif.JokeFunnyThreeGif;
 import com.oupeng.joke.spider.domain.threegif.JokeImgThreeGif;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,9 +23,10 @@ import javax.annotation.PostConstruct;
  */
 @Component
 public class SpiderTask_ThreeGif {
-  private static final Logger logger= LoggerFactory.getLogger(SpiderTask_ThreeGif.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_ThreeGif.class);
 
-  private String imgUrlThree;
+    private String imgUrlThree;
+    private String funnyUrlThree = "http://www.3gifs.com/cate/搞笑";
 
 
     @Autowired
@@ -40,7 +42,6 @@ public class SpiderTask_ThreeGif {
     @Qualifier("JobInfoDaoImgPipeline")
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
-
 
 
     @PostConstruct
@@ -62,6 +63,8 @@ public class SpiderTask_ThreeGif {
     public void spiderThree() {
         logger.info("3GIFS spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgThreeGif.class, imgUrlThree);
+        logger.info("3GIFS spider funny image...");
+        crawl(jobInfoDaoImgPipeline, JokeFunnyThreeGif.class, funnyUrlThree);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {
