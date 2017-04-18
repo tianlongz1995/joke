@@ -458,14 +458,14 @@ public class JedisCache {
 
     /**
      * 获取有序集合中元素-按score从大到小顺序
-     * @param commentListKey
+     * @param key
      * @return
      */
-    public Set<String> zrevrangebyscore(String commentListKey) {
+    public Set<String> zrevrangebyscore(String key) {
         Jedis jedis = null;
         try {
             jedis = jedisReadPool.getResource();
-            return jedis.zrevrangeByScore(commentListKey, Integer.MAX_VALUE, Integer.MIN_VALUE);
+            return jedis.zrevrangeByScore(key, Integer.MAX_VALUE, Integer.MIN_VALUE);
         } finally {
             if (jedis != null) {
                 jedis.close();
