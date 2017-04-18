@@ -139,12 +139,30 @@ public class IndexController {
 
         return indexService.getBannerList(did,cid);
     }
+
+    /**
+     * 评论列表
+     * @param jid 段子id
+     * @return
+     */
     @RequestMapping(value = "/joke2/getComment")
     @ResponseBody
-    public Result getComment(@RequestParam(value = "did") Integer did,
-                             @RequestParam(value = "cid") Integer cid,
-                             @RequestParam(value = "jid") Integer jid){
+    public Result getComment(@RequestParam(value = "jid") Integer jid){
 
-        return indexService.getComment(did,cid, jid);
+        return indexService.getComment(jid,false);
+
+    }
+
+    /**
+     * 神评论列表
+     * @param jid
+     * @return
+     */
+    @RequestMapping(value = "/joke2/getGodComment")
+    @ResponseBody
+    public Result getGodComment(@RequestParam(value = "jid") Integer jid){
+
+        return indexService.getComment(jid,true);
+
     }
 }
