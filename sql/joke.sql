@@ -434,3 +434,6 @@ CREATE TABLE `distributors_banner` (
   `b_id` int(11) DEFAULT NULL COMMENT '横幅ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--修改评论表搜素引擎
+alter TABLE  `comment` ENGINE=InnoDB

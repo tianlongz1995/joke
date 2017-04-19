@@ -8,6 +8,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 public class Comment {
     /**
+     * 评论id
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer id;
+    /**
      * 评论数量(total)
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,6 +37,26 @@ public class Comment {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer jokeId;
+    /**
+     * 创建时间(int(11))
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer createTime;
+    /**
+     * 点赞数
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer good;
+
+    public Comment(Integer id, String bc, String avata, String nick, Integer jokeId, Integer createTime, Integer good) {
+        this.id = id;
+        this.bc = bc;
+        this.avata = avata;
+        this.nick = nick;
+        this.jokeId = jokeId;
+        this.createTime = createTime;
+        this.good = good;
+    }
 
     public Comment(Integer total, String content, String avata, String nick) {
         this.total = total;
@@ -86,5 +111,29 @@ public class Comment {
 
     public void setJokeId(Integer jokeId) {
         this.jokeId = jokeId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Integer createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getGood() {
+        return good;
+    }
+
+    public void setGood(Integer good) {
+        this.good = good;
     }
 }

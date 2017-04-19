@@ -97,5 +97,14 @@ public class JedisKey {
     public static final String UID_POS = "uid.pos";
 
     /** 段子昵称  */
-    public static String JOKE_NICK_NAME = "joke.nick.name";
+    public static final String JOKE_NICK_NAME = "joke.nick.name";
+
+    /** 段子评论列表  */
+    public static final String JOKE_COMMENT_LIST="joke.comment.";
+
+    /** 段子神评论列表  */
+    public static final String JOKE_GOD_COMMENT="joke.god.comment.";
+    /** 评论详情 */
+    public static final String STRING_COMMENT="string.comment.";
+
 }
