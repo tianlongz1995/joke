@@ -106,5 +106,7 @@ public class JedisKey {
     public static final String JOKE_GOD_COMMENT="joke.god.comment.";
     /** 评论详情 */
     public static final String STRING_COMMENT="string.comment.";
+    /** 评论中用户点赞列表 */
+    public static final String COMMENT_USER_GOOD="comment.user.good.";
 
 }

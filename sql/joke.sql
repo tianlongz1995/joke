@@ -436,4 +436,6 @@ CREATE TABLE `distributors_banner` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --修改评论表搜素引擎
-alter TABLE  `comment` ENGINE=InnoDB
+alter TABLE  `comment` ENGINE=InnoDB;
+--增加评论表发布状态字段
+alter table  `comment` add COLUMN `publish_state` INT (11) NOT NULL DEFAULT '0' COMMENT '发布状态(0:未发布 1:已发布)';

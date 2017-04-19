@@ -453,17 +453,17 @@ public class IndexService {
      * @param isGod true为神评 false为所有评论
      * @return
      */
-    public Result getComment(Integer jid, boolean isGod) {
+    public List<Comment> getComment(Integer jid, Integer start, Integer end, boolean isGod) {
         List<Comment> commentList = Lists.newArrayList();
         String commentListKey;
+        Set<String> keys = null;
         if (isGod) {//神评论
             commentListKey = JedisKey.JOKE_GOD_COMMENT + jid;
-        } else {
+            keys = jedisCache.zrevrangebyscore(commentListKey);
+        } else {//所有评论-分页显示
             commentListKey = JedisKey.JOKE_COMMENT_LIST + jid;
+            keys = jedisCache.zrevrange(commentListKey, start.longValue(), end.longValue());
         }
-        //评论id
-        Set<String> keys = jedisCache.zrevrangebyscore(commentListKey);
-        Long size = jedisCache.zcard(commentListKey);
         if (!CollectionUtils.isEmpty(keys)) {
             for (String commentId : keys) {
                 String commentKey = JedisKey.STRING_COMMENT + commentId;
@@ -471,7 +471,23 @@ public class IndexService {
                 commentList.add(comment);
             }
         }
-        return new Result(size.intValue(), commentList);
+        return commentList;
     }
 
+    /**
+     * 获取段子的评论条数
+     *
+     * @param jid
+     * @return
+     */
+    public int getCommentCount(Integer jid, boolean isGod) {
+        String commentListKey;
+        if (isGod) {
+            commentListKey = JedisKey.JOKE_GOD_COMMENT + jid;
+        } else {
+            commentListKey = JedisKey.JOKE_COMMENT_LIST + jid;
+        }
+        Long size = jedisCache.zcard(commentListKey);
+        return size.intValue();
+    }
 }

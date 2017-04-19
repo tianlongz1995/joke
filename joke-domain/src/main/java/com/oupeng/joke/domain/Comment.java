@@ -41,20 +41,20 @@ public class Comment {
      * 创建时间(int(11))
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer createTime;
+    private Integer time;
     /**
      * 点赞数
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer good;
 
-    public Comment(Integer id, String bc, String avata, String nick, Integer jokeId, Integer createTime, Integer good) {
+    public Comment(Integer id, String bc, String avata, String nick, Integer jokeId, Integer time, Integer good) {
         this.id = id;
         this.bc = bc;
         this.avata = avata;
         this.nick = nick;
         this.jokeId = jokeId;
-        this.createTime = createTime;
+        this.time = time;
         this.good = good;
     }
 
@@ -121,12 +121,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Integer getCreateTime() {
-        return createTime;
+    public Integer getTime() {
+        return time;
     }
 
-    public void setCreateTime(Integer createTime) {
-        this.createTime = createTime;
+    public void setTime(Integer time) {
+        this.time = time;
     }
 
     public Integer getGood() {
