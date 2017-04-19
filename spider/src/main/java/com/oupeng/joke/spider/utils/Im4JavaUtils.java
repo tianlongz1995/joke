@@ -135,5 +135,76 @@ public class Im4JavaUtils {
         return null;
     }
 
+    /**
+     * 改变图片大小
+     *
+     * @param path   原文件路径
+     * @param des    目标文件路径
+     * @param width  缩放后的宽度
+     * @param height 缩放后的高度
+     * @param sample 是否以缩放方式，而非缩略图方式
+     * @throws Exception
+     */
+    public static boolean resizeImage(String path, String des, int width, int height, boolean sample) {
+        boolean isSuccess = true;
+        try {
+            createDirectory(des);
+            if (width == 0 || height == 0) { // 等比缩放
+                scaleResizeImage(path, des, width == 0 ? null : width, height == 0 ? null : height, sample);
+                return isSuccess;
+            }
+
+            IMOperation op = new IMOperation();
+            op.addImage(path);
+            if (sample) op.resize(width, height, "!");
+            else op.sample(width, height);
+            op.addImage(des);
+
+            ConvertCmd cmd = (ConvertCmd) getImageCommand("convert");
+            cmd.run(op);
+        } catch (Exception e) {
+            isSuccess = false;
+            logger.error(e.getMessage(), e);
+        }
+        return isSuccess;
+    }
+
+    /**
+     * 等比缩放图片（如果width为空，则按height缩放; 如果height为空，则按width缩放）
+     *
+     * @param path   原文件路径
+     * @param des    目标文件路径
+     * @param width  缩放后的宽度
+     * @param height 缩放后的高度
+     * @param sample 是否以缩放方式，而非缩略图方式
+     * @throws Exception
+     */
+    public static void scaleResizeImage(String path, String des, Integer width, Integer height, boolean sample) throws Exception {
+        createDirectory(des);
+        IMOperation op = new IMOperation();
+        op.addImage(path);
+        if (sample) op.resize(width, height);
+        else op.sample(width, height);
+        op.addImage(des);
+        ConvertCmd cmd = (ConvertCmd) getImageCommand("convert");
+        cmd.run(op);
+    }
+
+
+//    public static void main(String[] args) {
+//        String src = "C:/nh/logs/beauty/410/1.gif";
+//        String target = "C:/nh/logs/beauty/410/1.gif";
+//        int[] widthHeight = getWidthHeight(src);
+//        Double wid = widthHeight[0] * 0.75;
+//        int width = wid.intValue();
+//        Double he = widthHeight[1] * 0.75;
+//        int height = he.intValue();
+//        try {
+//            resizeImage(src, target, width, height, false);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+////        resizeImage(src,target,0);
+//    }
 
 }
