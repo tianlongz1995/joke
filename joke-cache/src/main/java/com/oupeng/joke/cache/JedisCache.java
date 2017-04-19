@@ -299,6 +299,18 @@ public class JedisCache {
         }
     }
 
+    public boolean sismember(String key, String member) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisReadPool.getResource();
+            return jedis.sismember(key, member);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+    }
+
     public void lpush(String key, String... values) {
         Jedis jedis = null;
         try {
@@ -458,6 +470,7 @@ public class JedisCache {
 
     /**
      * 获取有序集合中元素-按score从大到小顺序
+     *
      * @param key
      * @return
      */

@@ -1,9 +1,11 @@
 package com.oupeng.joke.front.controller;
 
 
+import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.JokeDetail;
 import com.oupeng.joke.domain.Relate;
 import com.oupeng.joke.domain.Result;
+import com.oupeng.joke.domain.response.Success;
 import com.oupeng.joke.front.service.IndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +32,12 @@ public class IndexController {
     /**
      * 首页
      *
-     * @param did  渠道id
+     * @param did 渠道id
      * @return
      */
     @RequestMapping(value = {"/", "/index.html", "/joke/index.html"})
     public String index(@RequestParam(value = "did", required = false, defaultValue = "2") String did, Model model) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("收到来自渠道[{}]的请求!", did);
         }
         indexService.getIndexConfig(did, model);
@@ -44,6 +46,7 @@ public class IndexController {
 
     /**
      * 列表页
+     *
      * @param did
      * @param cid   1:趣图、2:段子、3:推荐、4:精选
      * @param page
@@ -56,7 +59,7 @@ public class IndexController {
                        @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
                        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                        @RequestParam(value = "limit", required = false, defaultValue = "30") Integer limit) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("收到来自渠道[{}]的请求!", did);
         }
         return indexService.list(did, cid, page, limit);
@@ -64,6 +67,7 @@ public class IndexController {
 
     /**
      * 获取段子详情页
+     *
      * @param did
      * @param cid
      * @param jid
@@ -74,11 +78,11 @@ public class IndexController {
     public Result details(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                           @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
                           @RequestParam(value = "jid", required = false, defaultValue = "10") Integer jid) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("收到来自渠道[{}]-[{}]-[{}]的请求!", did, cid, jid);
         }
         JokeDetail detail = indexService.getJokeDetail(did, cid, jid);
-        if(detail == null){
+        if (detail == null) {
             return new Result("获取失败!", 1);
         }
         return new Result(detail);
@@ -86,6 +90,7 @@ public class IndexController {
 
     /**
      * 精选推荐
+     *
      * @param did
      * @param cid
      * @return
@@ -95,11 +100,11 @@ public class IndexController {
     public Result choiceRelate(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
                                @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
                                @RequestParam(value = "jid", required = false) Integer jid) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }
-        List<Relate> relates = indexService.getChoiceRelate(did, cid,jid);
-        if(relates == null){
+        List<Relate> relates = indexService.getChoiceRelate(did, cid, jid);
+        if (relates == null) {
             return new Result("获取失败!", 1);
         }
         return new Result(relates);
@@ -107,6 +112,7 @@ public class IndexController {
 
     /**
      * 段子推荐
+     *
      * @param did
      * @param cid
      * @return
@@ -114,13 +120,13 @@ public class IndexController {
     @RequestMapping(value = "/joke2/relateJoke")
     @ResponseBody
     public Result relateJoke(@RequestParam(value = "did", required = false, defaultValue = "2") Integer did,
-                         @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
-                         @RequestParam(value = "jid", required = false) Integer jid) {
-        if(log.isDebugEnabled()){
+                             @RequestParam(value = "cid", required = false, defaultValue = "1") Integer cid,
+                             @RequestParam(value = "jid", required = false) Integer jid) {
+        if (log.isDebugEnabled()) {
             log.debug("收到来自渠道[{}]-[{}]的请求!", did, cid);
         }
-        List<Relate> relates = indexService.getJokeRelate(did, cid,jid);
-        if(relates == null){
+        List<Relate> relates = indexService.getJokeRelate(did, cid, jid);
+        if (relates == null) {
             return new Result("获取失败!", 1);
         }
         return new Result(relates);
@@ -129,40 +135,73 @@ public class IndexController {
 
     /**
      * 获取banner列表
+     *
      * @param cid 1 段子 2趣图 3推荐 4 精选
      * @return
      */
     @RequestMapping(value = "/joke2/banner")
     @ResponseBody
     public Result getBannerList(@RequestParam(value = "did") Integer did,
-                                @RequestParam(value = "cid") Integer cid){
+                                @RequestParam(value = "cid") Integer cid) {
 
-        return indexService.getBannerList(did,cid);
+        return indexService.getBannerList(did, cid);
     }
 
     /**
      * 评论列表
+     *
      * @param jid 段子id
      * @return
      */
     @RequestMapping(value = "/joke2/getComment")
     @ResponseBody
-    public Result getComment(@RequestParam(value = "jid") Integer jid){
-
-        return indexService.getComment(jid,false);
+    public Result getComment(@RequestParam(value = "jid") Integer jid,
+                             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        //当前页数
+        pageNumber = pageNumber == null ? 1 : pageNumber;
+        //每页显示条数
+        pageSize = pageSize == null ? 10 : pageSize;
+        int pageCount = 0;
+        int offset = 0;
+        int endset = 0;
+        List<Comment> list = null;
+        //获取总条数
+        int count = indexService.getCommentCount(jid, false);
+        if (count > 0) {
+            if (count % pageSize == 0) {
+                pageCount = count / pageSize;
+            } else {
+                pageCount = count / pageSize + 1;
+            }
+            if (pageNumber > pageCount) {
+                pageNumber = pageCount;
+            }
+            if (pageNumber < 1) {
+                pageNumber = 1;
+            }
+            offset = (pageNumber - 1) * pageSize;
+            endset = offset + pageSize - 1;
+            list = indexService.getComment(jid, offset, endset, false);
+        }
+        return new Result(count, list);
 
     }
 
     /**
      * 神评论列表
+     *
      * @param jid
      * @return
      */
     @RequestMapping(value = "/joke2/getGodComment")
     @ResponseBody
-    public Result getGodComment(@RequestParam(value = "jid") Integer jid){
-
-        return indexService.getComment(jid,true);
+    public Result getGodComment(@RequestParam(value = "jid") Integer jid) {
+        int count = indexService.getCommentCount(jid, true);
+        List<Comment> list = indexService.getComment(jid, null, null, true);
+        return new Result(count, list);
 
     }
+
+
 }
