@@ -1,75 +1,63 @@
 package com.oupeng.joke.front.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by java_zong on 2017/4/19.
  */
-//@Service
+@Service
 public class CommentService {
-//    //神评点赞数阀值
-//    private Integer godGood = 10;
-//
-//    @Autowired
-//    private Environment env;
-//    @Autowired
-//    private CommentMapper commentMapper;
-//    @Autowired
-//    private JedisCache jedisCache;
-//
-//    @PostConstruct
-//    public void init() {
-//        String good = env.getProperty("god.comment.good");
-//        if (StringUtils.isNumeric(good)) {
-//            godGood = Integer.valueOf(good);
-//        }
-//    }
-//
-//    /**
-//     * 评论点赞
-//     *
-//     * @param id
-//     * @param uid
-//     * @return
-//     */
-//    public boolean likeComment(Integer id, Integer uid) {
-//        //评论用户点赞缓存key
-//        String userGoodKey=JedisKey.COMMENT_USER_GOOD+id;
-//        String userId=String.valueOf(uid);
-//        boolean repeat=jedisCache.sismember(userGoodKey,userId);
-//        if(repeat){//已点赞用户
-//            return false;
-//        }else {//新点赞用户加入缓存中
-//            jedisCache.sadd(userGoodKey, userId);
-//        }
-//        commentMapper.likeComment(id);
-//        int incrementGood;
-//
-//        //更新评论详情缓存中点赞数
-//        Comment comment = JSON.parseObject(jedisCache.get(JedisKey.STRING_COMMENT + id), Comment.class);
-//        if (comment != null) {
-//            Integer good = comment.getGood();
-//            if (good != null) {
-//                incrementGood = good + 1;
-//            } else {
-//                incrementGood = 1;
-//            }
-//            comment.setGood(incrementGood);
-//            if (incrementGood >= godGood) {//更新神评缓存
-//                jedisCache.zadd(JedisKey.JOKE_GOD_COMMENT + comment.getJokeId(), incrementGood, String.valueOf(id));
-//            }
-//        } else {
-//            return false;
-//        }
-//        return true;
-//    }
+    @Autowired
+    private JedisCache jedisCache;
+
+    /**
+     * 获取评论
+     *
+     * @param jid
+     * @param isGod true为神评 false为所有评论
+     * @return
+     */
+    public List<Comment> getComment(Integer jid, Integer start, Integer end, boolean isGod) {
+        List<Comment> commentList = Lists.newArrayList();
+        String commentListKey;
+        Set<String> keys = null;
+        if (isGod) {//神评论
+            commentListKey = JedisKey.JOKE_GOD_COMMENT + jid;
+            keys = jedisCache.zrevrangebyscore(commentListKey);
+        } else {//所有评论-分页显示
+            commentListKey = JedisKey.JOKE_COMMENT_LIST + jid;
+            keys = jedisCache.zrevrange(commentListKey, start.longValue(), end.longValue());
+        }
+        if (!CollectionUtils.isEmpty(keys)) {
+            for (String commentId : keys) {
+                String commentKey = JedisKey.STRING_COMMENT + commentId;
+                Comment comment = JSON.parseObject(jedisCache.get(commentKey), Comment.class);
+                commentList.add(comment);
+            }
+        }
+        return commentList;
+    }
+
+    /**
+     * 获取段子的评论条数
+     *
+     * @param jid
+     * @return
+     */
+    public int getCommentCount(Integer jid) {
+        Long size = jedisCache.zcard(JedisKey.JOKE_COMMENT_LIST + jid);
+        return size.intValue();
+    }
 }
