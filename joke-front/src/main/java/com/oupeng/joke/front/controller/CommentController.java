@@ -68,7 +68,7 @@ public class CommentController {
         }
 
         Map<String, Object> data = Maps.newHashMap();
-        Page page = new Page(pageSize, current, count);
+        Page page = new Page(pageSize, current, pageCount);
         List<Comment> hotList = commentService.getComment(jid, null, null, true);
         data.put("total", count);
         data.put("hottest", hotList);
