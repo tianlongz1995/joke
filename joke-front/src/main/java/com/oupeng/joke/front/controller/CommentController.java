@@ -19,7 +19,6 @@ import java.util.Map;
  * Created by java_zong on 2017/4/19.
  */
 @Controller
-@RequestMapping(value = "/comment")
 public class CommentController {
 
     @Autowired
@@ -31,7 +30,7 @@ public class CommentController {
      * @param jid 段子id
      * @return
      */
-    @RequestMapping(value = "/getComment")
+    @RequestMapping(value = "/joke/getComment")
     @ResponseBody
     public Result getComment(@RequestParam(value = "jid") Integer jid,
                              @RequestParam(value = "current", required = false) Integer current) {
