@@ -1,11 +1,7 @@
 package com.oupeng.joke.front.controller;
 
 
-import com.oupeng.joke.domain.Comment;
-import com.oupeng.joke.domain.JokeDetail;
-import com.oupeng.joke.domain.Relate;
-import com.oupeng.joke.domain.Result;
-import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.domain.*;
 import com.oupeng.joke.front.service.IndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,61 +143,6 @@ public class IndexController {
         return indexService.getBannerList(did, cid);
     }
 
-    /**
-     * 评论列表
-     *
-     * @param jid 段子id
-     * @return
-     */
-    @RequestMapping(value = "/joke2/getComment")
-    @ResponseBody
-    public Result getComment(@RequestParam(value = "jid") Integer jid,
-                             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        //当前页数
-        pageNumber = pageNumber == null ? 1 : pageNumber;
-        //每页显示条数
-        pageSize = pageSize == null ? 10 : pageSize;
-        int pageCount = 0;
-        int offset = 0;
-        int endset = 0;
-        List<Comment> list = null;
-        //获取总条数
-        int count = indexService.getCommentCount(jid, false);
-        if (count > 0) {
-            if (count % pageSize == 0) {
-                pageCount = count / pageSize;
-            } else {
-                pageCount = count / pageSize + 1;
-            }
-            if (pageNumber > pageCount) {
-                pageNumber = pageCount;
-            }
-            if (pageNumber < 1) {
-                pageNumber = 1;
-            }
-            offset = (pageNumber - 1) * pageSize;
-            endset = offset + pageSize - 1;
-            list = indexService.getComment(jid, offset, endset, false);
-        }
-        return new Result(count, list);
-
-    }
-
-    /**
-     * 神评论列表
-     *
-     * @param jid
-     * @return
-     */
-    @RequestMapping(value = "/joke2/getGodComment")
-    @ResponseBody
-    public Result getGodComment(@RequestParam(value = "jid") Integer jid) {
-        int count = indexService.getCommentCount(jid, true);
-        List<Comment> list = indexService.getComment(jid, null, null, true);
-        return new Result(count, list);
-
-    }
 
 
 }

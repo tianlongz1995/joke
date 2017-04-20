@@ -446,48 +446,5 @@ public class IndexService {
         return new Result(size, bannerList);
     }
 
-    /**
-     * 获取评论
-     *
-     * @param jid
-     * @param isGod true为神评 false为所有评论
-     * @return
-     */
-    public List<Comment> getComment(Integer jid, Integer start, Integer end, boolean isGod) {
-        List<Comment> commentList = Lists.newArrayList();
-        String commentListKey;
-        Set<String> keys = null;
-        if (isGod) {//神评论
-            commentListKey = JedisKey.JOKE_GOD_COMMENT + jid;
-            keys = jedisCache.zrevrangebyscore(commentListKey);
-        } else {//所有评论-分页显示
-            commentListKey = JedisKey.JOKE_COMMENT_LIST + jid;
-            keys = jedisCache.zrevrange(commentListKey, start.longValue(), end.longValue());
-        }
-        if (!CollectionUtils.isEmpty(keys)) {
-            for (String commentId : keys) {
-                String commentKey = JedisKey.STRING_COMMENT + commentId;
-                Comment comment = JSON.parseObject(jedisCache.get(commentKey), Comment.class);
-                commentList.add(comment);
-            }
-        }
-        return commentList;
-    }
 
-    /**
-     * 获取段子的评论条数
-     *
-     * @param jid
-     * @return
-     */
-    public int getCommentCount(Integer jid, boolean isGod) {
-        String commentListKey;
-        if (isGod) {
-            commentListKey = JedisKey.JOKE_GOD_COMMENT + jid;
-        } else {
-            commentListKey = JedisKey.JOKE_COMMENT_LIST + jid;
-        }
-        Long size = jedisCache.zcard(commentListKey);
-        return size.intValue();
-    }
 }
