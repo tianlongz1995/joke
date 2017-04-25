@@ -1,9 +1,7 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.domain.Comment;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -26,10 +24,16 @@ public interface CommentMapper {
     @Update("update `comment` set publish_state = #{state} where id in (${ids})")
     void updateCommentState(@Param("ids") String ids, @Param("state") Integer state);
 
+
     /**
-     * 评论点赞
+     * 更新点赞数
      * @param id
+     * @param good
      */
-    @Update("update `comment` set good = good+1 where id = #{id}")
-    void likeComment(Integer id);
+    @Update("update `comment` set good = #{good} where id = #{id}")
+    void updateCommentGood(@Param("id") Integer id, @Param("good") Integer good);
+
+    @Insert("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values ('1',#{jokeId},#{uid},#{nick},#{bc},#{avata},#{createTime},'1')")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID() as id", keyProperty = "id", before = false, resultType = Integer.class)
+    void insertComment(Comment com);
 }

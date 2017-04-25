@@ -4,7 +4,10 @@ import com.google.common.collect.Maps;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
+import com.oupeng.joke.domain.log.ClickLog;
 import com.oupeng.joke.front.service.CommentService;
+import com.oupeng.joke.front.util.CookieUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -12,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by java_zong on 2017/4/19.
@@ -78,15 +83,26 @@ public class CommentController {
     }
 
 
-//
-//    @RequestMapping(value="/likeComment")
-//    @ResponseBody
-//    public Result likeComment(@RequestParam(value="id") Integer id,
-//                              @RequestParam(value = "uid",required = false) Integer uid){
-//        if(commentService.likeComment(id,uid)){
-//            return new Result(0);
-//        }else {
-//            return new Result(1);
-//        }
-//    }
+    @RequestMapping(value = "/joke/likeComment")
+    @ResponseBody
+    public Result likeComment(@RequestParam(value = "id") Integer id) {
+        if (commentService.likeComment(id)) {
+            return new Result(0);
+        } else {
+            return new Result(1);
+        }
+    }
+
+    /**
+     * 评论先发后审
+     *
+     * @param jid
+     * @param comment
+     * @return
+     */
+    @RequestMapping(value = "/joke/sendComment")
+    public Result sendComment(Integer jid, String comment) {
+        // Comment com= commentService.sendComment(jid,comment);
+        return new Result(0);
+    }
 }
