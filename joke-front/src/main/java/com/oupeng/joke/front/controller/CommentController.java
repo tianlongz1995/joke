@@ -86,11 +86,9 @@ public class CommentController {
     @RequestMapping(value = "/joke/likeComment")
     @ResponseBody
     public Result likeComment(@RequestParam(value = "id") Integer id) {
-        if (commentService.likeComment(id)) {
-            return new Result(0);
-        } else {
-            return new Result(1);
-        }
+        commentService.likeComment(id);
+        return new Result(0);
+
     }
 
     /**
@@ -102,7 +100,8 @@ public class CommentController {
      */
     @RequestMapping(value = "/joke/sendComment")
     public Result sendComment(Integer jid, String comment) {
-        // Comment com= commentService.sendComment(jid,comment);
+        //
+        // com= commentService.sendComment(jid,comment);
         return new Result(0);
     }
 }
