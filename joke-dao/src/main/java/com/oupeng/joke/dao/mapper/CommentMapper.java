@@ -11,6 +11,7 @@ import java.util.List;
 public interface CommentMapper {
     /**
      * 获取已审核待发布的评论列表
+     *
      * @return
      */
     @Select("select id, content as bc, avata, nickname as nick,sid as jokeId, createtime as time, good from `comment` as c where c.state = 1 and c.publish_state = 0 ")
@@ -18,6 +19,7 @@ public interface CommentMapper {
 
     /**
      * 更新评论状态
+     *
      * @param ids
      * @param state
      */
@@ -27,10 +29,11 @@ public interface CommentMapper {
 
     /**
      * 更新点赞数
+     *
      * @param id
      * @param good
      */
-    @Update("update `comment` set good = #{good} where id = #{id}")
+    @Update("update `comment` set good = good + #{good} where id = #{id}")
     void updateCommentGood(@Param("id") Integer id, @Param("good") Integer good);
 
     @Insert("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values ('1',#{jokeId},#{uid},#{nick},#{bc},#{avata},#{createTime},'1')")
