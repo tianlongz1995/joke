@@ -99,9 +99,9 @@ public class CommentController {
      * @return
      */
     @RequestMapping(value = "/joke/sendComment")
+    @ResponseBody
     public Result sendComment(Integer jid, String comment) {
-        //
-        // com= commentService.sendComment(jid,comment);
+        commentService.sendComment(jid, comment);
         return new Result(0);
     }
 }

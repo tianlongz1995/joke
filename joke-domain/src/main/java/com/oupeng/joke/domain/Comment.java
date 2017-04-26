@@ -47,6 +47,8 @@ public class Comment {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer good;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer uid;
 
     public Comment(Integer id, String bc, String avata, String nick, Integer jokeId, Integer time, Integer good) {
         this.id = id;
@@ -56,6 +58,15 @@ public class Comment {
         this.jokeId = jokeId;
         this.time = time;
         this.good = good;
+    }
+
+    public Comment(String bc, String avata, String nick, Integer jokeId, Integer time, Integer uid) {
+        this.bc = bc;
+        this.avata = avata;
+        this.nick = nick;
+        this.jokeId = jokeId;
+        this.time = time;
+        this.uid = uid;
     }
 
     public Comment(Integer total, String content, String avata, String nick) {
@@ -135,5 +146,13 @@ public class Comment {
 
     public void setGood(Integer good) {
         this.good = good;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

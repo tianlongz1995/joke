@@ -2,6 +2,8 @@ package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
+import com.oupeng.joke.back.util.FormatUtil;
+import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.CommentMapper;
@@ -17,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 /**
@@ -30,6 +33,8 @@ public class CommentService {
     private Map<String, Integer> map = Maps.newConcurrentMap();
     //神评点赞数阀值
     private Integer godGood = 10;
+    private Random random = new Random(3000);
+    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
 
     @Autowired
     private CommentMapper commentMapper;
@@ -37,6 +42,8 @@ public class CommentService {
     private JedisCache jedisCache;
     @Autowired
     private Environment env;
+    @Autowired
+    private SensitiveFilterService filterService;
 
     public List<Comment> getCommentForPublish() {
         return commentMapper.getCommentForPublish();
@@ -52,6 +59,8 @@ public class CommentService {
         if (StringUtils.isNumeric(good)) {
             godGood = Integer.valueOf(good);
         }
+        filterService.init();
+        new Thread(new AddCommentThread(), "添加评论线程").start();
         new Thread(new UpdateLikeCacheThread(), "评论更新数据库线程").start();
         new Thread(new UpdateLikeDatabaseThread(), "评论更新数据库线程").start();
     }
@@ -107,6 +116,36 @@ public class CommentService {
     }
 
     /**
+     * 添加评论线程
+     */
+    class AddCommentThread implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    List<String> list = jedisCache.brpop(JedisKey.NEW_COMMENT_LIST, 60 * 5);
+                    if (!CollectionUtils.isEmpty(list)) {
+                        Comment com = JSON.parseObject(list.get(1), Comment.class);
+                        String content = filterService.replaceSensitiveWord(com.getBc(), 1, "");
+                        if (StringUtils.isNotBlank(content)) {
+                            Comment comment = HttpUtil.getRandomUser(randomUserUrl);
+                            comment.setBc(content);
+                            comment.setJokeId(com.getJokeId());
+                            comment.setTime(FormatUtil.getTime());
+                            comment.setGood(0);
+                            comment.setUid(random.nextInt(2090) * 10000 + random.nextInt(20));
+                            commentMapper.insertComment(comment);
+                            addCommentToCache(comment);
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("【评论任务】执行异常:" + e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * 更新评论缓存
      *
      * @param id
@@ -131,5 +170,18 @@ public class CommentService {
 
     }
 
+    /**
+     * 添加评论到缓存
+     *
+     * @param comment
+     */
+    private void addCommentToCache(Comment comment) {
+        //评论列表缓存-按更新时间排序 只存储id
+        String commentListKey = JedisKey.JOKE_COMMENT_LIST + comment.getJokeId();
+        jedisCache.zadd(commentListKey, comment.getTime(), String.valueOf(comment.getId()));
+        //评论缓存
+        String commentKey = JedisKey.STRING_COMMENT + comment.getId();
+        jedisCache.set(commentKey, JSON.toJSONString(comment));
+    }
 
 }

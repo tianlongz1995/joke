@@ -22,7 +22,6 @@ public class CommentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
-    private Random random = new Random(3000);
 
 
     @Autowired
@@ -79,17 +78,16 @@ public class CommentService {
         jedisCache.lpush(JedisKey.COMMENT_LIST_LIKE, String.valueOf(id));
     }
 
-
-//    public Comment sendComment(Integer jid, String comment) {
-//        Comment com = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
-//        com.setBc(comment);
-//        com.setUid(random.nextInt(2090));
-//        com.setJokeId(jid);
-//    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//    Date date = new Date();
-//    String dates = dateFormat.format(date);
-//    createTime = Timestamp.valueOf(dates).getTime() / 1000;
-//        commentMapper.insertComment(com);
-//       return com;
-//    }
+    /**
+     * 评论
+     *
+     * @param jid
+     * @param comment
+     */
+    public void sendComment(Integer jid, String comment) {
+        Comment com = new Comment();
+        com.setJokeId(jid);
+        com.setBc(comment);
+        jedisCache.lpush(JedisKey.NEW_COMMENT_LIST, JSON.toJSONString(com));
+    }
 }

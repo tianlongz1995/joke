@@ -36,7 +36,7 @@ public interface CommentMapper {
     @Update("update `comment` set good = good + #{good} where id = #{id}")
     void updateCommentGood(@Param("id") Integer id, @Param("good") Integer good);
 
-    @Insert("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values ('1',#{jokeId},#{uid},#{nick},#{bc},#{avata},#{createTime},'1')")
+    @Insert("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values ('1',#{jokeId},#{uid},#{nick},#{bc},#{avata},#{good},#{time},'1')")
     @SelectKey(statement = "SELECT LAST_INSERT_ID() as id", keyProperty = "id", before = false, resultType = Integer.class)
     void insertComment(Comment com);
 }
