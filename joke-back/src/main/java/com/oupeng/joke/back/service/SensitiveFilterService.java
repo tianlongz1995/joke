@@ -1,6 +1,7 @@
 package com.oupeng.joke.back.service;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.oupeng.joke.dao.mapper.SensitiveMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.*;
 public class SensitiveFilterService {
 
     private Map sensitiveWordMap = Maps.newConcurrentMap();
+    private Set<String> sensitiveSet = Sets.newHashSet();
 
     public static int minMatchTYpe = 1;      //最小匹配规则
     public static int maxMatchType = 2;      //最大匹配规则
@@ -23,7 +25,7 @@ public class SensitiveFilterService {
     private SensitiveMapper sensitiveMapper;
 
     public void init() {
-        Set<String> sensitiveSet = sensitiveMapper.getSensitiveWord();
+        sensitiveSet = sensitiveMapper.getSensitiveWord();
         addSensitiveWordToHashMap(sensitiveSet);
     }
 
@@ -142,5 +144,42 @@ public class SensitiveFilterService {
                 }
             }
         }
+    }
+
+    /**
+     * 敏感词数量
+     *
+     * @param keyWord
+     * @return
+     */
+    public int getListForCount(String keyWord) {
+        return sensitiveMapper.getListForCount(keyWord);
+    }
+
+    /**
+     * 敏感词列表
+     *
+     * @param keyWord
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    public List<String> getList(String keyWord, int offset, Integer pageSize) {
+        return sensitiveMapper.getList(keyWord, offset, pageSize);
+    }
+
+    /**
+     * 添加敏感词
+     *
+     * @param word
+     * @return
+     */
+    public boolean add(String word) {
+        if (sensitiveSet.add(word)) {
+            sensitiveMapper.insertWord(word);
+            addSensitiveWordToHashMap(sensitiveSet);//重新初始化敏感词库
+            return true;
+        }
+        return false;
     }
 }
