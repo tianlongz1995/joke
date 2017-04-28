@@ -23,7 +23,6 @@ public class CommentService {
     private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
 
-
     @Autowired
     private JedisCache jedisCache;
 
@@ -84,10 +83,13 @@ public class CommentService {
      * @param jid
      * @param comment
      */
-    public void sendComment(Integer jid, String comment) {
+    public void sendComment(Integer jid, String comment, Integer userId, String nick, String avata) {
         Comment com = new Comment();
         com.setJokeId(jid);
         com.setBc(comment);
+        com.setUid(userId);
+        com.setNick(nick);
+        com.setAvata(avata);
         jedisCache.lpush(JedisKey.NEW_COMMENT_LIST, JSON.toJSONString(com));
     }
 }

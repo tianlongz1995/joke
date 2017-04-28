@@ -204,7 +204,9 @@ public class CommentService {
                             comment.setJokeId(com.getJokeId());
                             comment.setTime(FormatUtil.getTime());
                             comment.setGood(0);
-                            comment.setUid(random.nextInt(2090) * 10000 + random.nextInt(20));
+                            comment.setUid(com.getUid());
+                            comment.setAvata(com.getAvata());
+                            comment.setNick(com.getNick());
                             commentMapper.insertComment(comment);
                             addCommentToCache(comment);
                         }
