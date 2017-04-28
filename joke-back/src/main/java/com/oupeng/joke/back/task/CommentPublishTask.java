@@ -65,7 +65,7 @@ public class CommentPublishTask {
                     ids.append(comment.getId()).append(",");
                 }
                 //更新已发布评论状态
-                commentService.updateCommentState(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 1);
+                commentService.updateCommentPubState(ids.deleteCharAt(ids.lastIndexOf(",")).toString(), 1);
                 count = commentList.size();
             }
             logger.info("发布评论数据结束，共发布{}条", count);

@@ -1,13 +1,11 @@
 package com.oupeng.joke.back.controller;
 
-import com.oupeng.joke.back.service.CommentService;
-import com.oupeng.joke.domain.Comment;
+import com.oupeng.joke.back.service.SensitiveFilterService;
+import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,21 +15,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * Created by java_zong on 2017/4/18.
+ * Created by java_zong on 2017/4/28.
  */
 @Controller
-@RequestMapping(value = "/comment")
-public class CommentController {
-    private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
-
+@RequestMapping(value = "/sensitive")
+public class SensitiveController {
     @Autowired
-    private CommentService commentService;
+    private SensitiveFilterService sensitiveService;
 
     /**
-     * 评论列表
+     * 敏感词列表
      *
      * @param keyWord
-     * @param state
      * @param pageNumber
      * @param pageSize
      * @param model
@@ -39,17 +34,17 @@ public class CommentController {
      */
     @RequestMapping("/list")
     public String list(@RequestParam(value = "keyWord", required = false) String keyWord,
-                       @RequestParam(value = "state", required = false) Integer state,
                        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
                        Model model) {
+
         pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
         pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
         int pageCount = 0;//总页数
         int offset = 0;//开始条数index
-        List<Comment> list = null;
+        List<String> list = null;
         //	获取总条数
-        int count = commentService.getListForVerifyCount(keyWord, state);
+        int count = sensitiveService.getListForCount(keyWord);
         if (count > 0) {
             if (count % pageSize == 0) {
                 pageCount = count / pageSize;
@@ -63,26 +58,30 @@ public class CommentController {
                 pageNumber = 1;
             }
             offset = (pageNumber - 1) * pageSize;
-            list = commentService.getListForVerify(keyWord, state, offset, pageSize);
+            list = sensitiveService.getList(keyWord, offset, pageSize);
         }
         model.addAttribute("list", list);
         model.addAttribute("keyWord", keyWord);
-        model.addAttribute("state", state);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("count", count);
-
-        return "/comment/list";
+        return "/sensitive/list";
     }
 
-    @RequestMapping("/verify")
+    /**
+     * 添加
+     *
+     * @param word
+     * @return
+     */
+    @RequestMapping("/add")
     @ResponseBody
-    public Result verify(@RequestParam(value = "ids") String ids,
-                         @RequestParam(value = "state") Integer state,
-                         @RequestParam(value = "allState") Integer allState) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        commentService.verifyComment(ids, state, allState, username);
-        return new Success();
+    public Result add(@Param(value = "word") String word) {
+        if (sensitiveService.add(word)) {
+            return new Success();
+        } else {
+            return new Failed("该敏感词已存在");
+        }
     }
 }
