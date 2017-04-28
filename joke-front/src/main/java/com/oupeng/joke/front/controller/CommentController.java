@@ -4,11 +4,11 @@ import com.google.common.collect.Maps;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
-import com.oupeng.joke.domain.log.ClickLog;
+
 import com.oupeng.joke.front.service.CommentService;
-import com.oupeng.joke.front.util.CookieUtil;
-import org.apache.commons.lang3.StringUtils;
+import com.oupeng.joke.front.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +35,7 @@ public class CommentController {
      * @param jid 段子id
      * @return
      */
+
     @RequestMapping(value = "/joke/getComment")
     @ResponseBody
     public Result getComment(@RequestParam(value = "jid") Integer jid,
@@ -100,8 +101,25 @@ public class CommentController {
      */
     @RequestMapping(value = "/joke/sendComment")
     @ResponseBody
-    public Result sendComment(Integer jid, String comment) {
-        commentService.sendComment(jid, comment);
+    public Result sendComment(@RequestParam(value = "jid") Integer jid,
+                              @RequestParam(value = "comment") String comment,
+                              @RequestParam(value = "userId") Integer userId,
+                              @RequestParam(value = "nick") String nick,
+                              @RequestParam(value = "avata") String avata) {
+        commentService.sendComment(jid, comment, userId, nick, avata);
         return new Result(0);
     }
+
+    /**
+     * 随机用户接口
+     *
+     * @return
+     */
+    @RequestMapping(value = "/joke/user")
+    @ResponseBody
+    public Comment user() {
+        Comment comment = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+        return comment;
+    }
+
 }
