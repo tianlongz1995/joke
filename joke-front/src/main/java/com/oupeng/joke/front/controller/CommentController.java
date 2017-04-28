@@ -115,7 +115,7 @@ public class CommentController {
      *
      * @return
      */
-    @RequestMapping(value = "/joke/user")
+    @RequestMapping(value = "/joke/userDetail")
     @ResponseBody
     public Comment user() {
         Comment comment = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
