@@ -34,7 +34,7 @@ public class SensitiveSqlProvider {
         Integer offset = (Integer) map.get("offset");
         Integer pageSize = (Integer) map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append("select word from sensitive_words where 1 = 1 ");
+        sql.append("select id, word from sensitive_words where 1 = 1 ");
         if (StringUtils.isNotBlank(keyWord)) {
             sql.append(" and word like '%").append(keyWord).append("%' ");
         }

@@ -3,6 +3,9 @@ package com.oupeng.joke.back.service;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.oupeng.joke.dao.mapper.SensitiveMapper;
+import com.oupeng.joke.domain.Sensitive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.util.*;
  */
 @Service
 public class SensitiveFilterService {
+    private static final Logger logger = LoggerFactory.getLogger(SensitiveFilterService.class);
 
     private Map sensitiveWordMap = Maps.newConcurrentMap();
     private Set<String> sensitiveSet = Sets.newHashSet();
@@ -164,7 +168,7 @@ public class SensitiveFilterService {
      * @param pageSize
      * @return
      */
-    public List<String> getList(String keyWord, int offset, Integer pageSize) {
+    public List<Sensitive> getList(String keyWord, int offset, Integer pageSize) {
         return sensitiveMapper.getList(keyWord, offset, pageSize);
     }
 
@@ -179,6 +183,24 @@ public class SensitiveFilterService {
             sensitiveMapper.insertWord(word);
             addSensitiveWordToHashMap(sensitiveSet);//重新初始化敏感词库
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除敏感词
+     *
+     * @param id
+     */
+    public boolean deleteWord(Integer id) {
+        try {
+            String word = sensitiveMapper.getWordById(id);
+            sensitiveMapper.deleteWord(id);
+            sensitiveSet.remove(word);
+            addSensitiveWordToHashMap(sensitiveSet);
+            return true;
+        } catch (Exception e) {
+            logger.error("敏感词库删除失败:{}", e.getMessage());
         }
         return false;
     }

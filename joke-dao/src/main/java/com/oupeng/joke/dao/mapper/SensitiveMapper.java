@@ -1,10 +1,8 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.SensitiveSqlProvider;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import com.oupeng.joke.domain.Sensitive;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +19,7 @@ public interface SensitiveMapper {
     int getListForCount(String keyWord);
 
     @SelectProvider(method = "getList", type = SensitiveSqlProvider.class)
-    List<String> getList(@Param("keyWord") String keyWord, @Param("offset") int offset, @Param("pageSize") Integer pageSize);
+    List<Sensitive> getList(@Param("keyWord") String keyWord, @Param("offset") int offset, @Param("pageSize") Integer pageSize);
 
     /**
      * 添加敏感词
@@ -30,4 +28,15 @@ public interface SensitiveMapper {
      */
     @Insert("insert into sensitive_words (`word`) values (#{word})")
     void insertWord(String word);
+
+    /**
+     * 删除敏感词
+     *
+     * @param id
+     */
+    @Delete("delete from sensitive_words where id = #{id}")
+    void deleteWord(Integer id);
+
+    @Select("select word from sensitive_words where id = #{id}")
+    String getWordById(Integer id);
 }

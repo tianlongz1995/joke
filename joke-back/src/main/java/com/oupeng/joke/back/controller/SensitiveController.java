@@ -1,6 +1,7 @@
 package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.SensitiveFilterService;
+import com.oupeng.joke.domain.Sensitive;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
@@ -42,7 +43,7 @@ public class SensitiveController {
         pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
         int pageCount = 0;//总页数
         int offset = 0;//开始条数index
-        List<String> list = null;
+        List<Sensitive> list = null;
         //	获取总条数
         int count = sensitiveService.getListForCount(keyWord);
         if (count > 0) {
@@ -77,11 +78,27 @@ public class SensitiveController {
      */
     @RequestMapping("/add")
     @ResponseBody
-    public Result add(@Param(value = "word") String word) {
+    public Result add(@RequestParam(value = "word") String word) {
         if (sensitiveService.add(word)) {
             return new Success();
         } else {
             return new Failed("该敏感词已存在");
+        }
+    }
+
+    /**
+     * 删除敏感词
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/del")
+    @ResponseBody
+    public Result deleteWord(@RequestParam Integer id) {
+        if (sensitiveService.deleteWord(id)) {
+            return new Success();
+        } else {
+            return new Failed("删除失败");
         }
     }
 }

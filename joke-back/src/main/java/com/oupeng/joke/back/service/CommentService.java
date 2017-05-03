@@ -101,7 +101,7 @@ public class CommentService {
             }
         } else if (allState != 2) {
             if (state == 1) {//重新加入缓存
-                List<Comment> list = commentMapper.getCommentForPublish(ids, state, 1);
+                List<Comment> list = commentMapper.getCommentForPublish(ids, allState, 1);
                 for (Comment comment : list) {
                     addCommentToCache(comment);
                 }
