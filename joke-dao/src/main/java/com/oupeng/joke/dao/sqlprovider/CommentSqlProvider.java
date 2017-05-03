@@ -61,9 +61,13 @@ public class CommentSqlProvider {
      */
     public static String getCommentForPublish(Map<String, Object> map) {
         String ids = (String) map.get("ids");
+        Integer state = (Integer) map.get("state");
         Integer pubState = (Integer) map.get("pubState");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select id, content as bc, avata, nickname as nick,sid as jokeId, createtime as time, good from `comment` as c where c.state = 1 ");
+        sql.append(" select id, content as bc, avata, nickname as nick,sid as jokeId, createtime as time, good from `comment` as c where 1 = 1 ");
+        if (state != null) {
+            sql.append(" and c.state = ").append(state);
+        }
         if (pubState != null) {
             sql.append(" and c.publish_state =  ").append(pubState);
         }

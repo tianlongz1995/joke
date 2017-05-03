@@ -8,17 +8,15 @@ import com.oupeng.joke.domain.comment.Result;
 import com.oupeng.joke.front.service.CommentService;
 import com.oupeng.joke.front.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+
 
 /**
  * Created by java_zong on 2017/4/19.
@@ -106,8 +104,15 @@ public class CommentController {
                               @RequestParam(value = "userId") Integer userId,
                               @RequestParam(value = "nick") String nick,
                               @RequestParam(value = "avata") String avata) {
-        commentService.sendComment(jid, comment, userId, nick, avata);
-        return new Result(0);
+        try {
+            comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
+            nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
+            commentService.sendComment(jid, comment, userId, nick, avata);
+            return new Result(0);
+        } catch (Exception e) {
+            return new Result(1);
+        }
+
     }
 
     /**
