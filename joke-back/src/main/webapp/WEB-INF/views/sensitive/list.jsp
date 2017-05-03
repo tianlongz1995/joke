@@ -83,11 +83,17 @@
                                 </thead>
 
                                 <tbody>
-                                <c:forEach items="${list}" var="word">
+                                <c:forEach items="${list}" var="sensitive">
                                     <tr>
 
                                         <td>
-                                                ${word}
+                                                ${sensitive.word}
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger btn-sm" href="#"
+                                               onclick="delSensitive(${sensitive.id})">
+                                                <i class="glyphicon glyphicon-remove icon-white"></i>删除
+                                            </a>
                                         </td>
 
                                     </tr>
@@ -108,7 +114,19 @@
 
             <script type="text/javascript">
 
-
+                function delSensitive(id) {
+                    post('sensitive/del', 'id=' + id,
+                        function (data) {
+                            if (data.status == 1) {
+                                alert("操作成功!");
+                            } else {
+                                alert('添加失败:' + data.info);
+                            }
+                        },
+                        function () {
+                            alert('请求失败，请检查网络环境!');
+                        });
+                }
                 function addSensitive(word) {
                     var word = $("#word").val();
                     post('sensitive/add',
