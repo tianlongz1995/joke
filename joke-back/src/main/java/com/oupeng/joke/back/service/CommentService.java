@@ -52,7 +52,7 @@ public class CommentService {
      * @return
      */
     public List<Comment> getCommentForPublish() {
-        return commentMapper.getCommentForPublish(null, 0);
+        return commentMapper.getCommentForPublish(null, 1, 0);
     }
 
     /**
@@ -101,7 +101,7 @@ public class CommentService {
             }
         } else if (allState != 2) {
             if (state == 1) {//重新加入缓存
-                List<Comment> list = commentMapper.getCommentForPublish(ids, 1);
+                List<Comment> list = commentMapper.getCommentForPublish(ids, state, 1);
                 for (Comment comment : list) {
                     addCommentToCache(comment);
                 }

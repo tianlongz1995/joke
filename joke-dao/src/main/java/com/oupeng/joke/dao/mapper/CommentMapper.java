@@ -12,11 +12,13 @@ import java.util.List;
 public interface CommentMapper {
     /**
      * 获取已审核待发布的评论列表
-     *
+     * @param ids
+     * @param state
+     * @param pubState
      * @return
      */
-    @SelectProvider(method = "getCommentForPublish",type = CommentSqlProvider.class)
-    List<Comment> getCommentForPublish(@Param("ids") String ids,@Param("pubState") Integer pubState);
+    @SelectProvider(method = "getCommentForPublish", type = CommentSqlProvider.class)
+    List<Comment> getCommentForPublish(@Param("ids") String ids, @Param("state") Integer state, @Param("pubState") Integer pubState);
 
     /**
      * 更新评论发布状态
