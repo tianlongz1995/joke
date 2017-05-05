@@ -107,8 +107,7 @@ public class CommentController {
         try {
             comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
             nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
-            commentService.sendComment(jid, comment, userId, nick, avata);
-            return new Result(0);
+            return commentService.sendComment(jid, comment, userId, nick, avata);
         } catch (Exception e) {
             return new Result(1);
         }

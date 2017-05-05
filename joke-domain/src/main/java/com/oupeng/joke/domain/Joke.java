@@ -6,26 +6,16 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Date;
 
 public class Joke {
-	@JsonInclude(Include.NON_NULL)
 	private Integer id;
-	@JsonInclude(Include.NON_NULL)
 	private String title;
-	@JsonInclude(Include.NON_NULL)
 	private String content;
-	@JsonInclude(Include.NON_NULL)
 	private String img;
-	@JsonInclude(Include.NON_NULL)
 	private String gif;
-	@JsonInclude(Include.NON_NULL)
 	private Integer width;
-	@JsonInclude(Include.NON_NULL)
 	private Integer height;
     /** (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)     */
-	@JsonInclude(Include.NON_NULL)
 	private Integer type;
-	@JsonInclude(Include.NON_NULL)
 	private Integer good;
-	@JsonInclude(Include.NON_NULL)
 	private Integer bad;
 	@JsonInclude(Include.NON_NULL)
 	private Integer status;
@@ -45,43 +35,32 @@ public class Joke {
 	private Date updateTime;
 	@JsonInclude(Include.NON_NULL)
 	private String uuid;
-	@JsonInclude(Include.NON_NULL)
 	private Integer sort;
     /** 分享网址 */
 	@JsonInclude(Include.NON_NULL)
 	private String shareUrl;
     /** 来源网址	*/
-    @JsonInclude(Include.NON_NULL)
     private String src;
 	/** 评论数量(commentNumber)	*/
-	@JsonInclude(Include.NON_NULL)
 	private Integer commentNumber;
 	/** 评论内容	*/
-	@JsonInclude(Include.NON_NULL)
 	private String commentContent;
 	/** 用户头像URL	*/
-	@JsonInclude(Include.NON_NULL)
 	private String avata;
 	/** 昵称	*/
-	@JsonInclude(Include.NON_NULL)
 	private String nick;
 	/** 评论	*/
-	@JsonInclude(Include.NON_NULL)
 	private Comment comment;
     /**权重*/
-	@JsonInclude(Include.NON_NULL)
 	private Integer weight;
     /** 评审状态 */
     @JsonInclude(Include.NON_NULL)
     private Integer audit;
     /** 发布用户头像  releaseAvatar */
-    @JsonInclude(Include.NON_NULL)
     private String ra;
     /** 发布用户昵称 releaseNick */
-    @JsonInclude(Include.NON_NULL)
     private String rn;
 	/** 神回复评数 */
-	@JsonInclude(Include.NON_NULL)
 	private Integer replyNum;
 
 	public Integer getId() {

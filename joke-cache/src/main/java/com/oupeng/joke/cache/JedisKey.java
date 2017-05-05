@@ -110,5 +110,6 @@ public class JedisKey {
     public static final String COMMENT_LIST_LIKE="comment.list.like";
     /** 新评论列表*/
     public static final String NEW_COMMENT_LIST="new.comment.list";
-
+    /** 评论数量*/
+    public static final String COMMENT_NUMBER = "comment.user.";
 }

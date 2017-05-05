@@ -79,7 +79,7 @@ public class SensitiveController {
     @RequestMapping("/add")
     @ResponseBody
     public Result add(@RequestParam(value = "word") String word) {
-        if (sensitiveService.add(word)) {
+        if (sensitiveService.addSensitiveWord(word)) {
             return new Success();
         } else {
             return new Failed("该敏感词已存在");
@@ -95,7 +95,8 @@ public class SensitiveController {
     @RequestMapping("/del")
     @ResponseBody
     public Result deleteWord(@RequestParam Integer id) {
-        if (sensitiveService.deleteWord(id)) {
+        sensitiveService.del(id);
+        if (sensitiveService.reset()) {
             return new Success();
         } else {
             return new Failed("删除失败");

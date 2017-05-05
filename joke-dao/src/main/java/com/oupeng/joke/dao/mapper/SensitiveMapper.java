@@ -13,7 +13,7 @@ import java.util.Set;
 public interface SensitiveMapper {
 
     @Select(" select word from sensitive_words where status = 1 ")
-    Set<String> getSensitiveWord();
+    List<String> getSensitiveWord();
 
     @SelectProvider(method = "getListForCount", type = SensitiveSqlProvider.class)
     int getListForCount(String keyWord);

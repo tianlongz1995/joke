@@ -78,7 +78,8 @@
 
                                 <thead>
                                 <tr>
-                                    <th style="width: 35%;text-align: center; vertical-align: middle;">敏感词</th>
+                                    <th style="width: 50%;text-align: center; vertical-align: middle;">敏感词</th>
+                                    <th style="width: 50%;text-align: center; vertical-align: middle;">操作</th>
                                 </tr>
                                 </thead>
 

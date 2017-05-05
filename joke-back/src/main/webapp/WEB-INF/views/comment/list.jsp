@@ -77,14 +77,14 @@
                                             <span class="glyphicon glyphicon-search icon-white"> 查询</span>
                                         </a>
                                     </label>
-                                    <c:if test="${state == 1 }">
-                                        <label style="padding-right:10px;">
-                                            <a class="btn btn-success btn-sm" href="#"
-                                               onclick="verifyComment(2,'batch')">
-                                                <i class="glyphicon glyphicon-ok icon-white"></i>批量通过
-                                            </a>
-                                        </label>
-                                    </c:if>
+                                    <%--<c:if test="${state == 1 }">--%>
+                                        <%--<label style="padding-right:10px;">--%>
+                                            <%--<a class="btn btn-success btn-sm" href="#"--%>
+                                               <%--onclick="verifyComment(2,'batch')">--%>
+                                                <%--<i class="glyphicon glyphicon-ok icon-white"></i>批量通过--%>
+                                            <%--</a>--%>
+                                        <%--</label>--%>
+                                    <%--</c:if>--%>
                                     <c:if test="${state != 3}">
                                         <label style="padding-right:0px;">
                                             <a class="btn btn-danger btn-sm" href="#"
@@ -144,10 +144,10 @@
                                         <td>
                                                 <%--未审核--%>
                                             <c:if test="${comment.state == 1}">
-                                                <a class="btn btn-success btn-sm" href="#"
-                                                   onclick="verifyComment(2,${comment.id})">
-                                                    <i class="glyphicon glyphicon-ok icon-white"></i>通过
-                                                </a>
+                                                <%--<a class="btn btn-success btn-sm" href="#"--%>
+                                                   <%--onclick="verifyComment(2,${comment.id})">--%>
+                                                    <%--<i class="glyphicon glyphicon-ok icon-white"></i>通过--%>
+                                                <%--</a>--%>
                                                 <a class="btn btn-danger btn-sm" href="#"
                                                    onclick="verifyComment(3,${comment.id})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>拉黑

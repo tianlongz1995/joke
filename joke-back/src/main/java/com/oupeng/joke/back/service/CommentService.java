@@ -8,6 +8,7 @@ import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.CommentMapper;
 import com.oupeng.joke.domain.Comment;
+import com.oupeng.joke.domain.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,21 +120,72 @@ public class CommentService {
      */
     private void cleanCommentCache(String ids) {
         String[] commentIds = ids.split(",");
+        if(commentIds == null || commentIds.length < 1){
+            logger.error("清除评论缓存异常: ids:{}", ids);
+            return;
+        }
         //评论keys
         Set<String> keys = jedisCache.keys(JedisKey.JOKE_COMMENT_LIST + "*");
         for (String key : keys) {
-            jedisCache.zrem(key, ids);
+            for(String id : commentIds){
+                jedisCache.zrem(key, id);
+            }
         }
         //神评keys
         Set<String> godKeys = jedisCache.keys(JedisKey.JOKE_GOD_COMMENT + "*");
         for (String godKey : godKeys) {
-            jedisCache.zrem(godKey, ids);
+            for(String id : commentIds){
+                jedisCache.zrem(godKey, id);
+            }
 
         }
         //删除缓存中的评论详情
         for (String id : commentIds) {
             jedisCache.del(JedisKey.STRING_COMMENT + id);
         }
+    }
+
+    /**
+     * 更新评论缓存
+     *
+     * @param id
+     */
+    private void updateCommentGoodCache(String id) {
+        //更新评论详情缓存中点赞数
+        Comment comment = JSON.parseObject(jedisCache.get(JedisKey.STRING_COMMENT + id), Comment.class);
+        if (comment != null) {
+
+            Integer good = comment.getGood();
+            if (good != null) {
+                good = good + 1;
+            } else {
+                good = 1;
+            }
+            comment.setGood(good);
+            jedisCache.set(JedisKey.STRING_COMMENT + id, JSON.toJSONString(comment));
+            if (good >= godGood) {//更新神评缓存
+                jedisCache.zadd(JedisKey.JOKE_GOD_COMMENT + comment.getJokeId(), good, String.valueOf(id));
+            }
+        }
+
+    }
+
+    /**
+     * 添加评论到缓存
+     *
+     * @param comment
+     */
+    private void addCommentToCache(Comment comment) {
+        //评论列表缓存-按更新时间排序 只存储id
+        String commentListKey = JedisKey.JOKE_COMMENT_LIST + comment.getJokeId();
+        jedisCache.zadd(commentListKey, comment.getTime(), String.valueOf(comment.getId()));
+        if (comment.getGood() >= godGood) {//神评论
+            String godKey = JedisKey.JOKE_GOD_COMMENT + comment.getJokeId();
+            jedisCache.zadd(godKey, comment.getGood(), String.valueOf(comment.getId()));
+        }
+        //评论缓存
+        String commentKey = JedisKey.STRING_COMMENT + comment.getId();
+        jedisCache.set(commentKey, JSON.toJSONString(comment));
     }
 
     /**
@@ -197,18 +249,22 @@ public class CommentService {
                     List<String> list = jedisCache.brpop(JedisKey.NEW_COMMENT_LIST, 60 * 5);
                     if (!CollectionUtils.isEmpty(list)) {
                         Comment com = JSON.parseObject(list.get(1), Comment.class);
-                        String content = filterService.replaceSensitiveWord(com.getBc(), 1, "");
-                        if (StringUtils.isNotBlank(content)) {
-                            Comment comment = HttpUtil.getRandomUser(randomUserUrl);
-                            comment.setBc(content);
-                            comment.setJokeId(com.getJokeId());
-                            comment.setTime(FormatUtil.getTime());
-                            comment.setGood(0);
-                            comment.setUid(com.getUid());
-                            comment.setAvata(com.getAvata());
-                            comment.setNick(com.getNick());
-                            commentMapper.insertComment(comment);
-                            addCommentToCache(comment);
+                        if(com != null){
+                            String content = filterService.doFilter(com.getBc());
+                            if (StringUtils.isNotBlank(content)) {
+                                Comment comment = HttpUtil.getRandomUser(randomUserUrl);
+                                comment.setBc(content);
+                                comment.setJokeId(com.getJokeId());
+                                comment.setTime(FormatUtil.getTime());
+                                comment.setGood(0);
+                                comment.setUid(com.getUid());
+                                comment.setAvata(com.getAvata());
+                                comment.setNick(com.getNick());
+                                commentMapper.insertComment(comment);
+                                addCommentToCache(comment);
+                                jedisCache.setAndExpire(JedisKey.COMMENT_NUMBER + com.getUid(), "1", 20);
+                            }
+
                         }
                     }
                 } catch (Exception e) {
@@ -216,49 +272,6 @@ public class CommentService {
                 }
             }
         }
-    }
-
-    /**
-     * 更新评论缓存
-     *
-     * @param id
-     */
-    private void updateCommentGoodCache(String id) {
-        //更新评论详情缓存中点赞数
-        Comment comment = JSON.parseObject(jedisCache.get(JedisKey.STRING_COMMENT + id), Comment.class);
-        if (comment != null) {
-
-            Integer good = comment.getGood();
-            if (good != null) {
-                good = good + 1;
-            } else {
-                good = 1;
-            }
-            comment.setGood(good);
-            jedisCache.set(JedisKey.STRING_COMMENT + id, JSON.toJSONString(comment));
-            if (good >= godGood) {//更新神评缓存
-                jedisCache.zadd(JedisKey.JOKE_GOD_COMMENT + comment.getJokeId(), good, String.valueOf(id));
-            }
-        }
-
-    }
-
-    /**
-     * 添加评论到缓存
-     *
-     * @param comment
-     */
-    private void addCommentToCache(Comment comment) {
-        //评论列表缓存-按更新时间排序 只存储id
-        String commentListKey = JedisKey.JOKE_COMMENT_LIST + comment.getJokeId();
-        jedisCache.zadd(commentListKey, comment.getTime(), String.valueOf(comment.getId()));
-        if (comment.getGood() >= godGood) {//神评论
-            String godKey = JedisKey.JOKE_GOD_COMMENT + comment.getJokeId();
-            jedisCache.zadd(godKey, comment.getGood(), String.valueOf(comment.getId()));
-        }
-        //评论缓存
-        String commentKey = JedisKey.STRING_COMMENT + comment.getId();
-        jedisCache.set(commentKey, JSON.toJSONString(comment));
     }
 
 }

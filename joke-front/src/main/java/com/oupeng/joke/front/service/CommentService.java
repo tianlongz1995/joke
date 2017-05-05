@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
+import com.oupeng.joke.domain.comment.Result;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,11 @@ public class CommentService {
      * @param jid
      * @param comment
      */
-    public void sendComment(Integer jid, String comment, Integer userId, String nick, String avata) {
+    public Result sendComment(Integer jid, String comment, Integer userId, String nick, String avata) {
+        String num = jedisCache.get(JedisKey.COMMENT_NUMBER + userId);
+        if(StringUtils.isNumeric(num)){
+            return new Result(5); // 超出每分钟发送限制
+        }
         Comment com = new Comment();
         com.setJokeId(jid);
         com.setBc(comment);
@@ -91,5 +97,6 @@ public class CommentService {
         com.setNick(nick);
         com.setAvata(avata);
         jedisCache.lpush(JedisKey.NEW_COMMENT_LIST, JSON.toJSONString(com));
+        return new Result(0);
     }
 }

@@ -253,13 +253,13 @@ public class IndexService {
                 }
                 joke.setImg(IMG_PREFIX + joke.getImg());
             }
-            if (joke.getType().equals(Constants.JOKE_TYPE_GIF)) {
+            if (joke.getType() != null && joke.getType().equals(Constants.JOKE_TYPE_GIF)) {
                 joke.setGif(IMG_PREFIX + joke.getGif());
             }
             if (joke.getRa() != null && !joke.getRa().startsWith("http")) {
                 joke.setRa(IMG_PREFIX + joke.getRa());
             }
-            if (cid == 4) {
+            if (cid != null && cid == 4) {
                 joke.setContent(null);
             }
             if (joke.getComment() != null && joke.getComment().getAvata() != null) {

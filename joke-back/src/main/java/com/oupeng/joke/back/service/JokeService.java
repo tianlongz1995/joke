@@ -823,13 +823,19 @@ public class JokeService {
                     }
                     //		更新缓存中的段子评论数
                     Joke joke = JSON.parseObject(jedisCache.get(JedisKey.STRING_JOKE + id), Joke.class);
-                    if (joke != null && joke.getComment() != null) {
-                        Comment comment = joke.getComment();
-                        Integer total = comment.getTotal();
-                        if (total != null && total > 0) {
-                            comment.setTotal(total - 1);
+                    if (joke != null) {
+                        if (joke.getComment() != null) {
+                            Comment comment = joke.getComment();
+                            Integer total = comment.getTotal();
+                            if (total != null && total > 0) {
+                                comment.setTotal(total - 1);
+                            } else {
+                                comment.setTotal(0);
+                            }
                         } else {
+                            Comment comment = new Comment();
                             comment.setTotal(0);
+                            joke.setComment(comment);
                         }
                         jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
                     } else {
