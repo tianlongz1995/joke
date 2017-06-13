@@ -1,8 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeShenLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
+
+import com.oupeng.joke.spider.domain.niubi.JokeTextNiu;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +17,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 来福岛
+ * 牛逼思维
  * Created by zongchao on 2017/3/13.
  */
 @Component
-public class LaiSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(LaiSpiderTask.class);
+public class SpiderTask_Niu {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Niu.class);
 
-    //来福岛
-    private String textUrlLai;
-    private String imgUrlLai;
-    private String shenUrlLai;
+    //牛逼思维
+    private String textUrlNiu;
 
 
     @Autowired
@@ -41,10 +38,6 @@ public class LaiSpiderTask {
             .setTimeOut(10000)
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
-    @Qualifier("JobInfoDaoImgPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoImgPipeline;
-
 
     @Qualifier("JobInfoDaoPipeline")
     @Autowired
@@ -53,38 +46,30 @@ public class LaiSpiderTask {
 
     @PostConstruct
     public void init() {
-        String lt = env.getProperty("lai.spider.text.url");
-        if (StringUtils.isNotBlank(lt)) {
-            textUrlLai = lt;
-        }
-        String li = env.getProperty("lai.spider.img.url");
-        if (StringUtils.isNotBlank(li)) {
-            imgUrlLai = li;
-        }
-        String shen = env.getProperty("lai.spider.shen.url");
-        if (StringUtils.isNotBlank(shen)) {
-            shenUrlLai = shen;
+
+        String nt = env.getProperty("niu.spider.text.url");
+        if (StringUtils.isNotBlank(nt)) {
+            textUrlNiu = nt;
         }
         String isRun = env.getProperty("init.spider.run");
+        logger.info("爬虫初始化运行:{}", isRun);
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderLai();
+            spiderNiu();
         }
+
+
     }
 
 
     /**
-     * 抓取来福岛
+     * 抓取牛逼思维
      */
-    @Scheduled(cron = "0 10 1 * * ?")
-    public void spiderLai() {
-        logger.info("laifudao spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
-        logger.info("laifudao spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
-        logger.info("laifudao spider shenhuifu...");
-        crawl(jobInfoDaoPipeline, JokeShenLai.class, shenUrlLai);
-
+    @Scheduled(cron = "0 10 3 * * ?")
+    public void spiderNiu() {
+        logger.info("niubisiwei spider text...");
+        crawl(jobInfoDaoPipeline, JokeTextNiu.class, textUrlNiu);
     }
+
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)

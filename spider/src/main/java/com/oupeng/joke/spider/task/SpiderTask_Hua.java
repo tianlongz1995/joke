@@ -1,8 +1,7 @@
 package com.oupeng.joke.spider.task;
 
 
-import com.oupeng.joke.spider.domain.pengfu.JokeImgPeng;
-import com.oupeng.joke.spider.domain.pengfu.JokeTextPeng;
+import com.oupeng.joke.spider.domain.mahua.JokeImgHua;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +17,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 捧腹网
- * Created by zongchao on 2017/3/20.
+ * 快乐麻花
+ * Created by zongchao on 2017/3/13.
  */
 @Component
-public class PengSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(PengSpiderTask.class);
+public class SpiderTask_Hua {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Hua.class);
 
-    //捧腹网
-    private String textUrlPeng;
-    private String imgUrlPeng;
+    //快乐麻花
+    private String imgUrlHua;
 
 
     @Autowired
@@ -45,40 +43,31 @@ public class PengSpiderTask {
     private PageModelPipeline jobInfoDaoImgPipeline;
 
 
-    @Qualifier("JobInfoDaoPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
-
-
     @PostConstruct
     public void init() {
-        String pt = env.getProperty("peng.spider.text.url");
-        if (StringUtils.isNotBlank(pt)) {
-            textUrlPeng = pt;
-        }
-        String pi = env.getProperty("peng.spider.img.url");
-        if (StringUtils.isNotBlank(pi)) {
-            imgUrlPeng = pi;
+
+
+        String hi = env.getProperty("hua.spider.img.url");
+        if (StringUtils.isNotBlank(hi)) {
+            imgUrlHua = hi;
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-             spiderPeng();
+            spiderHua();
         }
 
     }
 
-
     /**
-     * 抓取捧腹网
+     * 抓取快乐麻花
      */
-     @Scheduled(cron = "0 30 5 * * ?")
-    public void spiderPeng() {
-        logger.info("pengfu spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgPeng.class, imgUrlPeng);
-        logger.info("pengfu spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextPeng.class, textUrlPeng);
+    @Scheduled(cron = "0 40 2 * * ?")
+    public void spiderHua() {
+        logger.info("kuailemahua spider image...");
+        crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);
 
     }
+
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)

@@ -1,7 +1,8 @@
 package com.oupeng.joke.spider.task;
 
-
-import com.oupeng.joke.spider.domain.mahua.JokeImgHua;
+import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
+import com.oupeng.joke.spider.domain.laifudao.JokeShenLai;
+import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +18,17 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 快乐麻花
+ * 来福岛
  * Created by zongchao on 2017/3/13.
  */
 @Component
-public class HuaSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(HuaSpiderTask.class);
+public class SpiderTask_Lai {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Lai.class);
 
-    //快乐麻花
-    private String imgUrlHua;
+    //来福岛
+    private String textUrlLai;
+    private String imgUrlLai;
+    private String shenUrlLai;
 
 
     @Autowired
@@ -43,31 +46,45 @@ public class HuaSpiderTask {
     private PageModelPipeline jobInfoDaoImgPipeline;
 
 
+    @Qualifier("JobInfoDaoPipeline")
+    @Autowired
+    private PageModelPipeline jobInfoDaoPipeline;
+
+
     @PostConstruct
     public void init() {
-
-
-        String hi = env.getProperty("hua.spider.img.url");
-        if (StringUtils.isNotBlank(hi)) {
-            imgUrlHua = hi;
+        String lt = env.getProperty("lai.spider.text.url");
+        if (StringUtils.isNotBlank(lt)) {
+            textUrlLai = lt;
+        }
+        String li = env.getProperty("lai.spider.img.url");
+        if (StringUtils.isNotBlank(li)) {
+            imgUrlLai = li;
+        }
+        String shen = env.getProperty("lai.spider.shen.url");
+        if (StringUtils.isNotBlank(shen)) {
+            shenUrlLai = shen;
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderHua();
+            spiderLai();
         }
-
     }
+
 
     /**
-     * 抓取快乐麻花
+     * 抓取来福岛
      */
-    @Scheduled(cron = "0 40 2 * * ?")
-    public void spiderHua() {
-        logger.info("kuailemahua spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);
+    @Scheduled(cron = "0 10 1 * * ?")
+    public void spiderLai() {
+        logger.info("laifudao spider image...");
+        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
+        logger.info("laifudao spider text...");
+        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
+        logger.info("laifudao spider shenhuifu...");
+        crawl(jobInfoDaoPipeline, JokeShenLai.class, shenUrlLai);
 
     }
-
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)
