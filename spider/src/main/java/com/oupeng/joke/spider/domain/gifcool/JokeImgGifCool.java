@@ -40,7 +40,7 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
 
 
     /**
-     * 新建数据源时，需要重写（153）
+     * 新建数据源时，需要重写（例如：gifcool->153）
      */
     private Integer sourceId;
 
@@ -107,7 +107,6 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
         if(this.img!=null && this.img.charAt(0)=='/'){
             this.setImg("http://www.gifcool.com"+this.img);
         }
-        //System.out.println(this.title+"||"+this.img+"||"+this.src);
     }
 }
 
