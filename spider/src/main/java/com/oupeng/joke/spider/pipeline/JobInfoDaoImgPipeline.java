@@ -68,7 +68,6 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     @Override
     public void process(JokeImg jokeImg, Task task) {
 
-
         Long count = ((OOSpider) task).getPageCount();
         logger.info("图片 - 当前抓取页数:{}", count);
         if (count > maxCrawlPage) {

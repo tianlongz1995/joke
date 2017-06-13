@@ -58,7 +58,7 @@ public class JokeImgYZZDongTu extends JokeImg implements AfterExtractor {
     }
 
     public Integer getSourceId() {
-        return 149;
+        return 154;
     }
 
     public void setSourceId(Integer sourceId) {

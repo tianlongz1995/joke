@@ -2,7 +2,6 @@ package com.oupeng.joke.spider.task;
 
 import com.oupeng.joke.spider.domain.gaoxiao.JokeHotGao;
 import com.oupeng.joke.spider.domain.gaoxiao.JokeImgGao;
-import com.oupeng.joke.spider.domain.threegif.JokeImgThreeGif;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
