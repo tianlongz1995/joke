@@ -439,3 +439,7 @@ CREATE TABLE `distributors_banner` (
 alter TABLE  `comment` ENGINE=InnoDB;
 --增加评论表发布状态字段
 alter table  `comment` add COLUMN `publish_state` INT (11) NOT NULL DEFAULT '0' COMMENT '发布状态(0:未发布 1:已发布)';
+
+
+--- 新建姐夫酷数据源 2017-06-12
+INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/list_12_1.html', '1', '2017-06-12 14:39:28', '2017-06-12 14:39:28');
