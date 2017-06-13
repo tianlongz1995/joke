@@ -21,8 +21,8 @@ import javax.annotation.PostConstruct;
  * Created by zongchao on 2017/3/13.
  */
 @Component
-public class HuaSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(HuaSpiderTask.class);
+public class SpiderTask_Hua {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Hua.class);
 
     //快乐麻花
     private String imgUrlHua;

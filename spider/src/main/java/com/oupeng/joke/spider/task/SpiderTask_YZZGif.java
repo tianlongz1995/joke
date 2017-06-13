@@ -1,7 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-
-import com.oupeng.joke.spider.domain.niubi.JokeTextNiu;
+import com.oupeng.joke.spider.domain.yzz.JokeImgYZZGif;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +16,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 牛逼思维
- * Created by zongchao on 2017/3/13.
+ * 爬取 http://xx.yzz.cn/dongtu/
+ * Created by pengzheng on 2017/6/13.
  */
 @Component
-public class NiuSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(NiuSpiderTask.class);
+public class SpiderTask_YZZGif {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_YZZGif.class);
 
-    //牛逼思维
-    private String textUrlNiu;
-
+    //获取图片资源的地址
+    private String gifUrlGaoxiao;
 
     @Autowired
     private Environment env;
@@ -38,6 +36,9 @@ public class NiuSpiderTask {
             .setTimeOut(10000)
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
+    @Qualifier("JobInfoDaoImgPipeline")
+    @Autowired
+    private PageModelPipeline jobInfoDaoImgPipeline;
 
     @Qualifier("JobInfoDaoPipeline")
     @Autowired
@@ -47,31 +48,31 @@ public class NiuSpiderTask {
     @PostConstruct
     public void init() {
 
-        String nt = env.getProperty("niu.spider.text.url");
-        if (StringUtils.isNotBlank(nt)) {
-            textUrlNiu = nt;
-        }
-        String isRun = env.getProperty("init.spider.run");
-        logger.info("爬虫初始化运行:{}", isRun);
-        if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderNiu();
+        String hi = env.getProperty("gif.spider.gaoxiao.url");
+
+        if (StringUtils.isNotBlank(hi)) {
+            gifUrlGaoxiao = hi;
         }
 
+        String isRun = env.getProperty("init.spider.run");
+        if (isRun != null && isRun.equalsIgnoreCase("true")) {
+            spiderGif();
+        }
 
     }
 
-
     /**
-     * 抓取牛逼思维
+     * 抓取叶子猪网站GIF
      */
-    @Scheduled(cron = "0 10 3 * * ?")
-    public void spiderNiu() {
-        logger.info("niubisiwei spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextNiu.class, textUrlNiu);
+    @Scheduled(cron = "0 40 3 * * ?")
+    public void spiderGif() {
+        logger.info("yzz spider gif...");
+        crawl(jobInfoDaoImgPipeline, JokeImgYZZGif.class, gifUrlGaoxiao);
     }
 
 
     private void crawl(PageModelPipeline line, Class c, String url) {
+        System.out.println("开启爬取任务");
         OOSpider.create(site, line, c)
                 .addUrl(url)
                 .thread(1)
