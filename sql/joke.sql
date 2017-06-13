@@ -444,4 +444,4 @@ alter table  `comment` add COLUMN `publish_state` INT (11) NOT NULL DEFAULT '0' 
 INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/list_12_1.html', '1', '2017-06-12 14:39:28', '2017-06-12 14:39:28');
 
 --- 新建叶子猪数据源 2017-6-13
-INSERT INTO `source` VALUES ('154', '叶子猪', 'http://xx.yzz.cn/', '0', '2017-06-13 11:00:00', '2017-06-13 11:00:00');
+INSERT INTO `source` VALUES ('154', '叶子猪', 'http://xx.yzz.cn/', '1', '2017-06-13 11:00:00', '2017-06-13 11:00:00');
