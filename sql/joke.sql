@@ -416,7 +416,6 @@ INSERT INTO `source` VALUES ('149', '寸土吧', 'http://www.cuntuba520.com', '0
 INSERT INTO `source` VALUES ('150', '邪恶漫画', 'http://www.mhkkm.com', '0', '2017-03-27 12:29:18', '2017-03-27 12:29:18');
 INSERT INTO `source` VALUES ('151', '3GIF', 'http://www.3gifs.com', '0', '2017-04-11 14:38:50', '2017-04-11 14:38:50');
 INSERT INTO `source` VALUES ('152', '搞笑GIF', 'http://www.gaoxiaogif.com/', '0', '2017-04-11 14:39:28', '2017-04-11 14:39:28');
-INSERT INTO `source` VALUES ('154', '叶子猪', 'http://xx.yzz.cn/', '0', '2017-06-13 11:00:00', '2017-06-13 11:00:00');
 
 -- 新增详情页评论广告
 alter table ads add COLUMN `dm` INT (11) NOT NULL DEFAULT '0' COMMENT '详情页评论中广告';
@@ -443,3 +442,6 @@ alter table  `comment` add COLUMN `publish_state` INT (11) NOT NULL DEFAULT '0' 
 
 --- 新建姐夫酷数据源 2017-06-12
 INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/list_12_1.html', '1', '2017-06-12 14:39:28', '2017-06-12 14:39:28');
+
+--- 新建叶子猪数据源 2017-6-13
+INSERT INTO `source` VALUES ('154', '叶子猪', 'http://xx.yzz.cn/', '0', '2017-06-13 11:00:00', '2017-06-13 11:00:00');
