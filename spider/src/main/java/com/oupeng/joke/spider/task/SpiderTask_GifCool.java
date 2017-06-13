@@ -1,8 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-
-import com.oupeng.joke.spider.domain.pengfu.JokeImgPeng;
-import com.oupeng.joke.spider.domain.pengfu.JokeTextPeng;
+import com.oupeng.joke.spider.domain.gifcool.JokeImgGifCool;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +16,14 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 捧腹网
- * Created by zongchao on 2017/3/20.
+ * 姐夫酷
+ * Created by yeluo on 2017/6/5.
  */
 @Component
-public class PengSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(PengSpiderTask.class);
+public class SpiderTask_GifCool {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_GifCool.class);
 
-    //捧腹网
-    private String textUrlPeng;
-    private String imgUrlPeng;
-
+    private String imgUrl;
 
     @Autowired
     private Environment env;
@@ -45,46 +40,38 @@ public class PengSpiderTask {
     private PageModelPipeline jobInfoDaoImgPipeline;
 
 
-    @Qualifier("JobInfoDaoPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
-
-
     @PostConstruct
     public void init() {
-        String pt = env.getProperty("peng.spider.text.url");
-        if (StringUtils.isNotBlank(pt)) {
-            textUrlPeng = pt;
-        }
-        String pi = env.getProperty("peng.spider.img.url");
-        if (StringUtils.isNotBlank(pi)) {
-            imgUrlPeng = pi;
+        String gifcool = env.getProperty("gifcool.spider.img.url");
+        if (StringUtils.isNotBlank(gifcool)) {
+            imgUrl = gifcool;
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-             spiderPeng();
+            spiderGifCool();
         }
-
     }
 
-
     /**
-     * 抓取捧腹网
-     */
-     @Scheduled(cron = "0 30 5 * * ?")
-    public void spiderPeng() {
-        logger.info("pengfu spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgPeng.class, imgUrlPeng);
-        logger.info("pengfu spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextPeng.class, textUrlPeng);
-
+     *  GifCool
+     *
+       @Scheduled(cron = "* 5 10 * * ?") 不能这样设置，爬虫频率不宜过快，
+       1）过快相当于多个线程爬同一资源,会导致爬取资源重复
+       2）不停地请求带攻击性，会被屏蔽IP
+    */
+    @Scheduled(cron = "0 18 2 * * ?")
+    public void spiderGifCool() {
+        logger.info("gifcool spider image...");
+        crawl(jobInfoDaoImgPipeline, JokeImgGifCool.class, imgUrl);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {
+
         OOSpider.create(site, line, c)
                 .addUrl(url)
                 .thread(1)
                 .start();
+
     }
 
 }

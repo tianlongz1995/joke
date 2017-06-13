@@ -1,7 +1,7 @@
 package com.oupeng.joke.spider.task;
 
 
-import com.oupeng.joke.spider.domain.niubi.JokeTextNiu;
+import com.oupeng.joke.spider.domain.mahua.JokeImgHua;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +17,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 牛逼思维
+ * 快乐麻花
  * Created by zongchao on 2017/3/13.
  */
 @Component
-public class NiuSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(NiuSpiderTask.class);
+public class SpiderTask_Hua {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Hua.class);
 
-    //牛逼思维
-    private String textUrlNiu;
+    //快乐麻花
+    private String imgUrlHua;
 
 
     @Autowired
@@ -38,36 +38,34 @@ public class NiuSpiderTask {
             .setTimeOut(10000)
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
-
-    @Qualifier("JobInfoDaoPipeline")
+    @Qualifier("JobInfoDaoImgPipeline")
     @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
+    private PageModelPipeline jobInfoDaoImgPipeline;
 
 
     @PostConstruct
     public void init() {
 
-        String nt = env.getProperty("niu.spider.text.url");
-        if (StringUtils.isNotBlank(nt)) {
-            textUrlNiu = nt;
+
+        String hi = env.getProperty("hua.spider.img.url");
+        if (StringUtils.isNotBlank(hi)) {
+            imgUrlHua = hi;
         }
         String isRun = env.getProperty("init.spider.run");
-        logger.info("爬虫初始化运行:{}", isRun);
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderNiu();
+            spiderHua();
         }
-
 
     }
 
-
     /**
-     * 抓取牛逼思维
+     * 抓取快乐麻花
      */
-    @Scheduled(cron = "0 10 3 * * ?")
-    public void spiderNiu() {
-        logger.info("niubisiwei spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextNiu.class, textUrlNiu);
+    @Scheduled(cron = "0 40 2 * * ?")
+    public void spiderHua() {
+        logger.info("kuailemahua spider image...");
+        crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);
+
     }
 
 
