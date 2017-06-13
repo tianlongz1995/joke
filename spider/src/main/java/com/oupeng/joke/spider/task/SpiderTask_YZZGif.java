@@ -1,6 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.gifhehe.JokeImgGifDongtu;
+import com.oupeng.joke.spider.domain.yzz.JokeImgYZZGif;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import javax.annotation.PostConstruct;
  * Created by Jane on 2017/6/5.
  */
 @Component
-public class GifDongtuSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(GifDongtuSpiderTask.class);
+public class SpiderTask_YZZGif {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_YZZGif.class);
 
     //获取图片资源的地址
-    private String gifUrlDongtu;
+    private String gifUrlGaoxiao;
 
     @Autowired
     private Environment env;
@@ -48,11 +48,11 @@ public class GifDongtuSpiderTask {
     @PostConstruct
     public void init() {
 
-        String hi = env.getProperty("gif.spider.dongtu.url");
+        String hi = env.getProperty("gif.spider.gaoxiao.url");
 
         System.out.println("输出初始化爬去页面:"+hi);
         if (StringUtils.isNotBlank(hi)) {
-            gifUrlDongtu = hi;
+            gifUrlGaoxiao = hi;
         }
 
         String isRun = env.getProperty("init.spider.run");
@@ -65,10 +65,10 @@ public class GifDongtuSpiderTask {
     /**
      * 抓取新浪网站
      */
-    @Scheduled(cron = "0 40 2 * * ?")
+    @Scheduled(cron = "0 40 3 * * ?")
     public void spiderGif() {
-        logger.info("gifhehe spider gif...");
-        crawl(jobInfoDaoImgPipeline, JokeImgGifDongtu.class, gifUrlDongtu);
+        logger.info("yzz spider gif...");
+        crawl(jobInfoDaoImgPipeline, JokeImgYZZGif.class, gifUrlGaoxiao);
     }
 
 

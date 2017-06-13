@@ -1,4 +1,4 @@
-package com.oupeng.joke.spider.domain.gifhehe;
+package com.oupeng.joke.spider.domain.yzz;
 
 import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.Page;
@@ -12,9 +12,8 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
  *
  */
 @TargetUrl("http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}.shtml")
-//@TargetUrl("http://www.mzitu.com/page/\\d{1,5}")
 @HelpUrl("http://xx.yzz.cn/dongtu/\\d{3,6},\\d{1,3}.shtml")
-public class JokeImgGifDongtu extends JokeImg implements AfterExtractor {
+public class JokeImgYZZDongTu extends JokeImg implements AfterExtractor {
 
     @ExtractBy(value = "//div[@id='article']/h1/allText()", notNull = true)
     private String title;
@@ -34,7 +33,6 @@ public class JokeImgGifDongtu extends JokeImg implements AfterExtractor {
 
 
     public String getTitle() {
-        //System.out.println("title： "+title);
         return title;
     }
 
@@ -44,7 +42,6 @@ public class JokeImgGifDongtu extends JokeImg implements AfterExtractor {
 
 
     public String getImg() {
-        //System.out.println("地址： "+img);
         return img;
     }
 
@@ -53,7 +50,6 @@ public class JokeImgGifDongtu extends JokeImg implements AfterExtractor {
     }
 
     public String getSrc() {
-        //System.out.println("地址： "+src);
         return src;
     }
 
@@ -71,7 +67,6 @@ public class JokeImgGifDongtu extends JokeImg implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
-        System.out.println("title： "+title+" src:"+src+" img:"+img);
         src = page.getUrl().toString();
     }
 }

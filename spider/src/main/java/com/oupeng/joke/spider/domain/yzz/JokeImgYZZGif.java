@@ -1,4 +1,4 @@
-package com.oupeng.joke.spider.domain.gifhehe;
+package com.oupeng.joke.spider.domain.yzz;
 
 import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.Page;
@@ -13,7 +13,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
  */
 @TargetUrl("http://xx.yzz.cn/gif/\\d{3,5}-\\d{3,10}.shtml")
 @HelpUrl("http://xx.yzz.cn/gif/\\d{4},\\d{2,5}.shtml")
-public class JokeImgGifhehe extends JokeImg implements AfterExtractor {
+public class JokeImgYZZGif extends JokeImg implements AfterExtractor {
 
     @ExtractBy(value = "//div[@id='article']/h1/allText()", notNull = true)
     private String title;
@@ -21,11 +21,6 @@ public class JokeImgGifhehe extends JokeImg implements AfterExtractor {
     @ExtractBy(value = "//div[@id='article']//img/@src", notNull = true)
     private String img;
 
-//    @ExtractBy("//h2[@class='main-title']/allText()")
-//    private String title;
-//
-//    @ExtractBy(value = "//div[@class='main-image']/img/@src", notNull = true)
-//    private String img;
     /**
      * 来源
      */
@@ -38,7 +33,6 @@ public class JokeImgGifhehe extends JokeImg implements AfterExtractor {
 
 
     public String getTitle() {
-        System.out.println("title： "+title);
         return title;
     }
 
@@ -48,7 +42,6 @@ public class JokeImgGifhehe extends JokeImg implements AfterExtractor {
 
 
     public String getImg() {
-        System.out.println("地址： "+img);
         return img;
     }
 
@@ -57,7 +50,6 @@ public class JokeImgGifhehe extends JokeImg implements AfterExtractor {
     }
 
     public String getSrc() {
-        System.out.println("地址： "+src);
         return src;
     }
 

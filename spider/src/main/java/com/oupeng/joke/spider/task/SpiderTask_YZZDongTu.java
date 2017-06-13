@@ -1,6 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.gifhehe.JokeImgGifhehe;
+import com.oupeng.joke.spider.domain.yzz.JokeImgYZZDongTu;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import javax.annotation.PostConstruct;
  * Created by Jane on 2017/6/5.
  */
 @Component
-public class GifSpiderTask {
-    private static final Logger logger = LoggerFactory.getLogger(GifSpiderTask.class);
+public class SpiderTask_YZZDongTu {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_YZZDongTu.class);
 
     //获取图片资源的地址
-    private String gifUrlGaoxiao;
+    private String gifUrlDongtu;
 
     @Autowired
     private Environment env;
@@ -48,11 +48,11 @@ public class GifSpiderTask {
     @PostConstruct
     public void init() {
 
-        String hi = env.getProperty("gif.spider.gaoxiao.url");
+        String hi = env.getProperty("gif.spider.dongtu.url");
 
         System.out.println("输出初始化爬去页面:"+hi);
         if (StringUtils.isNotBlank(hi)) {
-            gifUrlGaoxiao = hi;
+            gifUrlDongtu = hi;
         }
 
         String isRun = env.getProperty("init.spider.run");
@@ -65,10 +65,10 @@ public class GifSpiderTask {
     /**
      * 抓取新浪网站
      */
-    @Scheduled(cron = "0 40 2 * * ?")
+    @Scheduled(cron = "0 10 3 * * ?")
     public void spiderGif() {
-        logger.info("gifhehe spider gif...");
-        crawl(jobInfoDaoImgPipeline, JokeImgGifhehe.class, gifUrlGaoxiao);
+        logger.info("yzz spider gif...");
+        crawl(jobInfoDaoImgPipeline, JokeImgYZZDongTu.class, gifUrlDongtu);
     }
 
 
