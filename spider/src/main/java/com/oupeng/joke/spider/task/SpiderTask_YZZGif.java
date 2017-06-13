@@ -72,7 +72,6 @@ public class SpiderTask_YZZGif {
 
 
     private void crawl(PageModelPipeline line, Class c, String url) {
-        System.out.println("开启爬取任务");
         OOSpider.create(site, line, c)
                 .addUrl(url)
                 .thread(1)
