@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * 爬取 http://xx.yzz.cn/dongtu/
- * Created by Jane on 2017/6/5.
+ * Created by pengzheng on 2017/6/13.
  */
 @Component
 public class SpiderTask_YZZDongTu {
@@ -63,7 +63,7 @@ public class SpiderTask_YZZDongTu {
     }
 
     /**
-     * 抓取新浪网站
+     * 抓取叶子猪网站邪恶动图
      */
     @Scheduled(cron = "0 10 3 * * ?")
     public void spiderGif() {

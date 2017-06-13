@@ -8,7 +8,7 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by zongchao on 2017/3/13.
+ * Created by pengzheng on 2017/6/13.
  *
  */
 @TargetUrl("http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}.shtml")
