@@ -38,6 +38,10 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
      */
     private Integer agreeTotal;
 
+
+    /**
+     * 新建数据源时，需要重写（153）
+     */
     private Integer sourceId;
 
 
@@ -85,7 +89,7 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
     }
 
     public Integer getSourceId() {
-        return 151;
+        return 153;
     }
 
     public void setSourceId(Integer sourceId) {
