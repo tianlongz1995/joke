@@ -50,7 +50,6 @@ public class SpiderTask_YZZGif {
 
         String hi = env.getProperty("gif.spider.gaoxiao.url");
 
-        System.out.println("输出初始化爬去页面:"+hi);
         if (StringUtils.isNotBlank(hi)) {
             gifUrlGaoxiao = hi;
         }

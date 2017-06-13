@@ -50,7 +50,6 @@ public class SpiderTask_YZZDongTu {
 
         String hi = env.getProperty("gif.spider.dongtu.url");
 
-        System.out.println("输出初始化爬去页面:"+hi);
         if (StringUtils.isNotBlank(hi)) {
             gifUrlDongtu = hi;
         }
