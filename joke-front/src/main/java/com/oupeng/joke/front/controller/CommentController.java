@@ -2,7 +2,6 @@ package com.oupeng.joke.front.controller;
 
 import com.google.common.collect.Maps;
 import com.oupeng.joke.cache.JedisCache;
-import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
@@ -30,6 +29,7 @@ public class CommentController {
 
     @Autowired
     private JedisCache jedisCache;
+
     /**
      * 评论列表
      *
@@ -108,14 +108,7 @@ public class CommentController {
                               @RequestParam(value = "nick") String nick,
                               @RequestParam(value = "avata") String avata) {
 
-        String user;
-
         try {
-
-            user=jedisCache.hget(JedisKey.BLACK_MAN,userId+"");
-
-            if(user!=null)
-                return new Result(1);
 
             comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
             nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
