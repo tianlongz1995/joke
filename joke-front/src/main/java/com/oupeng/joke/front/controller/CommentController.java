@@ -108,7 +108,7 @@ public class CommentController {
                               @RequestParam(value = "nick") String nick,
                               @RequestParam(value = "avata") String avata) {
 
-        String user=null;
+        String user;
 
         try {
 

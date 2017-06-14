@@ -92,13 +92,22 @@ public class CommentController{
                          @RequestParam(value = "allState") Integer allState) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        SB sb2=new SB();
-        sb2.setId(ids);
+        String [] str=ids.split(",");
+        for (String id:str) {
+            SB sb2=new SB();
+            sb2.setId(id);
+            sb2.setUpdateTime(Calendar.getInstance().getTime());
 
-        sb2.setUpdateTime(Calendar.getInstance().getTime());
-        sbmapper.insertASB(sb2);
+            try {
+                sbmapper.insertASB(sb2);
+                jedisCache.hset(JedisKey.BLACK_MAN, id, id);
+            }
+            catch (Exception e)
+            {
+                logger.info("此用户已经被拉黑");
+            }
+        }
 
-        jedisCache.hset(JedisKey.BLACK_MAN,ids,ids);
 
         commentService.verifyComment(ids, state, allState, username);
         return new Success();
