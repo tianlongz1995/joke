@@ -1,10 +1,11 @@
 package com.oupeng.joke.front.controller;
 
 import com.google.common.collect.Maps;
+import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
-
 import com.oupeng.joke.front.service.CommentService;
 import com.oupeng.joke.front.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private JedisCache jedisCache;
     /**
      * 评论列表
      *
@@ -104,7 +107,16 @@ public class CommentController {
                               @RequestParam(value = "userId") Integer userId,
                               @RequestParam(value = "nick") String nick,
                               @RequestParam(value = "avata") String avata) {
+
+        String user=null;
+
         try {
+
+            user=jedisCache.hget(JedisKey.BLACK_MAN,userId+"");
+
+            if(user!=null)
+                return new Result(1);
+
             comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
             nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
             return commentService.sendComment(jid, comment, userId, nick, avata);

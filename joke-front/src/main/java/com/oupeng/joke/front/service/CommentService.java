@@ -87,6 +87,7 @@ public class CommentService {
      */
     public Result sendComment(Integer jid, String comment, Integer userId, String nick, String avata) {
         String num = jedisCache.get(JedisKey.COMMENT_NUMBER + userId);
+
         if(StringUtils.isNumeric(num)){
             return new Result(5); // 超出每分钟发送限制
         }
