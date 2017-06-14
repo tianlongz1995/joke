@@ -16,6 +16,8 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 public class JokeImgGifCool extends JokeImg implements AfterExtractor {
 
 
+    private static final String gifcoolUrl =  "http://www.gifcool.com";
+
     @ExtractBy(value="//div[@class=\"colb\"]//div[@class=\"title\"]/strong/text()")
     private String title;
 
@@ -100,12 +102,11 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
     public void afterProcess(Page page) {
 
         this.setSrc(page.getUrl().toString());
-
         /**
          * 类似于img=/uploads/allimg/170603/1-1F6031012214C.jpg
          */
-        if(this.img!=null && this.img.charAt(0)=='/'){
-            this.setImg("http://www.gifcool.com"+this.img);
+        if (this.img != null && this.img.charAt(0) == '/') {
+            this.setImg(gifcoolUrl + this.img);
         }
     }
 }
