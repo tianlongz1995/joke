@@ -1,7 +1,7 @@
 package com.oupeng.joke.dao.sqlprovider;
 
-import com.oupeng.joke.domain.user.SB;
 
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -18,8 +18,8 @@ public class SBSqlProvider {
     public static String getASBStoBeLaHei(String id)
     {
         StringBuffer sql = new StringBuffer();
-        sql.append("select * from BlackMan where id=");
-        sql.append(id);
+        sql.append("select count(1) from BlackMan where id=");
+        sql.append(id).append(" limit 1");
         return sql.toString();
     }
 
@@ -30,7 +30,7 @@ public class SBSqlProvider {
         return sql.toString();
     }
 
-    public static String insertSBtoBeLaHei(SB sb)
+    public static String insertSBtoBeLaHei(BlackMan sb)
     {
         StringBuffer sql = new StringBuffer();
         sql.append("insert into BlackMan(id,create_time) value(");
@@ -39,11 +39,11 @@ public class SBSqlProvider {
         else
             sql.append("null,");
 
-        sql.append("now() );");
+        sql.append("now() )");
         return sql.toString();
     }
 
-    public  static  String deleteSBtoBeLaHei(SB sb)
+    public  static  String deleteSBtoBeLaHei(BlackMan sb)
     {
         StringBuffer sql = new StringBuffer();
         sql.append("delete from BlackMan where id=");

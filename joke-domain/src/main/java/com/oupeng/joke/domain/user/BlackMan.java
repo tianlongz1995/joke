@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by pengzheng on 17-6-14.
  */
-public class SB {
+public class BlackMan {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String id;
 

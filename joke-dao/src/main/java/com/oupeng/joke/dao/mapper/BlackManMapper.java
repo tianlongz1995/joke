@@ -1,7 +1,7 @@
 package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.SBSqlProvider;
-import com.oupeng.joke.domain.user.SB;
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.ResultType;
@@ -12,19 +12,18 @@ import java.util.List;
 /**
  * Created by Jane on 17-6-14.
  */
-public interface SBMapper {
+public interface BlackManMapper {
 
     @SelectProvider(method = "getASBStoBeLaHei", type = SBSqlProvider.class)
-    @ResultType(value=SB.class)
-    SB getASB(String username);
+    int getABlackMan(String id);
 
     @SelectProvider(method = "getSBStoBeLaHei", type = SBSqlProvider.class)
-    @ResultType(value=SB.class)
-    List<SB> getAllSBs();
+    @ResultType(value=BlackMan.class)
+    List<BlackMan> getAllBlackMans();
 
     @InsertProvider(method="insertSBtoBeLaHei",type = SBSqlProvider.class)
-    Boolean insertASB(SB sb);
+    int insertABlackMan(BlackMan sb);
 
     @DeleteProvider(method="deleteSBtoBeLaHei",type = SBSqlProvider.class)
-    Boolean deleteASB(SB sb);
+    Boolean deleteABlackMan(BlackMan sb);
 }

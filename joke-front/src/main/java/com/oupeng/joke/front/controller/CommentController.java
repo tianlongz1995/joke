@@ -109,7 +109,6 @@ public class CommentController {
                               @RequestParam(value = "avata") String avata) {
 
         try {
-
             comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
             nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
             return commentService.sendComment(jid, comment, userId, nick, avata);

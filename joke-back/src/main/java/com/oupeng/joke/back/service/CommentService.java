@@ -6,9 +6,10 @@ import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.BlackManMapper;
 import com.oupeng.joke.dao.mapper.CommentMapper;
 import com.oupeng.joke.domain.Comment;
-import com.oupeng.joke.domain.Result;
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -46,6 +44,9 @@ public class CommentService {
     private Environment env;
     @Autowired
     private SensitiveFilterService filterService;
+    @Autowired
+    private BlackManMapper blackManMapper;
+
 
     /**
      * 未发布评论
@@ -96,8 +97,23 @@ public class CommentService {
      * @return
      */
     public void verifyComment(String ids, Integer state, Integer allState, String username) {
+
         if (allState == 1) {
             if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
+                String [] str=ids.split(",");
+                for (String id:str) {
+                    BlackMan sb=new BlackMan();
+                    sb.setId(id);
+                    sb.setUpdateTime(Calendar.getInstance().getTime());
+
+                    if (blackManMapper.getABlackMan(sb.getId())<=0){
+                        blackManMapper.insertABlackMan(sb);
+                        jedisCache.hset(JedisKey.BLACK_MAN, id, id);
+                    }
+                    else{
+                        logger.info("此用户已经被拉黑");
+                    }
+                }
                 cleanCommentCache(ids);
             }
         } else if (allState != 2) {

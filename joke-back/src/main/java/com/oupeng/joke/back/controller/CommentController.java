@@ -1,13 +1,9 @@
 package com.oupeng.joke.back.controller;
 
 import com.oupeng.joke.back.service.CommentService;
-import com.oupeng.joke.cache.JedisCache;
-import com.oupeng.joke.cache.JedisKey;
-import com.oupeng.joke.dao.mapper.SBMapper;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
-import com.oupeng.joke.domain.user.SB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -31,10 +26,6 @@ public class CommentController{
 
     @Autowired
     private CommentService commentService;
-    @Autowired
-    private SBMapper sbmapper;
-    @Autowired
-    private JedisCache jedisCache;
 
     /**
      * 评论列表
@@ -91,24 +82,6 @@ public class CommentController{
                          @RequestParam(value = "state") Integer state,
                          @RequestParam(value = "allState") Integer allState) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        String [] str=ids.split(",");
-        for (String id:str) {
-            SB sb2=new SB();
-            sb2.setId(id);
-            sb2.setUpdateTime(Calendar.getInstance().getTime());
-
-            try {
-                sbmapper.insertASB(sb2);
-                jedisCache.hset(JedisKey.BLACK_MAN, id, id);
-            }
-            catch (Exception e)
-            {
-                logger.info("此用户已经被拉黑");
-            }
-        }
-
-
         commentService.verifyComment(ids, state, allState, username);
         return new Success();
     }
