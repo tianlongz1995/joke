@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/comment")
-public class CommentController{
+public class CommentController {
     private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     @Autowired
@@ -79,10 +79,11 @@ public class CommentController{
     @RequestMapping("/verify")
     @ResponseBody
     public Result verify(@RequestParam(value = "ids") String ids,
+                         @RequestParam(value = "uids") String uids,
                          @RequestParam(value = "state") Integer state,
                          @RequestParam(value = "allState") Integer allState) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        commentService.verifyComment(ids, state, allState, username);
+        commentService.verifyComment(ids, uids, state, allState, username);
         return new Success();
     }
 }

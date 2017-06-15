@@ -78,17 +78,17 @@
                                         </a>
                                     </label>
                                     <%--<c:if test="${state == 1 }">--%>
-                                        <%--<label style="padding-right:10px;">--%>
-                                            <%--<a class="btn btn-success btn-sm" href="#"--%>
-                                               <%--onclick="verifyComment(2,'batch')">--%>
-                                                <%--<i class="glyphicon glyphicon-ok icon-white"></i>批量通过--%>
-                                            <%--</a>--%>
-                                        <%--</label>--%>
+                                    <%--<label style="padding-right:10px;">--%>
+                                    <%--<a class="btn btn-success btn-sm" href="#"--%>
+                                    <%--onclick="verifyComment(2,'batch',null)">--%>
+                                    <%--<i class="glyphicon glyphicon-ok icon-white"></i>批量通过--%>
+                                    <%--</a>--%>
+                                    <%--</label>--%>
                                     <%--</c:if>--%>
                                     <c:if test="${state != 3}">
                                         <label style="padding-right:0px;">
                                             <a class="btn btn-danger btn-sm" href="#"
-                                               onclick="verifyComment(3,'batch')">
+                                               onclick="verifyComment(3,'batch','batch')">
                                                 <i class="glyphicon glyphicon-remove icon-white"></i>批量拉黑
                                             </a>
                                         </label>
@@ -96,7 +96,7 @@
                                     <c:if test="${state != 4}">
                                         <label style="padding-right:0px;">
                                             <a class="btn btn-danger btn-sm" href="#"
-                                               onclick="verifyComment(4,'batch')">
+                                               onclick="verifyComment(4,'batch','batch')">
                                                 <i class="glyphicon glyphicon-remove icon-white"></i>批量删除
                                             </a>
                                         </label>
@@ -104,7 +104,7 @@
                                     <c:if test="${state != 1}">
                                         <label style="padding-right:0px;">
                                             <a class="btn btn-danger btn-sm" href="#"
-                                               onclick="verifyComment(1,'batch')">
+                                               onclick="verifyComment(1,'batch','batch')">
                                                 <i class="glyphicon glyphicon-remove icon-white"></i>批量恢复
                                             </a>
                                         </label>
@@ -128,6 +128,7 @@
                                     <tr>
                                         <td style="text-align: center; vertical-align: middle;">
                                             <input type="checkbox" name="commentId" value="${comment.id}"/>
+                                            <input type="hidden" name="userId" value="${comment.uid}">
                                         </td>
                                         <td>
                                                 ${comment.bc}
@@ -145,22 +146,22 @@
                                                 <%--未审核--%>
                                             <c:if test="${comment.state == 1}">
                                                 <%--<a class="btn btn-success btn-sm" href="#"--%>
-                                                   <%--onclick="verifyComment(2,${comment.id})">--%>
-                                                    <%--<i class="glyphicon glyphicon-ok icon-white"></i>通过--%>
+                                                <%--onclick="verifyComment(2,${comment.id},null)">--%>
+                                                <%--<i class="glyphicon glyphicon-ok icon-white"></i>通过--%>
                                                 <%--</a>--%>
                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="verifyComment(3,${comment.id})">
+                                                   onclick="verifyComment(3,${comment.id},${comment.uid})">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>拉黑
                                                 </a>
                                                 <a class="btn btn-danger btn-sm" href="#"
-                                                   onclick="verifyComment(4,${comment.id})">
+                                                   onclick="verifyComment(4,${comment.id},null)">
                                                     <i class="glyphicon glyphicon-remove icon-white"></i>删除
                                                 </a>
                                             </c:if>
                                                 <%--通过--%>
                                             <c:if test="${comment.state != 1}">
                                                 <a class="btn btn-primary btn-sm" href="#"
-                                                   onclick="verifyComment(1,${comment.id})">
+                                                   onclick="verifyComment(1,${comment.id},null)">
                                                     <i class="glyphicon glyphicon-open icon-white"></i> 恢复
                                                 </a>
                                             </c:if>
@@ -192,20 +193,23 @@
                     }
                 });
 
-                function verifyComment(state, id) {
+                function verifyComment(state, id, uid) {
                     if ("batch" == id) {
                         var ids = [];
+                        var uids = [];
                         $('input[name="commentId"]:checked').each(function () {
                             ids.push($(this).val());
+                            uids.push($(this).nextNode().val());
                         });
                         if (ids.length == 0) {
                             alert("未选中任何内容");
                             return false;
                         }
                         id = ids.toString();
+                        uid = uids.toString();
                     }
                     post('comment/verify',
-                        'ids=' + id + '&state=' + state + '&allState=' + $("#state").val(),
+                        'ids=' + id + '&uids=' + uid + '&state=' + state + '&allState=' + $("#state").val(),
                         function (data) {
                             if (data.status == 1) {
                                 alert("操作成功!");

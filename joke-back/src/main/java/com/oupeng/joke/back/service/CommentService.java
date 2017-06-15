@@ -97,11 +97,11 @@ public class CommentService {
      * @param allState
      * @return
      */
-    public void verifyComment(String ids, Integer state, Integer allState, String username) {
+    public void verifyComment(String ids, String uids, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
             if (state == 3 ) {//已发布评论状态拉黑删除  删除缓存
-                String [] str=ids.split(",");
+                String [] str=uids.split(",");
                 for (String id:str) {
                     BlackMan sb=new BlackMan();
                     sb.setId(id);
@@ -110,11 +110,11 @@ public class CommentService {
                     if (blackManMapper.getABlackMan(sb.getId())<=0){
                         blackManMapper.insertABlackMan(sb);
                         jedisCache.hset(JedisKey.BLACK_MAN, id, id);
-                        commentMapper.deleteComment(id);
                     }
                     else{
                         logger.info("用户:"+id+" 已经被拉黑");
                     }
+                    commentMapper.deleteComment(id);
                 }
                 cleanCommentCache(ids);
             }
