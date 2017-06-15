@@ -100,26 +100,23 @@ public class CommentService {
     public void verifyComment(String ids, String uids, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
-            if (state == 3 ) {//已发布评论状态拉黑删除  删除缓存
-                String [] str=uids.split(",");
-                for (String id:str) {
-                    BlackMan sb=new BlackMan();
-                    sb.setId(id);
+            if (state == 3) {//已发布评论状态拉黑删除  删除缓存
+                String[] str = uids.split(",");
+                for (String uid : str) {
+                    BlackMan sb = new BlackMan();
+                    sb.setId(uid);
                     sb.setCreate_by(username);
 
-                    if (blackManMapper.getABlackMan(sb.getId())<=0){
+                    if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
                         blackManMapper.insertABlackMan(sb);
-                        jedisCache.hset(JedisKey.BLACK_MAN, id, id);
+                    } else {
+                        logger.info("用户:" + uid + " 已经被拉黑");
                     }
-                    else{
-                        logger.info("用户:"+id+" 已经被拉黑");
-                    }
-                    commentMapper.deleteComment(id);
+                    jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
+                    commentMapper.deleteComment(uid);
                 }
                 cleanCommentCache(ids);
-            }
-            else if(state==4)
-            {
+            } else if (state == 4) {
                 cleanCommentCache(ids);
             }
         } else if (allState != 2) {
@@ -142,21 +139,21 @@ public class CommentService {
      */
     private void cleanCommentCache(String ids) {
         String[] commentIds = ids.split(",");
-        if(commentIds == null || commentIds.length < 1){
+        if (commentIds == null || commentIds.length < 1) {
             logger.error("清除评论缓存异常: ids:{}", ids);
             return;
         }
         //评论keys
         Set<String> keys = jedisCache.keys(JedisKey.JOKE_COMMENT_LIST + "*");
         for (String key : keys) {
-            for(String id : commentIds){
+            for (String id : commentIds) {
                 jedisCache.zrem(key, id);
             }
         }
         //神评keys
         Set<String> godKeys = jedisCache.keys(JedisKey.JOKE_GOD_COMMENT + "*");
         for (String godKey : godKeys) {
-            for(String id : commentIds){
+            for (String id : commentIds) {
                 jedisCache.zrem(godKey, id);
             }
 
@@ -271,7 +268,7 @@ public class CommentService {
                     List<String> list = jedisCache.brpop(JedisKey.NEW_COMMENT_LIST, 60 * 5);
                     if (!CollectionUtils.isEmpty(list)) {
                         Comment com = JSON.parseObject(list.get(1), Comment.class);
-                        if(com != null){
+                        if (com != null) {
                             String content = filterService.doFilter(com.getBc());
                             if (StringUtils.isNotBlank(content)) {
                                 Comment comment = HttpUtil.getRandomUser(randomUserUrl);
