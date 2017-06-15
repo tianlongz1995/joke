@@ -81,7 +81,7 @@ public class CommentService {
 
     /**
      * 评论
-     *
+     * 如果发送评论的ID 在拉黑列表中存在,则直接返回
      * @param jid
      * @param comment
      */

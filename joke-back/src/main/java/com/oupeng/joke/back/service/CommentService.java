@@ -25,6 +25,7 @@ import java.util.*;
 /**
  * 评论
  * Created by java_zong on 2017/4/17.
+ * Amended by Jane on 2017/6/15.
  */
 @Service
 public class CommentService {
@@ -99,21 +100,26 @@ public class CommentService {
     public void verifyComment(String ids, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
-            if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
+            if (state == 3 ) {//已发布评论状态拉黑删除  删除缓存
                 String [] str=ids.split(",");
                 for (String id:str) {
                     BlackMan sb=new BlackMan();
                     sb.setId(id);
-                    sb.setUpdateTime(Calendar.getInstance().getTime());
+                    sb.setCreate_by(username);
 
                     if (blackManMapper.getABlackMan(sb.getId())<=0){
                         blackManMapper.insertABlackMan(sb);
                         jedisCache.hset(JedisKey.BLACK_MAN, id, id);
+                        commentMapper.deleteComment(id);
                     }
                     else{
-                        logger.info("此用户已经被拉黑");
+                        logger.info("用户:"+id+" 已经被拉黑");
                     }
                 }
+                cleanCommentCache(ids);
+            }
+            else if(state==4)
+            {
                 cleanCommentCache(ids);
             }
         } else if (allState != 2) {
@@ -280,7 +286,6 @@ public class CommentService {
                                 addCommentToCache(comment);
                                 jedisCache.setAndExpire(JedisKey.COMMENT_NUMBER + com.getUid(), "1", 20);
                             }
-
                         }
                     }
                 } catch (Exception e) {
