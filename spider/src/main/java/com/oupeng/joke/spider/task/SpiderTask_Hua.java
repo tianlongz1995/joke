@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * 快乐麻花
  * Created by zongchao on 2017/3/13.
  */
-@Component
+//@Component
 public class SpiderTask_Hua {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Hua.class);
 

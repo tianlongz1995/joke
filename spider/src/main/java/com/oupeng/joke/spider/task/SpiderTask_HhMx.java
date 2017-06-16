@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
  * 哈哈mx
  * Created by zongchao on 2017/3/21.
  */
-@Component
+//@Component
 public class SpiderTask_HhMx {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_HhMx.class);
 
