@@ -145,8 +145,6 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
                         com.setAvata(avata);
                         com.setGood(god);
                         commentDao.addComment(com);
-
-                        System.out.println("insert the " + (i + 1) + "th hot comment");
                     }
 
                 } else {
@@ -154,11 +152,6 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
                     jobInfoDao.addImg(jokeImg);
                 }
             }
-
-            /**
-             *  INSERT DISPLAY
-             */
-            System.out.println("INSERT:" + jokeImg.getSrc());
 
             urlFilter.add(jokeImg.getSrc());
             logger.info("图片 - 处理页面结束:{}", jokeImg.getSrc());
