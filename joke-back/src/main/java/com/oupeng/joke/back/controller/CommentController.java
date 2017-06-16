@@ -80,10 +80,11 @@ public class CommentController {
     @ResponseBody
     public Result verify(@RequestParam(value = "ids") String ids,
                          @RequestParam(value = "uids") String uids,
+                         @RequestParam(value = "nicks") String nicks,
                          @RequestParam(value = "state") Integer state,
                          @RequestParam(value = "allState") Integer allState) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        commentService.verifyComment(ids, uids, state, allState, username);
+        commentService.verifyComment(ids, uids, nicks, state, allState, username);
         return new Success();
     }
 }

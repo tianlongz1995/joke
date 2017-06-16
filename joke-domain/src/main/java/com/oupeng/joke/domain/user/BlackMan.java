@@ -12,10 +12,21 @@ public class BlackMan {
     private String id;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String nick;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date updateTime;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String create_by;
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
 
     public String getCreate_by() {
         return create_by;

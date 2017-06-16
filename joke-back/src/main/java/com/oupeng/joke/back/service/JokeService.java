@@ -1214,7 +1214,7 @@ public class JokeService {
      */
     private String getReleaseAvatar(Integer id) {
         int i =  id % 40;
-        if(i<=20){
+        if(i<=19){
             return "1/" + i + ".jpg";
         }
         else {

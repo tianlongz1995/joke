@@ -7,11 +7,13 @@ import com.oupeng.joke.back.service.SourceService;
 import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.BlackManMapper;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeTop;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
@@ -49,6 +51,8 @@ public class JokeController {
     private MailService mailService;
     @Autowired
     private Environment env;
+    @Autowired
+    private BlackManMapper blackManMapper;
 
     /**
      * 验证码收件人
@@ -488,6 +492,38 @@ public class JokeController {
     public String addJokePage() {
         return "joke/add";
     }
+
+
+    //以下为拉黑管理内容
+    @RequestMapping(value = "/blackManage")
+    public String blackManage() {
+        return "black/list";
+    }
+    /**
+     * 查询一个黑人
+     *
+     * @param uid   黑人的ID
+     * @param model
+     * @return
+     */
+    @RequestMapping("/getBlackMan")
+    public String getBlackMan(@RequestParam(value = "uid", required = false) String uid,
+                              Model model) {
+        List<BlackMan> blackManList = blackManMapper.getBlackMan(uid);
+        model.addAttribute("list", blackManList);
+        return "black/list";
+    }
+
+    @RequestMapping("/retrieve")
+    public String retrieveBlack(@RequestParam(value="uid",required = false) String uid)
+    {
+        blackManMapper.deleteABlackMan(uid);
+        jedisCache.hdel(JedisKey.BLACK_MAN,uid);
+        return "black/list";
+    }
+
+
+    //拉黑管理内容结束
 
 
     /**
