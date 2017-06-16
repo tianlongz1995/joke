@@ -445,3 +445,7 @@ INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/lis
 
 -- 新增内涵段子内容源
 INSERT INTO `source` VALUES ('155', '内涵段子', 'http://neihanshequ.com/pic/', '1', '2017-06-15 14:14:09', '2017-06-15 14:14:09');
+
+
+-- 新增我想网内容源
+INSERT INTO `source` VALUES ('156', '我想网', 'http://www.wowant.com/xieegif/', '1', '2017-06-16 09:46:09', '2017-06-15 14:14:09');
