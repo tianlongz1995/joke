@@ -19,6 +19,12 @@ public class BlackManSqlProvider {
         return sql.toString();
     }
 
+    public static String countBLackMantoBeLaHei(){
+        StringBuffer sql=new StringBuffer();
+        sql.append("select count(1) from black_man where 1=1");
+        return sql.toString();
+    }
+
     /**
      * 查询一个黑人
      * @param id
@@ -65,8 +71,8 @@ public class BlackManSqlProvider {
      */
     public  static  String deleteBlackMantoBeLaHei(String uid) {
         StringBuffer sql = new StringBuffer();
-        sql.append("delete from black_man where id=");
-        sql.append(uid);
+        sql.append("delete from black_man where id='");
+        sql.append(uid).append("'");
         return sql.toString();
     }
 }

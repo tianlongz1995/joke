@@ -17,6 +17,9 @@ public interface BlackManMapper {
     @SelectProvider(method = "countBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     int getABlackMan(String id);
 
+    @SelectProvider(method = "countBLackMantoBeLaHei", type=BlackManSqlProvider.class)
+    int countBlackMan();
+
     @SelectProvider(method ="getBlackMantoBeLaHei",type = BlackManSqlProvider.class)
     @ResultType(BlackMan.class)
     List<BlackMan> getBlackMan(String id);

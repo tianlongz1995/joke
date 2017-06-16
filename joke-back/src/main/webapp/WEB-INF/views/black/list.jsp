@@ -95,7 +95,7 @@
                                                 ${black_man.nick}
                                         </td>
                                         <td>
-                                                ${black_man.updateTime}
+                                                ${black_man.create_time}
                                         </td>
                                         <td>
                                                 ${black_man.create_by}
@@ -152,6 +152,8 @@
                         function () {
                             alert('请求失败，请检查网络环境!');
                         });
+
+                    location.href = '<%=basePath%>comment/listBlackMan';
                 }
 
 

@@ -515,11 +515,22 @@ public class JokeController {
     }
 
     @RequestMapping("/retrieve")
-    public String retrieveBlack(@RequestParam(value="uid",required = false) String uid)
+    public Result retrieveBlack(@RequestParam(value="uid",required = false) String uid)
     {
-        blackManMapper.deleteABlackMan(uid);
-        jedisCache.hdel(JedisKey.BLACK_MAN,uid);
-        return "black/list";
+        try {
+            log.info("从数据库中删除数据");
+            boolean success = blackManMapper.deleteABlackMan(uid);
+            if (success)
+                log.info("从数据库中删除uid:" + uid + "成功");
+            log.info("从缓存中删除uid" + uid);
+            jedisCache.hdel(JedisKey.BLACK_MAN, uid);
+
+            return new Success();
+        }catch (Exception e)
+        {
+            log.info(e.getMessage()+":"+e.getStackTrace());
+            return new Failed("恢复失败,请查看后台日志");
+        }
     }
 
 

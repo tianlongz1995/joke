@@ -15,7 +15,7 @@ public class BlackMan {
     private String nick;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Date updateTime;
+    private Date create_time;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String create_by;
@@ -37,11 +37,11 @@ public class BlackMan {
     }
 
     public Date getUpdateTime() {
-        return updateTime;
+        return create_time;
     }
 
     public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+        this.create_time = updateTime;
     }
 
     public String getId() {
