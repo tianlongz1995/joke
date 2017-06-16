@@ -1213,11 +1213,10 @@ public class JokeService {
      * @return
      */
     private String getReleaseAvatar(Integer id) {
-        int i =  id % 40;
-        if(i<=20){
+        int i = id % 40;
+        if (i < 20) {
             return "1/" + i + ".jpg";
-        }
-        else {
+        } else {
             return "1/" + i + ".png";
         }
 

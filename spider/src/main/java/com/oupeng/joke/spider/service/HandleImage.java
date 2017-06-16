@@ -111,22 +111,28 @@ public class HandleImage {
         Double height = widthHeight[1] * 0.75;
         int he = height.intValue();
 
-        //压缩
-        boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, wid, he, false);
-        if (isSuccess){ //压缩成功
-            image.setWidth(wid);
-            image.setHeight(he);
-        }else {
-            image.setWidth(widthHeight[0]);
-            image.setHeight(widthHeight[1]);
+        //静图压缩
+        if(!isGif){
+            boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, wid, he, false);
+            if (isSuccess){ //压缩成功
+                image.setWidth(wid);
+                image.setHeight(he);
+            }else {
+                image.setWidth(widthHeight[0]);
+                image.setHeight(widthHeight[1]);
+            }
         }
+
         if (isGif) {
             String imgName = handleImg(cdnUrl);
             //动图切图是否成功
             if (StringUtils.isNotBlank(imgName)) {
                 image.setImgUrl(random + "/" + imgName);
             }
+            image.setWidth(widthHeight[0]);
+            image.setHeight(widthHeight[1]);
         } else {
+
             image.setImgUrl(random + "/" + newFileName);
         }
         return image;
