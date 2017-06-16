@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.utils.HttpUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
@@ -21,6 +23,7 @@ import java.util.List;
 @HelpUrl("http://neihanshequ.com/pic/")
 public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
 
+    private static final Logger logger = LoggerFactory.getLogger(JokeImgNeiHanJS.class);
 
     private static final int new_sourceId = 155;
 
@@ -140,8 +143,8 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         JSONObject data = (JSONObject) retjson.get("data");
         JSONArray array = data.getJSONArray("top_comments");
 
-        List<Integer> Goods = new ArrayList<Integer>();
-        List<String> Contents = new ArrayList<String>();
+        List<Integer> goods = new ArrayList<Integer>();
+        List<String> contents = new ArrayList<String>();
         for (int i = 0; i < array.size(); i++) {
 
             JSONObject obj = array.getJSONObject(i);
@@ -149,29 +152,38 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
             String content = obj.getString("text").trim();
 
             //为空或者不存在
-            if (good == null || good.length() < 1 || content == null || content.length() < 1) continue;
+            if (good == null || good.length() < 1 || content == null || content.length() < 1) {
+                continue;
+            }
 
             //判断good能否转化为Integer
             int god = 0;
-            try{
+            try {
                 god = Integer.parseInt(good);
-            }catch (NumberFormatException e){
-                god =0;
+            } catch (NumberFormatException e) {
+                god = 0;
             }
-            if (Integer.valueOf(good) <= 10) continue; //非神评论
 
-            Goods.add(god);
-            Contents.add(content);
+            //非神评论
+            if (Integer.valueOf(good) <= 10) {
+                continue;
+            }
+
+            goods.add(god);
+            contents.add(content);
         }
-        this.setHotGoods(Goods);
-        this.setHotContents(Contents);
+        this.setHotGoods(goods);
+        this.setHotContents(contents);
 
 
         //抓取到的神评数量
-        if (this.getHotGoods() != null)
+        if (this.getHotGoods() != null) {
             this.setCommentNumber(this.getHotGoods().size());
-        else
+        } else {
             this.setCommentNumber(0);
+        }
+
+        logger.info("爬取内涵段子["+pageURL+"]神评论数量: "+this.getCommentNumber());
 
     }
 }
