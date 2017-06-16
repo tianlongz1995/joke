@@ -6,9 +6,10 @@ import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.BlackManMapper;
 import com.oupeng.joke.dao.mapper.CommentMapper;
 import com.oupeng.joke.domain.Comment;
-import com.oupeng.joke.domain.Result;
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 
 /**
  * 评论
  * Created by java_zong on 2017/4/17.
+ * Amended by Jane on 2017/6/15.
  */
 @Service
 public class CommentService {
@@ -46,6 +45,9 @@ public class CommentService {
     private Environment env;
     @Autowired
     private SensitiveFilterService filterService;
+    @Autowired
+    private BlackManMapper blackManMapper;
+
 
     /**
      * 未发布评论
@@ -95,9 +97,26 @@ public class CommentService {
      * @param allState
      * @return
      */
-    public void verifyComment(String ids, Integer state, Integer allState, String username) {
+    public void verifyComment(String ids, String uids, Integer state, Integer allState, String username) {
+
         if (allState == 1) {
-            if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
+            if (state == 3) {//已发布评论状态拉黑删除  删除缓存
+                String[] str = uids.split(",");
+                for (String uid : str) {
+                    BlackMan sb = new BlackMan();
+                    sb.setId(uid);
+                    sb.setCreate_by(username);
+
+                    if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
+                        blackManMapper.insertABlackMan(sb);
+                    } else {
+                        logger.info("用户:" + uid + " 已经被拉黑");
+                    }
+                    jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
+                    commentMapper.deleteComment(uid);
+                }
+                cleanCommentCache(ids);
+            } else if (state == 4) {
                 cleanCommentCache(ids);
             }
         } else if (allState != 2) {
@@ -120,21 +139,21 @@ public class CommentService {
      */
     private void cleanCommentCache(String ids) {
         String[] commentIds = ids.split(",");
-        if(commentIds == null || commentIds.length < 1){
+        if (commentIds == null || commentIds.length < 1) {
             logger.error("清除评论缓存异常: ids:{}", ids);
             return;
         }
         //评论keys
         Set<String> keys = jedisCache.keys(JedisKey.JOKE_COMMENT_LIST + "*");
         for (String key : keys) {
-            for(String id : commentIds){
+            for (String id : commentIds) {
                 jedisCache.zrem(key, id);
             }
         }
         //神评keys
         Set<String> godKeys = jedisCache.keys(JedisKey.JOKE_GOD_COMMENT + "*");
         for (String godKey : godKeys) {
-            for(String id : commentIds){
+            for (String id : commentIds) {
                 jedisCache.zrem(godKey, id);
             }
 
@@ -249,7 +268,7 @@ public class CommentService {
                     List<String> list = jedisCache.brpop(JedisKey.NEW_COMMENT_LIST, 60 * 5);
                     if (!CollectionUtils.isEmpty(list)) {
                         Comment com = JSON.parseObject(list.get(1), Comment.class);
-                        if(com != null){
+                        if (com != null) {
                             String content = filterService.doFilter(com.getBc());
                             if (StringUtils.isNotBlank(content)) {
                                 Comment comment = HttpUtil.getRandomUser(randomUserUrl);
@@ -264,7 +283,6 @@ public class CommentService {
                                 addCommentToCache(comment);
                                 jedisCache.setAndExpire(JedisKey.COMMENT_NUMBER + com.getUid(), "1", 20);
                             }
-
                         }
                     }
                 } catch (Exception e) {

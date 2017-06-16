@@ -48,17 +48,22 @@ public interface CommentMapper {
     @Update("update `comment` set good = good + #{good} where id = #{id}")
     void updateCommentGood(@Param("id") Integer id, @Param("good") Integer good);
 
+
     @Insert("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values ('1',#{jokeId},#{uid},#{nick},#{bc},#{avata},#{good},#{time},'1')")
     @SelectKey(statement = "SELECT LAST_INSERT_ID() as id", keyProperty = "id", before = false, resultType = Integer.class)
     void insertComment(Comment com);
 
-    /**
-     * 评论数据
-     *
-     * @param keyWord 关键字
-     * @param state   状态
-     * @return
-     */
+    @Delete(value="delete from comment where uid=#{id}")
+    void deleteComment(@Param("id") String id);
+
+
+            /**
+             * 评论数据
+             *
+             * @param keyWord 关键字
+             * @param state   状态
+             * @return
+             */
     @SelectProvider(method = "getListForVerifyCount", type = CommentSqlProvider.class)
     int getListForVerifyCount(@Param("keyWord") String keyWord, @Param("state") Integer state);
 

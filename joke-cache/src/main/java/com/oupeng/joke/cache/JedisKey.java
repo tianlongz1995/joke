@@ -112,4 +112,6 @@ public class JedisKey {
     public static final String NEW_COMMENT_LIST="new.comment.list";
     /** 评论数量*/
     public static final String COMMENT_NUMBER = "comment.user.";
+    /** 被拉黑的SB*/
+    public static final String BLACK_MAN="joke.back.blackman";
 }

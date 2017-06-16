@@ -445,3 +445,12 @@ INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/lis
 
 --- 新建叶子猪数据源 2017-6-13
 INSERT INTO `source` VALUES ('154', '叶子猪', 'http://xx.yzz.cn/', '1', '2017-06-13 11:00:00', '2017-06-13 11:00:00');
+
+
+--- 新建拉黑数据库 2017-6-15
+CREATE TABLE `black_man` (
+  `id` varchar(40) NOT NULL DEFAULT '' COMMENT '主键',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -11,8 +11,8 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
  * Created by pengzheng on 2017/6/13.
  *
  */
-@TargetUrl("http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}.shtml")
-@HelpUrl("http://xx.yzz.cn/dongtu/\\d{3,6},\\d{1,3}.shtml")
+@TargetUrl("http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}.shtml|http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}_\\d+.shtml")
+@HelpUrl("http://xx.yzz.cn/dongtu/\\d{3,6},\\d{1,3}.shtml|http://xx.yzz.cn/dongtu/\\d{5,8}/\\d{6,10}_\\d+.shtml")
 public class JokeImgYZZDongTu extends JokeImg implements AfterExtractor {
 
     @ExtractBy(value = "//div[@id='article']/h1/allText()", notNull = true)

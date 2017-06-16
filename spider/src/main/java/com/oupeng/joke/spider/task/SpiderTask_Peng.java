@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
  * 捧腹网
  * Created by zongchao on 2017/3/20.
  */
-@Component
+//@Component
 public class SpiderTask_Peng {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Peng.class);
 
