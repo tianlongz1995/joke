@@ -22,14 +22,15 @@ public class BlackManSqlProvider {
     }
 
     /**
-     * 获取一个范围的黑人
+     * 获取一个范围的拉黑用户
+     *
      * @param
      * @param
      * @return
      */
-    public static String listBlackMansInRange(Map<String, Object> map) {
-        int offset=(int) map.get("offset");
-        int pageSize=(int) map.get("pageSize");
+    public static String listBlackMansnRange(Map<String, Object> map) {
+        int offset = (int) map.get("offset");
+        int pageSize = (int) map.get("pageSize");
         StringBuffer sql = new StringBuffer();
         sql.append("select id,nick,create_time,create_by from black_man order by id");
         sql.append(" limit ");
@@ -38,17 +39,17 @@ public class BlackManSqlProvider {
     }
 
     /***
-     * 计算黑人的数量
+     * 计算被拉黑的数量
      * @return
      */
     public static String countBLackManstoBeLaHei() {
         StringBuffer sql = new StringBuffer();
-        sql.append("select count(1) from black_man where 1=1");
+        sql.append("select count(1) from black_man");
         return sql.toString();
     }
 
     /**
-     * 查询一个黑人
+     * 查询一个被拉黑的用户
      *
      * @param id
      * @return
@@ -60,7 +61,7 @@ public class BlackManSqlProvider {
     }
 
     /**
-     * 查询所有的黑人
+     * 查询所有的拉黑用户
      *
      * @return
      */
@@ -71,7 +72,7 @@ public class BlackManSqlProvider {
     }
 
     /**
-     * 插入一个黑人
+     * 拉黑一个用户
      *
      * @param sb
      * @return
@@ -94,7 +95,7 @@ public class BlackManSqlProvider {
     }
 
     /**
-     * 删除一个黑人
+     * 恢复一个被拉黑的用户
      *
      * @param
      * @return

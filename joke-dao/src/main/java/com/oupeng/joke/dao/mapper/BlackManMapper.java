@@ -17,9 +17,9 @@ public interface BlackManMapper {
     @SelectProvider(method = "countBLackManstoBeLaHei", type = BlackManSqlProvider.class)
     int countBlackMan();
 
-    @SelectProvider(method = "listBlackMansInRange", type = BlackManSqlProvider.class)
+    @SelectProvider(method = "listBlackMansinRange", type = BlackManSqlProvider.class)
     @ResultType(BlackMan.class)
-    List<BlackMan> listBlackManInRange(@Param(value = "offset") int offset, @Param(value="pageSize") Integer pageSize);
+    List<BlackMan> listBlackManInRange(@Param(value = "offset") int offset, @Param(value = "pageSize") Integer pageSize);
 
     @SelectProvider(method = "getBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     @ResultType(BlackMan.class)

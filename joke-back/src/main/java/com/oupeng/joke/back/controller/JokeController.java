@@ -496,7 +496,7 @@ public class JokeController {
     //以下为拉黑管理内容
 
     /**
-     * 跳到黑人管理界面
+     * 跳到拉黑管理界面
      *
      * @return
      */
@@ -508,9 +508,9 @@ public class JokeController {
 
 
     /**
-     * 查询一个黑人
+     * 查询一个拉黑用户
      *
-     * @param uid   黑人的ID
+     * @param uid   用户的uID
      * @param model
      * @return
      */
@@ -530,7 +530,7 @@ public class JokeController {
      */
     @RequestMapping("/retrieve")
     @ResponseBody
-    public Result retrieve(@RequestParam(value = "uid", required = false ) String uid) {
+    public Result retrieve(@RequestParam(value = "uid", required = false) String uid) {
         try {
             boolean success = blackManMapper.deleteABlackMan(uid);
             jedisCache.hdel(JedisKey.BLACK_MAN, uid);
@@ -541,11 +541,19 @@ public class JokeController {
         }
     }
 
+    /**
+     * 请求一页拉黑用户的数据
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @param model
+     * @return
+     */
     @RequestMapping("/listBlackMan")
-    public String listBlackMan( @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                Model model) {
-        List<BlackMan> blackManList=null;
+    public String listBlackMan(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                               @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                               Model model) {
+        List<BlackMan> blackManList = null;
 
         pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
         pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
@@ -575,7 +583,7 @@ public class JokeController {
             offset = (pageNumber - 1) * pageSize;
 
             log.info("准备查询当前页面的数据");
-            blackManList = blackManMapper.listBlackManInRange(offset,pageSize);
+            blackManList = blackManMapper.listBlackManInRange(offset, pageSize);
             log.info("查询成功");
         }
 
