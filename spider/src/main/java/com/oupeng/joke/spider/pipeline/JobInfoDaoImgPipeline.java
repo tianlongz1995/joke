@@ -6,6 +6,7 @@ import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.domain.User;
 import com.oupeng.joke.spider.mapper.CommentDao;
 import com.oupeng.joke.spider.mapper.JobInfoDao;
+import com.oupeng.joke.spider.mapper.JokeDao;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.service.HandleImage;
 import com.oupeng.joke.spider.service.ImgBloomFilterService;
@@ -25,12 +26,14 @@ import javax.annotation.PostConstruct;
 import java.util.Random;
 
 /**
- * Created by zongchao on 2017/3/8.
+ * Created by xiongyingl on 2017/6/14.
  */
+
+
 @Component("JobInfoDaoImgPipeline")
 public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
 
     private Random random = new Random(3000);
     private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
@@ -48,6 +51,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     private ImgBloomFilterService imgFilter;
     @Autowired
     private URLBloomFilterService urlFilter;
+
+    @Autowired
+    private JokeDao jokeDao;
 
 
     @Autowired
@@ -75,6 +81,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             ((OOSpider) task).stop();
             logger.info("图片 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, count);
         }
+
         if (!urlFilter.contains(jokeImg.getSrc())) {
             //处理图片
             ImageDto img = handleImage.downloadImg(jokeImg.getImg());
@@ -94,46 +101,85 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 int good = 500 + (int) (Math.random() * 500);
                 jokeImg.setBad(bad);
                 jokeImg.setGood(good);
+
+                /**
+                 *   ReleaseNick  发布段子用户昵称
+                 *   ReleaseAvata 发布段子用户头像url
+                 */
                 //发布人
                 int rid = random.nextInt(2089);
                 User ru = userDao.select(rid);
                 jokeImg.setReleaseNick(ru.getNickname());
+
                 int riconid = rid % 20 + 1;
                 String ravata = avataStr.replace("%d", String.valueOf(riconid));
                 jokeImg.setReleaseAvata(ravata);
-                if (jokeImg.getAgreeTotal() != null && jokeImg.getAgreeTotal() > 10) {
-                    int id = rid + 1;
-                    User u = userDao.select(id);
-                    int last = u.getLast() + 1;
-                    userDao.update(last, id);
-                    String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
-                    int uid = id * 10000 + last;
-                    int iconid = id % 20 + 1;
-                    String avata = avataStr.replace("%d", String.valueOf(iconid));
-                    jokeImg.setAvata(avata);
-                    jokeImg.setNick(nick);
-                    jokeImg.setCommentNumber(1);
-                    jobInfoDao.addImg(jokeImg);
 
+                //存在神评论
+                if (jokeImg.getCommentNumber() != null && jokeImg.getCommentNumber() > 0) {
+
+                    jobInfoDao.addImg(jokeImg);
                     //获得sid
                     int sid = jobInfoDao.getLastId(jokeImg.getImg());
-                    //添加评论
-                    Comment com = new Comment();
-                    com.setSid(sid);
-                    com.setUid(uid);
-                    com.setNickname(nick);
-                    com.setContent(jokeImg.getCommentContent());
-                    com.setAvata(avata);
-                    com.setGood(jokeImg.getAgreeTotal());
-                    commentDao.addComment(com);
+
+                    /**
+                     * 记录最大点赞数神评信息
+                     */
+                    int m_good = 0;
+                    String m_comment = null, m_avata = null, m_nick = null;
+
+                    /**
+                     *  添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
+                     */
+                    for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
+
+                        int god = jokeImg.getHotGoods().get(i);
+                        String content = jokeImg.getHotContents().get(i);
+
+                        //int id = rid + 1;
+                        int id = random.nextInt(2089);
+
+                        User u = userDao.select(id);
+                        int last = u.getLast() + 1;
+                        userDao.update(last, id);
+                        String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
+                        int uid = id * 10000 + last;
+                        int iconid = id % 20 + 1;
+                        String avata = avataStr.replace("%d", String.valueOf(iconid));
+
+                        //记录最大点赞数的评论
+                        if (god > m_good) {
+                            m_good = god;
+                            m_comment = content;
+                            m_avata = avata;
+                            m_nick = nick;
+                        }
+
+                        Comment com = new Comment();
+                        com.setSid(sid);
+                        com.setUid(uid);
+                        com.setNickname(nick);
+                        com.setContent(content);
+                        com.setAvata(avata);
+                        com.setGood(god);
+                        commentDao.addComment(com);
+                    }
+
+                    /**
+                     * 获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
+                     */
+                    jokeDao.updateJokeOfGod(sid, m_comment, m_avata, m_nick);
+
+
                 } else {
                     jokeImg.setCommentNumber(0);
-                    jokeImg.setComment(null);
                     jobInfoDao.addImg(jokeImg);
                 }
             }
+
             urlFilter.add(jokeImg.getSrc());
             logger.info("图片 - 处理页面结束:{}", jokeImg.getSrc());
         }
     }
 }
+

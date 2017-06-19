@@ -16,7 +16,7 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * Created by yeluo on 2017/6/16.
+ * Created by xiongyingl on 2017/6/16.
  */
 @Component
 public class SpiderTask_WoWant {
@@ -35,11 +35,9 @@ public class SpiderTask_WoWant {
             .setTimeOut(10000)
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
-
-    // @Qualifier("JobInfoDaoImgPipeline")
-    @Qualifier("JobInfoDao_ImgPipeline")
+    @Qualifier("JobInfoDaoImgPipeline")
     @Autowired
-    private PageModelPipeline JobInfoDao_ImgPipeline;
+    private PageModelPipeline JobInfoDaoImgPipeline;
 
 
     @PostConstruct
@@ -56,13 +54,12 @@ public class SpiderTask_WoWant {
 
 
     /**
-     *  wowant 我想网
-     *
+     * wowant 我想网
      */
     @Scheduled(cron = "0 20 23 * * ?")
     public void spider() {
         logger.info("wowant spider image...");
-        crawl(JobInfoDao_ImgPipeline, JokeImgWoWant.class, imgUrl);
+        crawl(JobInfoDaoImgPipeline, JokeImgWoWant.class, imgUrl);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {

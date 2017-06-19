@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * 姐夫酷
- * Created by yeluo on 2017/6/5.
+ * Created by xiongyingl on 2017/6/5.
  */
 @Component
 public class SpiderTask_GifCool {
@@ -53,12 +53,12 @@ public class SpiderTask_GifCool {
     }
 
     /**
-     *  GifCool
+     * GifCool
      *
-       @Scheduled(cron = "* 5 10 * * ?") 不能这样设置，爬虫频率不宜过快，
-       1）过快相当于多个线程爬同一资源,会导致爬取资源重复
-       2）不停地请求带攻击性，会被屏蔽IP
-    */
+     * @Scheduled(cron = "* 5 10 * * ?") 不能这样设置，爬虫频率不宜过快，
+     * 1）过快相当于多个线程爬同一资源,会导致爬取资源重复
+     * 2）不停地请求带攻击性，会被屏蔽IP
+     */
     @Scheduled(cron = "0 18 2 * * ?")
     public void spiderGifCool() {
         logger.info("gifcool spider image...");

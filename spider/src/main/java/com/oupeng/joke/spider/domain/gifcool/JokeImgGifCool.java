@@ -8,7 +8,7 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by yeluo on 2017/6/5.
+ * Created by xiongyingl on 2017/6/5.
  */
 
 @TargetUrl("http://www.gifcool.com/\\w+/\\d+.html")
@@ -44,6 +44,22 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
      * 新建数据源，需要重写sourceId：153
      */
     private Integer sourceId;
+
+
+    /**
+     * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
+     */
+    private Integer type;
+
+
+    @Override
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = 2;
+    }
 
 
     public String getTitle() {

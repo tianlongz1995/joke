@@ -443,9 +443,12 @@ alter table  `comment` add COLUMN `publish_state` INT (11) NOT NULL DEFAULT '0' 
 -- 新增姐夫酷内容源
 INSERT INTO `source` VALUES ('153', '姐夫酷', 'http://www.gifcool.com/gif/list_12_1.html', '1', '2017-06-13 14:14:09', '2017-06-13 14:14:09');
 
--- 新增内涵段子内容源
-INSERT INTO `source` VALUES ('155', '内涵段子', 'http://neihanshequ.com/pic/', '1', '2017-06-15 14:14:09', '2017-06-15 14:14:09');
+-- 新增内涵段子pic内容源
+INSERT INTO `source` VALUES ('155', '内涵段子pic', 'http://neihanshequ.com/pic/', '1', '2017-06-15 14:14:09', '2017-06-15 14:14:09');
 
 
 -- 新增我想网内容源
 INSERT INTO `source` VALUES ('156', '我想网', 'http://www.wowant.com/xieegif/', '1', '2017-06-16 09:46:09', '2017-06-15 14:14:09');
+
+-- 新增内涵段子text内容源
+INSERT INTO `source` VALUES ('158', '内涵段子text', 'http://neihanshequ.com/', '1', '2017-06-19 14:14:09', '2017-06-19 14:14:09');

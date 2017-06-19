@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yeluo on 2017/6/16
+ * Created by xiongyingl on 2017/6/16
  */
 
 @HelpUrl("http://www.wowant.com/xieegif/index.html|http://www.wowant.com/xieegif/p_\\d{1,2}.html")
@@ -40,6 +40,20 @@ public class JokeImgWoWant extends JokeImg implements AfterExtractor {
      */
     private Integer sourceId;
 
+    /**
+     * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
+     */
+    private Integer type;
+
+
+    @Override
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = 2;
+    }
 
     public String getTitle() {
         return title;
