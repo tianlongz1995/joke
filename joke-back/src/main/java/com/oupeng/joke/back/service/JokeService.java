@@ -1234,7 +1234,7 @@ public class JokeService {
             return "笑料百出用户" + new Random().nextInt(10);
         }
         for(String nick : nickNames){
-            if(nick != name){
+            if(!nick.equals(name)){
                 return nick;
             }
         }
