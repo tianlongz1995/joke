@@ -28,7 +28,7 @@ public class BlackManSqlProvider {
      * @param
      * @return
      */
-    public static String listBlackMansnRange(Map<String, Object> map) {
+    public static String listBlackMansinRange(Map<String, Object> map) {
         int offset = (int) map.get("offset");
         int pageSize = (int) map.get("pageSize");
         StringBuffer sql = new StringBuffer();
