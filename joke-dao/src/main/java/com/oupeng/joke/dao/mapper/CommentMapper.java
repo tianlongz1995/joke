@@ -70,4 +70,26 @@ public interface CommentMapper {
 
     @SelectProvider(method = "getListForVerify", type = CommentSqlProvider.class)
     List<Comment> getListForVerify(@Param("keyWord") String keyWord, @Param("state") Integer state, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+
+
+    /**
+     * (缓存段子时进行，此时仅存在神评论)根据jokeId(sid)获取段子的神评
+     *
+     * @param sid 关联joke表中唯一id
+     */
+    @Select(value = " select id, content as bc, avata, nickname as nick,sid as jokeId, createtime as time, good from `comment` as c where sid = #{sid}")
+    List<Comment> getGodReviewList(@Param("sid") Integer sid);
+
+
+    /**
+     * (缓存段子时进行，此时仅存在神评论)更新神评论的时间
+     *
+     * @param id            神评论的id
+     * @param updateTime    更新时间
+     * @param publish_state 1：已发布
+     */
+    @Update("update `comment` set  updatetime = #{updateTime}, publish_state = #{publish_state} where id = #{id}")
+    void updateHotComment(@Param("id") Integer id, @Param("updateTime") Integer updateTime, @Param("publish_state") Integer publish_state);
+
+
 }
