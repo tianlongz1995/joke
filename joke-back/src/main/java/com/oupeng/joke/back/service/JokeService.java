@@ -289,6 +289,8 @@ public class JokeService {
                     //评论缓存
                     String commentKey = JedisKey.STRING_COMMENT + comment.getId();
                     jedisCache.set(commentKey, JSON.toJSONString(comment));
+
+                    logger.info("缓存joke[id = "+joke.getId()+"|src = "+joke.getSrc()+"]时，将其对应的神评论[]缓存到redis[key:"+godKey+"]");
                 }
             }
         }
@@ -826,6 +828,7 @@ public class JokeService {
                         joke.setComment(comment);
                     }
                     jedisCache.set(JedisKey.STRING_JOKE + id, JSON.toJSONString(joke));
+
                 } else {
                     logger.error("更新段子[{}]评论数失败!缓存中没有此段子!", id);
                 }

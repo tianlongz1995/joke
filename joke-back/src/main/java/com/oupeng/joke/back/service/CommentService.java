@@ -7,6 +7,7 @@ import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.CommentMapper;
+import com.oupeng.joke.dao.mapper.JokeMapper;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.Result;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,9 @@ public class CommentService {
     private Environment env;
     @Autowired
     private SensitiveFilterService filterService;
+
+    @Autowired
+    private JokeMapper jokeMapper;
 
     /**
      * 未发布评论
@@ -211,7 +215,7 @@ public class CommentService {
     }
 
     /**
-     * 更新数据库线程
+     * 更新评论点赞(数据库)线程
      */
     class UpdateLikeDatabaseThread implements Runnable {
         public void run() {
@@ -224,6 +228,22 @@ public class CommentService {
                         try {
                             //更新评论点赞数
                             commentMapper.updateCommentGood(Integer.valueOf(id), good);
+
+                            /**
+                             * xiongyingl chang:评论点赞数变化时，可能会导致joke中神评论信息更新 2017/06/19
+                             */
+                            Comment comment = commentMapper.getCommentById(Integer.valueOf(id));
+                            int tgood = comment.getGood() + good;
+                            if (tgood > 10) {
+                                Integer jokeId = comment.getJokeId();
+                                Comment maxGoodComment = commentMapper.getMaxGoodCommentByJokeId(jokeId);
+
+                                if(tgood > maxGoodComment.getGood()){ //更新
+                                   jokeMapper.updateJokeOfGod(jokeId,maxGoodComment.getBc(),maxGoodComment.getAvata(),maxGoodComment.getNick());
+                                }
+                            }
+
+
                             map.entrySet().remove(entry);
                         } catch (Exception e) {
                             logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);

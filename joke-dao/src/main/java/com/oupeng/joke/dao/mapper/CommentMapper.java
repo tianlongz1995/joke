@@ -12,6 +12,7 @@ import java.util.List;
 public interface CommentMapper {
     /**
      * 获取已审核待发布的评论列表
+     *
      * @param ids
      * @param state
      * @param pubState
@@ -85,6 +86,20 @@ public interface CommentMapper {
      */
     @Update("update `comment` set  updatetime = #{updateTime}, publish_state = #{publish_state} where id = #{id}")
     void updateHotComment(@Param("id") Integer id, @Param("updateTime") Integer updateTime, @Param("publish_state") Integer publish_state);
+
+
+    /**
+     * 根据id获取Comment
+     */
+    @Select(value = "select id,good, sid as jokeId, content as bc, avata, nickname as nick from comment where id = #{id}")
+    Comment getCommentById(@Param("id") Integer id);
+
+
+    /**
+     * 段子所有评论中 评论点赞数最大 评论信息
+     */
+    @Select("select id,good, sid as jokeId, content as bc, avata, nickname as nick from comment where sid = #{sid} order by good desc limit 1")
+    Comment getMaxGoodCommentByJokeId(@Param("sid") Integer sid);
 
 
 }

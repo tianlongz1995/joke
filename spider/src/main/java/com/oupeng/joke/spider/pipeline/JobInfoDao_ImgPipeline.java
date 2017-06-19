@@ -6,6 +6,7 @@ import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.domain.User;
 import com.oupeng.joke.spider.mapper.CommentDao;
 import com.oupeng.joke.spider.mapper.JobInfoDao;
+import com.oupeng.joke.spider.mapper.JokeDao;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.service.HandleImage;
 import com.oupeng.joke.spider.service.ImgBloomFilterService;
@@ -50,6 +51,9 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
     private ImgBloomFilterService imgFilter;
     @Autowired
     private URLBloomFilterService urlFilter;
+
+    @Autowired
+    private JokeDao jokeDao;
 
 
     @Autowired
@@ -119,6 +123,12 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
                     int sid = jobInfoDao.getLastId(jokeImg.getImg());
 
                     /**
+                     * 记录最大神评点赞数信息
+                     */
+                    int m_good = 0;
+                    String m_comment = null, m_avata = null, m_nick = null;
+
+                    /**
                      *  添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
                      */
                     for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
@@ -137,6 +147,14 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
                         int iconid = id % 20 + 1;
                         String avata = avataStr.replace("%d", String.valueOf(iconid));
 
+                        //记录最大点赞数的评论
+                        if (god > m_good) {
+                            m_good = god;
+                            m_comment = content;
+                            m_avata = avata;
+                            m_nick = nick;
+                        }
+
                         Comment com = new Comment();
                         com.setSid(sid);
                         com.setUid(uid);
@@ -146,6 +164,12 @@ public class JobInfoDao_ImgPipeline implements PageModelPipeline<JokeImg> {
                         com.setGood(god);
                         commentDao.addComment(com);
                     }
+
+                    /**
+                     * 获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
+                     */
+                    jokeDao.updateJokeOfGod(sid, m_comment, m_avata, m_nick);
+
 
                 } else {
                     jokeImg.setCommentNumber(0);
