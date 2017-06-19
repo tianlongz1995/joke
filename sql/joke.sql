@@ -454,3 +454,6 @@ CREATE TABLE `black_man` (
   `create_by` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--- 新建怪迅网数据源 2017-6-19
+INSERT INTO `source` VALUES ('157', '怪迅网', 'http://www.guaixun.com/', '1', '2017-06-19 14:00:00', '2017-06-19 14:00:00');
