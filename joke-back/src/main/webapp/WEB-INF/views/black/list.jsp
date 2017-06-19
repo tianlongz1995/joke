@@ -60,12 +60,7 @@
                                             <span class="glyphicon glyphicon-search icon-white"> 查&nbsp;&nbsp;询</span>
                                         </a>
                                     </label>
-                                    <%--&nbsp;&nbsp;--%>
-                                    <%--<label style="padding-right:10px;">--%>
-                                    <%--<span>添加敏感词</span>--%>
-                                    <%--<input type="text" id="word" value=""--%>
-                                    <%--style="max-width: 160px;"/>--%>
-                                    <%--</label>--%>
+
                                     &nbsp;&nbsp;
                                     <label style="padding-right:10px;">
                                         <a class="btn btn-primary btn-sm" href="#" id="selectAll"
@@ -77,30 +72,30 @@
 
                                 <thead>
                                 <tr>
-                                    <th style="width: 50%;text-align: center; vertical-align: middle;">UID</th>
-                                    <th style="width: 50%;text-align: center; vertical-align: middle;">用户名</th>
-                                    <th style="width: 50%;text-align: center; vertical-align: middle;">拉黑时间</th>
-                                    <th style="width: 50%;text-align: center; vertical-align: middle;">拉黑人</th>
-                                    <th style="width: 50%;text-align: center; vertical-align: middle;">操作</th>
+                                    <th style="width: 18%;text-align: center; vertical-align: middle;">UID</th>
+                                    <th style="width: 15%;text-align: center; vertical-align: middle;">用户名</th>
+                                    <th style="width: 40%;text-align: center; vertical-align: middle;">拉黑时间</th>
+                                    <th style="width: 17%;text-align: center; vertical-align: middle;">拉黑人</th>
+                                    <th style="width: 8%;text-align: center; vertical-align: middle;">操作</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 <c:forEach items="${list}" var="black_man">
                                     <tr>
-                                        <td>
+                                        <td style="text-align: center;">
                                                 ${black_man.id}
                                         </td>
-                                        <td>
+                                        <td style="text-align: center;">
                                                 ${black_man.nick}
                                         </td>
-                                        <td>
+                                        <td style="text-align: center;">
                                                 ${black_man.create_time}
                                         </td>
-                                        <td>
+                                        <td style="text-align: center;">
                                                 ${black_man.create_by}
                                         </td>
-                                        <td>
+                                        <td style="text-align: center;">
                                             <a class="btn btn-danger btn-sm" href="#"
                                                onclick="retrieveBlackMan(${black_man.id})">
                                                 <i class="glyphicon glyphicon-remove icon-white"></i> 恢&nbsp;&nbsp;复
@@ -124,22 +119,7 @@
 
             <script type="text/javascript">
 
-                //                function delSensitive(id) {
-                //                    post('sensitive/del', 'id=' + id,
-                //                        function (data) {
-                //                            if (data.status == 1) {
-                //                                alert("操作成功!");
-                //                            } else {
-                //                                alert('添加失败:' + data.info);
-                //                            }
-                //                        },
-                //                        function () {
-                //                            alert('请求失败，请检查网络环境!');
-                //                        });
-                //                }
-
                 function retrieveBlackMan(uid) {
-                    var uid = $("#uid").val();
                     post('joke/retrieve',
                         'uid=' + uid,
                         function (data) {
@@ -153,7 +133,7 @@
                             alert('请求失败，请检查网络环境!');
                         });
 
-                    location.href = '<%=basePath%>comment/listBlackMan';
+                    location.href = '<%=basePath%>joke/listBlackMan?pageNumber=1';
                 }
 
 
@@ -162,7 +142,7 @@
                 });
 
                 $('#selectAll').click(function (event) {
-                    location.href = '<%=basePath%>comment/listBlackMan';
+                    location.href = '<%=basePath%>joke/listBlackMan?pageNumber=1';
                 });
 
 
@@ -176,8 +156,7 @@
                 }
 
                 function turnPage() {
-                    location.href = '<%=basePath%>sensitive/list?keyWord=' + $("#keyWord").val()
-                        + '&pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
+                    location.href = '<%=basePath%>joke/listBlackMan?pageNumber=' + $("#pageNumber").val() + '&pageSize=' + $("#pageSize").val();
                 }
                 ;
             </script>

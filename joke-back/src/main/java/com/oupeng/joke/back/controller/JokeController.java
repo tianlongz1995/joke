@@ -34,7 +34,6 @@ import java.util.List;
 
 /**
  * 段子控制器
- *
  */
 @Controller
 @RequestMapping(value = "/joke")
@@ -495,10 +494,19 @@ public class JokeController {
 
 
     //以下为拉黑管理内容
+
+    /**
+     * 跳到黑人管理界面
+     *
+     * @return
+     */
     @RequestMapping(value = "/blackManage")
     public String blackManage() {
+
         return "black/list";
     }
+
+
     /**
      * 查询一个黑人
      *
@@ -514,26 +522,71 @@ public class JokeController {
         return "black/list";
     }
 
+    /**
+     * 恢复被拉黑的用户
+     *
+     * @param uid
+     * @return
+     */
     @RequestMapping("/retrieve")
-    public Result retrieveBlack(@RequestParam(value="uid",required = false) String uid)
-    {
+    @ResponseBody
+    public Result retrieve(@RequestParam(value = "uid", required = false ) String uid) {
         try {
-            log.info("从数据库中删除数据");
             boolean success = blackManMapper.deleteABlackMan(uid);
-            if (success)
-                log.info("从数据库中删除uid:" + uid + "成功");
-            log.info("从缓存中删除uid" + uid);
             jedisCache.hdel(JedisKey.BLACK_MAN, uid);
-
             return new Success();
-        }catch (Exception e)
-        {
-            log.info(e.getMessage()+":"+e.getStackTrace());
+        } catch (Exception e) {
+            log.info(e.getMessage() + ":" + e.getStackTrace());
             return new Failed("恢复失败,请查看后台日志");
         }
     }
 
+    @RequestMapping("/listBlackMan")
+    public String listBlackMan( @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                Model model) {
+        List<BlackMan> blackManList=null;
 
+        pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+        pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+        int pageCount = 0;//总页数
+        int offset = 0;//开始条数index
+        //	获取总条数
+        /**
+         * count：数据库中记录总数
+         * pageCount:分页后的页面总数
+         * pageNumber:当前所在的页面号
+         * pageSize:页面包含的记录行数量
+         */
+        int count = blackManMapper.countBlackMan();
+        if (count > 0) {
+            if (count % pageSize == 0) {
+                pageCount = count / pageSize;
+            } else {
+                pageCount = count / pageSize + 1;
+            }
+
+            if (pageNumber > pageCount) {
+                pageNumber = pageCount;
+            }
+            if (pageNumber < 1) {
+                pageNumber = 1;
+            }
+            offset = (pageNumber - 1) * pageSize;
+
+            log.info("准备查询当前页面的数据");
+            blackManList = blackManMapper.listBlackManInRange(offset,pageSize);
+            log.info("查询成功");
+        }
+
+        model.addAttribute("list", blackManList);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("count", count);
+
+        return "black/list";
+    }
     //拉黑管理内容结束
 
 

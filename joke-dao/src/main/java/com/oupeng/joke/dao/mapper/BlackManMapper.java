@@ -2,10 +2,7 @@ package com.oupeng.joke.dao.mapper;
 
 import com.oupeng.joke.dao.sqlprovider.BlackManSqlProvider;
 import com.oupeng.joke.domain.user.BlackMan;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,20 +14,24 @@ public interface BlackManMapper {
     @SelectProvider(method = "countBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     int getABlackMan(String id);
 
-    @SelectProvider(method = "countBLackMantoBeLaHei", type=BlackManSqlProvider.class)
+    @SelectProvider(method = "countBLackManstoBeLaHei", type = BlackManSqlProvider.class)
     int countBlackMan();
 
-    @SelectProvider(method ="getBlackMantoBeLaHei",type = BlackManSqlProvider.class)
+    @SelectProvider(method = "listBlackMansInRange", type = BlackManSqlProvider.class)
+    @ResultType(BlackMan.class)
+    List<BlackMan> listBlackManInRange(@Param(value = "offset") int offset, @Param(value="pageSize") Integer pageSize);
+
+    @SelectProvider(method = "getBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     @ResultType(BlackMan.class)
     List<BlackMan> getBlackMan(String id);
 
-    @SelectProvider(method = "listBlackMantoBeLaHei" , type = BlackManSqlProvider.class)
+    @SelectProvider(method = "listBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     @ResultType(BlackMan.class)
     List<BlackMan> listBlackMan();
 
-    @InsertProvider(method="insertABlackMantoBeLaHei",type = BlackManSqlProvider.class)
+    @InsertProvider(method = "insertABlackMantoBeLaHei", type = BlackManSqlProvider.class)
     int insertABlackMan(BlackMan sb);
 
-    @DeleteProvider(method="deleteBlackMantoBeLaHei",type = BlackManSqlProvider.class)
+    @DeleteProvider(method = "deleteBlackMantoBeLaHei", type = BlackManSqlProvider.class)
     Boolean deleteABlackMan(String uid);
 }

@@ -13,12 +13,20 @@ public class BlackMan {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nick;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Date create_time;
 
+    private Date create_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String create_by;
+
+    public Date getCreate_time() {
+        return create_time;
+
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
 
     public String getNick() {
         return nick;
@@ -34,14 +42,6 @@ public class BlackMan {
 
     public void setCreate_by(String create_by) {
         this.create_by = create_by;
-    }
-
-    public Date getUpdateTime() {
-        return create_time;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.create_time = updateTime;
     }
 
     public String getId() {
