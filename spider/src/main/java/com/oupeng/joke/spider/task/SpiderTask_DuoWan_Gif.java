@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.duowan.JokeImgDuoWan_gif;
+import com.oupeng.joke.spider.pipeline.JobInfoDaoImgPipeLine_DuoWan;
+import com.oupeng.joke.spider.processor.AngularJSProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.model.OOSpider;
+import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
 /**
  * Created by pengzheng on 2017/6/13.
  */
-@Component
+//@Component
 public class SpiderTask_DuoWan_Gif {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_DuoWan_Gif.class);
 
@@ -61,17 +61,17 @@ public class SpiderTask_DuoWan_Gif {
     @Scheduled(cron = "0 40 3 * * ?")
     public void spiderGif() {
         logger.info("guixun spider gif...");
-        crawl(jobInfoDaoImgPipeline, JokeImgDuoWan_gif.class, imgUrlDuoWan_Gif);
+        crawl(imgUrlDuoWan_Gif);
     }
 
 
-    private void crawl(PageModelPipeline line, Class c, String url) {
-        OOSpider.create(site, line, c)
-                .addUrl(url)
+    private void crawl(String url) {
+        logger.info("开启JSON爬取模式");
+        Spider.create(new AngularJSProcessor())
+                .addPipeline(new JobInfoDaoImgPipeLine_DuoWan())
+                .addUrl(imgUrlDuoWan_Gif)
                 .thread(1)
                 .start();
-        logger.info("开启JSON爬取模式");
-       // Spider.create(new AngularJSProcessor()).addUrl("http://tu.duowan.com/m/bxgif?offset=30&order=created&math=0.035267244").run();
     }
 
 }

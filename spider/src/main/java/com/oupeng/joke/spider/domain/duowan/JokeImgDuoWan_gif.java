@@ -9,7 +9,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 /**
  * Created by Jane on 2017/6/13.
  */
-@TargetUrl("http://tu.duowan.com/gallery/\\d+.html")
+@TargetUrl("http://tu.duowan.com/gallery/\\d+\\w+")
 public class JokeImgDuoWan_gif extends JokeImg implements AfterExtractor {
 
     @ExtractBy(value = "//div[@id='show']/div[@class='title']/h1/text()", notNull = true)
@@ -42,12 +42,10 @@ public class JokeImgDuoWan_gif extends JokeImg implements AfterExtractor {
 
 
     public String getImg() {
-        System.out.println("抽取到的src:"+img);
         return img;
     }
 
     public void setImg(String img) {
-        System.out.println("抽取到的src:"+img);
         this.img = img;
     }
 
