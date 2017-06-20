@@ -22,7 +22,7 @@ public class JokeTextNeihan extends JokeText implements AfterExtractor {
 
     private static final Logger logger = LoggerFactory.getLogger(JokeTextNeihan.class);
 
-    private static final int new_sourceId = 158;
+    private static final int new_sourceId = 155;
 
     private String title;
 
