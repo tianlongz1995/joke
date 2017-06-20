@@ -1,8 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeShenLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
+import com.oupeng.joke.spider.domain.weird.JokeImgWeird;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +15,15 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 来福岛
- * Created by zongchao on 2017/3/13.
+ * 爬取 http://xx.yzz.cn/dongtu/
+ * Created by pengzheng on 2017/6/13.
  */
 //@Component
-public class SpiderTask_Lai {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Lai.class);
+public class SpiderTask_WeirdInfo {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_WeirdInfo.class);
 
-    //来福岛
-    private String textUrlLai;
-    private String imgUrlLai;
-    private String shenUrlLai;
-
+    //获取图片资源的地址
+    private String imgUrlWeird;
 
     @Autowired
     private Environment env;
@@ -44,7 +39,6 @@ public class SpiderTask_Lai {
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
 
-
     @Qualifier("JobInfoDaoPipeline")
     @Autowired
     private PageModelPipeline jobInfoDaoPipeline;
@@ -52,38 +46,29 @@ public class SpiderTask_Lai {
 
     @PostConstruct
     public void init() {
-        String lt = env.getProperty("lai.spider.text.url");
-        if (StringUtils.isNotBlank(lt)) {
-            textUrlLai = lt;
+
+        String hi = env.getProperty("weird.spider.img.url");
+
+        if (StringUtils.isNotBlank(hi)) {
+            imgUrlWeird = hi;
         }
-        String li = env.getProperty("lai.spider.img.url");
-        if (StringUtils.isNotBlank(li)) {
-            imgUrlLai = li;
-        }
-        String shen = env.getProperty("lai.spider.shen.url");
-        if (StringUtils.isNotBlank(shen)) {
-            shenUrlLai = shen;
-        }
+
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderLai();
+            spiderGif();
         }
-    }
 
+    }
 
     /**
-     * 抓取来福岛
+     * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 10 1 * * ?")
-    public void spiderLai() {
-        logger.info("laifudao spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
-        logger.info("laifudao spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
-        logger.info("laifudao spider shenhuifu...");
-        crawl(jobInfoDaoPipeline, JokeShenLai.class, shenUrlLai);
-
+    @Scheduled(cron = "0 40 3 * * ?")
+    public void spiderGif() {
+        logger.info("yzz spider gif...");
+        crawl(jobInfoDaoImgPipeline, JokeImgWeird.class, imgUrlWeird);
     }
+
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)

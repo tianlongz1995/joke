@@ -1,8 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.laifudao.JokeImgLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeShenLai;
-import com.oupeng.joke.spider.domain.laifudao.JokeTextLai;
+import com.oupeng.joke.spider.domain.quishibaike.JokeImgQuiShiImg;
+import com.oupeng.joke.spider.domain.quishibaike.JokeTextHot;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
@@ -17,18 +17,17 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 来福岛
- * Created by zongchao on 2017/3/13.
+ * 爬取 http://xx.yzz.cn/dongtu/
+ * Created by pengzheng on 2017/6/13.
  */
-//@Component
-public class SpiderTask_Lai {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Lai.class);
+@Component
+public class SpiderTask_QiuShi {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_QiuShi.class);
 
-    //来福岛
-    private String textUrlLai;
-    private String imgUrlLai;
-    private String shenUrlLai;
+    //获取文字资源的地址
+    private String hotTextUrlQiuShi;
 
+    private String imgUrlQuiShi;
 
     @Autowired
     private Environment env;
@@ -44,7 +43,6 @@ public class SpiderTask_Lai {
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
 
-
     @Qualifier("JobInfoDaoPipeline")
     @Autowired
     private PageModelPipeline jobInfoDaoPipeline;
@@ -52,38 +50,38 @@ public class SpiderTask_Lai {
 
     @PostConstruct
     public void init() {
-        String lt = env.getProperty("lai.spider.text.url");
-        if (StringUtils.isNotBlank(lt)) {
-            textUrlLai = lt;
+
+        String hottext = env.getProperty("quishi.spider.hot.url");
+        String img=env.getProperty("quishi.spider.img.url");
+
+        if (StringUtils.isNotBlank(hottext)) {
+            hotTextUrlQiuShi = hottext;
         }
-        String li = env.getProperty("lai.spider.img.url");
-        if (StringUtils.isNotBlank(li)) {
-            imgUrlLai = li;
+
+        if (StringUtils.isNotBlank(img)) {
+            imgUrlQuiShi = img;
         }
-        String shen = env.getProperty("lai.spider.shen.url");
-        if (StringUtils.isNotBlank(shen)) {
-            shenUrlLai = shen;
-        }
+
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderLai();
+            spiderQuiShiBaiKe();
         }
-    }
 
+    }
 
     /**
-     * 抓取来福岛
+     * 定时爬取任务
      */
-    @Scheduled(cron = "0 10 1 * * ?")
-    public void spiderLai() {
-        logger.info("laifudao spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);
-        logger.info("laifudao spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextLai.class, textUrlLai);
-        logger.info("laifudao spider shenhuifu...");
-        crawl(jobInfoDaoPipeline, JokeShenLai.class, shenUrlLai);
+    @Scheduled(cron = "0 40 3 * * ?")
+    public void spiderQuiShiBaiKe() {
+        logger.info("QuiShi Hot Text spider ing...");
+        crawl(jobInfoDaoPipeline, JokeTextHot.class, hotTextUrlQiuShi);
+
+        logger.info("QuiShi img spider ing...");
+        crawl(jobInfoDaoImgPipeline, JokeImgQuiShiImg.class, imgUrlQuiShi);
 
     }
+
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)

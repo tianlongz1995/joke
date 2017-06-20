@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.gifcool.JokeImgGifCool;
+import com.oupeng.joke.spider.pipeline.JobInfoDaoImgPipeLine_DuoWan;
+import com.oupeng.joke.spider.processor.AngularJSProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +10,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.model.OOSpider;
+import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
 
 import javax.annotation.PostConstruct;
 
 /**
- * 姐夫酷
- * Created by xiongyingl on 2017/6/5.
+ * Created by pengzheng on 2017/6/13.
  */
 //@Component
-public class SpiderTask_GifCool {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_GifCool.class);
+public class SpiderTask_DuoWan_Gif {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_DuoWan_Gif.class);
 
-    private String imgUrl;
+    //获取图片资源的地址
+    private String imgUrlDuoWan_Gif;
 
     @Autowired
     private Environment env;
@@ -38,39 +39,39 @@ public class SpiderTask_GifCool {
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
 
-
     @PostConstruct
     public void init() {
-        String gifcool = env.getProperty("gifcool.spider.img.url");
-        if (StringUtils.isNotBlank(gifcool)) {
-            imgUrl = gifcool;
+
+        String hi = env.getProperty("duowan.spider.gif.url");
+
+        if (StringUtils.isNotBlank(hi)) {
+            imgUrlDuoWan_Gif = hi;
         }
+
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderGifCool();
+            spiderGif();
         }
+
     }
 
     /**
-     * GifCool
-     *
-     * @Scheduled(cron = "* 5 10 * * ?") 不能这样设置，爬虫频率不宜过快，
-     * 1）过快相当于多个线程爬同一资源,会导致爬取资源重复
-     * 2）不停地请求带攻击性，会被屏蔽IP
+     * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 18 2 * * ?")
-    public void spiderGifCool() {
-        logger.info("gifcool spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgGifCool.class, imgUrl);
+    @Scheduled(cron = "0 40 3 * * ?")
+    public void spiderGif() {
+        logger.info("guixun spider gif...");
+        crawl(imgUrlDuoWan_Gif);
     }
 
-    private void crawl(PageModelPipeline line, Class c, String url) {
 
-        OOSpider.create(site, line, c)
-                .addUrl(url)
+    private void crawl(String url) {
+        logger.info("开启JSON爬取模式");
+        Spider.create(new AngularJSProcessor())
+                .addPipeline(new JobInfoDaoImgPipeLine_DuoWan())
+                .addUrl(imgUrlDuoWan_Gif)
                 .thread(1)
                 .start();
-
     }
 
 }
