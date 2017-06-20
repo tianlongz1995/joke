@@ -183,6 +183,4 @@ public class CommentController {
         }
         return "笑料百出用户" + new Random().nextInt(10);
     }
-
-
 }

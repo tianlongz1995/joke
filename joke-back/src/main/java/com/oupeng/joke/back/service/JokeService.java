@@ -1213,10 +1213,11 @@ public class JokeService {
      * @return
      */
     private String getReleaseAvatar(Integer id) {
-        int i = id % 40;
-        if (i < 20) {
+        int i =  id % 40;
+        if(i<=19){
             return "1/" + i + ".jpg";
-        } else {
+        }
+        else {
             return "1/" + i + ".png";
         }
 
@@ -1233,7 +1234,7 @@ public class JokeService {
             return "笑料百出用户" + new Random().nextInt(10);
         }
         for(String nick : nickNames){
-            if(nick != name){
+            if(!nick.equals(name)){
                 return nick;
             }
         }

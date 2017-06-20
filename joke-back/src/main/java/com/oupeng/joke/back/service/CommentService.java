@@ -97,24 +97,29 @@ public class CommentService {
      * @param allState
      * @return
      */
-    public void verifyComment(String ids, String uids, Integer state, Integer allState, String username) {
+    public void verifyComment(String ids, String uids, String nicks, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
             if (state == 3) {//已发布评论状态拉黑删除  删除缓存
                 String[] str = uids.split(",");
-                for (String uid : str) {
+                String[] nick=nicks.split(",");
+                for (int i=0;i<str.length;i++) {
+                    String uid=str[i];
                     BlackMan sb = new BlackMan();
                     sb.setId(uid);
+                    sb.setNick(nick[i]);
                     sb.setCreate_by(username);
 
                     if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
+                        //保持数据库和缓存的同步
                         blackManMapper.insertABlackMan(sb);
+                        jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
+                        commentMapper.deleteComment(uid);
                     } else {
                         logger.info("用户:" + uid + " 已经被拉黑");
                     }
-                    jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
-                    commentMapper.deleteComment(uid);
                 }
+                //清除缓存中的所有评论
                 cleanCommentCache(ids);
             } else if (state == 4) {
                 cleanCommentCache(ids);

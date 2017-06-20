@@ -7,11 +7,13 @@ import com.oupeng.joke.back.service.SourceService;
 import com.oupeng.joke.back.util.FormatUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
+import com.oupeng.joke.dao.mapper.BlackManMapper;
 import com.oupeng.joke.domain.Joke;
 import com.oupeng.joke.domain.JokeTop;
 import com.oupeng.joke.domain.response.Failed;
 import com.oupeng.joke.domain.response.Result;
 import com.oupeng.joke.domain.response.Success;
+import com.oupeng.joke.domain.user.BlackMan;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
@@ -32,7 +34,6 @@ import java.util.List;
 
 /**
  * 段子控制器
- *
  */
 @Controller
 @RequestMapping(value = "/joke")
@@ -49,6 +50,8 @@ public class JokeController {
     private MailService mailService;
     @Autowired
     private Environment env;
+    @Autowired
+    private BlackManMapper blackManMapper;
 
     /**
      * 验证码收件人
@@ -488,6 +491,111 @@ public class JokeController {
     public String addJokePage() {
         return "joke/add";
     }
+
+
+    //以下为拉黑管理内容
+
+    /**
+     * 跳到拉黑管理界面
+     *
+     * @return
+     */
+    @RequestMapping(value = "/blackManage")
+    public String blackManage() {
+
+        return "black/list";
+    }
+
+
+    /**
+     * 查询一个拉黑用户
+     *
+     * @param uid   用户的uID
+     * @param model
+     * @return
+     */
+    @RequestMapping("/getBlackMan")
+    public String getBlackMan(@RequestParam(value = "uid", required = false) String uid,
+                              Model model) {
+        List<BlackMan> blackManList = blackManMapper.getBlackMan(uid);
+        model.addAttribute("list", blackManList);
+        return "black/list";
+    }
+
+    /**
+     * 恢复被拉黑的用户
+     *
+     * @param uid
+     * @return
+     */
+    @RequestMapping("/retrieve")
+    @ResponseBody
+    public Result retrieve(@RequestParam(value = "uid", required = false) String uid) {
+        try {
+            boolean success = blackManMapper.deleteABlackMan(uid);
+            jedisCache.hdel(JedisKey.BLACK_MAN, uid);
+            return new Success();
+        } catch (Exception e) {
+            log.info(e.getMessage() + ":" + e.getStackTrace());
+            return new Failed("恢复失败,请查看后台日志");
+        }
+    }
+
+    /**
+     * 请求一页拉黑用户的数据
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @param model
+     * @return
+     */
+    @RequestMapping("/listBlackMan")
+    public String listBlackMan(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                               @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                               Model model) {
+        List<BlackMan> blackManList = null;
+
+        pageNumber = pageNumber == null ? 1 : pageNumber;//当前页数
+        pageSize = pageSize == null ? 10 : pageSize;//每页显示条数
+        int pageCount = 0;//总页数
+        int offset = 0;//开始条数index
+        //	获取总条数
+        /**
+         * count：数据库中记录总数
+         * pageCount:分页后的页面总数
+         * pageNumber:当前所在的页面号
+         * pageSize:页面包含的记录行数量
+         */
+        int count = blackManMapper.countBlackMan();
+        if (count > 0) {
+            if (count % pageSize == 0) {
+                pageCount = count / pageSize;
+            } else {
+                pageCount = count / pageSize + 1;
+            }
+
+            if (pageNumber > pageCount) {
+                pageNumber = pageCount;
+            }
+            if (pageNumber < 1) {
+                pageNumber = 1;
+            }
+            offset = (pageNumber - 1) * pageSize;
+
+            log.info("准备查询当前页面的数据");
+            blackManList = blackManMapper.listBlackManInRange(offset, pageSize);
+            log.info("查询成功");
+        }
+
+        model.addAttribute("list", blackManList);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("count", count);
+
+        return "black/list";
+    }
+    //拉黑管理内容结束
 
 
     /**
