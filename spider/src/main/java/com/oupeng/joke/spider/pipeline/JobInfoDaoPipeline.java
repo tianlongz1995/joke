@@ -139,7 +139,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                     com.setUid(uid);
                     com.setNickname(nick);
                     com.setContent(content);
-                    com.setAvata(avata);
+                    com.setAvatar(avata);
                     com.setGood(god);
 
                     list.add(com);
