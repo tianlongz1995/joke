@@ -127,10 +127,16 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     /**
                      *  添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
                      */
+                    int godNum = 0; //记录有效的神评数
                     for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
 
                         int god = jokeImg.getHotGoods().get(i);
                         String content = jokeImg.getHotContents().get(i);
+
+                        //神评评论点赞数>10
+                        if (god <= 10) {
+                            continue;
+                        }
 
                         int id = random.nextInt(2089);
 
@@ -158,12 +164,13 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         com.setAvata(avata);
                         com.setGood(god);
                         commentDao.addComment(com);
+                        godNum++;
                     }
 
                     /**
                      * 获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
                      */
-                    jobInfoDao.updateJokeOfGod(jokeId, m_comment, m_avata, m_nick);
+                    jobInfoDao.updateJokeOfGods(jokeId, godNum, m_comment, m_avata, m_nick);
 
                 } else {
                     jokeImg.setCommentNumber(0);

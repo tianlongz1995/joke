@@ -26,8 +26,7 @@ public interface JobInfoDao {
      * @param avata
      * @param nick
      */
-    @Update("update joke set comment = #{comment}, avata = #{avata}, nick = #{nick} where id = #{id}")
-    void updateJokeOfGod(@Param("id") Integer id, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
-
+    @Update("update joke set comment_number = #{comment_number}, comment = #{comment}, avata = #{avata}, nick = #{nick} where id = #{id}")
+    void updateJokeOfGods(@Param("id") Integer id, @Param("comment_number") Integer comment_number, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
 
 }
