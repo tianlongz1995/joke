@@ -7,48 +7,37 @@ import java.util.List;
  * change by xiongyingl on 2017/6/15. 增加了评论相关List,可添加多条神评论
  */
 public class JokeImg {
-    /**
-     *
-     */
+
     private Integer id;
-    /**
-     *
-     */
+
     private String title;
-    /**
-     *
-     */
+
     private String img;
-    /**
-     *
-     */
+
     private String gif;
-    /**
-     *
-     */
+
     private Integer width;
-    /**
-     *
-     */
+
     private Integer height;
+
     /**
      * 类型(0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
      */
     private Integer type;
     /**
-     *
+     *  点赞数
      */
     private Integer good;
     /**
-     *
+     *  踩数
      */
     private Integer bad;
     /**
-     *
+     *  状态 0:未审核 1:通过（审核） 2:不通过 3:已发布 4:已推荐 5:下线 6:已置顶
      */
     private Integer status;
     /**
-     *
+     * 段子来源html地址
      */
     private String src;
     /**
@@ -59,9 +48,8 @@ public class JokeImg {
      * 评论内容
      */
     private String commentContent;
-
     /**
-     * 神评点赞数大于10
+     * 废弃字段
      */
     private Integer agreeTotal;
     /**
@@ -72,7 +60,6 @@ public class JokeImg {
      * 评论
      */
     private Comment comment;
-
     /**
      * 用户头像URL
      */
@@ -97,6 +84,7 @@ public class JokeImg {
      * 发布人昵称
      */
     private String releaseNick;
+
 
     public List<Integer> getHotGoods() {
         return hotGoods;

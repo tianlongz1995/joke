@@ -4,8 +4,6 @@ package com.oupeng.joke.spider.domain;
 import java.util.List;
 
 /**
- * Created by zongchao on 2017/3/15.
- *
  * change by xiongyingl on 2017/6/16. 增加了评论相关List,可添加多条神评论
  */
 public class JokeText {
@@ -20,52 +18,42 @@ public class JokeText {
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
      */
     private Integer type;
-
     /**
      * 来源
      */
     private String src;
-
     /**
      * 内容源id
      */
     private Integer sourceId;
-
     /**
      * 评论内容
      */
     private String commentContent;
-
     /**
      * 神评点赞数大于10
      */
     private Integer agreeTotal;
-
     /**
      * 用户头像URL
      */
     private String avata;
-
     /**
      * 昵称
      */
     private String nick;
-
-    /*******************点赞数最大神评************************/
-
-
-
-    /*****************新增************************/
     /**
      * 神评数量
      */
     private Integer commentNumber;
-
-    private List<Integer> hotGoods; //神评点赞数(与评论内容一一对应)
-
+    /**
+     * 神评点赞数(与评论内容一一对应)
+     */
+    private List<Integer> hotGoods; //
+    /**
+     * 神评内容
+     */
     private List<String> hotContents; //神评内容
-
-    /*****************新增************************/
 
 
     public Integer getCommentNumber() {
