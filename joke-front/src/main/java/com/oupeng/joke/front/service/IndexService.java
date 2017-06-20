@@ -39,7 +39,8 @@ public class IndexService {
      * 图片前缀
      */
     private static String IMG_PREFIX = "http://joke2-img.oupeng.com/";
-
+    @Autowired
+    private CommentService commentService;
     @Autowired
     private Environment env;
     @Autowired
@@ -210,27 +211,42 @@ public class IndexService {
             for (String id : keys) {
                 Joke joke = getJoke(id, cid);
                 if (joke != null) {
-                    //评论内容
+                    List<Comment> listHotComment = commentService.getComment(joke.getId(), null, null, true);
+                    if (listHotComment == null || listHotComment.size() <= 0) {
+                        log.info("不存在神评");
+                        joke.setComment(null);
+                    } else {
+                        log.info("存在神评，取点赞数最多的一条");
+                        joke.setCommentNumber(listHotComment.size());
+                        joke.setComment(listHotComment.get(0));
+                    }
                     Comment comment = joke.getComment();
-                    if (comment != null) {
+                    if (comment == null) {
+                        log.info("没有神评，返回空");
+                        comment = new Comment();
+                        comment.setBc(null);
+                        comment.setNick(joke.getNick());
+                        joke.setComment(comment);
+                    } else {
                         String bc = comment.getBc();
                         if (bc != null && bc.length() > 38) {
                             bc = bc.substring(0, 35) + "...";
                             comment.setBc(bc);
-//                            joke.setContent(content);
                         }
                     }
+                    comment.setTotal(joke.getCommentNumber());
                     joke.setSrc(null);
                     list.add(joke);
                 }
             }
             if (CollectionUtils.isEmpty(list)) {
+                log.info("获取数据为空");
                 return new Result("获取数据为空!", 2);
             }
         } else {
+            log.info("获取数据为空");
             return new Result("获取数据为空!", 1);
         }
-
         long end = System.currentTimeMillis();
         log.debug("获取列表页数据 - 总耗时:{}, did:{}, cid:{}, page:{}, limit:{}", FormatUtil.getTimeStr(end - start), did, cid, page, limit);
         return new Result(size.intValue(), list);
