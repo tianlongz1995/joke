@@ -132,7 +132,6 @@ public class HandleImage {
             image.setWidth(widthHeight[0]);
             image.setHeight(widthHeight[1]);
         } else {
-
             image.setImgUrl(random + "/" + newFileName);
         }
         return image;

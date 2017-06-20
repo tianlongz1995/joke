@@ -1,7 +1,10 @@
 package com.oupeng.joke.back.util;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -18,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.CollectionUtils;
 
 public class HttpUtil {
 	
@@ -73,6 +77,7 @@ public class HttpUtil {
      * @return
      */
     public static Comment getRandomUser(String randomUserUrl) {
+
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         HttpGet httpGet = new HttpGet(randomUserUrl);
@@ -119,7 +124,7 @@ public class HttpUtil {
 
 
     public static void main(String[] a){
-        HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+//        HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
     }
 
 

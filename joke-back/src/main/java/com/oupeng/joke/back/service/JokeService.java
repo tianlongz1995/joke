@@ -1058,7 +1058,7 @@ public class JokeService {
         int bad  = 150 -(int)(Math.random()*150);
         int good = 500 +(int)(Math.random()*500);
         String uuid = UUID.randomUUID().toString();
-        Comment comment = HttpUtil.getRandomUser(randomUserUrl);
+//        Comment comment = HttpUtil.getRandomUser(randomUserUrl);
         String fileName = HttpUtil.getUrlImageFileName(img);
         String storeName = "";
         String gif = null;
@@ -1116,8 +1116,8 @@ public class JokeService {
         joke.setGood(good);
         joke.setBad(bad);
         joke.setUuid(uuid);
-        joke.setRa(comment.getAvata());
-        joke.setRn(comment.getNick());
+        joke.setRa(getReleaseAvatar(new Random().nextInt(100)));
+        joke.setRn(getReleaseNick(""));
         joke.setContent(content);
         joke.setWeight(weight);
         joke.setWidth(image.getWidth());
@@ -1234,7 +1234,7 @@ public class JokeService {
             return "笑料百出用户" + new Random().nextInt(10);
         }
         for(String nick : nickNames){
-            if(nick != name){
+            if(!nick.equals(name)){
                 return nick;
             }
         }

@@ -276,7 +276,13 @@ public class CommentService {
                         if (com != null) {
                             String content = filterService.doFilter(com.getBc());
                             if (StringUtils.isNotBlank(content)) {
-                                Comment comment = HttpUtil.getRandomUser(randomUserUrl);
+                                Comment comment = new Comment();
+//                                String nike = getReleaseNick("");
+//                                String avatar = getReleaseAvatar(new Random().nextInt(100));
+//                                comment.setAvata(avatar);
+//                                comment.setNick(nike);
+//
+//                                Comment comment = HttpUtil.getRandomUser(randomUserUrl);
                                 comment.setBc(content);
                                 comment.setJokeId(com.getJokeId());
                                 comment.setTime(FormatUtil.getTime());
