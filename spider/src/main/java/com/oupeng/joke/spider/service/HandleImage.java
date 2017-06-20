@@ -12,9 +12,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.UUID;
 
@@ -34,6 +38,44 @@ public class HandleImage {
     @Autowired
     private Environment env;
 
+    /**
+     * 获取图片的格式
+     */
+    public static String getPicFormat(String imgUrl) {
+
+        ImageInputStream iis = null;
+        String result = null;
+        try {
+
+            URL url = new URL(imgUrl);
+            URLConnection con = url.openConnection();
+
+            iis = ImageIO.createImageInputStream(con.getInputStream());
+            Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
+            if (iter.hasNext()) {
+                String picFormat = iter.next().getFormatName();
+
+                if (picFormat.equals("gif")) {
+                    result = "gif";
+                } else {
+                    result = "jpg";
+                }
+            }
+        } catch (Exception e) {
+            logger.error("getPicFormat failed ", e);
+            return null;
+        } finally {
+            //关闭所有链接
+            try {
+                if (iis != null) {
+                    iis.close();
+                }
+            } catch (IOException e) {
+                logger.error("getPicFormat iis close failed ", e);
+            }
+        }
+        return result;
+    }
 
     @PostConstruct
     public void initPath() {
@@ -58,21 +100,31 @@ public class HandleImage {
         //是否为gif
         boolean isGif = false;
         try {
-
-            dir = new File(cdnImagePath + random + "/");
+            dir = new File(cdnImagePath + random  + "/");
             if (!dir.isDirectory()) {
                 dir.mkdirs();
             }
 
             URL url = new URL(imgUrl);
             URLConnection con = url.openConnection();
-            //文件类型
-            if (imgUrl.contains(".gif")) {
+            //  java.io.IOException: Server returned HTTP response code: 403 for URL
+            //  因为服务器的安全设置不接受Java程序作为客户端访问
+            //  解决方案：设置User Agent
+            con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+            //  判断图片的格式
+            String result = getPicFormat(imgUrl);
+            if (result.equals("gif")) {
                 imgType = "gif";
                 isGif = true;
-            } else {
+            } else if (result.equals("jpg")) {
                 imgType = "jpg";
+            } else {
+                return null;
             }
+            image.setImgType(imgType);
+
+
             // 输入流
             is = con.getInputStream();
             // 1K的数据缓冲
@@ -103,25 +155,27 @@ public class HandleImage {
                 logger.error("download image failed ", e);
             }
         }
-        String cdnUrl = cdnImagePath + random + "/" + newFileName;
-        int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
-        //图片宽和高 取原图75%
-        Double width = widthHeight[0] * 0.75;
-        int wid = width.intValue();
-        Double height = widthHeight[1] * 0.75;
-        int he = height.intValue();
 
-        //静图压缩
-        if(!isGif){
-            boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, wid, he, false);
-            if (isSuccess){ //压缩成功
-                image.setWidth(wid);
-                image.setHeight(he);
-            }else {
-                image.setWidth(widthHeight[0]);
-                image.setHeight(widthHeight[1]);
-            }
-        }
+        String cdnUrl = cdnImagePath + random + "/" + newFileName;
+
+        int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
+//        //图片宽和高 取原图75%
+//        Double width = widthHeight[0] * 0.75;
+//       int wid = width.intValue();
+//        Double height = widthHeight[1] * 0.75;
+//        int he = height.intValue();
+
+        //压缩
+//        boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, widthHeight[0], widthHeight[1], false);
+//        if (isSuccess){ //压缩成功
+//            image.setWidth(wid);
+//            image.setHeight(he);
+//        }else {
+
+        image.setWidth(widthHeight[0]);
+
+        image.setHeight(widthHeight[1]);
+//        }
 
         if (isGif) {
             String imgName = handleImg(cdnUrl);
@@ -129,8 +183,6 @@ public class HandleImage {
             if (StringUtils.isNotBlank(imgName)) {
                 image.setImgUrl(random + "/" + imgName);
             }
-            image.setWidth(widthHeight[0]);
-            image.setHeight(widthHeight[1]);
         } else {
             image.setImgUrl(random + "/" + newFileName);
         }

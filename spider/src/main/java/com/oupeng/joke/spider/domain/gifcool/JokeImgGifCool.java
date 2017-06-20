@@ -8,7 +8,7 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by yeluo on 2017/6/5.
+ * Created by xiongyingl on 2017/6/5.
  */
 
 @TargetUrl("http://www.gifcool.com/\\w+/\\d+.html")

@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
 import com.oupeng.joke.spider.domain.neihan.JokeImgNeiHanJS;
+import com.oupeng.joke.spider.domain.neihan.JokeTextNeihan;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class SpiderTask_NeiHan {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_NeiHan.class);
 
     private String imgUrl;
+    private String textUrl;
 
     @Autowired
     private Environment env;
@@ -35,17 +37,24 @@ public class SpiderTask_NeiHan {
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
 
-   // @Qualifier("JobInfoDaoImgPipeline")
-    @Qualifier("JobInfoDao_ImgPipeline")
+    @Qualifier("JobInfoDaoImgPipeline")
     @Autowired
-    private PageModelPipeline JobInfoDao_ImgPipeline;
+    private PageModelPipeline JobInfoDaoImgPipeline;
+
+    @Qualifier("JobInfoDaoPipeline")
+    @Autowired
+    private PageModelPipeline JobInfoDaoPipeline;
 
 
     @PostConstruct
     public void init() {
-        String neihan = env.getProperty("neihan.spider.img.url");
-        if (StringUtils.isNotBlank(neihan)) {
-            imgUrl = neihan;
+        String neihanText = env.getProperty("neihan.spider.text.url");
+        if (StringUtils.isNotBlank(neihanText)) {
+            textUrl = neihanText;
+        }
+        String neihanPic = env.getProperty("neihan.spider.img.url");
+        if (StringUtils.isNotBlank(neihanPic)) {
+            imgUrl = neihanPic;
         }
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
@@ -55,13 +64,15 @@ public class SpiderTask_NeiHan {
 
 
     /**
-     *  neihan
-     *
+     * neihan
      */
     @Scheduled(cron = "0 20 1 * * ?")
     public void spider() {
+        logger.info("neihan spider text...");
+        crawl(JobInfoDaoPipeline, JokeTextNeihan.class, textUrl);
+
         logger.info("neihan spider image...");
-        crawl(JobInfoDao_ImgPipeline, JokeImgNeiHanJS.class, imgUrl);
+        crawl(JobInfoDaoImgPipeline, JokeImgNeiHanJS.class, imgUrl);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {

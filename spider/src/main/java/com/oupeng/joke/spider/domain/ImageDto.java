@@ -9,6 +9,17 @@ public class ImageDto {
     private Integer width;
     private Integer height;
 
+    private String imgType; //图片类型
+
+
+    public String getImgType() {
+        return imgType;
+    }
+
+    public void setImgType(String imgType) {
+        this.imgType = imgType;
+    }
+
     public String getImgUrl() {
         return imgUrl;
     }
