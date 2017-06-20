@@ -106,15 +106,11 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
             //存在神评论
             if (jokeText.getCommentNumber() != null && jokeText.getCommentNumber() > 0) {
-                /**
-                 * 记录最大点赞数神评信息
-                 */
+                //记录最大点赞数神评信息
                 int m_good = 0;
                 String m_comment = null, m_avata = null, m_nick = null;
 
-                /**
-                 *  添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
-                 */
+                //添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
                 List<CommentT> list = new ArrayList<CommentT>();
                 for (int i = 0; i < jokeText.getCommentNumber(); i++) {
 
@@ -160,9 +156,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 joke.setComment_number(0);
             }
 
-            /**
-             * 与kafka服务端进行接口对接
-             */
+            //  与kafka服务端进行接口对接
             String message = JSON.toJSON(joke).toString();
             kafkaProducer.sendMessage(message);
             logger.info("text段子 - 向kafka服务端发送数据:{}", message);

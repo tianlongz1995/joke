@@ -97,10 +97,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 jokeImg.setBad(bad);
                 jokeImg.setGood(good);
 
-                /**
-                 *   ReleaseNick  发布段子用户昵称
-                 *   ReleaseAvata 发布段子用户头像url
-                 */
+                // ReleaseNick  发布段子用户昵称
+                // ReleaseAvata 发布段子用户头像url
+
                 //发布人
                 int rid = random.nextInt(2089);
                 User ru = userDao.select(rid);
@@ -117,15 +116,11 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     //获得jokeId
                     int jokeId = jokeImg.getId();
 
-                    /**
-                     * 记录最大点赞数神评信息
-                     */
+                    //  记录最大点赞数神评信息
                     int m_good = 0;
                     String m_comment = null, m_avata = null, m_nick = null;
 
-                    /**
-                     *  添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
-                     */
+                    //添加神评论: hotGoods--hotContents 神评点赞数和内容一一对应
                     int godNum = 0; //记录有效的神评数
                     for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
 
@@ -166,9 +161,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         godNum++;
                     }
 
-                    /**
-                     * 获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
-                     */
+                    //获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
                     jobInfoDao.updateJokeOfGods(jokeId, godNum, m_comment, m_avata, m_nick);
 
                 } else {

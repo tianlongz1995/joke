@@ -7,85 +7,88 @@ import java.util.List;
  * change by xiongyingl on 2017/6/15. 增加了评论相关List,可添加多条神评论
  */
 public class JokeImg {
-
+    /**
+     *
+     */
     private Integer id;
+    /**
+     *
+     */
     private String title;
-
+    /**
+     *
+     */
     private String img;
-
+    /**
+     *
+     */
     private String gif;
+    /**
+     *
+     */
     private Integer width;
+    /**
+     *
+     */
     private Integer height;
     /**
-     * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
+     * 类型(0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
      */
-
     private Integer type;
-
+    /**
+     *
+     */
     private Integer good;
-
+    /**
+     *
+     */
     private Integer bad;
-
+    /**
+     *
+     */
     private Integer status;
-
-
+    /**
+     *
+     */
     private String src;
-
-    //数据源
+    /**
+     * 数据源编号
+     */
     private Integer sourceId;
-
-    /****************点赞数最大神评****************************/
     /**
      * 评论内容
      */
-
-
     private String commentContent;
 
     /**
-     * 用户头像URL
-     */
-
-    private String avata;
-    /**
      * 神评点赞数大于10
      */
-
     private Integer agreeTotal;
     /**
      * 昵称
      */
-
     private String nick;
-
     /**
      * 评论
      */
-
     private Comment comment;
 
     /**
      * 用户头像URL
      */
     private String avata;
-
-    /******************点赞数最大神评**************************/
-
-
-
-    /*****************新增************************/
     /**
      * 神评数量
      */
     private Integer commentNumber;
-
-    private List<Integer> hotGoods; //神评点赞数(与评论内容一一对应)
-
-    private List<String> hotContents; //神评内容
-
-    /*****************新增************************/
-
-
+    /**
+     *  神评点赞数(与评论内容一一对应)
+     */
+    private List<Integer> hotGoods;
+    /**
+     * 神评内容
+     */
+    private List<String> hotContents;
     /**
      * 发布人头像
      */
@@ -94,9 +97,6 @@ public class JokeImg {
      * 发布人昵称
      */
     private String releaseNick;
-
-
-
 
     public List<Integer> getHotGoods() {
         return hotGoods;

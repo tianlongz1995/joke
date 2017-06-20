@@ -38,6 +38,44 @@ public class HandleImage {
     @Autowired
     private Environment env;
 
+    /**
+     * 获取图片的格式
+     */
+    public static String getPicFormat(String imgUrl) {
+
+        ImageInputStream iis = null;
+        String result = null;
+        try {
+
+            URL url = new URL(imgUrl);
+            URLConnection con = url.openConnection();
+
+            iis = ImageIO.createImageInputStream(con.getInputStream());
+            Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
+            if (iter.hasNext()) {
+                String picFormat = iter.next().getFormatName();
+
+                if (picFormat.equals("gif")) {
+                    result = "gif";
+                } else {
+                    result = "jpg";
+                }
+            }
+        } catch (Exception e) {
+            logger.error("getPicFormat failed ", e);
+            return null;
+        } finally {
+            //关闭所有链接
+            try {
+                if (iis != null) {
+                    iis.close();
+                }
+            } catch (IOException e) {
+                logger.error("getPicFormat iis close failed ", e);
+            }
+        }
+        return result;
+    }
 
     @PostConstruct
     public void initPath() {
@@ -121,21 +159,24 @@ public class HandleImage {
         String cdnUrl = cdnImagePath + random + "/" + newFileName;
 
         int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
-        //图片宽和高 取原图75%
-        Double width = widthHeight[0] * 0.75;
-       int wid = width.intValue();
-        Double height = widthHeight[1] * 0.75;
-        int he = height.intValue();
+//        //图片宽和高 取原图75%
+//        Double width = widthHeight[0] * 0.75;
+//       int wid = width.intValue();
+//        Double height = widthHeight[1] * 0.75;
+//        int he = height.intValue();
 
         //压缩
-        boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, wid, he, false);
-        if (isSuccess){ //压缩成功
-            image.setWidth(wid);
-            image.setHeight(he);
-        }else {
-            image.setWidth(widthHeight[0]);
-            image.setHeight(widthHeight[1]);
-        }
+//        boolean isSuccess = Im4JavaUtils.resizeImage(cdnUrl, cdnUrl, widthHeight[0], widthHeight[1], false);
+//        if (isSuccess){ //压缩成功
+//            image.setWidth(wid);
+//            image.setHeight(he);
+//        }else {
+
+        image.setWidth(widthHeight[0]);
+
+        image.setHeight(widthHeight[1]);
+//        }
+
         if (isGif) {
             String imgName = handleImg(cdnUrl);
             //动图切图是否成功
@@ -147,47 +188,6 @@ public class HandleImage {
         }
         return image;
     }
-
-
-    /**
-     * 获取图片的格式
-     */
-    public static String getPicFormat(String imgUrl) {
-
-        ImageInputStream iis = null;
-        String result = null;
-        try {
-
-            URL url = new URL(imgUrl);
-            URLConnection con = url.openConnection();
-
-            iis = ImageIO.createImageInputStream(con.getInputStream());
-            Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
-            if (iter.hasNext()) {
-                String picFormat = iter.next().getFormatName();
-
-                if (picFormat.equals("gif")) {
-                    result = "gif";
-                } else {
-                    result = "jpg";
-                }
-            }
-        } catch (Exception e) {
-            logger.error("getPicFormat failed ", e);
-            return null;
-        } finally {
-            //关闭所有链接
-            try {
-                if (iis != null) {
-                    iis.close();
-                }
-            } catch (IOException e) {
-                logger.error("getPicFormat iis close failed ", e);
-            }
-        }
-        return result;
-    }
-
 
     /**
      * gif取第一帧处理

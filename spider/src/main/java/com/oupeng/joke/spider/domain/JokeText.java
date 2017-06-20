@@ -31,9 +31,6 @@ public class JokeText {
      */
     private Integer sourceId;
 
-
-
-    /*****************点赞数最大神评*************************/
     /**
      * 评论内容
      */
