@@ -462,3 +462,5 @@ CREATE TABLE `black_man` (
   `create_by` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+

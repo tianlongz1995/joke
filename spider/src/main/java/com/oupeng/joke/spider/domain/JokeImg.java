@@ -4,8 +4,6 @@ package com.oupeng.joke.spider.domain;
 import java.util.List;
 
 /**
- * Created by zongchao on 2017/3/15.
- *
  * change by xiongyingl on 2017/6/15. 增加了评论相关List,可添加多条神评论
  */
 public class JokeImg {
@@ -18,10 +16,10 @@ public class JokeImg {
     private String gif;
     private Integer width;
     private Integer height;
-
     /**
      * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
      */
+
     private Integer type;
 
     private Integer good;
@@ -36,15 +34,19 @@ public class JokeImg {
     //数据源
     private Integer sourceId;
 
-
-
-    /*****************(一个joke绑定一条神评)建议废弃*********************************/
+    /****************点赞数最大神评****************************/
     /**
      * 评论内容
      */
+
+
     private String commentContent;
 
+    /**
+     * 用户头像URL
+     */
 
+    private String avata;
     /**
      * 神评点赞数大于10
      */
@@ -59,6 +61,7 @@ public class JokeImg {
     /**
      * 评论
      */
+
     private Comment comment;
 
     /**
@@ -66,7 +69,7 @@ public class JokeImg {
      */
     private String avata;
 
-    /******************建议废弃**************************/
+    /******************点赞数最大神评**************************/
 
 
 

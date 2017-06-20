@@ -6,9 +6,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zongchao on 2017/3/13.
+ *
+ * change by xiongyingl: comment_number(神评数量),List<CommentT>(神评列表) 2017/6/19
  */
 public class Joke {
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,12 +24,16 @@ public class Joke {
     private String create_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer status;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String content;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String avata;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nick;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer comment_number;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer good;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,9 +42,19 @@ public class Joke {
     private String releaseAvata;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String releaseNick;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private CommentT comment;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<CommentT> comment;
+
+
+
+    public Integer getComment_number() {
+        return comment_number;
+    }
+
+    public void setComment_number(Integer comment_number) {
+        this.comment_number = comment_number;
+    }
 
     public String getTitle() {
         return title;
@@ -122,10 +139,6 @@ public class Joke {
         this.releaseNick = releaseNick;
     }
 
-    public CommentT getComment() {
-        return comment;
-    }
-
     public Integer getGood() {
         return good;
     }
@@ -142,7 +155,11 @@ public class Joke {
         this.bad = bad;
     }
 
-    public void setComment(CommentT comment) {
+    public List<CommentT> getComment() {
+        return comment;
+    }
+
+    public void setComment(List<CommentT> comment) {
         this.comment = comment;
     }
 }

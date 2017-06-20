@@ -1,6 +1,6 @@
 package com.oupeng.joke.spider.domain.neihan;
 
-import com.oupeng.joke.spider.domain.JokeImg;
+import com.oupeng.joke.spider.domain.JokeText;
 import com.oupeng.joke.spider.utils.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,21 +13,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by xiongyingl on 2017/6/14.
+ * Created by xiongyingl on 2017/6/19.
  */
 
 @TargetUrl("http://neihanshequ.com/p6\\d+/")
-@HelpUrl("http://neihanshequ.com/pic/")
-public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
+@HelpUrl("http://neihanshequ.com/")
+public class JokeTextNeihan extends JokeText implements AfterExtractor {
 
-    private static final Logger logger = LoggerFactory.getLogger(JokeImgNeiHanJS.class);
+    private static final Logger logger = LoggerFactory.getLogger(JokeTextNeihan.class);
 
-    private static final int new_sourceId = 155;
+    private static final int new_sourceId = 158;
 
-    @ExtractBy(value = "//h1[@class=\"title\"]/p/text()")
     private String title;
 
-    @ExtractBy(value = "//img[@id=\"groupImage\"]/@src", notNull = true)
+    @ExtractBy(value = "//h1[@class=\"title\"]/p/text()")
+    private String content;
+
+    /**
+     * 因内涵段子链接的特殊性，如果爬text时跑到了pic页面，跳过
+     */
+    @ExtractBy(value = "//img[@id=\"groupImage\"]/@src")
     private String img;
 
     /**
@@ -52,6 +57,7 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
     private List<Integer> hotGoods;
 
     private List<String> hotContents;
+
 
     @Override
     public Integer getCommentNumber() {
@@ -88,15 +94,15 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         this.title = title;
     }
 
-
-    public String getImg() {
-        return img;
+    @Override
+    public String getContent() {
+        return content;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    @Override
+    public void setContent(String content) {
+        this.content = content;
     }
-
 
     public String getSrc() {
         return src;
@@ -114,8 +120,23 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         this.sourceId = sourceId;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
     @Override
     public void afterProcess(Page page) {
+
+        /**
+         * 因内涵段子链接的特殊性，如果爬text时跑到了pic页面，跳过
+         */
+        if(this.getImg()!=null){
+            page.setSkip(true);
+        }
 
         String pageURL = page.getUrl().toString();
         this.setSrc(pageURL);
@@ -126,6 +147,7 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         Map<String, List> map = HttpUtil.getGodMsg(jsonURL);
         this.setHotGoods(map.get("hotGoods"));
         this.setHotContents(map.get("hotContents"));
+
 
         //抓取到的神评数量
         if (this.getHotGoods() != null) {
