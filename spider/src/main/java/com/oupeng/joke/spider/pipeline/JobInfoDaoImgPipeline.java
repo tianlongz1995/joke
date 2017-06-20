@@ -83,7 +83,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             ImageDto img = handleImage.downloadImg(jokeImg.getImg());
             String imgurl = img.getImgUrl();
             if (StringUtils.isNotBlank(imgurl)) {
-                if (("gif").equalsIgnoreCase(FilenameUtils.getExtension(jokeImg.getImg()))) {
+                if (img.getImgType() != null && img.getImgType().equals("gif")) {
                     jokeImg.setGif(FilenameUtils.getFullPath(imgurl) + FilenameUtils.getBaseName(imgurl) + ".gif");
                     jokeImg.setType(2);
                 } else {

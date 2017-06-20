@@ -46,22 +46,6 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
     private Integer sourceId;
 
 
-    /**
-     * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
-     */
-    private Integer type;
-
-
-    @Override
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = 2;
-    }
-
-
     public String getTitle() {
         return title;
     }

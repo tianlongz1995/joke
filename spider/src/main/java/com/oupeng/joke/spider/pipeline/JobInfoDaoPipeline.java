@@ -165,6 +165,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
              */
             String message = JSON.toJSON(joke).toString();
             kafkaProducer.sendMessage(message);
+            logger.info("text段子 - 向kafka服务端发送数据:{}", message);
 
             urlBloomFilterService.add(jokeText.getSrc());
             logger.info("段子 - 处理页面结束:{}", jokeText.getSrc());

@@ -58,21 +58,6 @@ public class JokeTextNeihan extends JokeText implements AfterExtractor {
 
     private List<String> hotContents;
 
-    /**
-     * (0:文本、1:图片、2:动图、3:富文本、4:视频、10:广告)
-     */
-    private Integer type;
-
-
-    @Override
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = 0;
-    }
-
 
     @Override
     public Integer getCommentNumber() {
