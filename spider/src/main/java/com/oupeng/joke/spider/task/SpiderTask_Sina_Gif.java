@@ -1,7 +1,6 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.hhmx.JokeImgHahaMX;
-import com.oupeng.joke.spider.domain.hhmx.JokeTextHahaMX;
+import com.oupeng.joke.spider.domain.sina.JokeImgSinaGif;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +15,14 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 哈哈mx
- * Created by zongchao on 2017/3/21.
+ * Created by pengzheng on 2017/6/13.
  */
 //@Component
-public class SpiderTask_HhMx {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_HhMx.class);
+public class SpiderTask_Sina_Gif {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Sina_Gif.class);
 
-    //哈哈MX
-    private String textUrlHhMx;
-    private String imgUrlHhMx;
-
+    //获取图片资源的地址
+    private String imgUrlSina_Gif;
 
     @Autowired
     private Environment env;
@@ -42,44 +38,39 @@ public class SpiderTask_HhMx {
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
 
-
-    @Qualifier("JobInfoDaoPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
-
-
     @PostConstruct
     public void init() {
-        String xhtext = env.getProperty("haha.spider.text.url");
-        if (StringUtils.isNotBlank(xhtext)) {
-            textUrlHhMx = xhtext;
+
+        String hi = env.getProperty("sina.sipider.gif.url");
+
+        if (StringUtils.isNotBlank(hi)) {
+            imgUrlSina_Gif = hi;
         }
-        String xhimg = env.getProperty("haha.spider.img.url");
-        if (StringUtils.isNotBlank(xhimg)) {
-            imgUrlHhMx = xhimg;
-        }
+
         String isRun = env.getProperty("init.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderHhMx();
+            spiderGif();
         }
 
     }
 
     /**
-     * 哈哈MX
+     * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 30 22 * * ?")
-    public void spiderHhMx() {
-        logger.info("hahaMX spider image...");
-        crawl(jobInfoDaoImgPipeline, JokeImgHahaMX.class, imgUrlHhMx);
-        logger.info("hahaMX spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextHahaMX.class, textUrlHhMx);
+    @Scheduled(cron = "0 40 3 * * ?")
+    public void spiderGif() {
+        logger.info("guixun spider gif...");
+        crawl(jobInfoDaoImgPipeline, JokeImgSinaGif.class, imgUrlSina_Gif);
     }
+
 
     private void crawl(PageModelPipeline line, Class c, String url) {
         OOSpider.create(site, line, c)
                 .addUrl(url)
                 .thread(1)
                 .start();
+        logger.info("开启JSON爬取模式");
+       // Spider.create(new AngularJSProcessor()).addUrl("http://tu.duowan.com/m/bxgif?offset=30&order=created&math=0.035267244").run();
     }
+
 }
