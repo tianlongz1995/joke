@@ -110,7 +110,6 @@ public class CommentController {
                               @RequestParam(value = "userId") Integer userId,
                               @RequestParam(value = "nick") String nick,
                               @RequestParam(value = "avata") String avata) {
-
         try {
             comment = new String(comment.getBytes("ISO-8859-1"), "utf-8");
             nick = new String(nick.getBytes("ISO-8859-1"), "utf-8");
@@ -156,14 +155,12 @@ public class CommentController {
      * @return
      */
     private String getReleaseAvatar(Integer id) {
-        int i =  id % 40;
-        if(i<=19){
+        int i = id % 40;
+        if (i <= 19) {
             return "1/" + i + ".jpg";
-        }
-        else {
+        } else {
             return "1/" + i + ".png";
         }
-
     }
 
     /**

@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 管理服务接口
@@ -98,21 +99,55 @@ public class ManagerService {
         int index = 0;
         for(Integer id : list){
 //    2. 通过图像接口获取随机用户名和图像
-            Comment comment = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+            String nike = getReleaseNick("");
+            String avatar = getReleaseAvatar(new Random().nextInt(100));
+//            Comment comment = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
 //    3. 更新段子头像和昵称
-            managerMapper.updateAvatarAndNick(id, comment.getAvata(), comment.getNick());
+            managerMapper.updateAvatarAndNick(id, avatar, nike);
             index++;
 //            更新缓存
             String key = JedisKey.STRING_JOKE + id;
             Joke joke = JSON.parseObject(jedisCache.get(key), Joke.class);
             if(joke != null){
-                joke.setRa(comment.getAvata());
-                joke.setRn(comment.getNick());
+                joke.setRa(avatar);
+                joke.setRn(nike);
                 jedisCache.set(key, JSON.toJSONString(joke));
             }
         }
         long end = System.currentTimeMillis();
         log.info("段子头像补全完成, 补全:[{}]条, 耗时:{}", index, FormatUtil.getTimeStr(end - start));
     }
+    /**
+     * 获取发布者头像
+     * @param id
+     * @return
+     */
+    private String getReleaseAvatar(Integer id) {
+        int i =  id % 40;
+        if(i<=19){
+            return "1/" + i + ".jpg";
+        }
+        else {
+            return "1/" + i + ".png";
+        }
 
+    }
+
+    /**
+     * 获取段子发布人昵称
+     * @param name
+     * @return
+     */
+    private String getReleaseNick(String name) {
+        List<String> nickNames = jedisCache.srandmember(JedisKey.JOKE_NICK_NAME, 5);
+        if(CollectionUtils.isEmpty(nickNames)){
+            return "笑料百出用户" + new Random().nextInt(10);
+        }
+        for(String nick : nickNames){
+            if(!nick.equals(name)){
+                return nick;
+            }
+        }
+        return "笑料百出用户" + new Random().nextInt(10);
+    }
 }
