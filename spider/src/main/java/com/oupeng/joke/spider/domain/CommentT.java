@@ -6,7 +6,7 @@ package com.oupeng.joke.spider.domain;
 public class CommentT {
     private Integer uid;
     private String nickname;
-    private String avata;
+    private String avatar;
     private String content;
     private Integer good;
 
@@ -26,12 +26,12 @@ public class CommentT {
         this.nickname = nickname;
     }
 
-    public String getAvata() {
-        return avata;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvata(String avata) {
-        this.avata = avata;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getContent() {
