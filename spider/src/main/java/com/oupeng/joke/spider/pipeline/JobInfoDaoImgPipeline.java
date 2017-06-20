@@ -6,7 +6,6 @@ import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.domain.User;
 import com.oupeng.joke.spider.mapper.CommentDao;
 import com.oupeng.joke.spider.mapper.JobInfoDao;
-import com.oupeng.joke.spider.mapper.JokeDao;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.service.HandleImage;
 import com.oupeng.joke.spider.service.ImgBloomFilterService;
@@ -51,9 +50,6 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     private ImgBloomFilterService imgFilter;
     @Autowired
     private URLBloomFilterService urlFilter;
-
-    @Autowired
-    private JokeDao jokeDao;
 
 
     @Autowired
@@ -118,9 +114,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                 //存在神评论
                 if (jokeImg.getCommentNumber() != null && jokeImg.getCommentNumber() > 0) {
 
-                    jobInfoDao.addImg(jokeImg);
-                    //获得sid
-                    int sid = jobInfoDao.getLastId(jokeImg.getImg());
+                    jobInfoDao.addJokeImg(jokeImg);
+                    //获得jokeId
+                    int jokeId = jokeImg.getId();
 
                     /**
                      * 记录最大点赞数神评信息
@@ -136,7 +132,6 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         int god = jokeImg.getHotGoods().get(i);
                         String content = jokeImg.getHotContents().get(i);
 
-                        //int id = rid + 1;
                         int id = random.nextInt(2089);
 
                         User u = userDao.select(id);
@@ -156,7 +151,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         }
 
                         Comment com = new Comment();
-                        com.setSid(sid);
+                        com.setSid(jokeId);
                         com.setUid(uid);
                         com.setNickname(nick);
                         com.setContent(content);
@@ -168,12 +163,11 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     /**
                      * 获取上述神评中点赞数最大的一条神评的信息，将其插入到joke中
                      */
-                    jokeDao.updateJokeOfGod(sid, m_comment, m_avata, m_nick);
-
+                    jobInfoDao.updateJokeOfGod(jokeId, m_comment, m_avata, m_nick);
 
                 } else {
                     jokeImg.setCommentNumber(0);
-                    jobInfoDao.addImg(jokeImg);
+                    jobInfoDao.addJokeImg(jokeImg);
                 }
             }
 
