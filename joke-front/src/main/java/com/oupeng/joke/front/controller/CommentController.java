@@ -1,7 +1,9 @@
 package com.oupeng.joke.front.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.cache.JedisCache;
+import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 /**
@@ -118,6 +121,18 @@ public class CommentController {
 
     }
 
+
+    @RequestMapping(value = "/comment/joke/user")
+    @ResponseBody
+    public Object commentUser() {
+        JSONObject jsonObject = new JSONObject();
+        String nike = getReleaseNick("");
+        String avatar = getReleaseAvatar(new Random().nextInt(100));
+        jsonObject.put("avatar", avatar);
+        jsonObject.put("nike", nike);
+        return jsonObject;
+    }
+
     /**
      * 随机用户接口
      *
@@ -126,8 +141,48 @@ public class CommentController {
     @RequestMapping(value = "/joke/userDetail")
     @ResponseBody
     public Comment user() {
-        Comment comment = HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+        Random random = new Random();
+        Comment comment = new Comment();// TODO HttpUtil.getRandomUser("http://joke2.oupeng.com/comment/joke/user");
+        String nike = getReleaseNick("");
+        String avatar = getReleaseAvatar(new Random().nextInt(100));
+        comment.setAvata(avatar);
+        comment.setNick(nike);
+        comment.setUid(random.nextInt(2090) * 10000 + random.nextInt(20));
         return comment;
     }
+    /**
+     * 获取发布者头像
+     * @param id
+     * @return
+     */
+    private String getReleaseAvatar(Integer id) {
+        int i =  id % 40;
+        if(i<=19){
+            return "1/" + i + ".jpg";
+        }
+        else {
+            return "1/" + i + ".png";
+        }
+
+    }
+
+    /**
+     * 获取段子发布人昵称
+     * @param name
+     * @return
+     */
+    private String getReleaseNick(String name) {
+        List<String> nickNames = jedisCache.srandmember(JedisKey.JOKE_NICK_NAME, 5);
+        if(CollectionUtils.isEmpty(nickNames)){
+            return "笑料百出用户" + new Random().nextInt(10);
+        }
+        for(String nick : nickNames){
+            if(!nick.equals(name)){
+                return nick;
+            }
+        }
+        return "笑料百出用户" + new Random().nextInt(10);
+    }
+
 
 }
