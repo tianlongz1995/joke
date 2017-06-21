@@ -106,28 +106,34 @@ public class CommentService {
     public void verifyComment(String ids, String uids, String nicks, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
-            if (state == 3) {//已发布评论状态拉黑删除  删除缓存
-                String[] str = uids.split(",");
-                String[] nick = nicks.split(",");
-                for (int i = 0; i < str.length; i++) {
-                    String uid = str[i];
-                    BlackMan sb = new BlackMan();
-                    sb.setId(uid);
-                    sb.setNick(nick[i]);
-                    sb.setCreate_by(username);
+            if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
 
-                    if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
-                        //保持数据库和缓存的同步
-                        blackManMapper.insertABlackMan(sb);
-                        jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
-                        commentMapper.deleteComment(uid);
-                    } else {
-                        logger.info("用户:" + uid + " 已经被拉黑");
+                if(state==3){
+                    String[] str = uids.split(",");
+                    String[] nick = nicks.split(",");
+                    for (int i = 0; i < str.length; i++) {
+                        String uid = str[i];
+                        BlackMan sb = new BlackMan();
+                        sb.setId(uid);
+                        sb.setNick(nick[i]);
+                        sb.setCreate_by(username);
+
+                        if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
+                            //保持数据库和缓存的同步
+                            blackManMapper.insertABlackMan(sb);
+                            jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
+                            commentMapper.deleteComment(uid);
+                        } else {
+                            logger.info("用户:" + uid + " 已经被拉黑");
+                        }
                     }
                 }
-                //清除缓存中的所有评论
-                cleanCommentCache(ids);
-                
+                try {
+                    //清除缓存中的所有评论
+                    cleanCommentCache(ids);
+                }catch (Exception e){
+                    logger.info("删除缓存异常");
+                }
             } else if (state == 4) {
                 cleanCommentCache(ids);
                 //更新数据库中的评论
