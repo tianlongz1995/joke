@@ -8,7 +8,6 @@ import com.oupeng.joke.domain.Comment;
 import com.oupeng.joke.domain.comment.Page;
 import com.oupeng.joke.domain.comment.Result;
 import com.oupeng.joke.front.service.CommentService;
-import com.oupeng.joke.front.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -149,8 +148,10 @@ public class CommentController {
         comment.setUid(random.nextInt(2090) * 10000 + random.nextInt(20));
         return comment;
     }
+
     /**
      * 获取发布者头像
+     *
      * @param id
      * @return
      */
@@ -165,16 +166,17 @@ public class CommentController {
 
     /**
      * 获取段子发布人昵称
+     *
      * @param name
      * @return
      */
     private String getReleaseNick(String name) {
         List<String> nickNames = jedisCache.srandmember(JedisKey.JOKE_NICK_NAME, 5);
-        if(CollectionUtils.isEmpty(nickNames)){
+        if (CollectionUtils.isEmpty(nickNames)) {
             return "笑料百出用户" + new Random().nextInt(10);
         }
-        for(String nick : nickNames){
-            if(!nick.equals(name)){
+        for (String nick : nickNames) {
+            if (!nick.equals(name)) {
                 return nick;
             }
         }

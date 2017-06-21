@@ -3,7 +3,6 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.FormatUtil;
-import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BlackManMapper;
@@ -20,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 
 /**
@@ -106,9 +108,9 @@ public class CommentService {
         if (allState == 1) {
             if (state == 3) {//已发布评论状态拉黑删除  删除缓存
                 String[] str = uids.split(",");
-                String[] nick=nicks.split(",");
-                for (int i=0;i<str.length;i++) {
-                    String uid=str[i];
+                String[] nick = nicks.split(",");
+                for (int i = 0; i < str.length; i++) {
+                    String uid = str[i];
                     BlackMan sb = new BlackMan();
                     sb.setId(uid);
                     sb.setNick(nick[i]);
@@ -125,8 +127,12 @@ public class CommentService {
                 }
                 //清除缓存中的所有评论
                 cleanCommentCache(ids);
+                
             } else if (state == 4) {
                 cleanCommentCache(ids);
+                //更新数据库中的评论
+                Integer updateTime = FormatUtil.getTime();
+                commentMapper.updateCommentState(ids, state, username, updateTime);
             }
         } else if (allState != 2) {
             if (state == 1) {//重新加入缓存
@@ -135,10 +141,11 @@ public class CommentService {
                     addCommentToCache(comment);
                 }
             }
+            //更新时间
+            Integer updateTime = FormatUtil.getTime();
+            commentMapper.updateCommentState(ids, state, username, updateTime);
         }
-        //更新时间
-        Integer updateTime = FormatUtil.getTime();
-        commentMapper.updateCommentState(ids, state, username, updateTime);
+
     }
 
     /**
@@ -262,8 +269,8 @@ public class CommentService {
                                 Integer jokeId = comment.getJokeId();
                                 Comment maxGoodComment = commentMapper.getMaxGoodCommentByJokeId(jokeId);
 
-                                if(tgood > maxGoodComment.getGood()){ //更新
-                                   jokeMapper.updateJokeOfGod(jokeId,maxGoodComment.getBc(),maxGoodComment.getAvata(),maxGoodComment.getNick());
+                                if (tgood > maxGoodComment.getGood()) { //更新
+                                    jokeMapper.updateJokeOfGod(jokeId, maxGoodComment.getBc(), maxGoodComment.getAvata(), maxGoodComment.getNick());
                                 }
                             }
 

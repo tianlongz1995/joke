@@ -494,18 +494,17 @@ public class JokeController {
 
 
     //以下为拉黑管理内容
-
-    /**
-     * 跳到拉黑管理界面
-     *
-     * @return
-     */
-    @RequestMapping(value = "/blackManage")
-    public String blackManage() {
-
-        return "black/list";
-    }
-
+//
+//    /**
+//     * 跳到拉黑管理界面
+//     *
+//     * @return
+//     */
+//    @RequestMapping(value = "/blackManage")
+//    public String blackManage() {
+//
+//        return "black/list";
+//    }
 
     /**
      * 查询一个拉黑用户
@@ -532,7 +531,7 @@ public class JokeController {
     @ResponseBody
     public Result retrieve(@RequestParam(value = "uid", required = false) String uid) {
         try {
-            boolean success = blackManMapper.deleteABlackMan(uid);
+            blackManMapper.deleteABlackMan(uid);
             jedisCache.hdel(JedisKey.BLACK_MAN, uid);
             return new Success();
         } catch (Exception e) {
@@ -581,10 +580,7 @@ public class JokeController {
                 pageNumber = 1;
             }
             offset = (pageNumber - 1) * pageSize;
-
-            log.info("准备查询当前页面的数据");
             blackManList = blackManMapper.listBlackManInRange(offset, pageSize);
-            log.info("查询成功");
         }
 
         model.addAttribute("list", blackManList);

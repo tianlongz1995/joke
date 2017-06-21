@@ -82,20 +82,21 @@ public class CommentService {
     /**
      * 评论
      * 如果发送评论的ID 在拉黑列表中存在,则直接返回
+     *
      * @param jid
      * @param comment
      */
     public Result sendComment(Integer jid, String comment, Integer userId, String nick, String avata) {
         String num = jedisCache.get(JedisKey.COMMENT_NUMBER + userId);
 
-        String user = jedisCache.hget(JedisKey.BLACK_MAN,userId.toString());
-
-        if (StringUtils.isNotBlank(user)){
-            return new Result(6);
+        if (StringUtils.isNumeric(num)) {
+            return new Result(5); // 超出每分钟发送限制
         }
 
-        if(StringUtils.isNumeric(num)){
-            return new Result(5); // 超出每分钟发送限制
+        //查看缓存是否被拉黑
+        String user = jedisCache.hget(JedisKey.BLACK_MAN, userId.toString());
+        if (StringUtils.isNotBlank(user)) {
+            return new Result(6);
         }
 
         Comment com = new Comment();
