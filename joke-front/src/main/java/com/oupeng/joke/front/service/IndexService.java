@@ -212,12 +212,13 @@ public class IndexService {
                 Joke joke = getJoke(id, cid);
                 if (joke != null) {
                     List<Comment> listHotComment = commentService.getComment(joke.getId(), null, null, true);
+                    int count=commentService.getCommentCount(joke.getId());
                     if (listHotComment == null || listHotComment.size() <= 0) {
                         log.info("不存在神评");
                         joke.setComment(null);
                     } else {
                         log.info("存在神评，取点赞数最多的一条");
-                        joke.setCommentNumber(listHotComment.size());
+                        joke.setCommentNumber(count);
                         joke.setComment(listHotComment.get(0));
                     }
                     Comment comment = joke.getComment();
@@ -234,7 +235,7 @@ public class IndexService {
                             comment.setBc(bc);
                         }
                     }
-                    comment.setTotal(joke.getCommentNumber());
+                    comment.setTotal(count);
                     joke.setSrc(null);
                     list.add(joke);
                 }

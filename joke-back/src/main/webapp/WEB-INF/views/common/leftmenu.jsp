@@ -24,7 +24,6 @@
                         <li><a href="joke/list?status=0"><span> 内容审核</span></a></li>
                         <li><a href="joke/top"><span> 首页置顶</span></a></li>
                         <li><a href="joke/publish"><span> 发布规则</span></a></li>
-                        <li><a href="joke/blackManage"><span> 拉黑管理</span></a></li>
                     </ul>
                 </li>
                 <li class="accordion">
@@ -32,6 +31,7 @@
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="comment/list?state=1"><span> 评论审核</span></a></li>
                         <li><a href="sensitive/list"><span> 敏感词库</span></a></li>
+                        <li><a href="joke/listBlackMan"><span> 拉黑管理</span></a></li>
                     </ul>
                 </li>
                 <li class="accordion">

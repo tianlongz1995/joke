@@ -3,7 +3,6 @@ package com.oupeng.joke.back.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.oupeng.joke.back.util.FormatUtil;
-import com.oupeng.joke.back.util.HttpUtil;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.BlackManMapper;
@@ -20,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 
 /**
@@ -104,29 +106,39 @@ public class CommentService {
     public void verifyComment(String ids, String uids, String nicks, Integer state, Integer allState, String username) {
 
         if (allState == 1) {
-            if (state == 3) {//已发布评论状态拉黑删除  删除缓存
-                String[] str = uids.split(",");
-                String[] nick=nicks.split(",");
-                for (int i=0;i<str.length;i++) {
-                    String uid=str[i];
-                    BlackMan sb = new BlackMan();
-                    sb.setId(uid);
-                    sb.setNick(nick[i]);
-                    sb.setCreate_by(username);
+            if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
 
-                    if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
-                        //保持数据库和缓存的同步
-                        blackManMapper.insertABlackMan(sb);
-                        jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
-                        commentMapper.deleteComment(uid);
-                    } else {
-                        logger.info("用户:" + uid + " 已经被拉黑");
+                if(state==3){
+                    String[] str = uids.split(",");
+                    String[] nick = nicks.split(",");
+                    for (int i = 0; i < str.length; i++) {
+                        String uid = str[i];
+                        BlackMan sb = new BlackMan();
+                        sb.setId(uid);
+                        sb.setNick(nick[i]);
+                        sb.setCreate_by(username);
+
+                        if (blackManMapper.getABlackMan(sb.getId()) <= 0) {
+                            //保持数据库和缓存的同步
+                            blackManMapper.insertABlackMan(sb);
+                            jedisCache.hset(JedisKey.BLACK_MAN, uid, uid);
+                            commentMapper.deleteComment(uid);
+                        } else {
+                            logger.info("用户:" + uid + " 已经被拉黑");
+                        }
                     }
                 }
-                //清除缓存中的所有评论
-                cleanCommentCache(ids);
+                try {
+                    //清除缓存中的所有评论
+                    cleanCommentCache(ids);
+                }catch (Exception e){
+                    logger.info("删除缓存异常");
+                }
             } else if (state == 4) {
                 cleanCommentCache(ids);
+                //更新数据库中的评论
+                Integer updateTime = FormatUtil.getTime();
+                commentMapper.updateCommentState(ids, state, username, updateTime);
             }
         } else if (allState != 2) {
             if (state == 1) {//重新加入缓存
@@ -135,10 +147,11 @@ public class CommentService {
                     addCommentToCache(comment);
                 }
             }
+            //更新时间
+            Integer updateTime = FormatUtil.getTime();
+            commentMapper.updateCommentState(ids, state, username, updateTime);
         }
-        //更新时间
-        Integer updateTime = FormatUtil.getTime();
-        commentMapper.updateCommentState(ids, state, username, updateTime);
+
     }
 
     /**
@@ -262,8 +275,8 @@ public class CommentService {
                                 Integer jokeId = comment.getJokeId();
                                 Comment maxGoodComment = commentMapper.getMaxGoodCommentByJokeId(jokeId);
 
-                                if(tgood > maxGoodComment.getGood()){ //更新
-                                   jokeMapper.updateJokeOfGod(jokeId,maxGoodComment.getBc(),maxGoodComment.getAvata(),maxGoodComment.getNick());
+                                if (tgood > maxGoodComment.getGood()) { //更新
+                                    jokeMapper.updateJokeOfGod(jokeId, maxGoodComment.getBc(), maxGoodComment.getAvata(), maxGoodComment.getNick());
                                 }
                             }
 

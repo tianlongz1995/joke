@@ -202,7 +202,8 @@ public class JedisCache {
         try {
             jedis = jedisWritePool.getResource();
             jedis.zrem(key, members);
-        } finally {
+        }
+        finally {
             if (jedis != null) {
                 jedis.close();
             }
