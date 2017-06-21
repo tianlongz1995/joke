@@ -212,7 +212,7 @@ public class IndexService {
                 Joke joke = getJoke(id, cid);
                 if (joke != null) {
                     List<Comment> listHotComment = commentService.getComment(joke.getId(), null, null, true);
-                    int count=commentService.getCommentCount(joke.getId());
+                    int count = commentService.getCommentCount(joke.getId());
                     if (listHotComment == null || listHotComment.size() <= 0) {
                         log.info("不存在神评");
                         joke.setComment(null);
