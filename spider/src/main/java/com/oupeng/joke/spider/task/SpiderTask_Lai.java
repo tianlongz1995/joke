@@ -65,7 +65,7 @@ public class SpiderTask_Lai {
         if (StringUtils.isNotBlank(shen)) {
             shenUrlLai = shen;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("lai.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderLai();
         }
@@ -75,7 +75,7 @@ public class SpiderTask_Lai {
     /**
      * 抓取来福岛
      */
-    @Scheduled(cron = "0 10 1 * * ?")
+    @Scheduled(cron = "0 30 0 * * ?")
     public void spiderLai() {
         logger.info("laifudao spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);

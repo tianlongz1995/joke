@@ -51,7 +51,7 @@ public class SpiderTask_Hua {
         if (StringUtils.isNotBlank(hi)) {
             imgUrlHua = hi;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("hua.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderHua();
         }
@@ -61,7 +61,7 @@ public class SpiderTask_Hua {
     /**
      * 抓取快乐麻花
      */
-    @Scheduled(cron = "0 40 2 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void spiderHua() {
         logger.info("kuailemahua spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);

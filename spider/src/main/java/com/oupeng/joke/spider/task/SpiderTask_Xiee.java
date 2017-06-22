@@ -56,7 +56,7 @@ public class SpiderTask_Xiee {
         if (StringUtils.isNotBlank(xieeImg)) {
             imgUrlXiee = xieeImg;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("xiee.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderXiee();
         }
@@ -66,7 +66,7 @@ public class SpiderTask_Xiee {
     /**
      * 抓取邪恶漫画
      */
-    @Scheduled(cron = "0 30 21 * * ?")
+    @Scheduled(cron = "0 30 3 * * ?")
     public void spiderXiee() {
         logger.info("xieemanhua sexi spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgSexi.class, imgUrlSexi);

@@ -60,7 +60,7 @@ public class SpiderTask_Peng {
         if (StringUtils.isNotBlank(pi)) {
             imgUrlPeng = pi;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("peng.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
              spiderPeng();
         }
@@ -71,7 +71,7 @@ public class SpiderTask_Peng {
     /**
      * 抓取捧腹网
      */
-     @Scheduled(cron = "0 30 5 * * ?")
+     @Scheduled(cron = "0 0 2 * * ?")
     public void spiderPeng() {
         logger.info("pengfu spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgPeng.class, imgUrlPeng);
