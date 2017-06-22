@@ -54,8 +54,10 @@
                                         <input id="jokeAvatar" type="text" class="input-sm" value=""/>
                                         <a id="jokeAvatarCode" onclick="getValidationCode(2)" type="button" class="btn btn-default btn-sm">获取验证码</a>
                                         <a id="a" onclick="jokeAvatar()" type="button" class="btn btn-success btn-sm">段子头像补全</a>
+                                        <a id="cleanCache" onclick="delJokeAndCommentCache()" type="button" class="btn btn-success btn-sm">清除joke缓存</a>
                                     </td>
                                 </tr>
+
                             </table>
                         </div>
                     </div>
@@ -121,6 +123,20 @@
                                     $("#c").removeAttr('disabled');
                                     $("#choiceCropCode").removeAttr('disabled');
                                 });
+                    }
+                    ;
+
+                    /** --------------------删除joke及其comment缓存-------------------- **/
+                    function delJokeAndCommentCache() {
+                        post('admin/delJokeAndCommentCache', null,
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert("处理完成!");
+                                }
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                            });
                     }
                     ;
 
