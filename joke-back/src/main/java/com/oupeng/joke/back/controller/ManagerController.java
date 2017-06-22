@@ -51,6 +51,22 @@ public class ManagerController {
 	}
 
     /**
+     * 删除joke及其comment缓存
+     */
+    @RequestMapping(value = "/delJokeAndCommentCache")
+    @ResponseBody
+    public Result delJokeAndCommentCache(){
+
+        String username = getUserName();
+        if(username == null){
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        managerService.cleanCache();
+        log.info("用户[{}]删除了所有joke及其comment缓存", username);
+        return new Success("删除joke及其comment缓存成功!");
+    }
+
+    /**
      * 获取验证码
      * @return
      */
