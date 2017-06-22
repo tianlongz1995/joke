@@ -54,6 +54,9 @@ public class ManagerService {
      */
     public void cleanCache(){
 
+        //清除spider源
+        jedisCache.del("url.filter");
+
         Set<String> jokeKeys = jedisCache.keys(JedisKey.STRING_JOKE+"*");
         Set<String> commentListKeys = jedisCache.keys(JedisKey.JOKE_COMMENT_LIST+"*");
         Set<String> godCommentKeys = jedisCache.keys(JedisKey.JOKE_GOD_COMMENT+"*");
