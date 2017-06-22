@@ -56,7 +56,7 @@ public class SpiderTask_NeiHan {
         if (StringUtils.isNotBlank(neihanPic)) {
             imgUrl = neihanPic;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("neihan.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spider();
         }
@@ -66,7 +66,7 @@ public class SpiderTask_NeiHan {
     /**
      * neihan
      */
-    @Scheduled(cron = "0 20 1 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void spider() {
         logger.info("neihan spider text...");
         crawl(JobInfoDaoPipeline, JokeTextNeihan.class, textUrl);

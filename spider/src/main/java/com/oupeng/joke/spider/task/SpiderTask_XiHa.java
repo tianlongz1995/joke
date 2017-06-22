@@ -59,7 +59,7 @@ public class SpiderTask_XiHa {
         if (StringUtils.isNotBlank(xhimg)) {
             imgUrlXiha = xhimg;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("xiha.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderXiha();
         }
@@ -69,7 +69,7 @@ public class SpiderTask_XiHa {
     /**
      * 抓取嘻嘻哈哈
      */
-    @Scheduled(cron = "0 30 23 * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void spiderXiha() {
         logger.info("xixihaha spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgXiha.class, imgUrlXiha);

@@ -61,7 +61,7 @@ public class SpiderTask_Cuntuba {
         if (StringUtils.isNotBlank(ctbImg)) {
             imgUrlCtb = ctbImg;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("ctb.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderCtb();
         }
@@ -71,7 +71,7 @@ public class SpiderTask_Cuntuba {
     /**
      * 抓取寸土吧
      */
-    @Scheduled(cron = "0 30 22 * * ?")
+    @Scheduled(cron = "0 30 5 * * ?")
     public void spiderCtb() {
         logger.info("cuntuba spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgCtb.class, imgUrlCtb);

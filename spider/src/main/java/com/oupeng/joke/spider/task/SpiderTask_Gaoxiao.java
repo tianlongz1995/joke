@@ -54,7 +54,7 @@ public class SpiderTask_Gaoxiao {
         if (StringUtils.isNotBlank(hot)) {
             hotUrlGao = hot;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("gaoxiao.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGaoxiao();
         }
@@ -63,7 +63,7 @@ public class SpiderTask_Gaoxiao {
     /**
      * 3GIFS
      */
-    @Scheduled(cron = "0 30 9 * * ?")
+    @Scheduled(cron = "0 0 6 * * ?")
     public void spiderGaoxiao() {
         logger.info("搞笑gif spider recommended image...");
         crawl(jobInfoDaoImgPipeline, JokeImgGao.class, imgUrlGao);

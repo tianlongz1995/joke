@@ -46,7 +46,7 @@ public class SpiderTask_WoWant {
         if (StringUtils.isNotBlank(wowant)) {
             imgUrl = wowant;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("wowant.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spider();
         }
@@ -56,7 +56,7 @@ public class SpiderTask_WoWant {
     /**
      * wowant 我想网
      */
-    @Scheduled(cron = "0 20 23 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     public void spider() {
         logger.info("wowant spider image...");
         crawl(JobInfoDaoImgPipeline, JokeImgWoWant.class, imgUrl);

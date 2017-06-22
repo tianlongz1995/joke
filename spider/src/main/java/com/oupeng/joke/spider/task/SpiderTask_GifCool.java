@@ -46,7 +46,7 @@ public class SpiderTask_GifCool {
         if (StringUtils.isNotBlank(gifcool)) {
             imgUrl = gifcool;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("gifcool.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGifCool();
         }
@@ -59,7 +59,7 @@ public class SpiderTask_GifCool {
      * 1）过快相当于多个线程爬同一资源,会导致爬取资源重复
      * 2）不停地请求带攻击性，会被屏蔽IP
      */
-    @Scheduled(cron = "0 18 2 * * ?")
+    @Scheduled(cron = "0 30 6 * * ?")
     public void spiderGifCool() {
         logger.info("gifcool spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgGifCool.class, imgUrl);

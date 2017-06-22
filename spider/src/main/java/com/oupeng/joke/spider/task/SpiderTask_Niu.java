@@ -51,7 +51,7 @@ public class SpiderTask_Niu {
         if (StringUtils.isNotBlank(nt)) {
             textUrlNiu = nt;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("niu.spider.run");
         logger.info("爬虫初始化运行:{}", isRun);
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderNiu();
@@ -64,7 +64,7 @@ public class SpiderTask_Niu {
     /**
      * 抓取牛逼思维
      */
-    @Scheduled(cron = "0 10 3 * * ?")
+    @Scheduled(cron = "0 30 1 * * ?")
     public void spiderNiu() {
         logger.info("niubisiwei spider text...");
         crawl(jobInfoDaoPipeline, JokeTextNiu.class, textUrlNiu);

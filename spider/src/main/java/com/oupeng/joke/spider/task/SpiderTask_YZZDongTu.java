@@ -54,7 +54,7 @@ public class SpiderTask_YZZDongTu {
             gifUrlDongtu = hi;
         }
 
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("yzzdongtu.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGif();
         }
@@ -64,7 +64,7 @@ public class SpiderTask_YZZDongTu {
     /**
      * 抓取叶子猪网站邪恶动图
      */
-    @Scheduled(cron = "0 10 3 * * ?")
+    @Scheduled(cron = "0 30 4 * * ?")
     public void spiderGif() {
         logger.info("yzz spider gif...");
         crawl(jobInfoDaoImgPipeline, JokeImgYZZDongTu.class, gifUrlDongtu);

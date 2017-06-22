@@ -50,7 +50,7 @@ public class SpiderTask_ThreeGif {
         if (StringUtils.isNotBlank(threeGif)) {
             imgUrlThree = threeGif;
         }
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("3gif.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderThree();
         }
@@ -59,7 +59,7 @@ public class SpiderTask_ThreeGif {
     /**
      * 3GIFS
      */
-    @Scheduled(cron = "0 30 10 * * ?")
+    @Scheduled(cron = "0 30 2 * * ?")
     public void spiderThree() {
         logger.info("3GIFS spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgThreeGif.class, imgUrlThree);
