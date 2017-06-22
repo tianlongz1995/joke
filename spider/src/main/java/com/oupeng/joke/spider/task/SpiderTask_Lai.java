@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
@@ -20,7 +21,7 @@ import javax.annotation.PostConstruct;
  * 来福岛
  * Created by zongchao on 2017/3/13.
  */
-//@Component
+@Component
 public class SpiderTask_Lai {
     private static final Logger logger = LoggerFactory.getLogger(SpiderTask_Lai.class);
 
