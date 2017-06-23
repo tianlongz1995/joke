@@ -59,7 +59,10 @@ public class SpiderTask_NeiHan {
         String isRun = env.getProperty("neihan.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spider();
+        } else {
+            logger.info("neihan.spider.run:{}", isRun);
         }
+
     }
 
 
