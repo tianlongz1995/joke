@@ -76,6 +76,7 @@ public class SpiderTask_YZZGif {
                 .addUrl(url)
                 .thread(1)
                 .start();
+
     }
 
 }

@@ -48,6 +48,7 @@ public class SpiderTask_NeiHan {
 
     @PostConstruct
     public void init() {
+        logger.info("内涵段子定时任务启动...");
         String neihanText = env.getProperty("neihan.spider.text.url");
         if (StringUtils.isNotBlank(neihanText)) {
             textUrl = neihanText;

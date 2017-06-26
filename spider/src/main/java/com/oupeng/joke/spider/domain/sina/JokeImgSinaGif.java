@@ -1,7 +1,6 @@
 package com.oupeng.joke.spider.domain.sina;
 
 import com.oupeng.joke.spider.domain.JokeImg;
-import com.oupeng.joke.spider.task.SpiderTask_DuoWan_Gif;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -15,7 +14,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
  */
 @TargetUrl("http://gif.sina.cn/")
 public class JokeImgSinaGif extends JokeImg implements AfterExtractor {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_DuoWan_Gif.class);
+    private static final Logger logger = LoggerFactory.getLogger(JokeImgSinaGif.class);
 
     @ExtractBy(value = "//div[@id='gif_box opacity']/h2/a/allText()", notNull = true)
     private String title;

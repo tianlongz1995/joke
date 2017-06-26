@@ -214,16 +214,16 @@ public class IndexService {
                     List<Comment> listHotComment = commentService.getComment(joke.getId(), null, null, true);
                     int count = commentService.getCommentCount(joke.getId());
                     if (listHotComment == null || listHotComment.size() <= 0) {
-                        log.info("不存在神评");
+//                        log.debug("不存在神评");
                         joke.setComment(null);
                     } else {
-                        log.info("存在神评，取点赞数最多的一条");
+//                        log.debug("存在神评，取点赞数最多的一条");
                         joke.setCommentNumber(count);
                         joke.setComment(listHotComment.get(0));
                     }
                     Comment comment = joke.getComment();
                     if (comment == null) {
-                        log.info("没有神评，返回空");
+//                        log.debug("没有神评，返回空");
                         comment = new Comment();
                         comment.setBc(null);
                         comment.setNick(joke.getNick());
@@ -241,11 +241,11 @@ public class IndexService {
                 }
             }
             if (CollectionUtils.isEmpty(list)) {
-                log.info("获取数据为空");
+                log.debug("获取数据为空");
                 return new Result("获取数据为空!", 2);
             }
         } else {
-            log.info("获取数据为空");
+            log.debug("获取数据为空");
             return new Result("获取数据为空!", 1);
         }
         long end = System.currentTimeMillis();
