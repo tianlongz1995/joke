@@ -107,8 +107,7 @@ public class CommentService {
 
         if (allState == 1) {
             if (state == 3 || state == 4) {//已发布评论状态拉黑删除  删除缓存
-
-                if(state==3){
+                if (state == 3) {
                     String[] str = uids.split(",");
                     String[] nick = nicks.split(",");
                     for (int i = 0; i < str.length; i++) {
@@ -127,18 +126,13 @@ public class CommentService {
                             logger.info("用户:" + uid + " 已经被拉黑");
                         }
                     }
-                }
-                try {
-                    //清除缓存中的所有评论
                     cleanCommentCache(ids);
-                }catch (Exception e){
-                    logger.info("删除缓存异常");
+                } else if (state == 4) {
+                    cleanCommentCache(ids);
+                    //更新数据库中的评论
+                    Integer updateTime = FormatUtil.getTime();
+                    commentMapper.updateCommentState(ids, state, username, updateTime);
                 }
-            } else if (state == 4) {
-                cleanCommentCache(ids);
-                //更新数据库中的评论
-                Integer updateTime = FormatUtil.getTime();
-                commentMapper.updateCommentState(ids, state, username, updateTime);
             }
         } else if (allState != 2) {
             if (state == 1) {//重新加入缓存
