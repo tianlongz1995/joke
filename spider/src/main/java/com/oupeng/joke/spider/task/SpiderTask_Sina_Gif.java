@@ -48,7 +48,7 @@ public class SpiderTask_Sina_Gif {
             imgUrlSina_Gif = hi;
         }
 
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("sina.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGif();
         }

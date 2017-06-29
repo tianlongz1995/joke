@@ -49,7 +49,7 @@ public class SpiderTask_DuoWan_Gif {
             imgUrlDuoWan_Gif = hi;
         }
 
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("duowan.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGif();
         }

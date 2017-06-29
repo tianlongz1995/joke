@@ -88,7 +88,9 @@ public class HandleImage {
     }
 
     public ImageDto downloadImg(String imgUrl) {
-
+        if(!imgUrl.startsWith("http")){
+            imgUrl = "http:" + imgUrl;
+        }
         OutputStream os = null;
         InputStream is = null;
         int random = new Random().nextInt(3000);

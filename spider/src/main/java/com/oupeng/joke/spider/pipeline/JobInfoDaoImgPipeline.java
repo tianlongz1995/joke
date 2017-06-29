@@ -33,11 +33,10 @@ import java.util.Random;
 public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
-
+    private static String PROTOCOL = "http:";
     private Random random = new Random(3000);
-    private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
+    private String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
     private int maxCrawlPage = 300;
-
     @Autowired
     private JobInfoDao jobInfoDao;
     @Autowired
@@ -76,7 +75,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             ((OOSpider) task).stop();
             logger.info("图片 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, count);
         }
-
+        jokeImg.setSrc(processProtocol(jokeImg.getSrc()));
         if (!urlFilter.contains(jokeImg.getSrc())) {
             //处理图片
             ImageDto img = handleImage.downloadImg(jokeImg.getImg());
@@ -174,5 +173,18 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
             logger.info("图片 - 处理页面结束:{}", jokeImg.getSrc());
         }
     }
+
+    /**
+     * 解决自适应url地址的问题
+     * @param src
+     * @return
+     */
+    private String processProtocol(String src) {
+        if(src.startsWith("//")){
+            return PROTOCOL + src;
+        }
+        return src;
+    }
+
 }
 

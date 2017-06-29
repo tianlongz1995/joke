@@ -90,7 +90,7 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
 
 
     public Integer getSourceId() {
-        return 146;
+        return 136;
     }
 
 

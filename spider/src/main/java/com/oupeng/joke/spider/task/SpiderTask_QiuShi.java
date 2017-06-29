@@ -51,18 +51,14 @@ public class SpiderTask_QiuShi {
     @PostConstruct
     public void init() {
 
-        String hottext = env.getProperty("quishi.spider.hot.url");
-        String img=env.getProperty("quishi.spider.img.url");
+        String url = env.getProperty("quishi.spider.url");
 
-        if (StringUtils.isNotBlank(hottext)) {
-            hotTextUrlQiuShi = hottext;
+        if (StringUtils.isNotBlank(url)) {
+            hotTextUrlQiuShi = url;
+            imgUrlQuiShi = url;
         }
 
-        if (StringUtils.isNotBlank(img)) {
-            imgUrlQuiShi = img;
-        }
-
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("qiushi.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderQuiShiBaiKe();
         }

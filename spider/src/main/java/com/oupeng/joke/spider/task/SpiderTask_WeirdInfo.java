@@ -54,7 +54,7 @@ public class SpiderTask_WeirdInfo {
             imgUrlWeird = hi;
         }
 
-        String isRun = env.getProperty("init.spider.run");
+        String isRun = env.getProperty("yzz.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderGif();
         }
