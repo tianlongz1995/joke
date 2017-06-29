@@ -45,7 +45,7 @@ public class JokeService {
 
     private String localImgPrefix = "http://jokeback.bj.oupeng.com/resources/image/";
 
-    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
+//    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
 
     private String cdnImagePath = "/data01/images/";
 
@@ -77,12 +77,12 @@ public class JokeService {
             logger.error("getProperty(\"show_image_path\") is null:{}", localImgUrl);
         }
 
-        String userUrl = env.getProperty("random.user.url");
-        if (StringUtils.isNoneBlank(userUrl)) {
-            randomUserUrl = userUrl;
-        } else {
-            logger.error("getProperty(\"random.user.url\") is null:{}", userUrl);
-        }
+//        String userUrl = env.getProperty("random.user.url");
+//        if (StringUtils.isNoneBlank(userUrl)) {
+////            randomUserUrl = userUrl;
+//        } else {
+//            logger.error("getProperty(\"random.user.url\") is null:{}", userUrl);
+//        }
 
 //        缓存段子昵称
         List<String> nicks = jokeMapper.getJokeNick();
