@@ -53,17 +53,23 @@ public class ManagerController {
     /**
      * 删除joke及其comment缓存
      */
-    @RequestMapping(value = "/delJokeAndCommentCache")
+    @RequestMapping(value = "/delJokeAndCommentCache", produces = {"application/json"})
     @ResponseBody
-    public Result delJokeAndCommentCache(){
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Result delJokeAndCommentCache(@RequestParam(value="code")String code){
 
-        String username = getUserName();
-        if(username == null){
-            return new Failed("登录信息失效,请重新登录!");
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String key = JedisKey.VALIDATION_CODE_PREFIX + username + ".3";
+        String vCode = jedisCache.get(key);
+        if(vCode != null && code.equals(vCode)){
+            //删除验证码缓存
+            jedisCache.del(key);
+            //清理缓存
+            managerService.cleanCache();
+            return new Success("清理成功");
+        } else {
+            return new Failed("验证码异常!");
         }
-        managerService.cleanCache();
-        log.info("用户[{}]删除了所有joke及其comment缓存", username);
-        return new Success("删除joke及其comment缓存成功!");
     }
 
     /**
