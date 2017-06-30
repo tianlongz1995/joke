@@ -56,18 +56,6 @@
                                         <a id="a" onclick="jokeAvatar()" type="button" class="btn btn-success btn-sm">段子头像补全</a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>
-                                        清除全部joke缓存：
-                                    </th>
-                                    <td>
-                                        <input id="cacheAvatar" type="text" class="input-sm" value=""/>
-                                        <a id="jokeCacheCode" onclick="getValidationCode(3)" type="button"
-                                           class="btn btn-default btn-sm">获取验证码</a>
-                                        <a id="cleanCache" onclick="delJokeAndCommentCache()" type="button"
-                                           class="btn btn-success btn-sm">清除joke缓存</a>
-                                    </td>
-                                </tr>
 
                             </table>
                         </div>
@@ -151,37 +139,6 @@
                     }
                     ;
 
-                    /** --------------------删除joke及其comment缓存-------------------- **/
-                    function delJokeAndCommentCache() {
-
-                        $("#cleanCache").attr('disabled', 'disabled');
-                        var code = $("#cacheAvatar").val();
-                        if (code == null || code == '') {
-                            alert("请输入验证码!");
-                            return false;
-                        }
-
-                        $("#cachediv").show();
-                        post('admin/delJokeAndCommentCache', 'code=' + code,
-                            function (data) {
-                                if (data.status == 1) {
-                                    alert("处理完成!");
-                                    $("#cacheAvatar").val('');
-                                } else {
-                                    alert('更新失败:' + data.info);
-                                }
-                                $("#cachediv").hide();
-                                $("#cleanCache").removeAttr('disabled');
-                                $("#jokeCacheCode").removeAttr('disabled');
-                            },
-                            function () {
-                                alert('请求失败，请检查网络环境');
-                                $("#cachediv").hide();
-                                $("#cleanCache").removeAttr('disabled');
-                                $("#jokeCacheCode").removeAttr('disabled');
-                            });
-                    }
-                    ;
 
                     /** --------------------段子头像补全-------------------- **/
                     function jokeAvatar() {

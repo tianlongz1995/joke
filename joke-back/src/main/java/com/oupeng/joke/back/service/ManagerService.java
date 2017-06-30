@@ -48,41 +48,6 @@ public class ManagerService {
 
     }
 
-    /**
-     * 清除joke相关缓存
-     * @return
-     */
-    public void cleanCache(){
-
-        //清除spider源
-        jedisCache.del("url.filter");
-
-        Set<String> jokeKeys = jedisCache.keys(JedisKey.STRING_JOKE+"*");
-        Set<String> commentListKeys = jedisCache.keys(JedisKey.JOKE_COMMENT_LIST+"*");
-        Set<String> godCommentKeys = jedisCache.keys(JedisKey.JOKE_GOD_COMMENT+"*");
-        Set<String> commnetKeys = jedisCache.keys(JedisKey.STRING_COMMENT+"*");
-
-        if(!CollectionUtils.isEmpty(jokeKeys)){//joke缓存
-            for(String key : jokeKeys){
-                jedisCache.del(key);
-            }
-        }
-        if(!CollectionUtils.isEmpty(commentListKeys)){//评论列表缓存
-            for(String key : commentListKeys){
-                jedisCache.del(key);
-            }
-        }
-        if(!CollectionUtils.isEmpty(godCommentKeys)){//神评缓存
-            for(String key : godCommentKeys){
-                jedisCache.del(key);
-            }
-        }
-        if(!CollectionUtils.isEmpty(commnetKeys)){//评论缓存
-            for(String key : commnetKeys){
-                jedisCache.del(key);
-            }
-        }
-    }
 
     /**
      * 精选切图

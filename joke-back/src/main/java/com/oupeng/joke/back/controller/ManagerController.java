@@ -50,27 +50,6 @@ public class ManagerController {
 		return "/main/manager";
 	}
 
-    /**
-     * 删除joke及其comment缓存
-     */
-    @RequestMapping(value = "/delJokeAndCommentCache", produces = {"application/json"})
-    @ResponseBody
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Result delJokeAndCommentCache(@RequestParam(value="code")String code){
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String key = JedisKey.VALIDATION_CODE_PREFIX + username + ".3";
-        String vCode = jedisCache.get(key);
-        if(vCode != null && code.equals(vCode)){
-            //删除验证码缓存
-            jedisCache.del(key);
-            //清理缓存
-            managerService.cleanCache();
-            return new Success("清理成功");
-        } else {
-            return new Failed("验证码异常!");
-        }
-    }
 
     /**
      * 获取验证码
