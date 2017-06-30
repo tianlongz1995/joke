@@ -39,9 +39,7 @@ public class MailService {
                     message.setText(content);
                     javaMailSender.send(message);
                 } catch (Exception e) {
-                    logger.error(
-                    		String.format("邮件发送失败：[recipient:(%s),subject:(%s),subject:(%s),]"),recipient,subject,content
-                    		, e);
+                    logger.error("邮件发送失败：[recipient:{},subject:{},subject:{}]",recipient,subject,content, e);
                 }
             }
         });
@@ -66,9 +64,7 @@ public class MailService {
                     message.setText(content);
                     javaMailSender.send(message);
                 } catch (Exception e) {
-                    logger.error(
-                            String.format("邮件发送失败：[recipient:(%s),subject:(%s),subject:(%s),]"),recipient,subject,content
-                            , e);
+                    logger.error("邮件发送失败：[recipient:[{}], subject:[{}], subject:[{}], ERROR:{}" ,recipient,subject,content, e.getMessage());
                 }
             }
         });
