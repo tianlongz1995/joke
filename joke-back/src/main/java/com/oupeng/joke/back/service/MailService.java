@@ -39,7 +39,7 @@ public class MailService {
                     message.setText(content);
                     javaMailSender.send(message);
                 } catch (Exception e) {
-                    logger.error("邮件发送失败：[recipient:{},subject:{},subject:{}]",recipient,subject,content, e);
+                    logger.error("邮件发送失败：[recipient:{},subject:{},subject:{}]， ERROR:{}",recipient,subject,content, e.getMessage());
                 }
             }
         });
