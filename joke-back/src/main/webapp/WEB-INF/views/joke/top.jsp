@@ -255,6 +255,10 @@
                         <div class="modal-body">
                             <table id="orders-table" class="table table-hover">
                                 <tr>
+                                    <th>提示</th>
+                                    <td>发布时间一定要与【推荐发布规则配置】时间一致。例如，【推荐发布规则配置】时间是每天8点整、12点整、18点整发布数据，置顶的发布时间要定在8点整、12点整、18点整，否则会出现发布失败的问题。</td>
+                                </tr>
+                                <tr>
                                     <th>发布时间</th>
                                     <td>
                                         <input id="ids" value="" type="hidden">
