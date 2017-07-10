@@ -21,15 +21,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 段子控制器
- *
  */
 @Controller
-@RequestMapping(value="/admin")
+@RequestMapping(value = "/admin")
 public class ManagerController {
     private static final Logger log = LoggerFactory.getLogger(DistributorsController.class);
 
     @Autowired
-	private ManagerService managerService;
+    private ManagerService managerService;
     @Autowired
     private JedisCache jedisCache;
     @Autowired
@@ -40,49 +39,52 @@ public class ManagerController {
      */
     private String recipient = "shuangh@oupeng.com";
 
-	/**
-	 * 页面
-	 * @return
-	 */
-	@RequestMapping(value = "manager")
+    /**
+     * 页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "manager")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-	public String manager(){
-		return "/main/manager";
-	}
+    public String manager() {
+        return "/main/manager";
+    }
 
 
     /**
      * 获取验证码
+     *
      * @return
      */
-    @RequestMapping(value="/getValidationCode", produces = {"application/json"})
+    @RequestMapping(value = "/getValidationCode", produces = {"application/json"})
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Result getValidationCode(@RequestParam(value="type")Integer type){
+    public Result getValidationCode(@RequestParam(value = "type") Integer type) {
         String username = getUserName();
-        if(username == null){
+        if (username == null) {
             return new Failed("登录信息失效,请重新登录!");
         }
         String code = FormatUtil.getRandomValidationCode();
         jedisCache.setAndExpire(JedisKey.VALIDATION_CODE_PREFIX + username + "." + type, code, 60 * 5);
-        mailService.sendMail(recipient, "段子后台验证码", "验证码:【"+code+"】;您正在使用段子后台修改数据。");
+        mailService.sendMail(recipient, "段子后台验证码", "验证码:【" + code + "】;您正在使用段子后台修改数据。");
         log.info("用户[{}]使用段子后台发送验证码, 收件人:[{}]", username, recipient);
         return new Success("验证码发送成功!");
     }
 
     /**
      * 精选切图
+     *
      * @param code
      * @return
      */
-    @RequestMapping(value="/choiceCrop", produces = {"application/json"})
+    @RequestMapping(value = "/choiceCrop", produces = {"application/json"})
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Result choiceCrop(@RequestParam(value="code")String code){
+    public Result choiceCrop(@RequestParam(value = "code") String code) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         String key = JedisKey.VALIDATION_CODE_PREFIX + username + ".1";
         String vCode = jedisCache.get(key);
-        if(vCode != null && code.equals(vCode)){
+        if (vCode != null && code.equals(vCode)) {
             //			删除验证码缓存
             jedisCache.del(key);
 //            切图
@@ -96,17 +98,18 @@ public class ManagerController {
 
     /**
      * 段子头像补全
+     *
      * @param code
      * @return
      */
-    @RequestMapping(value="/jokeAvatar", produces = {"application/json"})
+    @RequestMapping(value = "/jokeAvatar", produces = {"application/json"})
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Result jokeAvatar(@RequestParam(value="code")String code){
+    public Result jokeAvatar(@RequestParam(value = "code") String code) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         String key = JedisKey.VALIDATION_CODE_PREFIX + username + ".2";
         String vCode = jedisCache.get(key);
-        if(vCode != null && code.equals(vCode)){
+        if (vCode != null && code.equals(vCode)) {
             //			删除验证码缓存
             jedisCache.del(key);
 //            切图
@@ -117,14 +120,35 @@ public class ManagerController {
         }
     }
 
+    /**
+     * 爬取内涵段子历史记录的神评-
+     */
+    /**
+     * 获取验证码
+     *
+     * @return
+     */
+    @RequestMapping(value = "/jokeHistoryComment", produces = {"application/json"})
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Result jokeHistoryComment() {
+        String username = getUserName();
+        if (username == null) {
+            return new Failed("登录信息失效,请重新登录!");
+        }
+        managerService.addJokeComment();
+        return new Success("验证码发送成功!");
+    }
+
 
     /**
      * 获取当前登录用户名
+     *
      * @return
      */
     private String getUserName() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(userDetails != null && userDetails.getUsername() != null){
+        if (userDetails != null && userDetails.getUsername() != null) {
             return userDetails.getUsername();
         }
         return null;

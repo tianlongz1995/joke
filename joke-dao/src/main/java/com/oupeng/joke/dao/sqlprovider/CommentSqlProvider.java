@@ -1,7 +1,9 @@
 package com.oupeng.joke.dao.sqlprovider;
 
+import com.oupeng.joke.domain.Comment;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,6 +77,32 @@ public class CommentSqlProvider {
             sql.append(" and id in (").append(ids).append(")");
         }
         return sql.toString();
+    }
+
+    /**
+     * 批量插入
+     *
+     * @param map
+     * @return
+     */
+    public static String insertBatchComment(Map<String, Object> map) {
+
+        List<Comment> list = (List<Comment>)map.get("list");
+
+        StringBuffer buf = new StringBuffer();
+        buf.append("insert into comment (`state`,`sid`,`uid`,`nickname`,`content`,`avata`,`good`,`createtime`,`publish_state`) values");
+        for (Comment comment : list) {
+            buf.append(" (1,'").append(comment.getJokeId()).append("','")
+                    .append(comment.getUid()).append("','")
+                    .append(comment.getNick()).append("','")
+                    .append(comment.getBc()).append("','")
+                    .append(comment.getAvata()).append("',")
+                    .append(comment.getGood()).append(",")
+                    .append(comment.getTime()).append(",1),");
+        }
+        String sql = buf.toString();
+        String sql0 = sql.substring(0,sql.length() - 1);
+        return sql0;
     }
 
 }

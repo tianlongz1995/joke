@@ -54,26 +54,31 @@ public interface CommentMapper {
     @SelectKey(statement = "SELECT LAST_INSERT_ID() as id", keyProperty = "id", before = false, resultType = Integer.class)
     void insertComment(Comment com);
 
-    @Delete(value="delete from comment where uid=#{id}")
+    /**
+     * 批量插入
+     *
+     * @param list
+     */
+    @InsertProvider(method = "insertBatchComment", type = CommentSqlProvider.class)
+    void insertBatchComment(@Param("list") List<Comment> list);
+
+    @Delete(value = "delete from comment where uid=#{id}")
     void deleteComment(@Param("id") String id);
 
 
-            /**
-             * 评论数据
-             *
-             * @param keyWord 关键字
-             * @param state   状态
-             * @return
-             */
+    /**
+     * 评论数据
+     *
+     * @param keyWord 关键字
+     * @param state   状态
+     * @return
+     */
     @SelectProvider(method = "getListForVerifyCount", type = CommentSqlProvider.class)
     int getListForVerifyCount(@Param("keyWord") String keyWord, @Param("state") Integer state);
 
 
     @SelectProvider(method = "getListForVerify", type = CommentSqlProvider.class)
     List<Comment> getListForVerify(@Param("keyWord") String keyWord, @Param("state") Integer state, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
-
-
-
 
 
     /**

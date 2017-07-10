@@ -45,6 +45,7 @@ public interface JokeMapper {
 
     /**
      * 获取段子信息
+     *
      * @param id
      * @return
      */
@@ -428,6 +429,7 @@ public interface JokeMapper {
 
     /**
      * 获取当前时间发布的段子列表
+     *
      * @param preReleaseHour
      * @param releaseTime
      * @return
@@ -566,18 +568,20 @@ public interface JokeMapper {
 
     /**
      * 获取段子昵称
+     *
      * @return
      */
     @Select("select nickname from nickname")
     List<String> getJokeNick();
 
-	/**
-	 * 获取段子神评数量
-	 * @param id
-	 * @return
-	 */
-	@Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good >= 10 and c.state = 1 and c.sid in (${id})  group by c.sid")
-	List<Comment> getReplyNum(@Param("id") String id);
+    /**
+     * 获取段子神评数量
+     *
+     * @param id
+     * @return
+     */
+    @Select("select count(c.id) as total , sid as jokeId from `comment` c where c.good >= 10 and c.state = 1 and c.sid in (${id})  group by c.sid")
+    List<Comment> getReplyNum(@Param("id") String id);
 
     /**
      * 神评中点赞数最大的一条神评，插入到joke中
@@ -589,4 +593,22 @@ public interface JokeMapper {
      */
     @Update("update joke set comment = #{comment}, avata = #{avata}, nick = #{nick} where id = #{id}")
     void updateJokeOfGod(@Param("id") Integer id, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
+
+    /**
+     * 获取数据源source_id(在time时间之前)的爬取数据记录
+     *
+     * @param time
+     * @param source_id
+     * @return
+     */
+    @Select(" select id, status, source_id as sourceId, src, comment as commentContent, avata, nick from joke where source_id = #{source_id} and create_time < #{time} and comment is null")
+    List<Joke> getJokebeforeTime(@Param("time") String time, @Param("source_id") Integer source_id);
+
+
+    /**
+     * joke插入神评论信息
+     */
+    @Update("update joke set comment_number = #{comment_number}, comment = #{comment}, avata = #{avata}, nick = #{nick} where id = #{id}")
+    void updateJokeComment(@Param("id") Integer id, @Param("comment_number") Integer comment_number, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
+
 }

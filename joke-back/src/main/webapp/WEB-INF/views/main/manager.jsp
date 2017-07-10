@@ -36,27 +36,37 @@
                         </div>
                         <div class="box-content">
                             <table class="table table-hover">
-                                <tr >
+                                <tr>
                                     <th>
                                         精选切图：
                                     </th>
                                     <td>
                                         <input id="choiceCrop" type="text" class="input-sm" value=""/>
-                                        <a id="choiceCropCode" onclick="getValidationCode(1)" type="button" class="btn btn-default btn-sm">获取验证码</a>
+                                        <a id="choiceCropCode" onclick="getValidationCode(1)" type="button"
+                                           class="btn btn-default btn-sm">获取验证码</a>
                                         <a id="c" onclick="choiceCrop()" type="button" class="btn btn-success btn-sm">精选切图</a>
                                     </td>
                                 </tr>
-                                <tr >
+                                <tr>
                                     <th>
                                         段子头像补全：
                                     </th>
                                     <td>
                                         <input id="jokeAvatar" type="text" class="input-sm" value=""/>
-                                        <a id="jokeAvatarCode" onclick="getValidationCode(2)" type="button" class="btn btn-default btn-sm">获取验证码</a>
+                                        <a id="jokeAvatarCode" onclick="getValidationCode(2)" type="button"
+                                           class="btn btn-default btn-sm">获取验证码</a>
                                         <a id="a" onclick="jokeAvatar()" type="button" class="btn btn-success btn-sm">段子头像补全</a>
                                     </td>
                                 </tr>
-
+                                <tr>
+                                    <th>
+                                        爬取内涵段子历史记录的神评：
+                                    </th>
+                                    <td>
+                                        <a id="historyComment" onclick="jokeHistoryComment()" type="button"
+                                           class="btn btn-success btn-sm">爬取内涵段子历史记录的神评</a>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -72,11 +82,36 @@
                     $(function () {
                         $("#cachediv").hide();
                     });
+
+                    /** ---------------爬取内涵段子历史记录的神评--------------- **/
+                    function jokeHistoryComment() {
+                        $("#historyComment").attr('disabled', 'disabled');
+                        $("#cachediv").show();
+
+                        post('admin/jokeHistoryComment', null,
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert("处理完成!");
+                                } else {
+                                    alert('更新失败:' + data.info);
+                                }
+                                $("#cachediv").hide();
+                                $("#historyComment").removeAttr('disabled');
+
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                                $("#cachediv").hide();
+                                $("#historyComment").removeAttr('disabled');
+                            });
+                    }
+                    ;
+
                     /**
                      * 获取验证码
                      */
                     function getValidationCode(type) {
-                        if(type == 1){
+                        if (type == 1) {
                             $("#choiceCropCode").attr('disabled', 'disabled');
                         } else if (type == 2) {
                             $("#jokeAvatarCode").attr('disabled', 'disabled');
@@ -120,22 +155,22 @@
                             return false;
                         }
                         post('admin/choiceCrop', 'code=' + code,
-                                function (data) {
-                                    if (data.status == 1) {
-                                        alert("处理完成!");
-                                        $("#choiceCrop").val('');
-                                    } else {
-                                        alert('更新失败:' + data.info);
-                                    }
-                                    $("#c").removeAttr('disabled');
-                                    $("#choiceCropCode").removeAttr('disabled');
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert("处理完成!");
+                                    $("#choiceCrop").val('');
+                                } else {
+                                    alert('更新失败:' + data.info);
+                                }
+                                $("#c").removeAttr('disabled');
+                                $("#choiceCropCode").removeAttr('disabled');
 
-                                },
-                                function () {
-                                    alert('请求失败，请检查网络环境');
-                                    $("#c").removeAttr('disabled');
-                                    $("#choiceCropCode").removeAttr('disabled');
-                                });
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                                $("#c").removeAttr('disabled');
+                                $("#choiceCropCode").removeAttr('disabled');
+                            });
                     }
                     ;
 
@@ -149,21 +184,21 @@
                             return false;
                         }
                         post('admin/jokeAvatar', 'code=' + code,
-                                function (data) {
-                                    if (data.status == 1) {
-                                        alert("处理完成!");
-                                        $("#jokeAvatar").val('');
-                                    } else {
-                                        alert('更新失败:' + data.info);
-                                    }
-                                    $("#a").removeAttr('disabled');
-                                    $("#jokeAvatarCode").removeAttr('disabled');
-                                },
-                                function () {
-                                    alert('请求失败，请检查网络环境');
-                                    $("#a").removeAttr('disabled');
-                                    $("#jokeAvatarCode").removeAttr('disabled');
-                                });
+                            function (data) {
+                                if (data.status == 1) {
+                                    alert("处理完成!");
+                                    $("#jokeAvatar").val('');
+                                } else {
+                                    alert('更新失败:' + data.info);
+                                }
+                                $("#a").removeAttr('disabled');
+                                $("#jokeAvatarCode").removeAttr('disabled');
+                            },
+                            function () {
+                                alert('请求失败，请检查网络环境');
+                                $("#a").removeAttr('disabled');
+                                $("#jokeAvatarCode").removeAttr('disabled');
+                            });
                     }
                     ;
 

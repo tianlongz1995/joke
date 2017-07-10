@@ -2,6 +2,11 @@ package com.oupeng.joke.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * 评论
  * Created by hushuang on 2017/1/13.
@@ -137,7 +142,11 @@ public class Comment {
     }
 
     public Integer getTime() {
-        return time;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String dates = dateFormat.format(date);
+        long time = Timestamp.valueOf(dates).getTime() / 1000;
+        return (int) time;
     }
 
     public void setTime(Integer time) {
