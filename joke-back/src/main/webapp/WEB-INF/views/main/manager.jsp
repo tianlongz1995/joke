@@ -60,11 +60,11 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        爬取内涵段子历史记录的神评：
+                                        重新爬取内涵段子神评(2017-7-1前)：
                                     </th>
                                     <td>
                                         <a id="historyComment" onclick="jokeHistoryComment()" type="button"
-                                           class="btn btn-success btn-sm">爬取内涵段子历史记录的神评</a>
+                                           class="btn btn-success btn-sm">重新爬取内涵段子神评</a>
                                     </td>
                                 </tr>
                             </table>
@@ -83,7 +83,7 @@
                         $("#cachediv").hide();
                     });
 
-                    /** ---------------爬取内涵段子历史记录的神评--------------- **/
+                    /** ---------------重新爬取内涵段子神评-------------- **/
                     function jokeHistoryComment() {
                         $("#historyComment").attr('disabled', 'disabled');
                         $("#cachediv").show();

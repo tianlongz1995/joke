@@ -240,7 +240,7 @@ public class JokeService {
      *
      * @param jokeIds
      */
-    private void jokeToCache(String jokeIds) {
+    public void jokeToCache(String jokeIds) {
         List<Joke> jokes = jokeMapper.getCacheJokeListByIds(jokeIds);
         if (CollectionUtils.isEmpty(jokes)) {
             logger.error("缓存段子失败! 获取段子列表为空:[{}]", jokeIds);

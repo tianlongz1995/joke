@@ -121,10 +121,7 @@ public class ManagerController {
     }
 
     /**
-     * 爬取内涵段子历史记录的神评-
-     */
-    /**
-     * 获取验证码
+     * 重新爬取内涵段子神评(2017-07-01 00:00:00之前)
      *
      * @return
      */
@@ -136,7 +133,7 @@ public class ManagerController {
         if (username == null) {
             return new Failed("登录信息失效,请重新登录!");
         }
-        managerService.addJokeComment();
+        managerService.addJokeComment("2017-07-01 00:00:00",155,"neihan");
         return new Success("验证码发送成功!");
     }
 

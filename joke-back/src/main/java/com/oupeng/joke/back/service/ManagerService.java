@@ -42,10 +42,13 @@ public class ManagerService {
     @Autowired
     private CommentMapper commentMapper;
     @Autowired
+    private JokeService jokeService;
+    @Autowired
     private JedisCache jedisCache;
     @Autowired
     private Environment env;
     private String cdnPrefix = "/data01/images/";
+    private final static String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
 
     @PostConstruct
     public void initPath() {
@@ -163,14 +166,33 @@ public class ManagerService {
         return "笑料百出用户" + new Random().nextInt(10);
     }
 
-    /**
-     * 内涵段子
-     */
-    private final static Integer source_id = 155;
-    private final static String dateTime = "2017-07-01 00:00:00";
-    private final static String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
 
-    public void addJokeComment() {
+    /**
+     * 获取神评
+     *
+     * @param pageURL
+     * @param type
+     * @return
+     */
+    public Map<String, List> getMap(String pageURL, String type) {
+
+        Map<String, List> map = new HashMap<>();
+        if (type.equals("neihan")) {//内涵段子pageURL神评
+            String str = pageURL.substring("http://neihanshequ.com/p".length(), pageURL.length() - 1);
+            String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
+            map = HttpUtil.getGodMsg(jsonURL);
+        }
+        return map;
+    }
+
+    /**
+     * 重新爬取神评
+     *
+     * @param dateTime
+     * @param source_id
+     * @param type
+     */
+    public void addJokeComment(String dateTime, Integer source_id, String type) {
         Random random = new Random(3000);
 
         //获取要添加神评论的jokeList
@@ -181,13 +203,11 @@ public class ManagerService {
                 if (joke.getCommentContent() != null) { //存在神评
                     continue;
                 }
-                String pageURL = joke.getSrc();
-                String str = pageURL.substring("http://neihanshequ.com/p".length(), pageURL.length() - 1);
-                String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
+                if (joke.getSrc() == null) {
+                    continue;
+                }
 
-                Map<String, List> map = HttpUtil.getGodMsg(jsonURL);
-
-
+                Map<String, List> map = getMap(joke.getSrc(), type);
                 List<Integer> hotGooods = map.get("hotGoods");
                 List<String> hotContents = map.get("hotContents");
                 int commentNumber = hotGooods.size();
@@ -200,7 +220,6 @@ public class ManagerService {
                 int godNum = 0;
                 List<Comment> commentList = new ArrayList<>();
                 for (int i = 0; i < commentNumber; i++) {
-
                     int god = hotGooods.get(i);
                     String content = hotContents.get(i);
 
@@ -233,15 +252,22 @@ public class ManagerService {
                     com.setBc(content);
                     com.setAvata(avata);
                     com.setGood(god);
-//                    commentMapper.insertComment(com);
                     commentList.add(com);
                     godNum++;
                 }
+
                 //批量插入comment
-                if (commentList.size() > 0) {
+                if (!CollectionUtils.isEmpty(commentList)) {
                     commentMapper.insertBatchComment(commentList);
+                    jokeMapper.updateJokeComment(jokeId, godNum, joke.getCommentNumber(), m_comment, m_avata, m_nick);
+
+                    //更新缓存
+                    //状态 1:通过（审核） 3:已发布 4:已推荐 6:已置顶
+                    if (joke.getStatus() == 1 || joke.getStatus() == 3 || joke.getStatus() == 4 || joke.getStatus() == 6) {
+                        jokeService.jokeToCache(String.valueOf(joke.getId()));
+                    }
                 }
-                jokeMapper.updateJokeComment(jokeId, godNum,joke.getCommentNumber(), m_comment, m_avata, m_nick);
+
             }
         }
     }
