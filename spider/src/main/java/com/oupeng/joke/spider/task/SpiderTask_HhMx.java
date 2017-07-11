@@ -69,7 +69,7 @@ public class SpiderTask_HhMx {
     /**
      * 哈哈MX
      */
-    @Scheduled(cron = "0 0 7 * * ?")
+    @Scheduled(cron = "0 30 2 * * ?")
     public void spiderHhMx() {
         logger.info("hahaMX spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgHahaMX.class, imgUrlHhMx);

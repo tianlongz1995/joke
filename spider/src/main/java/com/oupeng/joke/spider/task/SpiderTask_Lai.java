@@ -75,7 +75,7 @@ public class SpiderTask_Lai {
     /**
      * 抓取来福岛
      */
-    @Scheduled(cron = "0 30 0 * * ?")
+    @Scheduled(cron = "0 30 3 * * ?")
     public void spiderLai() {
         logger.info("laifudao spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgLai.class, imgUrlLai);

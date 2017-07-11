@@ -56,7 +56,7 @@ public class SpiderTask_WoWant {
     /**
      * wowant 我想网
      */
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 30 7 * * ?")
     public void spider() {
         logger.info("wowant spider image...");
         crawl(JobInfoDaoImgPipeline, JokeImgWoWant.class, imgUrl);

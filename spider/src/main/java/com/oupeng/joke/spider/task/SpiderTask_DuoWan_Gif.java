@@ -59,7 +59,7 @@ public class SpiderTask_DuoWan_Gif {
     /**
      * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 40 3 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void spiderGif() {
         logger.info("guixun spider gif...");
         crawl(imgUrlDuoWan_Gif);

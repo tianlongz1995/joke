@@ -63,7 +63,7 @@ public class SpiderTask_Gaoxiao {
     /**
      * 3GIFS
      */
-    @Scheduled(cron = "0 0 6 * * ?")
+    @Scheduled(cron = "0 30 1 * * ?")
     public void spiderGaoxiao() {
         logger.info("搞笑gif spider recommended image...");
         crawl(jobInfoDaoImgPipeline, JokeImgGao.class, imgUrlGao);

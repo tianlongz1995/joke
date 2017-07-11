@@ -64,7 +64,7 @@ public class SpiderTask_Niu {
     /**
      * 抓取牛逼思维
      */
-    @Scheduled(cron = "0 30 1 * * ?")
+    @Scheduled(cron = "0 30 4 * * ?")
     public void spiderNiu() {
         logger.info("niubisiwei spider text...");
         crawl(jobInfoDaoPipeline, JokeTextNiu.class, textUrlNiu);

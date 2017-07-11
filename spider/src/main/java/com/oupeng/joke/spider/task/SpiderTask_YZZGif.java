@@ -64,7 +64,7 @@ public class SpiderTask_YZZGif {
     /**
      * 抓取叶子猪网站GIF
      */
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 30 9 * * ?")
     public void spiderGif() {
         logger.info("yzz spider gif...");
         crawl(jobInfoDaoImgPipeline, JokeImgYZZGif.class, gifUrlGaoxiao);

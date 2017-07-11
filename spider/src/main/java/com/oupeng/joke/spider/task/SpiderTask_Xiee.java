@@ -66,7 +66,7 @@ public class SpiderTask_Xiee {
     /**
      * 抓取邪恶漫画
      */
-    @Scheduled(cron = "0 30 3 * * ?")
+    @Scheduled(cron = "0 0 8 * * ?")
     public void spiderXiee() {
         logger.info("xieemanhua sexi spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgSexi.class, imgUrlSexi);

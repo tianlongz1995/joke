@@ -146,12 +146,12 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <!--<fork>true</fork>-->
-                    <!--<verbose>true</verbose>-->
-                    <!--<encoding>UTF-8</encoding>-->
-                    <!--<compilerArguments>-->
-                        <!--<sourcepath>${project.basedir}/src/main/java</sourcepath>-->
-                    <!--</compilerArguments>-->
+                    <fork>true</fork>
+                    <verbose>true</verbose>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <sourcepath>${project.basedir}/src/main/java</sourcepath>
+                    </compilerArguments>
                 </configuration>
             </plugin>
 

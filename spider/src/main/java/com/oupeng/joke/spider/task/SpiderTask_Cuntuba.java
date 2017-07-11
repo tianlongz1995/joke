@@ -71,7 +71,7 @@ public class SpiderTask_Cuntuba {
     /**
      * 抓取寸土吧
      */
-    @Scheduled(cron = "0 30 5 * * ?")
+    @Scheduled(cron = "0 30 0 * * ?")
     public void spiderCtb() {
         logger.info("cuntuba spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgCtb.class, imgUrlCtb);

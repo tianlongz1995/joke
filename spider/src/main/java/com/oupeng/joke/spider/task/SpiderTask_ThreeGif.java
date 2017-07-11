@@ -59,7 +59,7 @@ public class SpiderTask_ThreeGif {
     /**
      * 3GIFS
      */
-    @Scheduled(cron = "0 30 2 * * ?")
+    @Scheduled(cron = "0 30 6 * * ?")
     public void spiderThree() {
         logger.info("3GIFS spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgThreeGif.class, imgUrlThree);

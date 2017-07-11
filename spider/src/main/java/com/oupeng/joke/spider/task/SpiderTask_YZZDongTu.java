@@ -64,7 +64,7 @@ public class SpiderTask_YZZDongTu {
     /**
      * 抓取叶子猪网站邪恶动图
      */
-    @Scheduled(cron = "0 30 4 * * ?")
+    @Scheduled(cron = "0 0 9 * * ?")
     public void spiderGif() {
         logger.info("yzz spider gif...");
         crawl(jobInfoDaoImgPipeline, JokeImgYZZDongTu.class, gifUrlDongtu);

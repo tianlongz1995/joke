@@ -68,7 +68,7 @@ public class SpiderTask_QiuShi {
     /**
      * 定时爬取任务
      */
-    @Scheduled(cron = "0 40 3 * * ?")
+    @Scheduled(cron = "0 30 5 * * ?")
     public void spiderQuiShiBaiKe() {
         logger.info("QuiShi Hot Text spider ing...");
         crawl(jobInfoDaoPipeline, JokeTextHot.class, hotTextUrlQiuShi);

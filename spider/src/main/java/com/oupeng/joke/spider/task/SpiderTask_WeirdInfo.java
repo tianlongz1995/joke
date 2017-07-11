@@ -64,7 +64,7 @@ public class SpiderTask_WeirdInfo {
     /**
      * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 40 3 * * ?")
+    @Scheduled(cron = "0 0 7 * * ?")
     public void spiderGif() {
         logger.info("yzz spider gif...");
         crawl(jobInfoDaoImgPipeline, JokeImgWeird.class, imgUrlWeird);

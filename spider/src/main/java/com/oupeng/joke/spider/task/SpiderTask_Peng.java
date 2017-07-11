@@ -71,7 +71,7 @@ public class SpiderTask_Peng {
     /**
      * 抓取捧腹网
      */
-     @Scheduled(cron = "0 0 2 * * ?")
+     @Scheduled(cron = "0 0 5 * * ?")
     public void spiderPeng() {
         logger.info("pengfu spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgPeng.class, imgUrlPeng);

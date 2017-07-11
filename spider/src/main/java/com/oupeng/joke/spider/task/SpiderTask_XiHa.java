@@ -69,7 +69,7 @@ public class SpiderTask_XiHa {
     /**
      * 抓取嘻嘻哈哈
      */
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "0 30 8 * * ?")
     public void spiderXiha() {
         logger.info("xixihaha spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgXiha.class, imgUrlXiha);

@@ -58,7 +58,7 @@ public class SpiderTask_Sina_Gif {
     /**
      * 抓取怪迅网网站图片
      */
-    @Scheduled(cron = "0 40 3 * * ?")
+    @Scheduled(cron = "0 0 6 * * ?")
     public void spiderGif() {
         logger.info("guixun spider gif...");
         crawl(jobInfoDaoImgPipeline, JokeImgSinaGif.class, imgUrlSina_Gif);

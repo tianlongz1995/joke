@@ -61,7 +61,7 @@ public class SpiderTask_Hua {
     /**
      * 抓取快乐麻花
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     public void spiderHua() {
         logger.info("kuailemahua spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgHua.class, imgUrlHua);
