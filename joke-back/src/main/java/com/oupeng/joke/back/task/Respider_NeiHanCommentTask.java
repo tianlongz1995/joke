@@ -31,15 +31,13 @@ public class Respider_NeiHanCommentTask {
     class RespiderThread implements Runnable{
         @Override
         public void run() {
-            while(true){
-               try{
-                   logger.info("开始重新爬取joke(内涵段子)神评...");
-                   jokeService.addJokeComment("2017-07-01 00:00:00", 155, "neihan");
-                   logger.info("重新爬取joke(内涵段子)神评结束");
-               }catch(Exception e){
-                   logger.error("重新爬取joke(内涵段子)异常:{}",e);
-               }
-            }
+           try{
+               logger.info("开始重新爬取joke(内涵段子)神评...");
+               jokeService.addJokeComment("2017-07-01 00:00:00", 155, "neihan");
+               logger.info("重新爬取joke(内涵段子)神评结束");
+           }catch(Exception e){
+               logger.error("重新爬取joke(内涵段子)异常:{}",e);
+           }
         }
     }
 }
