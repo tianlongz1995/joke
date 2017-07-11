@@ -20,8 +20,14 @@ public class Respider_NeiHanCommentTask {
     @Autowired
     private Environment env;
 
+    private String respiderTime = "2017-07-01 00:00:00";
+
     @PostConstruct
     public void init() {
+        String time = env.getProperty("neihan.respider.time");
+        if (time != null) {
+            respiderTime = time;
+        }
         String isRun = env.getProperty("neihan.respider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             new Thread(new RespiderThread()).start();
@@ -33,7 +39,7 @@ public class Respider_NeiHanCommentTask {
         public void run() {
            try{
                logger.info("开始重新爬取joke(内涵段子)神评...");
-               jokeService.addJokeComment("2017-07-01 00:00:00", 155, "neihan");
+               jokeService.addJokeComment(respiderTime, 155, "neihan");
                logger.info("重新爬取joke(内涵段子)神评结束");
            }catch(Exception e){
                logger.error("重新爬取joke(内涵段子)异常:{}",e);
