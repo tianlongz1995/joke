@@ -1320,77 +1320,81 @@ public class JokeService {
     public void addJokeComment(String dateTime, Integer source_id, String type) {
         Random random = new Random(3000);
 
-        //获取要添加神评论的jokeList
-        List<Joke> jokeList = jokeMapper.getJokebeforeTime(dateTime, source_id);
+            //获取要添加神评论的jokeList
+            List<Joke> jokeList = jokeMapper.getJokebeforeTime(dateTime, source_id);
 
-        if (!CollectionUtils.isEmpty(jokeList)) {
-            for (Joke joke : jokeList) {
+            if (!CollectionUtils.isEmpty(jokeList)) {
+                for (Joke joke : jokeList) {
 
-                Map<String, List> map = getMap(joke.getSrc(), type);
-                if (CollectionUtils.isEmpty(map)) {
-                    continue;
-                }
-                List<Integer> hotGooods = map.get("hotGoods");
-                List<String> hotContents = map.get("hotContents");
-                if (CollectionUtils.isEmpty(hotGooods) || CollectionUtils.isEmpty(hotContents)) {
-                    continue;
-                }
-                int commentNumber = hotGooods.size();
-
-                //删除数据库中的原神评记录
-                jokeMapper.deleteByJokeId(joke.getId());
-
-                int jokeId = joke.getId();
-                int m_good = 0;
-                String m_comment = null, m_avata = null, m_nick = null;
-
-                //记录有效的神评数
-                int godNum = 0;
-                List<Comment> commentList = new ArrayList<>();
-                for (int i = 0; i < commentNumber; i++) {
-                    int god = hotGooods.get(i);
-                    String content = hotContents.get(i);
-
-                    //神评评论点赞数>10
-                    if (god <= 10) {
+                    Map<String, List> map = getMap(joke.getSrc(), type);
+                    if (CollectionUtils.isEmpty(map)) {
                         continue;
                     }
+                    List<Integer> hotGooods = map.get("hotGoods");
+                    List<String> hotContents = map.get("hotContents");
+                    if (CollectionUtils.isEmpty(hotGooods) || CollectionUtils.isEmpty(hotContents)) {
+                        continue;
+                    }
+                    int commentNumber = hotGooods.size();
 
-                    int id = random.nextInt(2089);
-                    User u = userMapper.select(id);
-                    int last = u.getLast() + 1;
-                    userMapper.update(last, id);
-                    String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
-                    int uid = id * 10000 + last;
-                    int iconid = id % 20 + 1;
-                    String avata = avataStr.replace("%d", String.valueOf(iconid));
+                    //删除数据库中的原神评记录
+                    jokeMapper.deleteByJokeId(joke.getId());
 
-                    //记录最大点赞数的评论
-                    if (god > m_good) {
-                        m_good = god;
-                        m_comment = content;
-                        m_avata = avata;
-                        m_nick = nick;
+                    int jokeId = joke.getId();
+                    int m_good = 0;
+                    String m_comment = null, m_avata = null, m_nick = null;
+
+                    //记录有效的神评数
+                    int godNum = 0;
+                    List<Comment> commentList = new ArrayList<>();
+                    for (int i = 0; i < commentNumber; i++) {
+                        int god = hotGooods.get(i);
+                        String content = hotContents.get(i);
+
+                        //神评评论点赞数>10
+                        if (god <= 10) {
+                            continue;
+                        }
+
+                        int id = random.nextInt(2089);
+                        User u = userMapper.select(id);
+                        int last = u.getLast() + 1;
+                        userMapper.update(last, id);
+                        String nick = StringUtils.trim(u.getNickname()) + Integer.toHexString(last);
+                        int uid = id * 10000 + last;
+                        int iconid = id % 20 + 1;
+                        String avata = avataStr.replace("%d", String.valueOf(iconid));
+
+                        //记录最大点赞数的评论
+                        if (god > m_good) {
+                            m_good = god;
+                            m_comment = content;
+                            m_avata = avata;
+                            m_nick = nick;
+                        }
+
+                        Comment com = new Comment();
+                        com.setJokeId(jokeId);
+                        com.setUid(uid);
+                        com.setNick(nick);
+                        com.setBc(content);
+                        com.setAvata(avata);
+                        com.setGood(god);
+                        commentList.add(com);
+                        godNum++;
                     }
 
-                    Comment com = new Comment();
-                    com.setJokeId(jokeId);
-                    com.setUid(uid);
-                    com.setNick(nick);
-                    com.setBc(content);
-                    com.setAvata(avata);
-                    com.setGood(god);
-                    commentList.add(com);
-                    godNum++;
+                    try {
+                        //批量插入comment
+                        if (!CollectionUtils.isEmpty(commentList)) {
+                            commentMapper.insertBatchComment(commentList);
+                        }
+                        jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
+                    }catch(Exception e){
+                        logger.error("爬取joke异常:" + e.getMessage(),e);
+                    }
                 }
-
-                //批量插入comment
-                if (!CollectionUtils.isEmpty(commentList)) {
-                    commentMapper.insertBatchComment(commentList);
-                }
-                jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
             }
-        }
     }
 
 }

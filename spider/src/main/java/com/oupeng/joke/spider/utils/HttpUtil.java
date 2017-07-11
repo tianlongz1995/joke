@@ -53,6 +53,9 @@ public class HttpUtil {
                     if (Integer.valueOf(good) <= 10) {
                         continue;
                     }
+                    if (content.length() > 500) {
+                        continue;
+                    }
 
                     hotGoods.add(Integer.valueOf(good));
                     hotContents.add(content);
@@ -106,7 +109,7 @@ public class HttpUtil {
                     Integer good = (int) (30 * Math.random()) + 10;
                     String content = obj.getString("content");
 
-                    if (content == null || content.length() < 1) {
+                    if (content == null || content.length() < 1 || content.length() > 500) {
                         continue;
                     }
 

@@ -42,7 +42,7 @@ public class Respider_HHmxCommentTask {
                 jokeService.addJokeComment(respiderTime, 148, "hhmx");
                 logger.info("重新爬取joke(遨游哈哈)神评结束");
             }catch(Exception e){
-                logger.error("重新爬取joke(遨游哈哈)异常:{}",e);
+                logger.error("重新爬取joke(遨游哈哈)异常:" + e.getMessage(), e);
             }
         }
     }

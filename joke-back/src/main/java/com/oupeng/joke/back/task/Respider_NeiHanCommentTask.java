@@ -42,7 +42,7 @@ public class Respider_NeiHanCommentTask {
                jokeService.addJokeComment(respiderTime, 155, "neihan");
                logger.info("重新爬取joke(内涵段子)神评结束");
            }catch(Exception e){
-               logger.error("重新爬取joke(内涵段子)异常:{}",e);
+               logger.error("重新爬取joke(内涵段子)异常:" + e.getMessage(),e);
            }
         }
     }

@@ -53,7 +53,9 @@ public class HttpComment {
                     if (Integer.valueOf(good) <= 10) {
                         continue;
                     }
-
+                    if (content.length() > 500) {
+                        continue;
+                    }
                     hotGoods.add(Integer.valueOf(good));
                     hotContents.add(content);
                 }
@@ -109,7 +111,9 @@ public class HttpComment {
                     if (content == null || content.length() < 1) {
                         continue;
                     }
-
+                    if (content.length() > 500) {
+                        continue;
+                    }
                     hotGoods.add(good);
                     hotContents.add(content);
                 }
