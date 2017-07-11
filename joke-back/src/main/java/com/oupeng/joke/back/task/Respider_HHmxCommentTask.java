@@ -36,7 +36,7 @@ public class Respider_HHmxCommentTask {
                 jokeService.addJokeComment("2017-07-12 19:00:00", 148, "hhmx");
                 logger.info("重新爬取joke(遨游哈哈)神评结束");
             }catch(Exception e){
-                logger.error("重新爬取joke(内涵段子)异常:{}",e);
+                logger.error("重新爬取joke(遨游哈哈)异常:{}",e);
             }
         }
     }
