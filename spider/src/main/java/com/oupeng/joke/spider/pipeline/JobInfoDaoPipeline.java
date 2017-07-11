@@ -81,8 +81,6 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
         //字数小于txtLength
         boolean isLessLimit = cont.length() < txtLimitLength ? true : false;
 
-        boolean s = !urlBloomFilterService.contains(jokeText.getSrc());
-
         if (!urlBloomFilterService.contains(jokeText.getSrc()) && isLessLimit) {
 
             Joke joke = new Joke();
@@ -143,6 +141,26 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                     com.setGood(god);
 
                     list.add(com);
+                }
+                //将list中点赞数最大的神评放到最前面
+                if (list.size() > 1) {
+                    int k = 0;
+                    int kgood = list.get(0).getGood();
+                    for (int i = 1; i < list.size(); i++) {
+                        CommentT com = list.get(i);
+                        if (com.getGood() > kgood) {
+                            k = i;
+                            kgood = com.getGood();
+                        }
+
+                    }
+                    //交换0,k
+                    if (k != 0) {
+                        CommentT com0 = list.get(0);
+                        CommentT comk = list.get(k);
+                        list.set(0, comk);
+                        list.set(k, com0);
+                    }
                 }
                 joke.setComment_number(jokeText.getCommentNumber());
                 joke.setComment(list);

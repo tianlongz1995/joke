@@ -60,11 +60,20 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        重新爬取内涵段子神评(2017-7-1前)：
+                                        重新爬取内涵段子(neihan)神评(2017-7-1)：
                                     </th>
                                     <td>
-                                        <a id="historyComment" onclick="jokeHistoryComment()" type="button"
+                                        <a id="neihan" onclick="jokeHistoryComment('neihan')" type="button"
                                            class="btn btn-success btn-sm">重新爬取内涵段子神评</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        重新爬取遨游哈哈(hhmx)神评(2017-7-12)：
+                                    </th>
+                                    <td>
+                                        <a id="hhmx" onclick="jokeHistoryComment('hhmx')" type="button"
+                                           class="btn btn-success btn-sm">重新爬取遨游哈哈神评</a>
                                     </td>
                                 </tr>
                             </table>
@@ -73,7 +82,7 @@
                 </div><!-- box col-md-12 end -->
 
                 <div id="cachediv" style="margin: 50px auto;">
-                    <p>正在处理...</p>
+                    <div id="cdv"></div>
                 </div>
 
 
@@ -83,12 +92,14 @@
                         $("#cachediv").hide();
                     });
 
-                    /** ---------------重新爬取内涵段子神评-------------- **/
-                    function jokeHistoryComment() {
-                        $("#historyComment").attr('disabled', 'disabled');
+                    /** ---------------重新爬取神评-------------- **/
+                    function jokeHistoryComment(type) {
+                        $("#neihan").attr('disabled', 'disabled');
+                        $("#hhmx").attr('disabled', 'disabled');
                         $("#cachediv").show();
+                        $("#cdv").html("正在重新爬取"+type+"神评,请等待...");
 
-                        post('admin/jokeHistoryComment', null,
+                        post('admin/jokeHistoryComment', 'type=' + type,
                             function (data) {
                                 if (data.status == 1) {
                                     alert("处理完成!");
@@ -96,13 +107,15 @@
                                     alert('更新失败:' + data.info);
                                 }
                                 $("#cachediv").hide();
-                                $("#historyComment").removeAttr('disabled');
+                                $("#neihan").removeAttr('disabled');
+                                $("#hhmx").removeAttr('disabled');
 
                             },
                             function () {
                                 alert('请求失败，请检查网络环境');
                                 $("#cachediv").hide();
-                                $("#historyComment").removeAttr('disabled');
+                                $("#neihan").removeAttr('disabled');
+                                $("#hhmx").removeAttr('disabled');
                             });
                     }
                     ;

@@ -121,19 +121,24 @@ public class ManagerController {
     }
 
     /**
-     * 重新爬取内涵段子神评(2017-07-01 00:00:00之前)
+     * 重新爬取joke神评
      *
      * @return
      */
     @RequestMapping(value = "/jokeHistoryComment", produces = {"application/json"})
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Result jokeHistoryComment() {
+    public Result jokeHistoryComment(@RequestParam(value = "type") String type) {
         String username = getUserName();
         if (username == null) {
             return new Failed("登录信息失效,请重新登录!");
         }
-        managerService.addJokeComment("2017-07-01 00:00:00",155,"neihan");
+
+        if (type.equals("neihan")) {//内涵段子
+            managerService.addJokeComment("2017-07-01 00:00:00", 155, type);
+        } else if (type.equals("hhmx")) {//遨游哈哈
+            managerService.addJokeComment("2017-07-12 00:00:00", 148, type);
+        }
         return new Success("验证码发送成功!");
     }
 

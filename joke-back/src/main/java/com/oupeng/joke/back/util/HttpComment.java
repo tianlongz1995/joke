@@ -1,4 +1,4 @@
-package com.oupeng.joke.spider.utils;
+package com.oupeng.joke.back.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HttpUtil {
+public class HttpComment {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpComment.class);
 
     /**
      * 根据内涵段子URL,返回神评评论

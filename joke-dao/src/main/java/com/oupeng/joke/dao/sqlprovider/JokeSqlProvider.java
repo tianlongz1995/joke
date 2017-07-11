@@ -684,36 +684,4 @@ public class JokeSqlProvider {
         return sql.toString();
     }
 
-    /**
-     * 修改joke神评
-     */
-    public static String updateJokeComment(Map<String, Object> map) {
-        Object id = map.get("id");
-        Integer godNumber = (Integer) map.get("godNumber");
-        Integer comment_number = (Integer) map.get("comment_number");
-        Object comment = map.get("comment");
-        Object avata = map.get("avata");
-        Object nick = map.get("nick");
-
-        if (comment_number == null) {
-            comment_number = 0;
-        }
-        if (godNumber == null) {
-            godNumber = 0;
-        }
-        comment_number = comment_number + godNumber;
-
-        StringBuffer sql = new StringBuffer();
-        sql.append("update joke set comment_number = ").append(comment_number);
-        if (comment != null) {
-            sql.append(", comment = '").append(comment)
-                    .append("', avata = '").append(avata)
-                    .append("', nick = '").append(nick)
-                    .append("' where id = ").append(id);
-        } else {
-            sql.append(", comment = null, avata = null, nick = null where id = ").append(id);
-        }
-        return sql.toString();
-    }
-
 }

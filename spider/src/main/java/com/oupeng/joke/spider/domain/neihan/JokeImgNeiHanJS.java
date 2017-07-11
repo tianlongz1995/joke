@@ -4,6 +4,7 @@ import com.oupeng.joke.spider.domain.JokeImg;
 import com.oupeng.joke.spider.utils.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
@@ -123,7 +124,13 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         String str = pageURL.substring("http://neihanshequ.com/p".length(), pageURL.length() - 1);
         String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
 
-        Map<String, List> map = HttpUtil.getGodMsg(jsonURL);
+        Map<String, List> map = HttpUtil.getNeiHanGodMsg(jsonURL);
+        if(CollectionUtils.isEmpty(map)){
+            page.setSkip(true);
+        }
+        if(CollectionUtils.isEmpty(map.get("hotGoods"))||CollectionUtils.isEmpty(map.get("hotContents"))){
+            page.setSkip(true);
+        }
         this.setHotGoods(map.get("hotGoods"));
         this.setHotContents(map.get("hotContents"));
 

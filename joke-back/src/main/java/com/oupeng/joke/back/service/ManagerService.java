@@ -1,10 +1,7 @@
 package com.oupeng.joke.back.service;
 
 import com.alibaba.fastjson.JSON;
-import com.oupeng.joke.back.util.FormatUtil;
-import com.oupeng.joke.back.util.HttpUtil;
-import com.oupeng.joke.back.util.Im4JavaUtils;
-import com.oupeng.joke.back.util.ImageUtil;
+import com.oupeng.joke.back.util.*;
 import com.oupeng.joke.cache.JedisCache;
 import com.oupeng.joke.cache.JedisKey;
 import com.oupeng.joke.dao.mapper.CommentMapper;
@@ -177,10 +174,22 @@ public class ManagerService {
     public Map<String, List> getMap(String pageURL, String type) {
 
         Map<String, List> map = new HashMap<>();
-        if (type.equals("neihan")) {//内涵段子pageURL神评
+        //内涵段子pageURL神评
+        if (type.equals("neihan")) {
             String str = pageURL.substring("http://neihanshequ.com/p".length(), pageURL.length() - 1);
             String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
-            map = HttpUtil.getGodMsg(jsonURL);
+            map = HttpComment.getNeiHanGodMsg(jsonURL);
+        }
+        //遨游哈哈pageURL神评
+        else if (type.equals("hhmx")) {
+            String str;
+            if (pageURL.endsWith("/")) {
+                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length() - 1);
+            } else {
+                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length());
+            }
+            String jsonURL = "http://www.haha.mx/mobile_read_api.php?r=mobile_comment&jid=" + str + "&page=1&offset=10&order=light";
+            map = HttpComment.getHHMXGodMsg(jsonURL);
         }
         return map;
     }
@@ -200,17 +209,20 @@ public class ManagerService {
 
         if (!CollectionUtils.isEmpty(jokeList)) {
             for (Joke joke : jokeList) {
-                if (joke.getCommentContent() != null) { //存在神评
-                    continue;
-                }
-                if (joke.getSrc() == null) {
-                    continue;
-                }
 
                 Map<String, List> map = getMap(joke.getSrc(), type);
+                if (CollectionUtils.isEmpty(map)) {
+                    continue;
+                }
                 List<Integer> hotGooods = map.get("hotGoods");
                 List<String> hotContents = map.get("hotContents");
+                if (CollectionUtils.isEmpty(hotGooods) || CollectionUtils.isEmpty(hotContents)) {
+                    continue;
+                }
                 int commentNumber = hotGooods.size();
+
+                //删除数据库中的原神评记录
+                jokeMapper.deleteByJokeId(joke.getId());
 
                 int jokeId = joke.getId();
                 int m_good = 0;
@@ -259,15 +271,8 @@ public class ManagerService {
                 //批量插入comment
                 if (!CollectionUtils.isEmpty(commentList)) {
                     commentMapper.insertBatchComment(commentList);
-                    jokeMapper.updateJokeComment(jokeId, godNum, joke.getCommentNumber(), m_comment, m_avata, m_nick);
-
-                    //更新缓存
-                    //状态 1:通过（审核） 3:已发布 4:已推荐 6:已置顶
-                    if (joke.getStatus() == 1 || joke.getStatus() == 3 || joke.getStatus() == 4 || joke.getStatus() == 6) {
-                        jokeService.jokeToCache(String.valueOf(joke.getId()));
-                    }
                 }
-
+                jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
             }
         }
     }

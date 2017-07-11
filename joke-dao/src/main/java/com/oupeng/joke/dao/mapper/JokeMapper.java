@@ -601,14 +601,19 @@ public interface JokeMapper {
      * @param source_id
      * @return
      */
-    @Select(" select id, status, source_id as sourceId, src, comment_number as commentNumber, comment as commentContent, avata, nick from joke where source_id = #{source_id} and create_time < #{time} and comment is null")
+    @Select(" select id, status, source_id as sourceId, src, comment_number as commentNumber, comment as commentContent, avata, nick from joke where source_id = #{source_id} and create_time < #{time} and status = 0")
     List<Joke> getJokebeforeTime(@Param("time") String time, @Param("source_id") Integer source_id);
 
+    /**
+     * 删除joke的评论
+     */
+    @Delete("delete from comment where sid = #{jokeId}")
+    void deleteByJokeId(@Param("jokeId")Integer jokeId);
 
     /**
      * joke插入神评论信息
      */
-    @UpdateProvider(method = "updateJokeComment", type = JokeSqlProvider.class)
-    void updateJokeComment(@Param("id") Integer id, @Param("godNumber") Integer godNumber, @Param("comment_number") Integer comment_number, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
+    @Update("update joke set comment_number = #{godNum}, comment = #{comment}, avata = #{avata}, nick = #{nick} where id = #{id} ")
+    void updateJokeComment(@Param("id") Integer id, @Param("godNum") Integer godNum, @Param("comment") String comment, @Param("avata") String avata, @Param("nick") String nick);
 
 }
