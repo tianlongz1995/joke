@@ -241,7 +241,7 @@ public class ManagerService {
                 if (commentList.size() > 0) {
                     commentMapper.insertBatchComment(commentList);
                 }
-                jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
+                jokeMapper.updateJokeComment(jokeId, godNum,joke.getCommentNumber(), m_comment, m_avata, m_nick);
             }
         }
     }
