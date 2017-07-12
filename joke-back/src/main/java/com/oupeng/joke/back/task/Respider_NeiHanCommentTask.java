@@ -8,6 +8,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 重新爬取joke(内涵段子)神评
@@ -27,6 +29,14 @@ public class Respider_NeiHanCommentTask {
         String time = env.getProperty("neihan.respider.time");
         if (time != null) {
             respiderTime = time;
+        }
+        //时间格式检验
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            Date date = sdf.parse(respiderTime);
+        }catch(Exception e){
+            logger.error("时间格式验证异常[yyyy-MM-dd HH:mm:ss]:"+e.getMessage(),e);
+            return;
         }
         String isRun = env.getProperty("neihan.respider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {

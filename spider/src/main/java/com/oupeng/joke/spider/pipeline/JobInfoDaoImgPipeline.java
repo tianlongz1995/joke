@@ -101,6 +101,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
                 //发布人
                 int rid = random.nextInt(2089);
+                if (rid == 0) {
+                    rid = rid + 1; //User表中id范围为[1,2089]
+                }
                 User ru = userDao.select(rid);
                 jokeImg.setReleaseNick(ru.getNickname());
 
@@ -132,7 +135,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         }
 
                         int id = random.nextInt(2089);
-
+                        if (id == 0) {
+                            id = id + 1; //User表中id范围为[1,2089]
+                        }
                         User u = userDao.select(id);
                         int last = u.getLast() + 1;
                         userDao.update(last, id);
