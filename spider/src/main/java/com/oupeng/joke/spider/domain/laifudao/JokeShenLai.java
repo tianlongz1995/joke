@@ -1,48 +1,57 @@
 package com.oupeng.joke.spider.domain.laifudao;
 
-
-import com.oupeng.joke.spider.domain.Comment;
 import com.oupeng.joke.spider.domain.JokeText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
+import java.util.List;
 
 /**
- * Created by zongchao on 2017/3/13.
  */
 @TargetUrl("http://www.laifudao.com/wangwen/\\d{5,8}.htm")
 @HelpUrl("http://www.laifudao.com/shenhuifu.htm")
-public class JokeShenLai extends JokeText {
+public class JokeShenLai extends JokeText implements AfterExtractor{
 
+    private static final Logger logger = LoggerFactory.getLogger(JokeShenLai.class);
+    /**
+     * 标题
+     */
     @ExtractBy("//header[@class='post-header']//a/allText()")
     private String title;
+    /**
+     * 内容
+     */
     @ExtractBy(value = "//div[@class='post-content stickem-container']//p/allText()", notNull = true)
     private String content;
-
-
     /**
      * 来源
      */
     @ExtractBy("//header[@class='clearfix content-header breadcrumbs']//a[4]/@href")
     private String src;
-
     /**
      * 内容源
      */
     private Integer sourceId;
-
     /**
-     * 评论内容
+     * 评论数量
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//ul/li/div[@class='text']/allText()")
-    private String commentContent;
-
+    private Integer commentNumber;
     /**
-     * 神评点赞数大于10
+     * 评论点赞列表
      */
-    @ExtractBy("//section[@class='post-comments hot-comments']//p/span/em/text()")
-    private Integer agreeTotal;
+    @ExtractBy("//section[@class=\"post-comments hot-comments\"]//div[@class=\"text\"]/text()")
+    private List<Integer> hotGoods;
+    /**
+     * 评论内容列表
+     */
+    @ExtractBy("//section[@class=\"post-comments hot-comments\"]//p/span/em/text()")
+    private List<String> hotContents;
 
 
     public String getTitle() {
@@ -61,24 +70,6 @@ public class JokeShenLai extends JokeText {
         this.content = content;
     }
 
-
-    public String getCommentContent() {
-        return commentContent;
-    }
-
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
-    }
-
-
-    public Integer getAgreeTotal() {
-        return agreeTotal;
-    }
-
-    public void setAgreeTotal(Integer agreeTotal) {
-        this.agreeTotal = agreeTotal;
-    }
-
     public String getSrc() {
         return src;
     }
@@ -87,14 +78,53 @@ public class JokeShenLai extends JokeText {
         this.src = src;
     }
 
-
     public Integer getSourceId() {
         return 141;
     }
 
-
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
+    }
+
+    @Override
+    public Integer getCommentNumber() {
+        return commentNumber;
+    }
+
+    @Override
+    public void setCommentNumber(Integer commentNumber) {
+        this.commentNumber = commentNumber;
+    }
+
+    @Override
+    public List<Integer> getHotGoods() {
+        return hotGoods;
+    }
+
+    @Override
+    public void setHotGoods(List<Integer> hotGoods) {
+        this.hotGoods = hotGoods;
+    }
+
+    @Override
+    public List<String> getHotContents() {
+        return hotContents;
+    }
+
+    @Override
+    public void setHotContents(List<String> hotContents) {
+        this.hotContents = hotContents;
+    }
+
+    @Override
+    public void afterProcess(Page page) {
+        //抓取到的神评数量
+        if (!CollectionUtils.isEmpty(this.getHotGoods()) && !CollectionUtils.isEmpty(this.getHotContents())) {
+            this.setCommentNumber(this.getHotGoods().size());
+            logger.info("爬取[laifudao:" +  this.getSrc() + "]神评论数量: " + this.getCommentNumber());
+        } else {
+            this.setCommentNumber(0);
+        }
     }
 }
 
