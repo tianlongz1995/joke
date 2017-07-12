@@ -28,6 +28,8 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class JokeService {
@@ -1306,6 +1308,44 @@ public class JokeService {
             }
             String jsonURL = "http://www.haha.mx/mobile_read_api.php?r=mobile_comment&jid=" + str + "&page=1&offset=10&order=light";
             map = HttpComment.getHHMXGodMsg(jsonURL);
+        }
+        //来福岛pageURL神评
+        else if(type.equals("laifudao")){
+            List<Integer> hotGoods = new ArrayList<Integer>();
+            List<String> hotContents = new ArrayList<String>();
+
+            //获得页面html
+            String pageHtml = HttpUtil.httpRequest(pageURL);
+
+            // 取出有用的范围
+            Pattern p0 = Pattern.compile("(<section class=\"post-comments hot-comments\">)(.*?)(</section>)");
+            Matcher m0 = p0.matcher(pageHtml);
+            if (m0.find()) {
+                String str = m0.group();
+
+                //取到ul中所有的li
+                Pattern p1 = Pattern.compile("(<li class=\"one\" data-comment-id=)(.*?)(</li>)");
+                Matcher m1 = p1.matcher(str);
+                while (m1.find()) {
+                    String li = m1.group();
+
+                    //正则式：(?<=S)(?=E) 以S开始，E结束（不包括S和E）
+                    //评论内容
+                    Pattern pc = Pattern.compile("(?<=<div class=\"text\">)(.*?)(?=</div>)");
+                    Matcher mc = pc.matcher(li);
+                    String content = null;
+                    //评论点赞
+                    Pattern pg = Pattern.compile("(?<=<em>)(.*?)(?=</em>)");
+                    Matcher mg = pg.matcher(li);
+
+                    if (mc.find() && mg.find()) {
+                        hotContents.add(mc.group());
+                        hotGoods.add(Integer.valueOf(mg.group()));
+                    }
+                }
+                map.put("hotGoods", hotGoods);
+                map.put("hotContents", hotContents);
+            }
         }
         return map;
     }
