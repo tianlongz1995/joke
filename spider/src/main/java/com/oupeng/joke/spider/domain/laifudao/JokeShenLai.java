@@ -121,10 +121,11 @@ public class JokeShenLai extends JokeText implements AfterExtractor{
         //抓取到的神评数量
         if (!CollectionUtils.isEmpty(this.getHotGoods()) && !CollectionUtils.isEmpty(this.getHotContents())) {
             this.setCommentNumber(this.getHotGoods().size());
-            logger.info("爬取[laifudao:" +  this.getSrc() + "]神评论数量: " + this.getCommentNumber());
         } else {
             this.setCommentNumber(0);
         }
+
+        logger.info("爬取[laifudao:" +  this.getSrc() + "]神评论数量: " + this.getCommentNumber());
     }
 }
 

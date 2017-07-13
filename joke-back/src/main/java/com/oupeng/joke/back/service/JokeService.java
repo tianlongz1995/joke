@@ -1432,8 +1432,8 @@ public class JokeService {
                     if (!CollectionUtils.isEmpty(commentList)) {
                         commentMapper.insertBatchComment(commentList);
                         jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
-                        logger.info("重爬joke神评论id：{}，src：{}", jokeId, joke.getSrc());
                     }
+                    logger.info("重爬joke神评论id：{}，src：{}", jokeId, joke.getSrc());
                 } catch (Exception e) {
                     logger.error("爬取joke异常:" + e.getMessage(), e);
                 }
