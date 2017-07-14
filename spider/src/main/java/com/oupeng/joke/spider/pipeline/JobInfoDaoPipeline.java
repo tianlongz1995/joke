@@ -115,7 +115,13 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 List<CommentT> list = new ArrayList<CommentT>();
                 for (int i = 0; i < jokeText.getCommentNumber(); i++) {
 
-                    int god = Integer.valueOf(jokeText.getHotGoods().get(i));
+                    int god = 0;
+                    try {
+                        god = Integer.valueOf(String.valueOf(jokeText.getHotGoods().get(i)));
+                    } catch (Exception e) {
+                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
+                        god = 0;
+                    }
                     String content = jokeText.getHotContents().get(i);
 
                     //神评评论点赞数>10

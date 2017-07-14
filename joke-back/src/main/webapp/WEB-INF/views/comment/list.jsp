@@ -201,8 +201,8 @@
                         var nicks = [];
                         $('input[name="commentId"]:checked').each(function () {
                             ids.push($(this).val());
-                            uids.push($(this).parent().parent().childNodes[3].val());
-                            nicks.push($(this).parent().parent().childNodes[4].val());
+                            uids.push($(this).parent().next().next().next().html().trim());
+                            nicks.push($(this).parent().next().next().next().next().html().trim());
                         });
                         if (ids.length == 0) {
                             alert("未选中任何内容");

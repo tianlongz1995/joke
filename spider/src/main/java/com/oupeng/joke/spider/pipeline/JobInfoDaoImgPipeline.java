@@ -133,7 +133,13 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     int godNum = 0; //记录有效的神评数
                     for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
 
-                        int god = jokeImg.getHotGoods().get(i);
+                        int god = 0;
+                        try {
+                            god = Integer.valueOf(String.valueOf(jokeImg.getHotGoods().get(i)));
+                        } catch (Exception e) {
+                            logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
+                            god = 0;
+                        }
                         String content = jokeImg.getHotContents().get(i);
 
                         //神评评论点赞数>10

@@ -40,12 +40,12 @@ public class JokeImgLai extends JokeImg implements AfterExtractor{
     /**
      * 评论点赞列表
      */
-    @ExtractBy("//section[@class=\"post-comments hot-comments\"]//div[@class=\"text\"]/text()")
+    @ExtractBy("//section[@class=\"post-comments general-comments\"]//p/span/em/text()")
     private List<Integer> hotGoods;
     /**
      * 评论内容列表
      */
-    @ExtractBy("//section[@class=\"post-comments hot-comments\"]//p/span/em/text()")
+    @ExtractBy("//section[@class=\"post-comments general-comments\"]//div[@class=\"text\"]/text()")
     private List<String> hotContents;
     /**
      * 数据源

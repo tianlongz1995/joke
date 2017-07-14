@@ -1333,7 +1333,7 @@ public class JokeService {
                     //评论内容
                     Pattern pc = Pattern.compile("(?<=<div class=\"text\">)(.*?)(?=</div>)");
                     Matcher mc = pc.matcher(li);
-                    String content = null;
+
                     //评论点赞
                     Pattern pg = Pattern.compile("(?<=<em>)(.*?)(?=</em>)");
                     Matcher mg = pg.matcher(li);
@@ -1388,7 +1388,13 @@ public class JokeService {
                 int godNum = 0;
                 List<Comment> commentList = new ArrayList<>();
                 for (int i = 0; i < commentNumber; i++) {
-                    int god = hotGooods.get(i);
+                    int god = 0;
+                    try {
+                        god = Integer.valueOf(String.valueOf(hotGooods.get(i)));
+                    } catch (Exception e) {
+                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
+                        god = 0;
+                    }
                     String content = hotContents.get(i);
 
                     //神评评论点赞数>10
