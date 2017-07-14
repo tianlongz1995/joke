@@ -37,6 +37,13 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     private Random random = new Random(3000);
     private String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
     private int maxCrawlPage = 300;
+
+    //无效字符串
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;"};
+    //替换字符串
+    private static final String[] REPLACE = {"", "", "", "", "", "", ""};
+    private int txtLimitLength = 200;
+
     @Autowired
     private JobInfoDao jobInfoDao;
     @Autowired
@@ -133,6 +140,13 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         if (god <= 10) {
                             continue;
                         }
+                        //过滤无效字符
+                        content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                        //字数小于txtLength
+                        boolean isLessLimit = content.length() > txtLimitLength ? true : false;
+                        if(isLessLimit){
+                            continue;
+                        }
 
                         int id = random.nextInt(2089);
                         if (id == 0) {
@@ -173,6 +187,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     jobInfoDao.addJokeImg(jokeImg);
                 }
             }
+            logger.info("爬取joke:{},src:{},神评数量:{}", jokeImg.getId(), jokeImg.getSrc(), jokeImg.getCommentNumber());
 
             urlFilter.add(jokeImg.getSrc());
             logger.info("图片 - 处理页面结束:{}", jokeImg.getSrc());

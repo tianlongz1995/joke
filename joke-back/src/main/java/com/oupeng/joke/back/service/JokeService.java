@@ -1298,17 +1298,17 @@ public class JokeService {
             String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
             map = HttpComment.getNeiHanGodMsg(jsonURL);
         }
-        //遨游哈哈pageURL神评
-        else if (type.equals("hhmx")) {
-            String str;
-            if (pageURL.endsWith("/")) {
-                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length() - 1);
-            } else {
-                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length());
-            }
-            String jsonURL = "http://www.haha.mx/mobile_read_api.php?r=mobile_comment&jid=" + str + "&page=1&offset=10&order=light";
-            map = HttpComment.getHHMXGodMsg(jsonURL);
-        }
+//        //遨游哈哈pageURL神评
+//        else if (type.equals("hhmx")) {
+//            String str;
+//            if (pageURL.endsWith("/")) {
+//                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length() - 1);
+//            } else {
+//                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length());
+//            }
+//            String jsonURL = "http://www.haha.mx/mobile_read_api.php?r=mobile_comment&jid=" + str + "&page=1&offset=10&order=light";
+//            map = HttpComment.getHHMXGodMsg(jsonURL);
+//        }
         //来福岛pageURL神评
         else if(type.equals("laifudao")){
             List<Integer> hotGoods = new ArrayList<Integer>();

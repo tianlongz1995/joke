@@ -31,9 +31,9 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
 
     //无效字符串
-    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;"};
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;"};
     //替换字符串
-    private static final String[] REPLACE = {"", "", ""};
+    private static final String[] REPLACE = {"", "", "", "", "", "", ""};
 
     private Random random = new Random(3000);
     private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
@@ -118,6 +118,18 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                     int god = Integer.valueOf(jokeText.getHotGoods().get(i));
                     String content = jokeText.getHotContents().get(i);
 
+                    //神评评论点赞数>10
+                    if (god <= 10) {
+                        continue;
+                    }
+                    //过滤无效字符
+                    content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                    //字数小于txtLength
+                    isLessLimit = content.length() > txtLimitLength ? true : false;
+                    if(isLessLimit){
+                        continue;
+                    }
+
                     int id = random.nextInt(2089);
                     if (id == 0) {
                         id = id + 1; //User表中id范围为[1,2089]
@@ -178,6 +190,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 joke.setComment(null);
                 joke.setComment_number(0);
             }
+            logger.info("爬取joke(kafaka)src:{},神评数量:{}", joke.getSource(), joke.getComment_number());
 
             //  与kafka服务端进行接口对接
             String message = JSON.toJSON(joke).toString();

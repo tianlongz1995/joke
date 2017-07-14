@@ -21,37 +21,36 @@ import java.util.Map;
 @HelpUrl("http://neihanshequ.com/pic/")
 public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
 
-    private static final Logger logger = LoggerFactory.getLogger(JokeImgNeiHanJS.class);
-
     private static final int new_sourceId = 155;
-
+    /**
+     * 标题
+     */
     @ExtractBy(value = "//h1[@class=\"title\"]/p/text()")
     private String title;
-
+    /**
+     * 图片地址
+     */
     @ExtractBy(value = "//img[@id=\"groupImage\"]/@src", notNull = true)
     private String img;
-
     /**
      * 来源
      */
     private String src;
-
     /**
      * 新建数据源，需要重写sourceId：new_sourceId
      */
     private Integer sourceId;
-
-
     /**
      * 评论数量
      */
     private Integer commentNumber;
-
     /**
-     * 评论列表
+     * 评论点赞
      */
     private List<Integer> hotGoods;
-
+    /**
+     * 评论内容
+     */
     private List<String> hotContents;
 
     @Override
@@ -89,7 +88,6 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         this.title = title;
     }
 
-
     public String getImg() {
         return img;
     }
@@ -97,7 +95,6 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
     public void setImg(String img) {
         this.img = img;
     }
-
 
     public String getSrc() {
         return src;
@@ -125,24 +122,19 @@ public class JokeImgNeiHanJS extends JokeImg implements AfterExtractor {
         String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
 
         Map<String, List> map = HttpUtil.getNeiHanGodMsg(jsonURL);
-        if(CollectionUtils.isEmpty(map)){
-            page.setSkip(true);
-        }
-        if(CollectionUtils.isEmpty(map.get("hotGoods"))||CollectionUtils.isEmpty(map.get("hotContents"))){
-            page.setSkip(true);
-        }
-        this.setHotGoods(map.get("hotGoods"));
-        this.setHotContents(map.get("hotContents"));
-
-        //抓取到的神评数量
-        if (this.getHotGoods() != null) {
-            this.setCommentNumber(this.getHotGoods().size());
-        } else {
+        if (CollectionUtils.isEmpty(map) || CollectionUtils.isEmpty(map.get("hotGoods")) || CollectionUtils.isEmpty(map.get("hotContents"))) {
             this.setCommentNumber(0);
+        } else {
+            this.setHotGoods(map.get("hotGoods"));
+            this.setHotContents(map.get("hotContents"));
+
+            //抓取到的神评数量
+            if (this.getHotGoods() != null) {
+                this.setCommentNumber(this.getHotGoods().size());
+            } else {
+                this.setCommentNumber(0);
+            }
         }
-
-        logger.info("爬取内涵段子[" + pageURL + "]神评论数量: " + this.getCommentNumber());
-
     }
 }
 

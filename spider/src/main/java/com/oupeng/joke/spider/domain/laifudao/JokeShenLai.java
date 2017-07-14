@@ -18,7 +18,6 @@ import java.util.List;
 @HelpUrl("http://www.laifudao.com/shenhuifu.htm")
 public class JokeShenLai extends JokeText implements AfterExtractor{
 
-    private static final Logger logger = LoggerFactory.getLogger(JokeShenLai.class);
     /**
      * 标题
      */
@@ -124,8 +123,6 @@ public class JokeShenLai extends JokeText implements AfterExtractor{
         } else {
             this.setCommentNumber(0);
         }
-
-        logger.info("爬取[laifudao:" +  this.getSrc() + "]神评论数量: " + this.getCommentNumber());
     }
 }
 

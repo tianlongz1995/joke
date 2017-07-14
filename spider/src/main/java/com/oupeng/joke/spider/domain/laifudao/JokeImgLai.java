@@ -18,7 +18,6 @@ import java.util.List;
 @HelpUrl("http://www.laifudao.com/tupian/\\w+_\\d{1,3}.htm")
 public class JokeImgLai extends JokeImg implements AfterExtractor{
 
-    private static final Logger logger = LoggerFactory.getLogger(JokeImgLai.class);
     /**
      * 标题
      */
@@ -123,8 +122,6 @@ public class JokeImgLai extends JokeImg implements AfterExtractor{
         } else {
             this.setCommentNumber(0);
         }
-
-        logger.info("爬取[laifudao:" +  this.getSrc() + "]神评论数量: " + this.getCommentNumber());
     }
 }
 
