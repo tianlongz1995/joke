@@ -84,6 +84,7 @@ public class CommentService {
         new Thread(new AddCommentThread(), "添加评论线程").start();
         new Thread(new UpdateLikeCacheThread(), "评论更新数据库线程").start();
         new Thread(new UpdateLikeDatabaseThread(), "评论更新数据库线程").start();
+        new Thread(new delCacheThread(), "删除评论缓存线程").start();
     }
 
     public int getListForVerifyCount(String keyWord, Integer state) {
@@ -126,9 +127,14 @@ public class CommentService {
                             logger.info("用户:" + uid + " 已经被拉黑");
                         }
                     }
-                    cleanCommentCache(ids);
+                    // cleanCommentCache(ids);
+                    //加入到删除队列
+                    jedisCache.lpush(JedisKey.COMMENT_LIST_DEL, ids);
                 } else if (state == 4) {
-                    cleanCommentCache(ids);
+                    // cleanCommentCache(ids);
+                    //加入到删除队列
+                    jedisCache.lpush(JedisKey.COMMENT_LIST_DEL, ids);
+
                     //更新数据库中的评论
                     Integer updateTime = FormatUtil.getTime();
                     commentMapper.updateCommentState(ids, state, username, updateTime);
@@ -146,6 +152,28 @@ public class CommentService {
             commentMapper.updateCommentState(ids, state, username, updateTime);
         }
 
+    }
+
+    /**
+     * 删除评论缓存线程
+     */
+    class delCacheThread implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    List<String> delIdList = jedisCache.brpop(JedisKey.COMMENT_LIST_DEL, 60 * 5);
+                    if (!CollectionUtils.isEmpty(delIdList)) {
+                        for (String ids : delIdList) {
+                            //删除评论缓存
+                            cleanCommentCache(ids);
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("【评论删除任务】删除缓存执行异常:" + e.getMessage(), e);
+                }
+            }
+        }
     }
 
     /**

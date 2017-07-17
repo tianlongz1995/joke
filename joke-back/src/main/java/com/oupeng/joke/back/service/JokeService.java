@@ -1315,7 +1315,7 @@ public class JokeService {
             String pageHtml = HttpUtil.httpRequest(pageURL);
 
             // 取出有用的范围
-            Pattern p0 = Pattern.compile("(<section class=\"post-comments hot-comments\">)(.*?)(</section>)");
+            Pattern p0 = Pattern.compile("(<section class=\"post-comments general-comments\">)(.*?)(</section>)");
             Matcher m0 = p0.matcher(pageHtml);
             if (m0.find()) {
                 String str = m0.group();
