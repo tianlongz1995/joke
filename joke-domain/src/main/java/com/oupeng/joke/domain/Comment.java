@@ -48,6 +48,12 @@ public class Comment {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer time;
     /**
+     * 创建时间
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String createTime;
+
+    /**
      * 点赞数
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -151,6 +157,17 @@ public class Comment {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public String getCreateTime() {
+      return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(Long.valueOf(createTime)*1000);
+        String stime = dateFormat.format(date);
+        this.createTime = stime;
     }
 
     public Integer getGood() {
