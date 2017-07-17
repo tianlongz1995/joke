@@ -3,6 +3,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 %>
@@ -135,7 +136,7 @@
                                                 ${comment.bc}
                                         </td>
                                         <td>
-                                                ${comment.time}
+                                                ${comment.createTime}
                                         </td>
                                         <td>
                                                 ${comment.uid}

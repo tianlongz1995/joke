@@ -43,7 +43,7 @@ public class CommentSqlProvider {
         Integer offset = (Integer) map.get("offset");
         Integer pageSize = (Integer) map.get("pageSize");
         StringBuffer sql = new StringBuffer();
-        sql.append(" select c.id, c.state, c.uid, c.nickname as nick, c.content as bc, c.createtime as time from `comment` as c where 1=1");
+        sql.append(" select c.id, c.state, c.uid, c.nickname as nick, c.content as bc, c.createtime as time, c.createtime as createTime from `comment` as c where 1=1");
         if (StringUtils.isNotBlank(keyWord)) {
             sql.append(" and c.content like ").append("'%").append(keyWord).append("%'");
         }

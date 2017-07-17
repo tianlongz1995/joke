@@ -115,17 +115,10 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 List<CommentT> list = new ArrayList<CommentT>();
                 for (int i = 0; i < jokeText.getCommentNumber(); i++) {
 
-                    Integer god;
-//                    try {
-                        god = jokeText.getHotGoods().get(i);
-                        if(god == null){
-                            god = 0;
-                        }
-//                        god = Integer.valueOf(String.valueOf(jokeText.getHotGoods().get(i)));
-//                    } catch (Exception e) {
-//                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
-//                        god = 0;
-//                    }
+                    Integer god = Integer.valueOf(String.valueOf(jokeText.getHotGoods().get(i)));
+                    if(god == null){
+                        god = 0;
+                    }
                     String content = jokeText.getHotContents().get(i);
 
                     //神评评论点赞数>10
@@ -189,7 +182,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                         list.set(k, com0);
                     }
                 }
-                joke.setComment_number(jokeText.getCommentNumber());
+                joke.setComment_number(list.size());
                 joke.setComment(list);
 
                 joke.setContent(cont);
