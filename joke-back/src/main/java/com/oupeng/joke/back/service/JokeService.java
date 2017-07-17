@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 @Service
 public class JokeService {
 	private static final String ADMIN_PASS = "admin@joke.com";
+    private final static String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
 	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
 	@Autowired
 	private JokeMapper jokeMapper;
@@ -48,15 +49,11 @@ public class JokeService {
 	@Autowired
 	private Environment env;
     private String uploadImagePath = "/nh/java/back/resources/image/";
-
     private String imgPrefix = "http://joke2-img.oupeng.com/";
 
-    private String localImgPrefix = "http://jokeback.bj.oupeng.com/resources/image/";
-
 //    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
-
+    private String localImgPrefix = "http://jokeback.bj.oupeng.com/resources/image/";
     private String cdnImagePath = "/data01/images/";
-    private final static String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
 
     @PostConstruct
     private void init() {
@@ -1388,11 +1385,14 @@ public class JokeService {
                 int godNum = 0;
                 List<Comment> commentList = new ArrayList<>();
                 for (int i = 0; i < commentNumber; i++) {
-                    int god = 0;
-                    try {
-                        god = Integer.valueOf(String.valueOf(hotGooods.get(i)));
-                    } catch (Exception e) {
-                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
+                    Integer god;
+//                    try {
+                        god = hotGooods.get(i);
+//                    } catch (Exception e) {
+//                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
+//                        god = 0;
+//                    }
+                    if(god == null){
                         god = 0;
                     }
                     String content = hotContents.get(i);

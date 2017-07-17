@@ -12,9 +12,7 @@
     <packaging>war</packaging>
     <artifactId>spider</artifactId>
 
-
     <dependencies>
-
         <dependency>
             <groupId>us.codecraft</groupId>
             <artifactId>webmagic-core</artifactId>
