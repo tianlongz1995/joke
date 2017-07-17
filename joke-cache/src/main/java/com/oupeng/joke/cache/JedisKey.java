@@ -108,6 +108,8 @@ public class JedisKey {
     public static final String STRING_COMMENT="string.comment.";
     /** 评论点赞列表 */
     public static final String COMMENT_LIST_LIKE="comment.list.like";
+    /** 评论删除列表 */
+    public static final String COMMENT_LIST_DEL="comment.list.delete";
     /** 新评论列表*/
     public static final String NEW_COMMENT_LIST="new.comment.list";
     /** 评论数量*/
