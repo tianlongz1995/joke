@@ -15,32 +15,21 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.gifcool.com/gif/list_12_\\d{1,3}.html")
 public class JokeImgGifCool extends JokeImg implements AfterExtractor {
 
-
     private static final String gifcoolUrl =  "http://www.gifcool.com";
-
+    /**
+     * 标题
+     */
     @ExtractBy(value="//div[@class=\"colb\"]//div[@class=\"title\"]/strong/text()")
     private String title;
-
+    /**
+     * 图片
+     */
     @ExtractBy(value="//div[@class=\"colb\"]//div[@class=\"con\"]//img/@src",notNull = true)
     private String img;
-
     /**
      * 来源
      */
     private String src;
-
-    /**
-     * 评论内容
-     */
-
-    private String commentContent;
-
-    /**
-     * 神评点赞数大于10
-     */
-    private Integer agreeTotal;
-
-
     /**
      * 新建数据源时，需要重写（例如：gifcool->153）
      */
@@ -62,24 +51,6 @@ public class JokeImgGifCool extends JokeImg implements AfterExtractor {
 
     public void setImg(String img) {
         this.img = img;
-    }
-
-
-    public String getCommentContent() {
-        return commentContent;
-    }
-
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
-    }
-
-
-    public Integer getAgreeTotal() {
-        return agreeTotal;
-    }
-
-    public void setAgreeTotal(Integer agreeTotal) {
-        this.agreeTotal = agreeTotal;
     }
 
     public String getSrc() {

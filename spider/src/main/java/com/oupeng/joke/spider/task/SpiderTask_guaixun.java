@@ -1,6 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.weird.JokeImgWeird;
+import com.oupeng.joke.spider.domain.guaixun.JokeGifGuaiXun;
+import com.oupeng.joke.spider.domain.guaixun.JokeImgGuaiXun;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +17,14 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 爬取 http://xx.yzz.cn/dongtu/
- * Created by pengzheng on 2017/6/13.
+ * 怪讯网
  */
 @Component
-public class SpiderTask_WeirdInfo {
-    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_WeirdInfo.class);
+public class SpiderTask_guaixun {
+    private static final Logger logger = LoggerFactory.getLogger(SpiderTask_guaixun.class);
 
-    //获取图片资源的地址
-    private String imgUrlWeird;
+    private String imgUrl;
+    private String gifUrl;
 
     @Autowired
     private Environment env;
@@ -40,34 +40,35 @@ public class SpiderTask_WeirdInfo {
     @Autowired
     private PageModelPipeline jobInfoDaoImgPipeline;
 
-    @Qualifier("JobInfoDaoPipeline")
-    @Autowired
-    private PageModelPipeline jobInfoDaoPipeline;
-
 
     @PostConstruct
     public void init() {
-
-        String hi = env.getProperty("weird.spider.img.url");
-
-        if (StringUtils.isNotBlank(hi)) {
-            imgUrlWeird = hi;
+        String url = env.getProperty("guaixun.spider.img.url");
+        if (StringUtils.isNotBlank(url)) {
+            imgUrl = url;
+        }
+        String igf = env.getProperty("guaixun.spider.gif.url");
+        if (StringUtils.isNotBlank(igf)) {
+            gifUrl = igf;
         }
 
-        String isRun = env.getProperty("yzz.spider.run");
+
+        String isRun = env.getProperty("guaixun.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            spiderGif();
+            spider();
         }
-
     }
 
     /**
-     * 抓取怪迅网网站图片
+     * 怪迅网
      */
     @Scheduled(cron = "0 0 7 * * ?")
-    public void spiderGif() {
-        logger.info("yzz spider gif...");
-        crawl(jobInfoDaoImgPipeline, JokeImgWeird.class, imgUrlWeird);
+    public void spider() {
+        logger.info("guaixun spider img...");
+        crawl(jobInfoDaoImgPipeline, JokeImgGuaiXun.class, imgUrl);
+
+        logger.info("guaixun spider img...");
+        crawl(jobInfoDaoImgPipeline, JokeGifGuaiXun.class, gifUrl);
     }
 
 
