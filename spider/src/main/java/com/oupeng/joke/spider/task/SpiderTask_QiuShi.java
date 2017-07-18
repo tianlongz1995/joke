@@ -17,8 +17,7 @@ import us.codecraft.webmagic.pipeline.PageModelPipeline;
 import javax.annotation.PostConstruct;
 
 /**
- * 爬取 http://xx.yzz.cn/dongtu/
- * Created by pengzheng on 2017/6/13.
+ *  糗事百科
  */
 @Component
 public class SpiderTask_QiuShi {
@@ -50,23 +49,23 @@ public class SpiderTask_QiuShi {
 
     @PostConstruct
     public void init() {
-
-        String url = env.getProperty("quishi.spider.url");
-
-        if (StringUtils.isNotBlank(url)) {
-            hotTextUrlQiuShi = url;
-            imgUrlQuiShi = url;
+        String textUrl = env.getProperty("quishi.spider.text.url");
+        if (StringUtils.isNotBlank(textUrl)) {
+            hotTextUrlQiuShi = textUrl;
+        }
+        String imgUrl = env.getProperty("quishi.spider.img.url");
+        if (StringUtils.isNotBlank(imgUrl)) {
+            imgUrlQuiShi = imgUrl;
         }
 
         String isRun = env.getProperty("qiushi.spider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
             spiderQuiShiBaiKe();
         }
-
     }
 
     /**
-     * 定时爬取任务
+     * 糗事百科
      */
     @Scheduled(cron = "0 30 5 * * ?")
     public void spiderQuiShiBaiKe() {
@@ -75,7 +74,6 @@ public class SpiderTask_QiuShi {
 
         logger.info("QuiShi img spider ing...");
         crawl(jobInfoDaoImgPipeline, JokeImgQuiShiImg.class, imgUrlQuiShi);
-
     }
 
 

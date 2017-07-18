@@ -1,4 +1,4 @@
-package com.oupeng.joke.spider.domain.weird;
+package com.oupeng.joke.spider.domain.guaixun;
 
 import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.Page;
@@ -8,19 +8,23 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by Jane on 2017/6/13.
  *
  */
-@TargetUrl("http://www.guaixun.com/html/content_\\d{5,7}.html")
-@HelpUrl("http://www.guaixun.com/index_\\d+.html")
-public class JokeImgWeird extends JokeImg implements AfterExtractor {
+@TargetUrl("http://www.guaixun.com/html/content_\\d+.html")
+@HelpUrl("http://www.guaixun.com/html/graph00_\\d+.html")
+public class JokeGifGuaiXun extends JokeImg implements AfterExtractor {
 
+    private static final int new_sourceId = 157;
+    /**
+     * 标题
+     */
     @ExtractBy(value = "//div[@class='bt_b']/allText()", notNull = true)
     private String title;
-
-    @ExtractBy(value = "//div[@class='nr']//img/@src", notNull = true)
+    /**
+     * 图片
+     */
+    @ExtractBy(value = "//div[@id=\"contentStyle\"]/a//img/@src", notNull = true)
     private String img;
-
     /**
      * 来源
      */
@@ -28,7 +32,6 @@ public class JokeImgWeird extends JokeImg implements AfterExtractor {
     /**
      * 内容源
      */
-
     private Integer sourceId;
 
 
@@ -39,7 +42,6 @@ public class JokeImgWeird extends JokeImg implements AfterExtractor {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     public String getImg() {
         return img;
@@ -58,7 +60,7 @@ public class JokeImgWeird extends JokeImg implements AfterExtractor {
     }
 
     public Integer getSourceId() {
-        return 157;
+        return new_sourceId;
     }
 
     public void setSourceId(Integer sourceId) {

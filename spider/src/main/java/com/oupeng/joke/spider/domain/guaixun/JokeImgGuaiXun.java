@@ -1,4 +1,4 @@
-package com.oupeng.joke.spider.domain.quishibaike;
+package com.oupeng.joke.spider.domain.guaixun;
 
 import com.oupeng.joke.spider.domain.JokeImg;
 import us.codecraft.webmagic.Page;
@@ -8,39 +8,30 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 /**
- * Created by zongchao on 2017/3/13.
+ *
  */
+@TargetUrl("http://www.guaixun.com/html/content_\\d+.html")
+@HelpUrl("http://www.guaixun.com/html/picture00_\\d+.html")
+public class JokeImgGuaiXun extends JokeImg implements AfterExtractor {
 
-@TargetUrl("http://www.pengfu.com/content_\\d{6,9}_1.html")
-@HelpUrl("http://www.pengfu.com/shen_30_\\d{1,3}.html")
-public class JokeImgPIC extends JokeImg implements AfterExtractor {
-
-
-    @ExtractBy("//dl[@class='clearfix dl-con']//h1/allText()")
+    private static final int new_sourceId = 157;
+    /**
+     * 标题
+     */
+    @ExtractBy(value = "//div[@class='bt_b']/allText()", notNull = true)
     private String title;
-
-    @ExtractBy(value = "//div[@class='content-txt pt10']/img/@src", notNull = true)
+    /**
+     * 图片
+     */
+    @ExtractBy(value = "//div[@id=\"contentStyle\"]/a//img/@src", notNull = true)
     private String img;
-
     /**
      * 来源
      */
     private String src;
-
     /**
-     * 评论内容
+     * 内容源
      */
-
-    @ExtractBy("//div[@class='shenhf-con']/allText()")
-    private String commentContent;
-
-    /**
-     * 神评点赞数大于10
-     */
-
-    @ExtractBy("//span[@class='shf-comment-ding fr none']//i/text()")
-    private Integer agreeTotal;
-
     private Integer sourceId;
 
 
@@ -52,31 +43,12 @@ public class JokeImgPIC extends JokeImg implements AfterExtractor {
         this.title = title;
     }
 
-
     public String getImg() {
         return img;
     }
 
     public void setImg(String img) {
         this.img = img;
-    }
-
-
-    public String getCommentContent() {
-        return commentContent;
-    }
-
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
-    }
-
-
-    public Integer getAgreeTotal() {
-        return agreeTotal;
-    }
-
-    public void setAgreeTotal(Integer agreeTotal) {
-        this.agreeTotal = agreeTotal;
     }
 
     public String getSrc() {
@@ -88,7 +60,7 @@ public class JokeImgPIC extends JokeImg implements AfterExtractor {
     }
 
     public Integer getSourceId() {
-        return 146;
+        return new_sourceId;
     }
 
     public void setSourceId(Integer sourceId) {

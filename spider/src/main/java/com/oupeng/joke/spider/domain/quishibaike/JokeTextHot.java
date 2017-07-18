@@ -1,50 +1,81 @@
 package com.oupeng.joke.spider.domain.quishibaike;
 
-
 import com.oupeng.joke.spider.domain.JokeText;
+import com.oupeng.joke.spider.utils.HttpUtil;
+import org.springframework.util.CollectionUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by zongchao on 2017/3/13.
- */
 @TargetUrl("https://www.qiushibaike.com/article/\\d+")
-@HelpUrl("https://www.qiushibaike.com/8hr/page/\\d+/?s=4993143")
+@HelpUrl("https://www.qiushibaike.com/text/|https://www.qiushibaike.com/text/page/\\d+/?s=5001145")
 public class JokeTextHot extends JokeText implements AfterExtractor {
 
-
+    private static final int new_sourceId = 136;
+    /**
+     * 标题
+     */
     private String title;
-
-    @ExtractBy(value = "//div[@class='content']/allText()", notNull = true)
+    /**
+     * 内容
+     */
+    @ExtractBy(value = "//div[@id='single-next-link']/div[@class='content']/allText()", notNull = true)
     private String content;
-
     /**
      * 来源
      */
     private String src;
-
-
     /**
-     * 内容源
+     * 数据源
      */
     private Integer sourceId;
-
+    /**
+     * 评论数量
+     */
+    private Integer commentNumber;
+    /**
+     * 评论点赞
+     */
+    @ExtractBy("//article[@id=\"godCmt\"]//div[@class=\"comments-table\"]/a//div[@class=\"likenum\"]/allText()")
+    private List<Integer> hotGoods;
     /**
      * 评论内容
      */
-    @ExtractBy("//div[@class='comments-list-item']/allText()")
-    private String commentContent;
+    @ExtractBy("//article[@id=\"godCmt\"]//div[@class=\"comments-table\"]/a//div[@class=\"main-text\"]/text()")
+    private List<String> hotContents;
 
-    /**
-     * 神评点赞数大于10
-     */
-    @ExtractBy("//span[@class='shf-comment-ding fr none']//i/text()")
-    private Integer agreeTotal;
 
+    @Override
+    public Integer getCommentNumber() {
+        return commentNumber;
+    }
+
+    @Override
+    public void setCommentNumber(Integer commentNumber) {
+        this.commentNumber = commentNumber;
+    }
+
+    @Override
+    public List<Integer> getHotGoods() {
+        return hotGoods;
+    }
+
+    public void setHotGoods(List<Integer> hotGoods) {
+        this.hotGoods = hotGoods;
+    }
+
+    public List<String> getHotContents() {
+        return hotContents;
+    }
+
+    public void setHotContents(List<String> hotContents) {
+        this.hotContents = hotContents;
+    }
 
     public String getTitle() {
         return title;
@@ -54,30 +85,14 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
         this.title = title;
     }
 
+    @Override
     public String getContent() {
         return content;
     }
 
+    @Override
     public void setContent(String content) {
         this.content = content;
-    }
-
-
-    public String getCommentContent() {
-        return commentContent;
-    }
-
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
-    }
-
-
-    public Integer getAgreeTotal() {
-        return agreeTotal;
-    }
-
-    public void setAgreeTotal(Integer agreeTotal) {
-        this.agreeTotal = agreeTotal;
     }
 
     public String getSrc() {
@@ -88,12 +103,12 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
         this.src = src;
     }
 
-
+    @Override
     public Integer getSourceId() {
-        return 136;
+        return new_sourceId;
     }
 
-
+    @Override
     public void setSourceId(Integer sourceId) {
         this.sourceId = sourceId;
     }
@@ -101,6 +116,13 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
     @Override
     public void afterProcess(Page page) {
         src = page.getUrl().toString();
+
+        //抓取到的神评数量
+        if (!CollectionUtils.isEmpty(this.getHotGoods()) && !CollectionUtils.isEmpty(this.getHotContents())) {
+            this.setCommentNumber(this.getHotGoods().size());
+        } else {
+            this.setCommentNumber(0);
+        }
     }
 }
 
