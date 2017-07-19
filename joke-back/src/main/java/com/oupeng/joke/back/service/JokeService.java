@@ -272,31 +272,31 @@ public class JokeService {
                 jedisCache.set(JedisKey.STRING_JOKE + joke.getId(), JSON.toJSONString(joke));
 
 
-                /**
-                 * xioyingl 修改：在缓存joke的时候，将其对应的(spider)神评论一并放到缓存   2017/6/15
-                 */
-                //获取神评论
+                //修改：在缓存joke的时候，将其对应的(spider)神评论一并放到缓存
                 List<Comment> hotComments = commentMapper.getGodReviewList(joke.getId());
-                for (Comment comment : hotComments) {
+                if(!CollectionUtils.isEmpty(hotComments)) {
+                    for (Comment comment : hotComments) {
 
-                    /**
-                     * 神评论放入缓存，更新updatetime、publish_state(改为已发布1)
-                     */
-                    //更新时间
-                    Integer updateTime = FormatUtil.getTime();
-                    commentMapper.updateHotComment(comment.getId(),updateTime,1);
+                        //更新时间
+                        Integer updateTime = FormatUtil.getTime();
+                        commentMapper.updateHotComment(comment.getId(), updateTime, 1);
 
-                    comment.setTime(updateTime);
+                        comment.setTime(updateTime);
 
-                    //评论列表缓存-按更新时间排序 只存储id
-                    String godKey = JedisKey.JOKE_GOD_COMMENT + comment.getJokeId();
-                    jedisCache.zadd(godKey, comment.getGood(), String.valueOf(comment.getId()));
+                        //神评列表缓存
+                        String godKey = JedisKey.JOKE_GOD_COMMENT + comment.getJokeId();
+                        jedisCache.zadd(godKey, comment.getGood(), String.valueOf(comment.getId()));
 
-                    //评论缓存
-                    String commentKey = JedisKey.STRING_COMMENT + comment.getId();
-                    jedisCache.set(commentKey, JSON.toJSONString(comment));
+                        //评论列表缓存-按更新时间排序 只存储id
+                        String commentListKey = JedisKey.JOKE_COMMENT_LIST + comment.getJokeId();
+                        jedisCache.zadd(commentListKey, comment.getTime(), String.valueOf(comment.getId()));
 
-                    logger.info("缓存joke[id = "+joke.getId()+"|src = "+joke.getSrc()+"]时，将其对应的神评论[]缓存到redis[key:"+godKey+"]");
+                        //评论缓存
+                        String commentKey = JedisKey.STRING_COMMENT + comment.getId();
+                        jedisCache.set(commentKey, JSON.toJSONString(comment));
+
+                        logger.info("缓存joke[id = " + joke.getId() + "|src = " + joke.getSrc() + "]时，将其对应的神评论[]缓存到redis[key:" + godKey + "]");
+                    }
                 }
             }
         }

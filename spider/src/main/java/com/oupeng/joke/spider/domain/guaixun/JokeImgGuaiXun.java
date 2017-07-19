@@ -14,7 +14,7 @@ import us.codecraft.webmagic.model.annotation.TargetUrl;
 @HelpUrl("http://www.guaixun.com/html/picture00_\\d+.html")
 public class JokeImgGuaiXun extends JokeImg implements AfterExtractor {
 
-    private static final int new_sourceId = 157;
+    private static final int new_sourceId = 142;
     /**
      * 标题
      */
