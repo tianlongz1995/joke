@@ -279,9 +279,9 @@ public class CommentService {
     class UpdateLikeDatabaseThread implements Runnable {
         public void run() {
             while (true) {
-                if(!CollectionUtils.isEmpty(map)) {
-                    try {
-                        Thread.sleep(1000 * 60 * 3);
+                try {
+                    Thread.sleep(1000 * 60 * 3);
+                    if (!CollectionUtils.isEmpty(map)) {
                         for (Map.Entry<String, Integer> entry : map.entrySet()) {
                             String id = entry.getKey();
                             Integer good = entry.getValue();
@@ -300,11 +300,10 @@ public class CommentService {
                             }
                             map.entrySet().remove(entry);
                         }
-                    } catch (Exception e) {
-                        logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);
                     }
+                } catch (Exception e) {
+                    logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);
                 }
-
             }
         }
     }
