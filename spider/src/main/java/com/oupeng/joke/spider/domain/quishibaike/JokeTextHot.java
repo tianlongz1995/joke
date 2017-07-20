@@ -27,6 +27,11 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
     @ExtractBy(value = "//div[@id='single-next-link']/div[@class='content']/text()", notNull = true)
     private String content;
     /**
+     * 图片
+     */
+    @ExtractBy(value = "//div[@id='single-next-link']/div[@class='thumb']/img/@src")
+    private String img;
+    /**
      * 来源
      */
     private String src;
@@ -113,9 +118,20 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
         this.sourceId = sourceId;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
     @Override
     public void afterProcess(Page page) {
         src = page.getUrl().toString();
+        if (img != null) {
+            page.setSkip(true);
+        }
 
         //抓取到的神评数量
         if (!CollectionUtils.isEmpty(this.getHotGoods()) && !CollectionUtils.isEmpty(this.getHotContents())) {
