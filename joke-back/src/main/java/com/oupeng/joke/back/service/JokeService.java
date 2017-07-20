@@ -252,6 +252,9 @@ public class JokeService {
             logger.error("缓存段子失败! 获取段子列表为空:[{}]", jokeIds);
             return;
         }
+        //清除缓存
+        String[] ids = jokeIds.split(",");
+        cleanJokeCache(ids);
         //加到缓存
         for (Joke joke : jokes) {
             if (joke != null) {
