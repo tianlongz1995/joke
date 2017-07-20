@@ -279,18 +279,15 @@ public class CommentService {
     class UpdateLikeDatabaseThread implements Runnable {
         public void run() {
             while (true) {
-                try {
-                    Thread.sleep(1000 * 60 * 3);
-                    for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                        String id = entry.getKey();
-                        Integer good = entry.getValue();
-                        try {
+                if(!CollectionUtils.isEmpty(map)) {
+                    try {
+                        Thread.sleep(1000 * 60 * 3);
+                        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                            String id = entry.getKey();
+                            Integer good = entry.getValue();
+
                             //更新评论点赞数
                             commentMapper.updateCommentGood(Integer.valueOf(id), good);
-
-                            /**
-                             * xiongyingl chang:评论点赞数变化时，可能会导致joke中神评论信息更新 2017/06/19
-                             */
                             Comment comment = commentMapper.getCommentById(Integer.valueOf(id));
                             int tgood = comment.getGood() + good;
                             if (tgood > 10) {
@@ -301,16 +298,11 @@ public class CommentService {
                                     jokeMapper.updateJokeOfGod(jokeId, maxGoodComment.getBc(), maxGoodComment.getAvata(), maxGoodComment.getNick());
                                 }
                             }
-
-
                             map.entrySet().remove(entry);
-                        } catch (Exception e) {
-                            logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);
-                            Thread.sleep(1000 * 60 * 3);
                         }
+                    } catch (Exception e) {
+                        logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);
                     }
-                } catch (Exception e) {
-                    logger.error("【评论更新任务】更新数据库执行异常:" + e.getMessage(), e);
                 }
 
             }
