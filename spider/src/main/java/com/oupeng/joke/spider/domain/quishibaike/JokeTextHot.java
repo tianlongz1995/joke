@@ -24,7 +24,7 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
     /**
      * 内容
      */
-    @ExtractBy(value = "//div[@id='single-next-link']/div[@class='content']/allText()", notNull = true)
+    @ExtractBy(value = "//div[@id='single-next-link']/div[@class='content']/text()", notNull = true)
     private String content;
     /**
      * 来源

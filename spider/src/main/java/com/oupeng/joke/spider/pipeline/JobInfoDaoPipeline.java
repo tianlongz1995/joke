@@ -87,6 +87,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             joke.setSource(jokeText.getSrc());
             joke.setTitle(jokeText.getTitle());
             joke.setSource_id(jokeText.getSourceId());
+            joke.setContent(cont);
             joke.setStatus(0);
 
             int bad = 150 - (int) (Math.random() * 150);
@@ -185,7 +186,6 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 joke.setComment_number(list.size());
                 joke.setComment(list);
 
-                joke.setContent(cont);
                 joke.setAvata(m_avata);
                 joke.setNick(m_nick);
 
