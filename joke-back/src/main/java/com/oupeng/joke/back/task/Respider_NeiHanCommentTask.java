@@ -48,11 +48,11 @@ public class Respider_NeiHanCommentTask {
         @Override
         public void run() {
            try{
-               logger.info("开始重新爬取joke(内涵段子)神评...");
+               logger.info("开始重爬joke(内涵段子)神评...");
                jokeService.addJokeComment(respiderTime, 155, "neihan");
-               logger.info("重新爬取joke(内涵段子)神评结束");
+               logger.info("重爬joke(内涵段子)神评结束");
            }catch(Exception e){
-               logger.error("重新爬取joke(内涵段子)异常:" + e.getMessage(),e);
+               logger.error("重爬joke(内涵段子)异常:" + e.getMessage(),e);
            }
         }
     }

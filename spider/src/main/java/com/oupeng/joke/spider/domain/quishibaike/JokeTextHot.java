@@ -27,10 +27,15 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
     @ExtractBy(value = "//div[@id='single-next-link']/div[@class='content']/text()", notNull = true)
     private String content;
     /**
-     * 图片
+     * 图片跳过
      */
     @ExtractBy(value = "//div[@id='single-next-link']/div[@class='thumb']/img/@src")
     private String img;
+    /**
+     * video跳过
+     */
+    @ExtractBy(value = "//div[@id='single-next-link']/video/source/@src")
+    private String video;
     /**
      * 来源
      */
@@ -126,10 +131,18 @@ public class JokeTextHot extends JokeText implements AfterExtractor {
         this.img = img;
     }
 
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
     @Override
     public void afterProcess(Page page) {
         src = page.getUrl().toString();
-        if (img != null) {
+        if (img != null || video != null) {
             page.setSkip(true);
         }
 
