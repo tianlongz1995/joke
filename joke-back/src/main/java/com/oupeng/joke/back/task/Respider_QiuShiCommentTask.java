@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 重新爬取joke(糗事百科)神评
@@ -18,11 +19,17 @@ import java.util.Date;
 @Component
 public class Respider_QiuShiCommentTask {
     private static final Logger logger = LoggerFactory.getLogger(Respider_QiuShiCommentTask.class);
-    private static String respiderTime = "2017-07-20 00:00:00";
     @Autowired
     private JokeService jokeService;
     @Autowired
     private Environment env;
+
+    /**
+     * 判断重爬线程是否在运行中
+     */
+    private static AtomicBoolean isRun = new AtomicBoolean(false);
+
+    private static String respiderTime = "2017-07-20 00:00:00";
 
     @PostConstruct
     public void init() {
@@ -49,19 +56,26 @@ public class Respider_QiuShiCommentTask {
      */
     @Scheduled(cron = "0 0 * * * ?")
     public void respider() {
-        new Thread(new RespiderThread()).start();
+        if (!isRun.get()) {
+            new Thread(new RespiderThread()).start();
+        } else {
+            logger.info("重爬线程还在运行中...");
+        }
     }
 
 
     class RespiderThread implements Runnable{
         @Override
         public void run() {
+            isRun.set(true);
             try{
                 logger.info("开始重爬joke(糗事百科)神评...");
                 jokeService.addJokeComment(respiderTime, 136, "qiushibaike");
                 logger.info("重爬joke(糗事百科)神评结束");
             }catch(Exception e){
                 logger.error("重爬joke(糗事百科)异常:" + e.getMessage(),e);
+            } finally {
+                isRun.set(false);
             }
         }
     }
