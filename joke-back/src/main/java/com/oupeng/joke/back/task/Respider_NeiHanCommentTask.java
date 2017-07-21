@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +23,7 @@ public class Respider_NeiHanCommentTask {
     @Autowired
     private Environment env;
 
-    private String respiderTime = "2017-07-01 00:00:00";
+    private static String respiderTime = "2017-07-01 00:00:00";
 
     @PostConstruct
     public void init() {
@@ -40,8 +41,16 @@ public class Respider_NeiHanCommentTask {
         }
         String isRun = env.getProperty("neihan.respider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            new Thread(new RespiderThread()).start();
+            respider();
         }
+    }
+
+    /**
+     * 重爬任务:每间隔1小时爬取500条
+     */
+    @Scheduled(cron = "0 0 * * * ?")
+    public void respider() {
+        new Thread(new RespiderThread()).start();
     }
 
     class RespiderThread implements Runnable{

@@ -34,9 +34,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
     //无效字符串
-    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;"};
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;","\\uD83C\\uDF83"};
     //替换字符串
-    private static final String[] REPLACE = {"", "", "", "", "", "", ""};
+    private static final String[] REPLACE = {"", "", "", "", "", "", "",""};
     private static String PROTOCOL = "http:";
     private Random random = new Random(3000);
     private String avataStr = "http://joke2-img.oupeng.com/1/%d.png";

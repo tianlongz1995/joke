@@ -55,6 +55,13 @@ public class JokeService {
     private String localImgPrefix = "http://jokeback.bj.oupeng.com/resources/image/";
     private String cdnImagePath = "/data01/images/";
 
+    //无效字符串
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;", "\uD83C\uDF83"};
+    //替换字符串
+    private static final String[] REPLACE = {"", "", "", "", "", "", "", ""};
+    //长度限制
+    private static int txtLimitLength = 200;
+
     @PostConstruct
     private void init() {
         String url = env.getProperty("img.real.server.url");
@@ -1292,10 +1299,10 @@ public class JokeService {
     public Map<String, List> getMap(String pageURL, String type) {
 
         Map<String, List> map = new HashMap<>();
-        //内涵段子pageURL神评
+        //内涵段子pageURL神评 did:140 2017-07-01历史数据
         if (type.equals("neihan")) {
-            String str = pageURL.substring("http://neihanshequ.com/p".length(), pageURL.length() - 1);
-            String jsonURL = "http://neihanshequ.com/m/api/get_essay_comments/?group_id=" + str + "&app_name=neihanshequ_web&offset=0";
+            String str = pageURL.substring("http://m.neihanshequ.com/share/group/".length(), pageURL.indexOf("/?"));
+            String jsonURL = "http://m.neihanshequ.com/api/get_essay_comments/?app_name=neihanshequ_web&group_id=" + str + "&offset=0";
             map = HttpComment.getNeiHanGodMsg(jsonURL);
         }
 //        //遨游哈哈pageURL神评
@@ -1339,13 +1346,27 @@ public class JokeService {
                     Matcher mg = pg.matcher(li);
 
                     if (mc.find() && mg.find()) {
-                        hotContents.add(mc.group());
-                        hotGoods.add(Integer.valueOf(mg.group()));
+                        String good = mg.group();
+                        String content = mc.group();
+                        if (good == null || good.length() < 1 || content == null || content.length() < 1) {
+                            continue;
+                        }
+                        if (Integer.valueOf(good) <= 10) {
+                            continue;
+                        }
+                        //过滤无效字符
+                        content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                        if (content.length() > txtLimitLength) {
+                            continue;
+                        }
+
+                        hotContents.add(content);
+                        hotGoods.add(Integer.valueOf(good));
                     }
                 }
-                map.put("hotGoods", hotGoods);
-                map.put("hotContents", hotContents);
             }
+            map.put("hotGoods", hotGoods);
+            map.put("hotContents", hotContents);
         }
         //糗事百科pageURL神评
         else if(type.equals("qiushibaike")){
@@ -1377,13 +1398,27 @@ public class JokeService {
                     Matcher mg = pg.matcher(li);
 
                     if (mc.find() && mg.find()) {
-                        hotContents.add(mc.group());
-                        hotGoods.add(Integer.valueOf(mg.group()));
+                        String good = mg.group();
+                        String content = mc.group();
+                        if (good == null || good.length() < 1 || content == null || content.length() < 1) {
+                            continue;
+                        }
+                        if (Integer.valueOf(good) <= 10) {
+                            continue;
+                        }
+                        //过滤无效字符
+                        content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                        if (content.length() > txtLimitLength) {
+                            continue;
+                        }
+
+                        hotContents.add(content);
+                        hotGoods.add(Integer.valueOf(good));
                     }
                 }
-                map.put("hotGoods", hotGoods);
-                map.put("hotContents", hotContents);
             }
+            map.put("hotGoods", hotGoods);
+            map.put("hotContents", hotContents);
         }
         return map;
     }
@@ -1398,21 +1433,32 @@ public class JokeService {
     public void addJokeComment(String dateTime, Integer source_id, String type) {
         Random random = new Random(3000);
 
-        //获取要添加神评论的jokeList
+        //获取要添加神评论的jokeList(每次取500条)
         List<Joke> jokeList = jokeMapper.getJokebeforeTime(dateTime, source_id);
 
         if (!CollectionUtils.isEmpty(jokeList)) {
             for (Joke joke : jokeList) {
 
+                try {
+                    Thread.sleep(1000);
+                }catch (Exception e){
+                    logger.error("重爬joke,停顿1秒/次异常"+e.getMessage(),e);
+                }
+
+                logger.info("重爬joke神评论id：{}，src：{}", joke.getId(), joke.getSrc());
                 Map<String, List> map = getMap(joke.getSrc(), type);
                 if (CollectionUtils.isEmpty(map)) {
+                    logger.info("重爬joke神评论id：{},src：{}map为空", joke.getId(), joke.getSrc());
                     continue;
                 }
                 List<Integer> hotGooods = map.get("hotGoods");
                 List<String> hotContents = map.get("hotContents");
                 if (CollectionUtils.isEmpty(hotGooods) || CollectionUtils.isEmpty(hotContents)) {
+                    jokeMapper.updateJokeComment(joke.getId(), 0, null, null, null, 1);
+                    logger.info("重爬joke神评论id：{},src：{}神评论为空", joke.getId(), joke.getSrc());
                     continue;
                 }
+                logger.info("重爬joke神评论id：{},src：{}连接获取神评成功", joke.getId(), joke.getSrc());
                 int commentNumber = hotGooods.size();
 
                 //删除数据库中的原神评记录
@@ -1426,22 +1472,8 @@ public class JokeService {
                 int godNum = 0;
                 List<Comment> commentList = new ArrayList<>();
                 for (int i = 0; i < commentNumber; i++) {
-                    Integer god;
-//                    try {
-                        god = hotGooods.get(i);
-//                    } catch (Exception e) {
-//                        logger.error("爬取joke点赞数异常:" + e.getMessage(), e);
-//                        god = 0;
-//                    }
-                    if(god == null){
-                        god = 0;
-                    }
+                    Integer god = hotGooods.get(i);
                     String content = hotContents.get(i);
-
-                    //神评评论点赞数>10
-                    if (god <= 10) {
-                        continue;
-                    }
 
                     int id = random.nextInt(2089);
                     if (id == 0) {
@@ -1478,11 +1510,11 @@ public class JokeService {
                     //批量插入comment
                     if (!CollectionUtils.isEmpty(commentList)) {
                         commentMapper.insertBatchComment(commentList);
-                        jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick);
+                        jokeMapper.updateJokeComment(jokeId, godNum, m_comment, m_avata, m_nick, 1);
+                        logger.info("重爬joke神评论id：{}，src：{}插入{}条神评！", jokeId, joke.getSrc(), commentList.size());
                     }
-                    logger.info("重爬joke神评论id：{}，src：{}", jokeId, joke.getSrc());
                 } catch (Exception e) {
-                    logger.error("爬取joke异常:" + e.getMessage(), e);
+                    logger.error("爬取joke id："+jokeId+"，src："+joke.getSrc()+",插入数据库异常:" + e.getMessage(), e);
                 }
             }
         }

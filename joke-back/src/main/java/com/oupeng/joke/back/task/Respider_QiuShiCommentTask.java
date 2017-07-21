@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 重新爬取joke(来福岛)神评
+ * 重新爬取joke(糗事百科)神评
  */
 @Component
 public class Respider_QiuShiCommentTask {
@@ -22,7 +23,7 @@ public class Respider_QiuShiCommentTask {
     @Autowired
     private Environment env;
 
-    private String respiderTime = "2017-07-12 19:00:00";
+    private static String respiderTime = "2017-07-20 00:00:00";
 
     @PostConstruct
     public void init() {
@@ -40,9 +41,18 @@ public class Respider_QiuShiCommentTask {
         }
         String isRun = env.getProperty("qiushibaike.respider.run");
         if (isRun != null && isRun.equalsIgnoreCase("true")) {
-            new Thread(new RespiderThread()).start();
+            respider();
         }
     }
+
+    /**
+     * 重爬任务:每间隔1小时爬取500条
+     */
+    @Scheduled(cron = "0 0 * * * ?")
+    public void respider() {
+        new Thread(new RespiderThread()).start();
+    }
+
 
     class RespiderThread implements Runnable{
         @Override
