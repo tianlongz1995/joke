@@ -1440,9 +1440,9 @@ public class JokeService {
             for (Joke joke : jokeList) {
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 }catch (Exception e){
-                    logger.error("重爬joke,停顿1秒/次异常"+e.getMessage(),e);
+                    logger.error("重爬joke,停顿2秒/次异常"+e.getMessage(),e);
                 }
 
                 logger.info("重爬joke神评论id：{}，src：{}", joke.getId(), joke.getSrc());
