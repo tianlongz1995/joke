@@ -21,13 +21,12 @@ import java.util.Map;
 public class HttpComment {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
-
-    //长度限制
-    private static int txtLimitLength = 200;
     //无效字符串
     private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;","\uD83C\uDF83"};
     //替换字符串
     private static final String[] REPLACE = {"", "", "", "", "", "", "",""};
+    //长度限制
+    private static int txtLimitLength = 200;
 
     /**
      * 根据内涵段子URL,返回神评评论

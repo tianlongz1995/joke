@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 重新爬取joke(来福岛)神评
@@ -18,12 +19,12 @@ import java.util.Date;
 @Component
 public class Respider_LaiCommentTask {
     private static final Logger logger = LoggerFactory.getLogger(Respider_LaiCommentTask.class);
+    private static String respiderTime = "2017-07-20 00:00:00";
     @Autowired
     private JokeService jokeService;
     @Autowired
     private Environment env;
-
-    private static String respiderTime = "2017-07-20 00:00:00";
+    private AtomicBoolean run = new AtomicBoolean(false);
 
     @PostConstruct
     public void init() {
@@ -50,7 +51,12 @@ public class Respider_LaiCommentTask {
      */
     @Scheduled(cron = "0 0 * * * ?")
     public void respider() {
-        new Thread(new RespiderThread()).start();
+        if(!run.get()){
+            run.set(true);
+            new Thread(new RespiderThread()).start();
+        } else {
+            logger.warn("正在运行");
+        }
     }
 
 
@@ -63,6 +69,8 @@ public class Respider_LaiCommentTask {
                 logger.info("重爬joke(来福岛)神评结束");
             }catch(Exception e){
                 logger.error("重爬joke(来福岛)异常:" + e.getMessage(),e);
+            } finally {
+                run.set(false);
             }
         }
     }

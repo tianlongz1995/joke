@@ -35,7 +35,13 @@ import java.util.regex.Pattern;
 public class JokeService {
 	private static final String ADMIN_PASS = "admin@joke.com";
     private final static String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
+    //无效字符串
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;", "\uD83C\uDF83"};
+    //替换字符串
+    private static final String[] REPLACE = {"", "", "", "", "", "", "", ""};
 	private static Logger logger = LoggerFactory.getLogger(JokeService.class);
+    //长度限制
+    private static int txtLimitLength = 200;
 	@Autowired
 	private JokeMapper jokeMapper;
 	@Autowired
@@ -50,17 +56,9 @@ public class JokeService {
 	private Environment env;
     private String uploadImagePath = "/nh/java/back/resources/image/";
     private String imgPrefix = "http://joke2-img.oupeng.com/";
-
 //    private String randomUserUrl = "http://joke2.oupeng.com/comment/joke/user";
     private String localImgPrefix = "http://jokeback.bj.oupeng.com/resources/image/";
     private String cdnImagePath = "/data01/images/";
-
-    //无效字符串
-    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;", "\uD83C\uDF83"};
-    //替换字符串
-    private static final String[] REPLACE = {"", "", "", "", "", "", "", ""};
-    //长度限制
-    private static int txtLimitLength = 200;
 
     @PostConstruct
     private void init() {

@@ -18,12 +18,11 @@ import java.util.Date;
 @Component
 public class Respider_QiuShiCommentTask {
     private static final Logger logger = LoggerFactory.getLogger(Respider_QiuShiCommentTask.class);
+    private static String respiderTime = "2017-07-20 00:00:00";
     @Autowired
     private JokeService jokeService;
     @Autowired
     private Environment env;
-
-    private static String respiderTime = "2017-07-20 00:00:00";
 
     @PostConstruct
     public void init() {
