@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 重新爬取joke(内涵段子)神评
@@ -22,6 +23,11 @@ public class Respider_NeiHanCommentTask {
     private JokeService jokeService;
     @Autowired
     private Environment env;
+
+    /**
+     * 判断重爬线程是否在运行中
+     */
+    private static AtomicBoolean isRun = new AtomicBoolean(false);
 
     private static String respiderTime = "2017-07-01 00:00:00";
 
@@ -50,19 +56,26 @@ public class Respider_NeiHanCommentTask {
      */
     @Scheduled(cron = "0 0 * * * ?")
     public void respider() {
-        new Thread(new RespiderThread()).start();
+        if (!isRun.get()) {
+            new Thread(new RespiderThread()).start();
+        } else {
+            logger.info("重爬线程还在运行中...");
+        }
     }
 
-    class RespiderThread implements Runnable{
+    class RespiderThread implements Runnable {
         @Override
         public void run() {
-           try{
-               logger.info("开始重爬joke(内涵段子)神评...");
-               jokeService.addJokeComment(respiderTime, 140, "neihan");
-               logger.info("重爬joke(内涵段子)神评结束");
-           }catch(Exception e){
-               logger.error("重爬joke(内涵段子)异常:" + e.getMessage(),e);
-           }
+            isRun.set(true);
+            try {
+                logger.info("开始重爬joke(内涵段子)神评...");
+                jokeService.addJokeComment(respiderTime, 140, "neihan");
+                logger.info("重爬joke(内涵段子)神评结束");
+            } catch (Exception e) {
+                logger.error("重爬joke(内涵段子)异常:" + e.getMessage(), e);
+            } finally {
+                isRun.set(false);
+            }
         }
     }
 }
