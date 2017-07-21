@@ -330,6 +330,23 @@ public class JokeService {
             //删除段子
             jedisCache.del(JedisKey.STRING_JOKE + id);      // 删除段子缓存
         }
+
+        //一并删除评论缓存
+        if (jokeIds.length > 0) {
+            for (int i = 0; i < jokeIds.length; i++) {
+                String commentkeys = JedisKey.JOKE_COMMENT_LIST + jokeIds[i];
+                String commentgodKeys = JedisKey.JOKE_GOD_COMMENT  + jokeIds[i];
+
+                List<Integer> mids = commentMapper.getCommentId(Integer.valueOf(jokeIds[i]));
+                if (!CollectionUtils.isEmpty(mids)) {
+                    for (Integer mid : mids) {
+                        jedisCache.zrem(commentkeys, String.valueOf(mid));
+                        jedisCache.zrem(commentgodKeys, String.valueOf(mid));
+                        jedisCache.del(JedisKey.STRING_COMMENT + String.valueOf(mid));
+                    }
+                }
+            }
+        }
     }
 
     public Joke getJokeById(Integer id){
@@ -1438,9 +1455,9 @@ public class JokeService {
             for (Joke joke : jokeList) {
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 }catch (Exception e){
-                    logger.error("重爬joke,停顿1秒/次异常"+e.getMessage(),e);
+                    logger.error("重爬joke,停顿2秒/次异常"+e.getMessage(),e);
                 }
 
                 logger.info("重爬joke神评论id：{}，src：{}", joke.getId(), joke.getSrc());
