@@ -19,17 +19,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class Respider_LaiCommentTask {
     private static final Logger logger = LoggerFactory.getLogger(Respider_LaiCommentTask.class);
-    @Autowired
-    private JokeService jokeService;
-    @Autowired
-    private Environment env;
-
     /**
      * 判断重爬线程是否在运行中
      */
     private static AtomicBoolean isRun = new AtomicBoolean(false);
-
     private static String respiderTime = "2017-07-20 00:00:00";
+    @Autowired
+    private JokeService jokeService;
+    @Autowired
+    private Environment env;
 
     @PostConstruct
     public void init() {
@@ -57,6 +55,7 @@ public class Respider_LaiCommentTask {
     @Scheduled(cron = "0 0 * * * ?")
     public void respider() {
         if (!isRun.get()) {
+            isRun.set(true);
             new Thread(new RespiderThread()).start();
         } else {
             logger.info("重爬线程还在运行中...");
@@ -67,7 +66,6 @@ public class Respider_LaiCommentTask {
     class RespiderThread implements Runnable{
         @Override
         public void run() {
-            isRun.set(true);
             try{
                 logger.info("开始重爬joke(来福岛)神评...");
                 jokeService.addJokeComment(respiderTime, 141, "laifudao");
