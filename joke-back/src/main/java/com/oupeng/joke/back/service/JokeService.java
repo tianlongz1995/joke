@@ -1445,7 +1445,7 @@ public class JokeService {
      * @param source_id
      * @param type
      */
-    public void addJokeComment(String dateTime, Integer source_id, String type) {
+    public void addJokeComment(final String dateTime, final Integer source_id, final String type) {
         Random random = new Random(3000);
 
         //获取要添加神评论的jokeList(每次取500条)
