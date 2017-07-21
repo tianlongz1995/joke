@@ -114,5 +114,10 @@ public interface CommentMapper {
     @Select("select id,good, sid as jokeId, content as bc, avata, nickname as nick from comment where sid = #{sid} order by good desc limit 1")
     Comment getMaxGoodCommentByJokeId(@Param("sid") Integer sid);
 
+    /**
+     * 根据sid获取Comment的id
+     */
+    @Select(value = "select id from comment where sid = #{sid}")
+    List<Integer> getCommentId(@Param("sid") Integer sid);
 
 }
