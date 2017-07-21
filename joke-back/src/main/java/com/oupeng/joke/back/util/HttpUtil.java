@@ -162,32 +162,25 @@ public class HttpUtil {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("重爬joke,连接["+requestUrl+"]异常"+e.getMessage(),e);
+			return null;
 		} finally {
 			// 释放资源
-			if (bufferedReader != null) {
-				try {
+			try {
+				if (bufferedReader != null) {
 					bufferedReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
-			}
-			if (inputStreamReader != null) {
-				try {
+				if (inputStreamReader != null) {
 					inputStreamReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
-			}
-			if (inputStream != null) {
-				try {
+				if (inputStream != null) {
 					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
-			}
-			if (httpUrlConn != null) {
-				httpUrlConn.disconnect();
+				if (httpUrlConn != null) {
+					httpUrlConn.disconnect();
+				}
+			} catch (IOException e) {
+				logger.error("重爬joke,关闭[" + requestUrl + "]连接异常" + e.getMessage(), e);
 			}
 		}
 		return buffer.toString();

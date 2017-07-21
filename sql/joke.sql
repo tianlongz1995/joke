@@ -464,4 +464,7 @@ CREATE TABLE `black_man` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--新增joke字段
+alter table joke add isrespider int(11) default 0 comment '是否已经重爬：0否，1是'
+
 
