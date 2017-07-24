@@ -31,7 +31,7 @@ public interface DistributorsMapper {
 	 * @param distributors
 	 * @return
 	 */
-	@Insert("insert into distributors(id, name, status, create_time, create_by) value(#{id}, #{name}, #{status}, now(), #{createBy})")
+	@Insert("insert into distributors(id, name, status, limit_number, create_time, create_by) value(#{id}, #{name}, #{status}, #{limit_number}, now(), #{createBy})")
 //	@SelectKey(statement="SELECT LAST_INSERT_ID() as id", keyProperty="id", before=false, resultType=Integer.class)
 	void add(Distributor distributors);
 
@@ -40,7 +40,7 @@ public interface DistributorsMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select id, name, status, create_time as createTime, update_time as updateTime, create_by as createBy, update_by as updateBy from distributors where id = #{id}")
+	@Select("select id, name, status, limit_number, create_time as createTime, update_time as updateTime, create_by as createBy, update_by as updateBy from distributors where id = #{id}")
 	Distributor getDistributors(Integer id);
 
 	/**
@@ -164,4 +164,10 @@ public interface DistributorsMapper {
      */
     @Select("select b.id, b.title, b.cid, db.sort, db.id as dbId from banner b left join distributors_banner db on b.id = db.b_id where db.d_id = #{did} and db.cid = #{cid} and b.status = 3 order by db.sort asc")
     List<Banner> getDistributorsBanners(@Param("did")Integer did, @Param("cid")Integer cid);
+
+	/**
+	 * 获取渠道的内容限制
+	 */
+	@Select("select limit_number from distributors where id = #{id}")
+	Integer getLimit(@Param("id")Integer id);
 }

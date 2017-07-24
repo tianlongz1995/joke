@@ -15,6 +15,11 @@ public class DistributorsConfig {
      * 广告信息
      */
     private Ads ads;
+    /**
+     * 渠道下|列表页显示的限制条数/页
+     */
+    private Integer limit;
+
 
     public DistributorsConfig() {
     }
@@ -33,5 +38,13 @@ public class DistributorsConfig {
 
     public void setAds(Ads ads) {
         this.ads = ads;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

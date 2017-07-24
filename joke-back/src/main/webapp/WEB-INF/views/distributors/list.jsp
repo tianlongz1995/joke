@@ -166,6 +166,11 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>列表页内容条数</th>
+                                    <td><input id="limit_number" name="limit_number" type="number" value="30" class="form-control"/>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>名称</th>
                                     <td><input id="addName" name="addName" type="text" class="form-control"
                                                placeholder="渠道名称"/>
@@ -361,6 +366,16 @@
                         $('#add').removeAttr("disabled");
                         return false;
                     }
+                    //渠道列表页限制数
+                    var limit_number = $("#limit_number").val();
+                    if(limit_number == ""){
+                        alert("列表页限制不能为空");
+                        return false;
+                    }
+                    if(limit_number%5 != 0){
+                        alert("列表页限制必须为5的倍数");
+                        return false;
+                    }
                     var id = document.getElementsByName('ads');
                     var adsValue = document.getElementsByName('adsValue');
                     var ads = '';
@@ -415,7 +430,7 @@
                         return false;
                     }
                     post('distributors/add',
-                        'id=' + did + '&name=' + name + '&status=' + status + '&channelIds=' + contentType.toString() + ads,
+                        'id=' + did + '&name=' + name + '&status=' + status + '&limit_number=' + limit_number + '&channelIds=' + contentType.toString() + ads,
                         function (data) {
                             if (data.status == 1) {
                                 location.href = '<%=basePath%>distributors/list?status=' + $("#status").val();

@@ -55,21 +55,28 @@
                                         <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             ID
                                         </div>
-                                        <div class="col-lg-3 col-sm-3">
+                                        <div class="col-lg-1 col-sm-2">
                                             <input id="distributorid" type="text" class="form-control input-sm"
                                                    disabled="disabled" value="${distributors.id}"/>
                                         </div>
                                         <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             名称
                                         </div>
-                                        <div class="col-lg-3 col-sm-3">
+                                        <div class="col-lg-2 col-sm-2">
                                             <input id="name" type="text" class="form-control input-sm"
                                                    value="${distributors.name}"/>
+                                        </div>
+                                        <div class="col-lg-2 col-sm-1" style="padding: 5px;text-align: right;">
+                                            列表页内容条数
+                                        </div>
+                                        <div class="col-lg-1 col-sm-2">
+                                            <input id="limit_number" type="number" class="form-control input-sm"
+                                                   value="${distributors.limit_number}"/>
                                         </div>
                                         <div class="col-lg-1 col-sm-1" style="padding: 5px;text-align: right;">
                                             状态
                                         </div>
-                                        <div class="col-lg-3 col-sm-3">
+                                        <div class="col-lg-2 col-sm-2">
                                             <select id="status" class="form-control input-sm">
                                                 <option value="0"
                                                         <c:if test="${0 == distributors.status}">selected</c:if>>下线
@@ -235,6 +242,19 @@
                         $('#updateDistributor').removeAttr("disabled");
                         return false;
                     }
+
+                    //渠道列表页限制数
+                    var limit_number = $("#limit_number").val();
+                    if(limit_number == "" || limit_number == "0" ){
+                        alert("列表页限制不能为空");
+                        return false;
+                    }
+                    if(limit_number%5 != 0){
+                        alert("列表页限制必须为5的倍数");
+                        return false;
+                    }
+
+
                     var id = document.getElementsByName('ads');
                     var adsValue = document.getElementsByName('adsValue');
                     var ads = '';
@@ -291,7 +311,7 @@
                     }
 
                     post('distributors/edit',
-                        'id=' + $("#distributorid").val() + '&name=' + name + '&status=' + status + '&channelIds=' + value.toString() + ads,
+                        'id=' + $("#distributorid").val() + '&name=' + name + '&status=' + status + '&limit_number=' + limit_number + '&channelIds=' + value.toString() + ads,
                         function (data) {
                             if (data.status == 1) {
                                 location.href = '<%=basePath%>distributors/list';

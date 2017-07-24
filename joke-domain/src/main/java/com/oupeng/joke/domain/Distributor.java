@@ -21,6 +21,12 @@ public class Distributor {
 	private Integer offset;
 	/**	当前页数	*/
 	private Integer pageSize;
+
+	/**
+	 * 渠道下|列表页显示的限制条数/页
+	 * @return
+	 */
+	private Integer limit_number;
 	
 	public Integer getId() {
 		return id;
@@ -84,5 +90,13 @@ public class Distributor {
 
 	public void setUpdateBy(String updateBy) {
 		this.updateBy = updateBy;
+	}
+
+	public Integer getLimit_number() {
+		return limit_number;
+	}
+
+	public void setLimit_number(Integer limit_number) {
+		this.limit_number = limit_number;
 	}
 }

@@ -47,12 +47,17 @@ public class DistributorsService {
 	 * @param username
 	 * @return
 	 */
-	public void add(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dm,Integer dms) {
-	    Distributor distributors = new Distributor();
+	public void add(Integer id, String name, Integer status, String username, Integer limit_number, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dm,Integer dms) {
+
+		if (limit_number == null) {
+			limit_number = 30;
+		}
+		Distributor distributors = new Distributor();
         distributors.setId(id);
         distributors.setName(name);
 		distributors.setStatus(status);
 		distributors.setCreateBy(username);
+		distributors.setLimit_number(limit_number);
 		distributorsMapper.add(distributors);
 		DistributorsConfig d = new DistributorsConfig();
 		List<Channels> channels;
@@ -66,6 +71,9 @@ public class DistributorsService {
 			channels = distributorsMapper.getDistributorChannels(distributors.getId());
 			d.setChannels(channels);
 		}
+		//渠道下|列表页显示的限制条数/页
+		d.setLimit(limit_number);
+
 		//		处理广告
 		if(distributors.getId() != null){
 			Ads ad = new Ads();
@@ -125,16 +133,21 @@ public class DistributorsService {
 	 * @param status
 	 * @param channelIds
 	 */
-	public void edit(Integer id, String name, Integer status, String username, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dr,Integer dm,Integer dms) {
+	public void edit(Integer id, String name, Integer status, String username, Integer limit_number, Integer[] channelIds, Integer s, Integer lc, Integer lb, Integer dt, Integer dc, Integer db, Integer di,Integer dr,Integer dm,Integer dms) {
+
+		if (limit_number == null) {
+			limit_number = 30;
+		}
 		Distributor distributors = new Distributor();
 		distributors.setId(id);
 		distributors.setName(name);
 		distributors.setStatus(status);
 		distributors.setUpdateBy(username);
+		distributors.setLimit_number(limit_number);
 		distributorsMapper.edit(distributors);
 		DistributorsConfig d = new DistributorsConfig();
 		List<Channels> channels;
-//		修改频道
+		//修改频道
 		int count = 0, length = 0;
 		if(channelIds != null && channelIds.length > 0){
 			count = distributorsMapper.deleteChannels(id);
@@ -145,8 +158,10 @@ public class DistributorsService {
 			channels = distributorsMapper.getDistributorChannels(distributors.getId());
 			d.setChannels(channels);
 		}
+		//渠道下|列表页显示的限制条数/页
+        d.setLimit(limit_number);
 
-//		处理广告
+		//处理广告
 		Ads ad = new Ads();
 		ad.setLc(lc);
 		ad.setLb(lb);
@@ -214,6 +229,8 @@ public class DistributorsService {
 				if(status == 1){ // 上线
 					DistributorsConfig d = new DistributorsConfig();
 					List<Channels> channels = distributorsMapper.getDistributorChannels(did);
+					Integer limit = distributorsMapper.getLimit(did);
+					d.setLimit(limit);
 					Ads ad = distributorsMapper.getAds(did);
 					d.setChannels(channels);
 					ad.setCreateBy(null);

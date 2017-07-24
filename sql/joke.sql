@@ -467,4 +467,7 @@ CREATE TABLE `black_man` (
 --新增joke字段
 alter table joke add isrespider int(11) default 0 comment '是否已经重爬：0否，1是'
 
+--新增distributors字段
+alter table distributors add limit_number int(11) default 30 comment '渠道下|列表页显示的限制条数/页'
+
 

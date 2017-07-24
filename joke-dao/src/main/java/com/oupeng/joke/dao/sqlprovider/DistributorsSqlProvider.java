@@ -50,6 +50,9 @@ public class DistributorsSqlProvider {
         if (StringUtils.isNotBlank(distributor.getName())) {
             sql.append(" name = ").append("'").append(distributor.getName()).append("',");
         }
+        if (distributor.getLimit_number() != null) {
+            sql.append(" limit_number = ").append(distributor.getLimit_number()).append(",");
+        }
         if (StringUtils.isNotBlank(distributor.getUpdateBy())) {
             sql.append(" update_by = ").append("'").append(distributor.getUpdateBy()).append("',");
         }

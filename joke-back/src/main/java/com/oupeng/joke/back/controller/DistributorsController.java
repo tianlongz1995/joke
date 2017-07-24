@@ -118,6 +118,7 @@ public class DistributorsController {
     public Result add(@RequestParam(value = "id") Integer id,
                       @RequestParam(value = "name") String name,
                       @RequestParam(value = "status") Integer status,
+                      @RequestParam(value = "limit_number", defaultValue = "30") Integer limit_number,
                       @RequestParam(value = "channelIds", required = false) Integer[] channelIds,
                       @RequestParam(value = "lc", required = false) Integer lc,
                       @RequestParam(value = "lb", required = false) Integer lb,
@@ -135,7 +136,7 @@ public class DistributorsController {
         if (distributorsService.exist(id)) {
             return new Failed("渠道编号已存在!");
         }
-        distributorsService.add(id, name, status, username, channelIds, s, lc, lb, dt, dc, db, di, dm, dms);
+        distributorsService.add(id, name, status, username, limit_number, channelIds, s, lc, lb, dt, dc, db, di, dm, dms);
         return new Success();
     }
 
@@ -236,6 +237,7 @@ public class DistributorsController {
     public Result edit(@RequestParam(value = "id") Integer id,
                        @RequestParam(value = "status") Integer status,
                        @RequestParam(value = "name", required = false) String name,
+                       @RequestParam(value = "limit_number", defaultValue = "30") Integer limit_number,
                        @RequestParam(value = "channelIds", required = false) Integer[] channelIds,
                        @RequestParam(value = "lc", required = false) Integer lc,
                        @RequestParam(value = "lb", required = false) Integer lb,
@@ -251,7 +253,7 @@ public class DistributorsController {
         if (username == null) {
             return new Failed("登录信息失效,请重新登录!");
         }
-        distributorsService.edit(id, name, status, username, channelIds, s, lc, lb, dt, dc, db, di, dr, dm, dms);
+        distributorsService.edit(id, name, status, username, limit_number, channelIds, s, lc, lb, dt, dc, db, di, dr, dm, dms);
         return new Success();
     }
 
