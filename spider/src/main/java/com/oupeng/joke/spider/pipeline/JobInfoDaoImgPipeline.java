@@ -34,9 +34,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
     private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
     //无效字符串
-    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;","\\uD83C\\uDF83"};
+    private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;","\\uD83C\\uDF83","\uD83D\uDC2D"};
     //替换字符串
-    private static final String[] REPLACE = {"", "", "", "", "", "", "",""};
+    private static final String[] REPLACE = {"", "", "", "", "", "", "", "", ""};
     private static String PROTOCOL = "http:";
     private Random random = new Random(3000);
     private String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
@@ -79,7 +79,9 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
         logger.info("图片 - 当前抓取页数:{}", count);
         if (count > maxCrawlPage) {
             ((OOSpider) task).stop();
+            ((OOSpider) task).close();
             logger.info("图片 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, count);
+            return;
         }
         jokeImg.setSrc(processProtocol(jokeImg.getSrc()));
         if (!urlFilter.contains(jokeImg.getSrc())) {
@@ -92,6 +94,12 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     jokeImg.setType(2);
                 } else {
                     jokeImg.setType(1);
+                }
+                //标题去特殊字符
+                String title = jokeImg.getTitle();
+                if (title != null) {
+                    title = StringUtils.replaceEach(title, SEARCH, REPLACE);
+                    jokeImg.setTitle(title);
                 }
                 jokeImg.setImg(imgurl);
                 jokeImg.setWidth(img.getWidth());
