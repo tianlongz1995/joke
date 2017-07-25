@@ -1,7 +1,10 @@
 package com.oupeng.joke.spider.pipeline;
 
 import com.alibaba.fastjson.JSON;
-import com.oupeng.joke.spider.domain.*;
+import com.oupeng.joke.spider.domain.CommentT;
+import com.oupeng.joke.spider.domain.Joke;
+import com.oupeng.joke.spider.domain.JokeText;
+import com.oupeng.joke.spider.domain.User;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.producer.KafkaProducer;
 import com.oupeng.joke.spider.service.URLBloomFilterService;
@@ -12,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
+import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;
-
+import us.codecraft.webmagic.pipeline.Pipeline;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -24,12 +27,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by xiongyingl on 2017/6/16.
  */
-@Component("JobInfoDaoPipeline")
-public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
+@Component("TextProcessorPipeline")
+public class TextProcessorPipeline implements Pipeline {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoPipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextProcessorPipeline.class);
 
     //无效字符串
     private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;"};
@@ -42,13 +44,10 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
 
     @Autowired
     private UserDao userDao;
-
     @Autowired
     private URLBloomFilterService urlBloomFilterService;
-
     @Autowired
     private Environment env;
-
     @Autowired
     private KafkaProducer kafkaProducer;
 
@@ -69,15 +68,20 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
     }
 
     @Override
-    public void process(JokeText jokeText, Task task) {
+    public void process(ResultItems resultItems, Task task) {
         long pageCount = ((Spider) task).getPageCount();
         logger.info("段子 - 当前抓取页数:{}", pageCount);
         if (pageCount > maxCrawlPage) {
             ((Spider) task).stop();
-            ((Spider) task).close();
             logger.info("段子 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, pageCount);
             return;
         }
+        //获取数据(跳过列表页)
+        JokeText jokeText = resultItems.get("jokeText");
+        if (jokeText == null) {
+            return;
+        }
+
         //过滤无效字符
         String cont = StringUtils.replaceEach(jokeText.getContent(), SEARCH, REPLACE);
         cont = StringUtil.removeSpecial(cont);
@@ -93,7 +97,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
             if (title != null) {
                 title = StringUtils.replaceEach(title, SEARCH, REPLACE);
                 title = StringUtil.removeSpecial(title);
-               joke.setTitle(title);
+                joke.setTitle(title);
             }
             joke.setSource_id(jokeText.getSourceId());
             joke.setContent(cont);
@@ -126,7 +130,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                 for (int i = 0; i < jokeText.getCommentNumber(); i++) {
 
                     Integer god = Integer.valueOf(String.valueOf(jokeText.getHotGoods().get(i)));
-                    if(god == null){
+                    if (god == null) {
                         god = 0;
                     }
                     String content = jokeText.getHotContents().get(i);
@@ -140,7 +144,7 @@ public class JobInfoDaoPipeline implements PageModelPipeline<JokeText> {
                     content = StringUtil.removeSpecial(content);
                     //字数小于txtLength
                     isLessLimit = content.length() > txtLimitLength ? true : false;
-                    if(isLessLimit){
+                    if (isLessLimit) {
                         continue;
                     }
 

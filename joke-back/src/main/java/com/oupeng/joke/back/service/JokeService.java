@@ -1371,11 +1371,12 @@ public class JokeService {
                         }
                         //过滤无效字符
                         content = StringUtils.replaceEach(content, SEARCH, REPLACE);
-                        if (content.length() > txtLimitLength) {
+                        String content0 = StringUtil.removeSpecial(content);
+                        if (content0.length() > txtLimitLength) {
                             continue;
                         }
 
-                        hotContents.add(content);
+                        hotContents.add(content0);
                         hotGoods.add(Integer.valueOf(good));
                     }
                 }
@@ -1423,6 +1424,7 @@ public class JokeService {
                         }
                         //过滤无效字符
                         content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                        content = StringUtil.removeSpecial(content);
                         if (content.length() > txtLimitLength) {
                             continue;
                         }
@@ -1448,7 +1450,7 @@ public class JokeService {
     public void addJokeComment(final String dateTime, final Integer source_id, final String type) {
         Random random = new Random(3000);
 
-        //获取要添加神评论的jokeList(每次取500条)
+        //获取要添加神评论的jokeList(每次取800条)
         List<Joke> jokeList = jokeMapper.getJokebeforeTime(dateTime, source_id);
 
         if (!CollectionUtils.isEmpty(jokeList)) {

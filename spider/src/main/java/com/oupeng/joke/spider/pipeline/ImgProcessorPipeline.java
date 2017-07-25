@@ -8,7 +8,6 @@ import com.oupeng.joke.spider.mapper.CommentDao;
 import com.oupeng.joke.spider.mapper.JobInfoDao;
 import com.oupeng.joke.spider.mapper.UserDao;
 import com.oupeng.joke.spider.service.HandleImage;
-import com.oupeng.joke.spider.service.ImgBloomFilterService;
 import com.oupeng.joke.spider.service.URLBloomFilterService;
 import com.oupeng.joke.spider.utils.StringUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -18,22 +17,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import us.codecraft.webmagic.ResultItems;
+import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.Task;
-import us.codecraft.webmagic.model.OOSpider;
-import us.codecraft.webmagic.pipeline.PageModelPipeline;
+import us.codecraft.webmagic.pipeline.Pipeline;
 
 import javax.annotation.PostConstruct;
 import java.util.Random;
 
 /**
- * Created by xiongyingl on 2017/6/14.
  */
+@Component("ImgProcessorPipeline")
+public class ImgProcessorPipeline implements Pipeline {
 
+    private static final Logger logger = LoggerFactory.getLogger(ImgProcessorPipeline.class);
 
-@Component("JobInfoDaoImgPipeline")
-public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobInfoDaoImgPipeline.class);
     //无效字符串
     private static final String[] SEARCH = {"　", "&quot;", "&rdquo;", "<br />", "\n", "&hellip;", "&middot;"};
     //替换字符串
@@ -53,11 +51,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     @Autowired
     private HandleImage handleImage;
     @Autowired
-    private ImgBloomFilterService imgFilter;
-    @Autowired
     private URLBloomFilterService urlFilter;
-
-
     @Autowired
     private Environment env;
 
@@ -74,16 +68,21 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
     }
 
     @Override
-    public void process(JokeImg jokeImg, Task task) {
+    public void process(ResultItems resultItems, Task task) {
 
-        Long count = ((OOSpider) task).getPageCount();
+        Long count = ((Spider) task).getPageCount();
         logger.info("图片 - 当前抓取页数:{}", count);
         if (count > maxCrawlPage) {
-            ((OOSpider) task).stop();
-            ((OOSpider) task).close();
+            ((Spider) task).stop();
             logger.info("图片 - 最大抓取总页数:{} , 当前抓取总页数:{}", maxCrawlPage, count);
             return;
         }
+        //获取信息(跳过列表页)
+        JokeImg jokeImg = resultItems.get("jokeImg");
+        if (jokeImg == null) {
+            return;
+        }
+
         jokeImg.setSrc(processProtocol(jokeImg.getSrc()));
         if (!urlFilter.contains(jokeImg.getSrc())) {
             //处理图片
@@ -149,8 +148,8 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                     int godNum = 0; //记录有效的神评数
                     for (int i = 0; i < jokeImg.getCommentNumber(); i++) {
 
-                        Integer  god = Integer.valueOf(String.valueOf(jokeImg.getHotGoods().get(i)));
-                        if(god == null){
+                        Integer god = Integer.valueOf(String.valueOf(jokeImg.getHotGoods().get(i)));
+                        if (god == null) {
                             god = 0;
                         }
                         String content = jokeImg.getHotContents().get(i);
@@ -164,7 +163,7 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
                         content = StringUtil.removeSpecial(content);
                         //字数小于txtLength
                         boolean isLessLimit = content.length() > txtLimitLength ? true : false;
-                        if(isLessLimit){
+                        if (isLessLimit) {
                             continue;
                         }
 
@@ -216,11 +215,12 @@ public class JobInfoDaoImgPipeline implements PageModelPipeline<JokeImg> {
 
     /**
      * 解决自适应url地址的问题
+     *
      * @param src
      * @return
      */
     private String processProtocol(String src) {
-        if(src.startsWith("//")){
+        if (src.startsWith("//")) {
             return PROTOCOL + src;
         }
         return src;

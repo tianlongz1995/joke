@@ -601,7 +601,7 @@ public interface JokeMapper {
      * @param source_id
      * @return
      */
-    @Select(" select id, status, source_id as sourceId, src, comment_number as commentNumber, comment as commentContent, avata, nick from joke where source_id = #{source_id} and create_time < #{time} and status = 0 and isrespider = 0 order by id limit 500")
+    @Select(" select id, status, source_id as sourceId, src, comment_number as commentNumber, comment as commentContent, avata, nick from joke where source_id = #{source_id} and create_time < #{time} and status = 0 and isrespider = 0 order by id limit 800")
     List<Joke> getJokebeforeTime(@Param("time") String time, @Param("source_id") Integer source_id);
 
     /**

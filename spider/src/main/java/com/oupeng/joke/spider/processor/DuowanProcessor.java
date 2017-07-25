@@ -9,10 +9,10 @@ import us.codecraft.webmagic.processor.PageProcessor;
 /**
  * Created by pengzheng on 17-6-19.
  */
-public class AngularJSProcessor implements PageProcessor {
+public class DuowanProcessor implements PageProcessor {
 
     //打印日志
-    private static final Logger logger = LoggerFactory.getLogger(AngularJSProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DuowanProcessor.class);
     private static final String LIST_URL = "http://tu.duowan.com/m/bxgif.*";
     private static final String ARITICALE_URL = "http://tu.duowan.com/gallery/\\d+.html";
     //设置抓取网站的相关配置

@@ -1,7 +1,7 @@
 package com.oupeng.joke.spider.task;
 
-import com.oupeng.joke.spider.domain.neihan.JokeImgNeiHanJS;
-import com.oupeng.joke.spider.domain.neihan.JokeTextNeihan;
+import com.oupeng.joke.spider.processor.NeihanImgProcessor;
+import com.oupeng.joke.spider.processor.NeihanTextProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +11,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.model.OOSpider;
-import us.codecraft.webmagic.pipeline.PageModelPipeline;
+import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.Pipeline;
+import us.codecraft.webmagic.processor.PageProcessor;
 
 import javax.annotation.PostConstruct;
 
 /**
- * Created by xiongyingl on 2017/6/14.
  */
 @Component
 public class SpiderTask_NeiHan {
@@ -37,13 +37,13 @@ public class SpiderTask_NeiHan {
             .setUserAgent("Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）");
 
 
-    @Qualifier("JobInfoDaoImgPipeline")
+    @Qualifier("ImgProcessorPipeline")
     @Autowired
-    private PageModelPipeline JobInfoDaoImgPipeline;
+    private Pipeline ImgProcessorPipeline;
 
-    @Qualifier("JobInfoDaoPipeline")
+    @Qualifier("TextProcessorPipeline")
     @Autowired
-    private PageModelPipeline JobInfoDaoPipeline;
+    private Pipeline TextProcessorPipeline;
 
 
     @PostConstruct
@@ -63,9 +63,7 @@ public class SpiderTask_NeiHan {
         } else {
             logger.info("neihan.spider.run:{}", isRun);
         }
-
     }
-
 
     /**
      * neihan
@@ -73,19 +71,18 @@ public class SpiderTask_NeiHan {
     @Scheduled(cron = "0 0 4 * * ?")
     public void spider() {
         logger.info("neihan spider text...");
-        crawl(JobInfoDaoPipeline, JokeTextNeihan.class, textUrl);
+        crawl(new NeihanTextProcessor(), textUrl, TextProcessorPipeline);
 
         logger.info("neihan spider image...");
-        crawl(JobInfoDaoImgPipeline, JokeImgNeiHanJS.class, imgUrl);
+        crawl(new NeihanImgProcessor(), imgUrl, ImgProcessorPipeline);
     }
 
-    private void crawl(PageModelPipeline line, Class c, String url) {
-
-        OOSpider.create(site, line, c)
+    private void crawl(PageProcessor pageProcessor, String url, Pipeline pipeline) {
+        Spider.create(pageProcessor)
                 .addUrl(url)
+                .addPipeline(pipeline)
                 .thread(1)
-                .start();
-
+                .run();
     }
 
 }

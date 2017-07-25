@@ -63,6 +63,7 @@ public class HttpComment {
 
                     //过滤无效字符
                     content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                    content = StringUtil.removeSpecial(content);
                     if (content.length() > txtLimitLength) {
                         continue;
                     }

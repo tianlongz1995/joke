@@ -1,25 +1,9 @@
-package com.oupeng.joke.spider.utils;
+package com.oupeng.joke.back.util;
 
 /**
  * Created by java_zong on 2017/4/12.
  */
 public class StringUtil {
-    /**
-     * 切字符串
-     * @param str
-     * @param separator
-     * @return
-     */
-    public static String substringAfter(String str, String separator) {
-        if (str == null || str.length() <= 0) {
-            return str;
-        } else if (separator == null) {
-            return "";
-        } else {
-            int pos = str.indexOf(separator);
-            return pos == -1 ? str : str.substring(pos + separator.length());
-        }
-    }
 
     //中文标点符号unicode码
     public static final String[] chinesePunctuation = {"3002","FF1F","FF01","FF0C","3001","FF1B","FF1A","2018","2019","201C","201D","FF08",
