@@ -38,7 +38,7 @@ public class TextProcessorPipeline implements Pipeline {
     //替换字符串
     private static final String[] REPLACE = {"", "", "", "", "", "", ""};
     private Random random = new Random(3000);
-    private String avataStr = "http://joke2.oupeng.com/comment/images/%d.png";
+    private String avataStr = "http://joke2-img.oupeng.com/1/%d.png";
     private int maxCrawlPage = 300;
     private int txtLimitLength = 200;
 
