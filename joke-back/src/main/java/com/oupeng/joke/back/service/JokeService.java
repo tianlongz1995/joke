@@ -1314,18 +1314,19 @@ public class JokeService {
     public Map<String, List> getMap(String pageURL, String type) {
 
         Map<String, List> map = new HashMap<>();
-        //内涵段子pageURL神评 did:140 2017-07-01历史数据
         if (type.equals("neihan")) {
+
+            //内涵段子pageURL神评 did:140
             String str = pageURL.substring("http://m.neihanshequ.com/share/group/".length(), pageURL.indexOf("/?"));
             String jsonURL = "http://m.neihanshequ.com/api/get_essay_comments/?app_name=neihanshequ_web&group_id=" + str + "&offset=0";
             map = HttpComment.getNeiHanGodMsg(jsonURL);
-        }
-        //遨游哈哈pageURL神评
-        else if (type.equals("hhmx")) {
+        } else if (type.equals("hhmx")) {
+
+            //遨游哈哈pageURL神评
             map = HttpComment.getHHmxMsg(pageURL);
-        }
-        //来福岛pageURL神评
-        else if(type.equals("laifudao")){
+        } else if (type.equals("laifudao")) {
+
+            //来福岛pageURL神评
             List<Integer> hotGoods = new ArrayList<Integer>();
             List<String> hotContents = new ArrayList<String>();
 
@@ -1376,9 +1377,9 @@ public class JokeService {
             }
             map.put("hotGoods", hotGoods);
             map.put("hotContents", hotContents);
-        }
-        //糗事百科pageURL神评
-        else if(type.equals("qiushibaike")){
+        } else if (type.equals("qiushibaike")) {
+
+            //糗事百科pageURL神评
             List<Integer> hotGoods = new ArrayList<Integer>();
             List<String> hotContents = new ArrayList<String>();
 
