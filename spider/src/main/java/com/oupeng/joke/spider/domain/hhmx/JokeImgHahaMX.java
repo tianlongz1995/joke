@@ -1,6 +1,8 @@
 package com.oupeng.joke.spider.domain.hhmx;
 
 import com.oupeng.joke.spider.domain.JokeImg;
+import com.oupeng.joke.spider.utils.HttpUtil;
+import org.springframework.util.CollectionUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
@@ -8,6 +10,7 @@ import us.codecraft.webmagic.model.annotation.HelpUrl;
 import us.codecraft.webmagic.model.annotation.TargetUrl;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -114,6 +117,18 @@ public class JokeImgHahaMX extends JokeImg implements AfterExtractor{
     @Override
     public void afterProcess(Page page) {
 
+        String pageURL = page.getUrl().toString();
+        this.setSrc(pageURL);
+
+        //POST抓取神评
+        Map<String, List> map = HttpUtil.getHHmxMsg(pageURL);
+        if (!CollectionUtils.isEmpty(map) && !CollectionUtils.isEmpty(map.get("hotGoods")) && !CollectionUtils.isEmpty(map.get("hotContents"))) {
+            this.setHotGoods(map.get("hotGoods"));
+            this.setHotContents(map.get("hotContents"));
+            this.setCommentNumber(this.getHotGoods().size());
+        } else {
+            this.setCommentNumber(0);
+        }
     }
 
 }

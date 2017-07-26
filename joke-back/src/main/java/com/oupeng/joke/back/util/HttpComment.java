@@ -92,4 +92,55 @@ public class HttpComment {
             }
         }
     }
+
+    /**
+     * 根据遨游哈哈URL,返回神评评论
+     */
+    public static Map<String, List> getHHmxMsg(String pageURL) {
+
+        Map<String, List> map = new HashMap<String, List>();
+        try {
+            String str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length());
+            String url = "http://www.haha.mx/front_api.php?r=get_comments";
+            String params = "jid="+str+"&page=1&offset=10&order=light";
+
+            String cont = HttpUtil.httpPost(url, params);
+            JSONObject jsonObject = new JSONObject().parseObject(cont.trim());
+            JSONArray jsonArray = jsonObject.getJSONArray("comments");
+
+            List<Integer> hotGoods = new ArrayList<Integer>();
+            List<String> hotContents = new ArrayList<String>();
+            if (!CollectionUtils.isEmpty(jsonArray)) {
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONArray array = jsonArray.getJSONArray(i);
+                    JSONObject obj = array.getJSONObject(0);
+
+                    String good = obj.getString("light");
+                    String content = obj.getString("content");
+
+                    if (good == null || good.length() < 1 || Integer.valueOf(good) <= 10 || content == null || content.length() < 1) {
+                        continue;
+                    }
+
+                    //过滤无效字符
+                    content = StringUtils.replaceEach(content, SEARCH, REPLACE);
+                    content = StringUtil.removeSpecial(content);
+                    if (content.length() > txtLimitLength) {
+                        continue;
+                    }
+
+                    hotGoods.add(Integer.valueOf(good));
+                    hotContents.add(content);
+                }
+            }
+            map.put("hotGoods", hotGoods);
+            map.put("hotContents", hotContents);
+
+        }catch (Exception e){
+            logger.error("重爬joke神评,连接["+pageURL+"]异常"+e.getMessage(),e);
+            return null;
+        }
+        return map;
+    }
+
 }

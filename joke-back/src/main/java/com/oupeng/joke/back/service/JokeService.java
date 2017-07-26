@@ -1320,24 +1320,17 @@ public class JokeService {
             String jsonURL = "http://m.neihanshequ.com/api/get_essay_comments/?app_name=neihanshequ_web&group_id=" + str + "&offset=0";
             map = HttpComment.getNeiHanGodMsg(jsonURL);
         }
-//        //遨游哈哈pageURL神评
-//        else if (type.equals("hhmx")) {
-//            String str;
-//            if (pageURL.endsWith("/")) {
-//                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length() - 1);
-//            } else {
-//                str = pageURL.substring("http://www.haha.mx/joke/".length(), pageURL.length());
-//            }
-//            String jsonURL = "http://www.haha.mx/mobile_read_api.php?r=mobile_comment&jid=" + str + "&page=1&offset=10&order=light";
-//            map = HttpComment.getHHMXGodMsg(jsonURL);
-//        }
+        //遨游哈哈pageURL神评
+        else if (type.equals("hhmx")) {
+            map = HttpComment.getHHmxMsg(pageURL);
+        }
         //来福岛pageURL神评
         else if(type.equals("laifudao")){
             List<Integer> hotGoods = new ArrayList<Integer>();
             List<String> hotContents = new ArrayList<String>();
 
             //获得页面html
-            String pageHtml = HttpUtil.httpRequest(pageURL);
+            String pageHtml = HttpUtil.httpGet(pageURL);
 
             // 取出有用的范围
             Pattern p0 = Pattern.compile("(<section class=\"post-comments general-comments\">)(.*?)(</section>)");
@@ -1390,7 +1383,7 @@ public class JokeService {
             List<String> hotContents = new ArrayList<String>();
 
             //获得页面html
-            String pageHtml = HttpUtil.httpRequest(pageURL);
+            String pageHtml = HttpUtil.httpGet(pageURL);
 
             // 取出有用的范围
             Pattern p0 = Pattern.compile("(<article class=\"hotCmt\" id='godCmt'>)(.*?)(</article>)");

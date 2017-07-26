@@ -73,8 +73,8 @@ public class SpiderTask_HhMx {
     public void spiderHhMx() {
         logger.info("hahaMX spider image...");
         crawl(jobInfoDaoImgPipeline, JokeImgHahaMX.class, imgUrlHhMx);
-        logger.info("hahaMX spider text...");
-        crawl(jobInfoDaoPipeline, JokeTextHahaMX.class, textUrlHhMx);
+//        logger.info("hahaMX spider text...");
+//        crawl(jobInfoDaoPipeline, JokeTextHahaMX.class, textUrlHhMx);
     }
 
     private void crawl(PageModelPipeline line, Class c, String url) {

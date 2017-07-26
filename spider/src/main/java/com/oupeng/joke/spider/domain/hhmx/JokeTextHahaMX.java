@@ -129,9 +129,22 @@ public class JokeTextHahaMX extends JokeText implements AfterExtractor {
 
     @Override
     public void afterProcess(Page page) {
-        content = StringUtil.substringAfter(content, "　");
-        if (img != null || textImg != null) {
+        this.setContent(content.trim());
+        if (img != null || textImg != null || content.length() == 0) {
             page.setSkip(true);
+        }
+
+        String pageURL = page.getUrl().toString();
+        this.setSrc(pageURL);
+
+        //POST抓取神评
+        Map<String, List> map = HttpUtil.getHHmxMsg(pageURL);
+        if (!CollectionUtils.isEmpty(map) && !CollectionUtils.isEmpty(map.get("hotGoods")) && !CollectionUtils.isEmpty(map.get("hotContents"))) {
+            this.setHotGoods(map.get("hotGoods"));
+            this.setHotContents(map.get("hotContents"));
+            this.setCommentNumber(this.getHotGoods().size());
+        } else {
+            this.setCommentNumber(0);
         }
     }
 }
