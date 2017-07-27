@@ -130,9 +130,9 @@ public class Im4JavaUtils {
             bufferedImage = ImageIO.read(file);
             return new int[]{bufferedImage.getWidth(), bufferedImage.getHeight()};
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("获得图片宽度 高度异常" + e.getMessage(), e);
+            return null;
         }
-        return null;
     }
 
     /**

@@ -87,6 +87,9 @@ public class ImgProcessorPipeline implements Pipeline {
         if (!urlFilter.contains(jokeImg.getSrc())) {
             //处理图片
             ImageDto img = handleImage.downloadImg(jokeImg.getImg());
+            if (img == null) {
+                return;
+            }
             String imgurl = img.getImgUrl();
             if (StringUtils.isNotBlank(imgurl)) {
                 if (img.getImgType() != null && img.getImgType().equals("gif")) {

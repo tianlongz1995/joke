@@ -57,12 +57,12 @@ public class HandleImage {
 
                 if (picFormat.equals("gif")) {
                     result = "gif";
-                } else {
+                } else if (picFormat.equals("jpg") || picFormat.equals("jpeg") || picFormat.equals("png")) {
                     result = "jpg";
                 }
             }
         } catch (Exception e) {
-            logger.error("getPicFormat failed ", e);
+            logger.error("getPicFormat failed " + e.getMessage(), e);
             return null;
         } finally {
             //关闭所有链接
@@ -71,7 +71,8 @@ public class HandleImage {
                     iis.close();
                 }
             } catch (IOException e) {
-                logger.error("getPicFormat iis close failed ", e);
+                logger.error("getPicFormat iis close failed " + e.getMessage(), e);
+                return null;
             }
         }
         return result;
@@ -116,13 +117,14 @@ public class HandleImage {
 
             //  判断图片的格式
             String result = getPicFormat(imgUrl);
+            if (result == null) {
+                return null;
+            }
             if (result.equals("gif")) {
                 imgType = "gif";
                 isGif = true;
             } else if (result.equals("jpg")) {
                 imgType = "jpg";
-            } else {
-                return null;
             }
             image.setImgType(imgType);
 
@@ -144,8 +146,8 @@ public class HandleImage {
             }
 
         } catch (Exception e) {
-            logger.error("download image failed ", e);
-            return image;
+            logger.error("download image failed "+e.getMessage(), e);
+            return null;
         } finally {
             //关闭所有链接
             try {
@@ -154,13 +156,17 @@ public class HandleImage {
                     os.close();
                 }
             } catch (IOException e) {
-                logger.error("download image failed ", e);
+                logger.error("download image关闭链接异常"+e.getMessage(), e);
             }
         }
 
         String cdnUrl = cdnImagePath + random + "/" + newFileName;
 
         int[] widthHeight = Im4JavaUtils.getWidthHeight(cdnUrl);
+        if (widthHeight == null) {
+            return null;
+        }
+
 //        //图片宽和高 取原图75%
 //        Double width = widthHeight[0] * 0.75;
 //       int wid = width.intValue();
