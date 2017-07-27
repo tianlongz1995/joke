@@ -38,17 +38,26 @@ public class StringUtil {
 
     /**
      * 去掉字符串中的特殊字符
-     * 键盘有效字符:[32,126] 汉字字符:[19968,40869] 中文标点符号:chinesePunctuation[]
+     * 键盘普通字符:[32,126] 汉字字符:[19968,40869] 中文标点符号:chinesePunctuation[]
+     *
+     * 三个特殊英文字符：用空格代替
+     * \ 反斜线(ASCII 92)。用‘\\’表示该字符。
+     * ' 单引号(ASCII 39)。用‘\'’表示该字符。
+     * " 双引号(ASCII 34)。用‘\"’表示该字符。
+     *
      */
     public static String removeSpecial(String str) {
         char[] chars = str.toCharArray();
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == 92 || chars[i] == 39 || chars[i] == 34) {
+                buf.append(" ");
+                continue;
+            }
             if ((chars[i] >= 32 && chars[i] <= 126) || (chars[i] >= 19968 && chars[i] <= 40869) || ispunc(chars[i])) {
                 buf.append(chars[i]);
             }
         }
         return buf.toString();
     }
-
 }
