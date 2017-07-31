@@ -1,8 +1,6 @@
 package com.oupeng.joke.spider.domain.laifudao;
 
 import com.oupeng.joke.spider.domain.JokeText;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.model.AfterExtractor;
