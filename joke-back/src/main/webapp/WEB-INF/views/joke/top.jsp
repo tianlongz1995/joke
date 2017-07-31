@@ -152,8 +152,8 @@
                                 <tbody>
                                 <c:forEach items="${list}" var="joke">
                                     <tr>
-                                        <td style="text-align: center; vertical-align: middle;">
-                                            <input type="checkbox" name="jokeId" value="${joke.id}"
+                                        <td style="text-align: center; vertical-align: middle;" onclick="ckd('${joke.id}')">
+                                            <input type="checkbox" name="jokeId" id="ckd${joke.id}" value="${joke.id}"
                                                    sort="${joke.sort}"/>
                                         </td>
                                         <td>
@@ -171,15 +171,15 @@
                                                 </c:if>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                             <c:if test="${joke.type == 0}">文字</c:if>
                                             <c:if test="${joke.type == 1}">图片</c:if>
                                             <c:if test="${joke.type == 2}">动图</c:if>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                                 ${joke.sourceName}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                             <c:if test="${!empty joke.releaseTime}">
                                                 ${joke.releaseTime}
                                             </c:if>
@@ -310,6 +310,20 @@
                 }, function () {
                     $("#showPic").css('display', 'none');
                 });
+
+
+                //阻止checkbox事件冒泡
+                $("input[type='checkbox']").click(function(e){
+                    e.stopPropagation();
+                });
+                function ckd(id) {
+                    var isChecked = $("#" + "ckd" + id).is(":checked");
+                    if (isChecked) {
+                        $("#" + "ckd" + id).removeAttr("checked");
+                    } else {
+                        $("#" + "ckd" + id).prop("checked", "checked");
+                    }
+                }
 
                 /** 全选   */
                 $('#allcheck').on('click', function () {

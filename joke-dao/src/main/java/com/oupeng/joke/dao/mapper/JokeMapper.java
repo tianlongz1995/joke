@@ -64,8 +64,15 @@ public interface JokeMapper {
     int updateJoke(Joke joke);
 
 
-    @Select(value = "select type,count(1) as num from joke where DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() "
-            + " and status = 1 and verify_user =#{user} group by type ")
+    /**
+     * 统计已审核的段子数量(不包含置顶段子)
+     * @param user
+     * @return
+     */
+    @Select(value = "select type,count(1) as num from joke where "// DATE_FORMAT(verify_time,'%y-%m-%d') = CURDATE() and"
+            + "status = 1 and audit != 6 "
+            //+ "and verify_user =#{user}"
+            +" group by type ")
     List<JokeVerifyInfo> getJokeVerifyInfoByUser(@Param(value = "user") String user);
 
     /**
@@ -563,7 +570,11 @@ public interface JokeMapper {
      * @param user
      * @return
      */
-    @Select("select j.type, count(j.id) as num from joke j right join joke_top jt on j.id=jt.jid where DATE_FORMAT(j.verify_time,'%y-%m-%d') = CURDATE() and j.audit = 6 and j.verify_user = #{user} and jt.status = 0 group by j.type")
+    @Select("select j.type, count(j.id) as num from joke j right join joke_top jt on j.id=jt.jid where "
+           // + "DATE_FORMAT(j.verify_time,'%y-%m-%d') = CURDATE() and "
+            + " j.audit = 6 "
+           //+ " and j.verify_user = #{user} "
+            + " and jt.status = 0 group by j.type")
     List<JokeVerifyInfo> getJokeTopVerifyInfoByUser(@Param("user") String user);
 
     /**

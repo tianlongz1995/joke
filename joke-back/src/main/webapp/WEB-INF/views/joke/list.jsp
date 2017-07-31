@@ -197,8 +197,8 @@
                                 <tbody>
                                 <c:forEach items="${list}" var="joke">
                                     <tr>
-                                        <td style="text-align: center; vertical-align: middle;">
-                                            <input type="checkbox" name="jokeId" value="${joke.id}"/>
+                                        <td style="text-align: center; vertical-align: middle;" onclick="ckd('${joke.id}')">
+                                            <input type="checkbox" name="jokeId" id="ckd${joke.id}" value="${joke.id}"/>
                                         </td>
                                         <td>
                                             <div class="table-item" style="margin: 0px;padding: 0px;width: 100%;height: 100%;top:0px;bottom:0px;min-width: 100%;min-height: 50px;"
@@ -214,21 +214,21 @@
                                                 </c:if>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                             <c:if test="${joke.type == 0}">文字</c:if>
                                             <c:if test="${joke.type == 1}">图片</c:if>
                                             <c:if test="${joke.type == 2}">动图</c:if>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                                 ${joke.sourceName}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                             <fmt:formatDate value="${joke.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                                 ${joke.weight}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${joke.id}')">
                                                 ${joke.replyNum}
                                         </td>
                                         <td>
@@ -340,6 +340,19 @@
                         $(":checkbox").prop("checked", false);
                     }
                 });
+
+                //阻止checkbox事件冒泡
+                $("input[type='checkbox']").click(function(e){
+                    e.stopPropagation();
+                });
+                function ckd(id) {
+                    var isChecked = $("#" + "ckd" + id).is(":checked");
+                    if (isChecked) {
+                        $("#" + "ckd" + id).removeAttr("checked");
+                    } else {
+                        $("#" + "ckd" + id).prop("checked", "checked");
+                    }
+                }
 
                 function verifyJoke(status, id) {
                     if ("batch" == id) {

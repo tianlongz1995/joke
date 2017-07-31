@@ -127,21 +127,21 @@
                                 <tbody>
                                 <c:forEach items="${list}" var="comment">
                                     <tr>
-                                        <td style="text-align: center; vertical-align: middle;">
-                                            <input type="checkbox" name="commentId" value="${comment.id}"/>
+                                        <td style="text-align: center; vertical-align: middle;" onclick="ckd('${comment.id}')">
+                                            <input type="checkbox" name="commentId" id="ckd${comment.id}" value="${comment.id}"/>
                                             <%--<input type="hidden" name="userId" value="${comment.uid}">--%>
                                             <%--<input type="hidden" name="username" value="${comment.nick}">--%>
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${comment.id}')">
                                                 ${comment.bc}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${comment.id}')">
                                                 ${comment.createTime}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${comment.id}')">
                                                 ${comment.uid}
                                         </td>
-                                        <td>
+                                        <td onclick="ckd('${comment.id}')">
                                                 ${comment.nick}
                                         </td>
                                         <td>
@@ -194,6 +194,19 @@
                         $(":checkbox").prop("checked", false);
                     }
                 });
+
+                //阻止checkbox事件冒泡
+                $("input[type='checkbox']").click(function(e){
+                    e.stopPropagation();
+                });
+                function ckd(id) {
+                    var isChecked = $("#" + "ckd" + id).is(":checked");
+                    if (isChecked) {
+                        $("#" + "ckd" + id).removeAttr("checked");
+                    } else {
+                        $("#" + "ckd" + id).prop("checked", "checked");
+                    }
+                }
 
                 function verifyComment(state, id, uid, nick) {
                     if ("batch" == id) {
