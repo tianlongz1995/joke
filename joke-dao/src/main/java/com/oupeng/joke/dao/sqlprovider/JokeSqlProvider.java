@@ -377,7 +377,7 @@ public class JokeSqlProvider {
             if (status.equals(3)) {
                 sql.append(" and t1.status in (3,4) ");
             } else if (status.equals(1)) {
-                sql.append(" and t1.status in (1,6) ");
+                sql.append(" and t1.status in (1,6) and t1.audit != 6 ");
             } else {
                 sql.append(" and t1.status = ").append(status).append(" ");
             }
@@ -411,7 +411,7 @@ public class JokeSqlProvider {
         String endDay = (String) map.get("endDay");
 
         StringBuffer sql = new StringBuffer();
-        sql.append(" select count(1) from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 ");
+        sql.append(" select count(1) from joke t1 left join `source` t2 on t1.source_id = t2.`id` where 1 = 1 and audit != 6");
         if (type != null) {
             sql.append(" and t1.type = ").append(type).append(" ");
         }
