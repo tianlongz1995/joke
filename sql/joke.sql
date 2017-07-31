@@ -470,4 +470,7 @@ alter table joke add isrespider int(11) default 0 comment '是否已经重爬：
 --新增distributors字段
 alter table distributors add limit_number int(11) default 30 comment '渠道下|列表页显示的限制条数/页'
 
+--- 新增飞华健康网数据源 2017-7-31
+INSERT INTO `source` VALUES ('157', '飞华健康网', 'https://sex.fh21.com.cn/qsyk/', '1', '2017-07-31 09:46:09', '2017-07-31 14:14:09');
+
 
